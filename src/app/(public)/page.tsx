@@ -118,7 +118,7 @@ export default async function HomePage() {
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="/live"
-                className="rounded-full bg-gradient-to-r from-sky-500 to-emerald-500 px-5 py-3 text-sm font-semibold text-cream-100 shadow-lg shadow-sky-500/20 hover:scale-105 transition-transform"
+                className="rounded-full bg-gradient-to-r from-sky-500 to-pink-500 px-5 py-3 text-sm font-semibold text-cream-100 shadow-lg shadow-sky-500/20 hover:scale-105 transition-transform"
               >
                 Join Us Online
               </Link>
@@ -144,7 +144,7 @@ export default async function HomePage() {
                 </div>
               )}
               <div className="p-6 md:p-8">
-                <p className="text-xs font-semibold uppercase tracking-wide text-emerald-400">
+                <p className="text-xs font-semibold uppercase tracking-wide text-pink-400">
                   Mark Your Calendar
                 </p>
                 <h2 className="mt-2 font-serif-display text-2xl">
@@ -163,7 +163,7 @@ export default async function HomePage() {
                 </div>
                 <Link
                   href={`/events/${featuredEvent.slug}`}
-                  className="mt-6 inline-block text-sm font-semibold text-emerald-400 hover:text-sky-400"
+                  className="mt-6 inline-block text-sm font-semibold text-pink-400 hover:text-sky-400"
                 >
                   Full details →
                 </Link>
@@ -175,7 +175,7 @@ export default async function HomePage() {
 
       {/* Watchword */}
       {watchword && (
-        <Reveal className="bg-gradient-to-r from-sky-400/10 via-emerald-400/15 to-sky-400/10">
+        <Reveal className="bg-gradient-to-r from-sky-400/10 via-pink-400/15 to-sky-400/10">
           <div className="section-shell py-14 text-center">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-600">
               Our Watchword
@@ -204,7 +204,7 @@ export default async function HomePage() {
             </p>
             <Link
               href="/about"
-              className="mt-6 inline-block text-sm font-semibold text-emerald-600 hover:text-emerald-500"
+              className="mt-6 inline-block text-sm font-semibold text-pink-600 hover:text-pink-500"
             >
               Read our story →
             </Link>
@@ -245,7 +245,7 @@ export default async function HomePage() {
           </div>
           <Link
             href="/departments"
-            className="mt-8 inline-block text-sm font-semibold text-emerald-600 hover:text-emerald-500"
+            className="mt-8 inline-block text-sm font-semibold text-pink-600 hover:text-pink-500"
           >
             View all ministries →
           </Link>
@@ -255,7 +255,7 @@ export default async function HomePage() {
       {/* Weekly services */}
       <Reveal className="bg-navy-900 text-cream-100">
         <div className="section-shell py-20">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-pink-400">
             How We Gather
           </p>
           <h2 className="mt-2 font-serif-display text-3xl">Weekly Services</h2>
@@ -263,14 +263,14 @@ export default async function HomePage() {
             {SERVICES.map((s, i) => (
               <div
                 key={s.name}
-                className="rounded-xl border border-cream-100/15 p-6 hover:border-transparent hover:bg-gradient-to-br hover:from-sky-500/20 hover:to-emerald-500/20 transition-colors"
+                className="rounded-xl border border-cream-100/15 p-6 hover:border-transparent hover:bg-gradient-to-br hover:from-sky-500/20 hover:to-pink-500/20 transition-colors"
               >
                 <p
                   className="inline-block rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide text-navy-950"
                   style={{
                     background: [
                       "var(--color-sky-400)",
-                      "var(--color-emerald-400)",
+                      "var(--color-pink-400)",
                       "var(--color-gold-400)",
                     ][i % 3],
                   }}
@@ -280,7 +280,7 @@ export default async function HomePage() {
                 <h3 className="mt-3 font-serif-display text-lg">{s.name}</h3>
                 <p className="mt-1 text-sm text-cream-100/70">{s.time}</p>
                 <p className="mt-3 text-sm text-cream-100/80">{s.blurb}</p>
-                <p className="mt-4 text-xs font-semibold text-emerald-400">
+                <p className="mt-4 text-xs font-semibold text-pink-400">
                   {s.mode}
                 </p>
               </div>
@@ -290,7 +290,7 @@ export default async function HomePage() {
           {settings.prayerLineNumber && (
             <div className="mt-8 rounded-xl bg-cream-100/5 border border-cream-100/15 p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-emerald-400">
+                <p className="text-xs font-semibold uppercase tracking-wide text-pink-400">
                   Prayer Line
                 </p>
                 <p className="mt-1 text-cream-100/90">
@@ -326,7 +326,7 @@ export default async function HomePage() {
                 key={event.id}
                 className="rounded-xl border border-navy-800/10 p-6 flex gap-4 hover:shadow-lg hover:shadow-sky-500/10 hover:-translate-y-1 transition-all"
               >
-                <div className="shrink-0 text-center rounded-lg bg-gradient-to-br from-sky-500 to-emerald-500 px-3 py-2 text-cream-100 h-fit">
+                <div className="shrink-0 text-center rounded-lg bg-gradient-to-br from-sky-500 to-pink-500 px-3 py-2 text-cream-100 h-fit">
                   <p className="text-xs font-semibold uppercase">
                     {date.toLocaleString("en-US", { month: "short" })}
                   </p>
@@ -343,7 +343,7 @@ export default async function HomePage() {
                   </p>
                   <Link
                     href={`/events/${event.slug}`}
-                    className="mt-3 inline-block text-sm font-semibold text-emerald-600 hover:text-emerald-500"
+                    className="mt-3 inline-block text-sm font-semibold text-pink-600 hover:text-pink-500"
                   >
                     Full details →
                   </Link>
@@ -354,7 +354,7 @@ export default async function HomePage() {
         </div>
         <Link
           href="/events"
-          className="mt-8 inline-block text-sm font-semibold text-emerald-600 hover:text-emerald-500"
+          className="mt-8 inline-block text-sm font-semibold text-pink-600 hover:text-pink-500"
         >
           View all events →
         </Link>
@@ -377,9 +377,9 @@ export default async function HomePage() {
             {churches.map((church) => (
               <div
                 key={church.id}
-                className="rounded-xl bg-cream-100 border border-navy-800/10 p-5 hover:border-emerald-400 transition-colors"
+                className="rounded-xl bg-cream-100 border border-navy-800/10 p-5 hover:border-pink-400 transition-colors"
               >
-                <p className="text-xs font-semibold uppercase tracking-wide text-emerald-600">
+                <p className="text-xs font-semibold uppercase tracking-wide text-pink-600">
                   {church.city}, {church.region}
                 </p>
                 <h3 className="mt-1 font-serif-display text-lg text-navy-900">
@@ -391,7 +391,7 @@ export default async function HomePage() {
           </div>
           <Link
             href="/churches"
-            className="mt-8 inline-block text-sm font-semibold text-emerald-600 hover:text-emerald-500"
+            className="mt-8 inline-block text-sm font-semibold text-pink-600 hover:text-pink-500"
           >
             View all member churches →
           </Link>
@@ -408,7 +408,7 @@ export default async function HomePage() {
         </p>
         <Link
           href="/contact"
-          className="mt-6 inline-block rounded-full bg-gradient-to-r from-sky-500 to-emerald-500 px-6 py-3 text-sm font-semibold text-cream-100 shadow-lg hover:scale-105 transition-transform"
+          className="mt-6 inline-block rounded-full bg-gradient-to-r from-sky-500 to-pink-500 px-6 py-3 text-sm font-semibold text-cream-100 shadow-lg hover:scale-105 transition-transform"
         >
           Plan Your Visit →
         </Link>

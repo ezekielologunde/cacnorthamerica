@@ -34,7 +34,7 @@ export default function Header() {
 
         <Link
           href="/live"
-          className="shrink-0 rounded-full bg-gradient-to-r from-sky-500 to-emerald-500 px-4 py-2 text-sm font-semibold text-cream-100 shadow-md hover:scale-105 transition-transform"
+          className="shrink-0 rounded-full bg-gradient-to-r from-sky-500 to-pink-500 px-4 py-2 text-sm font-semibold text-cream-100 shadow-md hover:scale-105 transition-transform"
         >
           Watch Live
         </Link>

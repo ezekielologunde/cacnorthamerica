@@ -19,13 +19,13 @@
   --color-cream-100: #faf8f4;
   --color-cream-200: #f2ede1;
 
-  --color-sky-600: #1d6fa5;
-  --color-sky-500: #2f93d6;
-  --color-sky-400: #6ab8ea;
+  --color-sky-600: #2f8fd1;
+  --color-sky-500: #5aabe0;
+  --color-sky-400: #93c9ec;
 
-  --color-emerald-600: #0f7a5c;
-  --color-emerald-500: #18a374;
-  --color-emerald-400: #55c99a;
+  --color-pink-600: #d6488a;
+  --color-pink-500: #ec6cad;
+  --color-pink-400: #f5a0c8;
 }
 
 @theme inline {
@@ -51,9 +51,9 @@
   --color-sky-500: var(--color-sky-500);
   --color-sky-400: var(--color-sky-400);
 
-  --color-emerald-600: var(--color-emerald-600);
-  --color-emerald-500: var(--color-emerald-500);
-  --color-emerald-400: var(--color-emerald-400);
+  --color-pink-600: var(--color-pink-600);
+  --color-pink-500: var(--color-pink-500);
+  --color-pink-400: var(--color-pink-400);
 
   --font-sans: var(--font-inter);
   --font-serif: var(--font-fraunces);
@@ -106,7 +106,7 @@ body {
     from 0deg,
     var(--color-sky-400) 0deg 6deg,
     transparent 6deg 30deg,
-    var(--color-emerald-400) 30deg 36deg,
+    var(--color-pink-400) 30deg 36deg,
     transparent 36deg 60deg,
     var(--color-sky-500) 60deg 66deg,
     transparent 66deg 90deg
@@ -127,7 +127,7 @@ body {
   will-change: transform;
   background: repeating-conic-gradient(
     from 15deg,
-    var(--color-emerald-500) 0deg 4deg,
+    var(--color-pink-500) 0deg 4deg,
     transparent 4deg 24deg
   );
   animation: rays-spin-reverse 80s linear infinite;
@@ -135,7 +135,7 @@ body {
 
 .hero-sparkle {
   position: absolute;
-  background: var(--color-emerald-500);
+  background: var(--color-pink-500);
   clip-path: polygon(
     50% 0%,
     61% 39%,
