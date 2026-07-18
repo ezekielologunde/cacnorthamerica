@@ -4,13 +4,13 @@ import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import Link from "next/link";
 import Image from "next/image";
-import { Music, HeartHandshake, Sparkles, Baby, HandHeart, Video, Users, Heart, Wrench, Globe } from "lucide-react";
+import { Music, HeartHandshake, Sparkles, HandHeart, Video, Wrench, Globe, ShieldCheck, BookOpen, Users2 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 export const metadata = {
-  title: "Ministries — CAC Salvation Center",
+  title: "Ministries — Christ Apostolic Church North America (CACNA)",
   description:
-    "Find your place to belong and serve at CAC Salvation Center — worship & choir, women's fellowship, youth, children's ministry, prayer, and media.",
+    "The departments serving every CACNA zone — Administration, Christian Education, Evangelism, Missions, Music, Welfare & Outreach, ICT, and more.",
   alternates: { canonical: "/ministries" },
 };
 
@@ -26,20 +26,16 @@ type Ministry = {
 };
 
 const ministries: Ministry[] = [
-  { name: "Worship & Choir", desc: "Spirit-filled praise that leads the whole house into God's presence every Sunday.", icon: Music, gradient: "linear-gradient(140deg,var(--red),var(--flame))", href: "/contact", cta: "Join the choir" },
-  { name: "Women's Fellowship", desc: "Sister Fellowship (Blessed Sisters, Unity Sisters, Glorious Sisters) and more — all women of the Salvation Center growing together in faith, prayer, and service.", icon: HeartHandshake, gradient: "linear-gradient(140deg,var(--flame),var(--gold))", href: "/contact", cta: "Connect with the sisters" },
-  { name: "Youth & Young Adults", desc: "Raising the next generation as bold, grounded ambassadors of Christ.", icon: Sparkles, gradient: "linear-gradient(140deg,var(--red-deep),var(--red))", href: "/contact", cta: "Get involved" },
-  { name: "Children's Ministry", desc: "A safe, joyful place for kids to meet Jesus. Sunday School begins at 9:25 AM.", icon: Baby, gradient: "linear-gradient(140deg,var(--flame),var(--red))", href: "/visit", cta: "Plan a visit" },
-  { name: "Prayer & Intercession", desc: "Standing in the gap for our church and our city — join the daily 5 AM prayer line.", icon: HandHeart, gradient: "linear-gradient(140deg,var(--red),var(--red-deep))", href: "/prayer", cta: "Join the prayer line" },
-  { name: "Media & Online", desc: "Carrying the service beyond our walls — streaming Spirit-filled worship to the world.", icon: Video, gradient: "linear-gradient(140deg,var(--gold),var(--flame))", href: "/contact", cta: "Serve on media" },
-  { name: "Macedonia Outreach", desc: "An annual mission to forgotten rural ministers in hard-to-reach and unreachable places — carrying the gospel where most cannot go.", icon: Globe, gradient: "linear-gradient(140deg,#1B4332,#2D6A4F)", image: "/images/macedonia-logo.png", alt: "Macedonia Outreach logo", href: "/events/macedonia-outreach", cta: "Learn about the mission" },
-];
-
-const groupCategories: { label: string; icon: LucideIcon; groups: string[] }[] = [
-  { label: "Brothers' Fellowships", icon: Users, groups: ["Gideonite Brothers", "Blessed Brothers", "Victory Brothers", "Men's Group"] },
-  { label: "Sisters' Fellowships", icon: Heart, groups: ["Mother in Israel", "Blessed Sisters", "Glorious Sisters", "Virtuous Women", "Sisters of Grace", "Mercy Group", "Unity Sisters"] },
-  { label: "Generations", icon: Sparkles, groups: ["Children's Ministry", "Youth & Young Adults"] },
-  { label: "Service & Departments", icon: Wrench, groups: ["Ushers", "Protocols", "Publication Team", "Hall Renting Committee"] },
+  { name: "Administration", desc: "Coordinating the presidency and regional leadership that guides CACNA's 16 DCCs and Zones.", icon: Wrench, gradient: "linear-gradient(140deg,var(--red),var(--flame))", href: "/leadership", cta: "Meet our leadership" },
+  { name: "Christian Education", desc: "Grounding believers across every zone in sound biblical teaching and discipleship.", icon: BookOpen, gradient: "linear-gradient(140deg,var(--flame),var(--gold))", href: "/contact", cta: "Learn more" },
+  { name: "Evangelism, Prayer & Counselling", desc: "Carrying the whole Gospel to the lost and standing in the gap in prayer for our churches and cities.", icon: HandHeart, gradient: "linear-gradient(140deg,var(--red),var(--red-deep))", href: "/prayer", cta: "Join in prayer" },
+  { name: "Youth & Young Adult", desc: "Raising the next generation as bold, grounded ambassadors of Christ across every CACNA zone.", icon: Sparkles, gradient: "linear-gradient(140deg,var(--red-deep),var(--red))", href: "/contact", cta: "Get involved" },
+  { name: "Missions", desc: "Reaching forgotten and hard-to-reach communities — including the annual Macedonia Outreach to rural ministers.", icon: Globe, gradient: "linear-gradient(140deg,#1B4332,#2D6A4F)", href: "/events/macedonia-outreach", cta: "Learn about the mission" },
+  { name: "Music", desc: "Spirit-filled praise and worship carried across CACNA's member churches and the Annual Convention.", icon: Music, gradient: "linear-gradient(140deg,var(--gold),var(--flame))", href: "/contact", cta: "Serve in music" },
+  { name: "Welfare & Outreach", desc: "Meeting practical needs and extending Christ's love to members and communities in every zone.", icon: HeartHandshake, gradient: "linear-gradient(140deg,var(--flame),var(--red))", href: "/contact", cta: "Learn more" },
+  { name: "ICT & Technical", desc: "Powering CACNA's livestreams, media, and digital presence so the Gospel reaches every home.", icon: Video, gradient: "linear-gradient(140deg,var(--ink),var(--red-deep))", href: "/online", cta: "Watch online" },
+  { name: "CAC Good Women Association", desc: "Women across CACNA growing together in faith, prayer, and service.", icon: Users2, gradient: "linear-gradient(140deg,var(--gold),var(--red))", href: "/contact", cta: "Connect" },
+  { name: "CAC Men Association (CACMA)", desc: "Men across every CACNA zone standing together in discipleship and service.", icon: ShieldCheck, gradient: "linear-gradient(140deg,var(--red-deep),var(--ink))", href: "/contact", cta: "Connect" },
 ];
 
 export default function MinistriesPage() {
@@ -63,7 +59,7 @@ export default function MinistriesPage() {
           </h1>
           <Reveal delay={360}>
             <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "rgba(255,247,239,.72)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto", textWrap: "pretty" }}>
-              We were never meant to do faith alone. Find a family within the family — a place to grow, to serve, and to belong.
+              CACNA&apos;s departments serve every member church across the United States and Canada — a place to grow, to serve, and to belong.
             </p>
           </Reveal>
         </div>
@@ -108,45 +104,11 @@ export default function MinistriesPage() {
         </div>
       </section>
 
-      {/* Fellowships & groups */}
-      <section style={{ background: "var(--cream)", padding: "clamp(56px,7vw,96px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 1120, margin: "0 auto" }}>
-          <Reveal style={{ textAlign: "center", marginBottom: 14 }}>
-            <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>The wider family</span>
-          </Reveal>
-          <Reveal delay={80} style={{ textAlign: "center", marginBottom: 52 }}>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4.4vw,56px)", letterSpacing: "-1.2px", color: "var(--ink)", margin: 0, lineHeight: 0.98, textWrap: "balance" }}>
-              Fellowships &amp; groups
-            </h2>
-            <p style={{ fontSize: "clamp(15px,1.7vw,18px)", color: "var(--ink-soft)", lineHeight: 1.7, margin: "16px auto 0", maxWidth: 600 }}>
-              Beyond Sunday, the Salvation Center is a web of fellowships, bands, and teams — every one a place to belong and to serve.
-            </p>
-          </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: 20 }}>
-            {groupCategories.map((cat, i) => (
-              <Reveal key={cat.label} delay={(i % 4) * 80}>
-                <div style={{ height: "100%", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 24, padding: "28px 26px", boxShadow: "0 12px 30px rgba(27,19,14,.06)", display: "flex", flexDirection: "column" }}>
-                  <span style={{ display: "grid", placeItems: "center", width: 48, height: 48, borderRadius: 14, background: "linear-gradient(140deg,var(--flame),var(--red))", marginBottom: 18, boxShadow: "0 8px 20px rgba(214,40,40,.26)" }}>
-                    <cat.icon size={22} strokeWidth={1.9} color="#fff" aria-hidden />
-                  </span>
-                  <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 19, letterSpacing: "-.3px", color: "var(--ink)", margin: "0 0 16px", lineHeight: 1.15 }}>{cat.label}</h3>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                    {cat.groups.map((g) => (
-                      <span key={g} style={{ fontSize: 13.5, fontWeight: 600, color: "var(--ink)", background: "var(--cream-2)", border: "1px solid var(--line)", padding: "7px 13px", borderRadius: 999 }}>{g}</span>
-                    ))}
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* CTA */}
       <section style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)", textAlign: "center" }}>
         <Reveal>
           <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4.5vw,58px)", letterSpacing: "-1.2px", color: "var(--cream)", margin: "0 0 16px", lineHeight: 0.96 }}>Not sure where you fit?</h2>
-          <p style={{ fontSize: 17, color: "rgba(255,247,239,.6)", margin: "0 0 36px" }}>Fill the serve form and we&apos;ll connect you with the right team or fellowship.</p>
+          <p style={{ fontSize: 17, color: "rgba(255,247,239,.6)", margin: "0 0 36px" }}>Reach out and we&apos;ll connect you with the right department or zone.</p>
           <Link href="/contact" className="btn-sheen press-lg" style={{ display: "inline-block", background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 34px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 34px rgba(214,40,40,.4)" }}>
             Fill the serve form →
           </Link>
