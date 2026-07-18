@@ -3,16 +3,14 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Reveal } from '@/components/ui/Reveal';
-import { FacebookIcon, InstagramIcon, YoutubeIcon, TikTokIcon } from '@/components/ui/SocialIcons';
+import { InstagramIcon, YoutubeIcon } from '@/components/ui/SocialIcons';
 import { haptic } from '@/lib/haptics';
 import { MapPin, Phone, Mail } from 'lucide-react';
 import { NewsletterForm } from '@/components/sections/NewsletterForm';
 
 const socials = [
-  { icon: <FacebookIcon />, title: 'Facebook', href: 'https://www.facebook.com/CacSalvationCenterBaltimore' },
-  { icon: <InstagramIcon />, title: 'Instagram', href: 'https://www.instagram.com/salvationcenterbaltimore/' },
-  { icon: <YoutubeIcon />, title: 'YouTube', href: 'https://www.youtube.com/channel/UCoogH4HuVXSn4okSpRlsDQA' },
-  { icon: <TikTokIcon />, title: 'TikTok', href: 'https://www.tiktok.com/@salvationcenterus' },
+  { icon: <YoutubeIcon />, title: 'YouTube', href: 'https://youtube.com/@cacnorthamericalatunderegi1330' },
+  { icon: <InstagramIcon />, title: 'Instagram', href: 'https://instagram.com/cacnorthamericalatunderegion' },
 ];
 
 const quickLinks = [
@@ -58,15 +56,15 @@ export function FooterExperience() {
           {/* Brand */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <Image src="/images/logo.png" alt="CAC Salvation Center" width={42} height={42}
+              <Image src="/images/logo.png" alt="Christ Apostolic Church North America" width={42} height={42}
                 style={{ borderRadius: 12, objectFit: 'cover', flexShrink: 0 }} />
               <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
                 <span style={{ fontSize: 9.5, letterSpacing: '2.5px', textTransform: 'uppercase', color: 'var(--gold)', fontWeight: 700 }}>Christ Apostolic Church</span>
-                <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18, color: '#fff', marginTop: 3 }}>Salvation Center</span>
+                <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18, color: '#fff', marginTop: 3 }}>North America</span>
               </div>
             </div>
             <p style={{ fontSize: 14, color: 'rgba(255,247,239,.55)', margin: '16px 0 22px', lineHeight: 1.7, maxWidth: 280 }}>
-              Real food for the soul, from a real local family of believers. Welcome home.
+              Uniting CAC member churches across the United States and Canada — one family, many homes.
             </p>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {socials.map(s => (
@@ -92,24 +90,23 @@ export function FooterExperience() {
 
           {/* Services + contact */}
           <div>
-            <div style={{ fontWeight: 800, fontSize: 12, textTransform: 'uppercase', letterSpacing: '1.8px', color: 'var(--gold)', marginBottom: 18 }}>Services</div>
+            <div style={{ fontWeight: 800, fontSize: 12, textTransform: 'uppercase', letterSpacing: '1.8px', color: 'var(--gold)', marginBottom: 18 }}>How We Gather</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 9, fontSize: 14, color: 'rgba(255,247,239,.6)', marginBottom: 28 }}>
-              <span>Sunday · 9:25 &amp; 10:30 AM ET</span>
-              <span>Wednesday · 7:00 PM ET</span>
-              <span>Friday · 7:00 PM ET (Yoruba)</span>
-              <span>Prayer Line · 5:00 AM daily</span>
+              <span>Annual Convention · July, CAC Village PA</span>
+              <span>Ministers Retreat · Annually</span>
+              <span>Sunday School Rally · Annually</span>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 11, fontSize: 14 }}>
-              <a href="tel:+14432726794" style={{ display: 'flex', alignItems: 'center', gap: 9, color: 'rgba(255,247,239,.6)', textDecoration: 'none' }}>
-                <Phone size={14} strokeWidth={2} style={{ flexShrink: 0 }} aria-hidden /> (443) 272-6794
+              <a href="tel:+13054690346" style={{ display: 'flex', alignItems: 'center', gap: 9, color: 'rgba(255,247,239,.6)', textDecoration: 'none' }}>
+                <Phone size={14} strokeWidth={2} style={{ flexShrink: 0 }} aria-hidden /> (305) 469-0346
               </a>
-              <a href="mailto:info@cacsalvationcenter.org" style={{ display: 'flex', alignItems: 'center', gap: 9, color: 'rgba(255,247,239,.6)', textDecoration: 'none', wordBreak: 'break-word' }}>
-                <Mail size={14} strokeWidth={2} style={{ flexShrink: 0 }} aria-hidden /> info@cacsalvationcenter.org
+              <a href="mailto:info@cacnorthamerica.com" style={{ display: 'flex', alignItems: 'center', gap: 9, color: 'rgba(255,247,239,.6)', textDecoration: 'none', wordBreak: 'break-word' }}>
+                <Mail size={14} strokeWidth={2} style={{ flexShrink: 0 }} aria-hidden /> info@cacnorthamerica.com
               </a>
-              <a href="https://maps.google.com/?q=10710+Marriottsville+Rd+Randallstown+MD" target="_blank" rel="noopener noreferrer"
+              <a href="https://maps.google.com/?q=14051+Stahley+Road+Blue+Ridge+Summit+PA+17214" target="_blank" rel="noopener noreferrer"
                 style={{ display: 'flex', alignItems: 'flex-start', gap: 9, color: 'rgba(255,247,239,.6)', textDecoration: 'none' }}>
                 <MapPin size={14} strokeWidth={2} style={{ flexShrink: 0, marginTop: 2 }} aria-hidden />
-                10710 Marriottsville Rd,<br />Randallstown, MD 21133
+                14051 Stahley Road,<br />Blue Ridge Summit, PA 17214
               </a>
             </div>
           </div>
@@ -132,12 +129,10 @@ export function FooterExperience() {
 
         {/* Bottom bar */}
         <div style={{ maxWidth: 1240, margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 12, padding: '20px 0 28px', fontSize: 12.5, color: 'rgba(255,247,239,.3)' }}>
-          <span>© 2026 Christ Apostolic Church Salvation Center · Baltimore DCC · Registered 501(c)(3) nonprofit — donations are tax-deductible</span>
+          <span>© 2026 Christ Apostolic Church North America · 16 Zones across the U.S. &amp; Canada</span>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 20px' }}>
-            <a href="https://cackingdomembassy.org" target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(255,247,239,.3)', textDecoration: 'none' }}>CAC Kingdom Embassy</a>
-            <a href="https://cacpalaceofpeace.org" target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(255,247,239,.3)', textDecoration: 'none' }}>CAC Palace of Peace</a>
-            <Link href="/ilorin" style={{ color: 'rgba(255,247,239,.3)', textDecoration: 'none' }}>CAC Ilorin HQ</Link>
-            <Link href="/salvationcity" style={{ color: 'rgba(255,247,239,.3)', textDecoration: 'none' }}>Salvation City</Link>
+            <Link href="/tenets" style={{ color: 'rgba(255,247,239,.3)', textDecoration: 'none' }}>Our Tenets</Link>
+            <Link href="/leadership" style={{ color: 'rgba(255,247,239,.3)', textDecoration: 'none' }}>Leadership</Link>
           </div>
         </div>
       </Reveal>

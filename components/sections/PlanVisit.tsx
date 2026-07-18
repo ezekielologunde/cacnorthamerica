@@ -12,13 +12,13 @@ export function PlanVisit() {
             There&apos;s a seat with your name on it.
           </h2>
           <p style={{ fontSize: 16, lineHeight: 1.7, opacity: .8, maxWidth: 440 }}>
-            Salvation Center — Baltimore DCC. Join us in person this Sunday; come as you are.
+            Find a CACNA member church near you across the United States and Canada — come as you are.
           </p>
           <div style={{ marginTop: 30, display: 'flex', flexDirection: 'column', gap: 14, fontSize: 15.5 }}>
             {[
-              { icon: MapPin, text: '10710 Marriottsville Rd, Randallstown, MD 21133' },
-              { icon: Phone, text: '+1 443-272-6794 · +1 410-701-8315' },
-              { icon: Mail, text: 'info@cacsalvationcenter.org' },
+              { icon: MapPin, text: '14051 Stahley Road, Blue Ridge Summit, PA 17214' },
+              { icon: Phone, text: '(305) 469-0346' },
+              { icon: Mail, text: 'info@cacnorthamerica.com' },
             ].map(item => (
               <div key={item.text} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                 <span style={{ width: 40, height: 40, borderRadius: 11, background: 'rgba(255,255,255,.1)', display: 'grid', placeItems: 'center', flexShrink: 0 }}>
@@ -41,8 +41,8 @@ export function PlanVisit() {
         <Reveal delay={120}>
           <div style={{ width: '100%', height: 440, borderRadius: 26, overflow: 'hidden', boxShadow: '0 26px 54px rgba(0,0,0,.4)', position: 'relative' }}>
             <iframe
-              title="Map to CAC Salvation Center, 10710 Marriottsville Rd, Randallstown MD"
-              src="https://maps.google.com/maps?q=10710%20Marriottsville%20Rd%20Randallstown%20MD%2021133&z=15&output=embed"
+              title="Map to CAC Village, 14051 Stahley Road, Blue Ridge Summit, PA"
+              src="https://maps.google.com/maps?q=14051%20Stahley%20Road%20Blue%20Ridge%20Summit%20PA%2017214&z=13&output=embed"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               style={{ width: '100%', height: '100%', border: 0, display: 'block' }}
