@@ -19,13 +19,13 @@
   --color-cream-100: #faf8f4;
   --color-cream-200: #f2ede1;
 
-  --color-coral-600: #c2603f;
-  --color-coral-500: #e2895f;
-  --color-coral-400: #edaa85;
+  --color-plum-600: #5b2456;
+  --color-plum-500: #7c3373;
+  --color-plum-400: #a2599b;
 
-  --color-rose-600: #b06b64;
-  --color-rose-500: #dd9a91;
-  --color-rose-400: #eebfb8;
+  --color-mauve-600: #8a5a83;
+  --color-mauve-500: #b17ea9;
+  --color-mauve-400: #cda3c4;
 
   --color-sunshine-400: #f0c169;
 }
@@ -49,13 +49,13 @@
   --color-cream-100: var(--color-cream-100);
   --color-cream-200: var(--color-cream-200);
 
-  --color-coral-600: var(--color-coral-600);
-  --color-coral-500: var(--color-coral-500);
-  --color-coral-400: var(--color-coral-400);
+  --color-plum-600: var(--color-plum-600);
+  --color-plum-500: var(--color-plum-500);
+  --color-plum-400: var(--color-plum-400);
 
-  --color-rose-600: var(--color-rose-600);
-  --color-rose-500: var(--color-rose-500);
-  --color-rose-400: var(--color-rose-400);
+  --color-mauve-600: var(--color-mauve-600);
+  --color-mauve-500: var(--color-mauve-500);
+  --color-mauve-400: var(--color-mauve-400);
 
   --color-sunshine-400: var(--color-sunshine-400);
 
@@ -94,9 +94,9 @@ body {
   position: relative;
   background: linear-gradient(
     120deg,
-    var(--color-coral-500),
+    var(--color-plum-600),
     var(--color-gold-500) 55%,
-    var(--color-rose-500)
+    var(--color-plum-400)
   );
   background-size: 220% 220%;
   animation: hero-gradient-shift 22s ease-in-out infinite;
@@ -120,7 +120,7 @@ body {
 }
 
 .hero-blob-2 {
-  background: var(--color-rose-400);
+  background: var(--color-mauve-400);
   width: 22rem;
   height: 22rem;
   bottom: -8rem;
@@ -129,7 +129,7 @@ body {
 }
 
 .hero-blob-3 {
-  background: var(--color-coral-400);
+  background: var(--color-plum-400);
   width: 18rem;
   height: 18rem;
   top: 40%;
