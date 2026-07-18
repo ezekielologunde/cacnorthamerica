@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Plan Your Visit — CAC Salvation Center | Randallstown, MD",
+  title: "Find a Church — Christ Apostolic Church North America (CACNA)",
   description:
-    "Planning your first visit to CAC Salvation Center? Join us Sundays at 10:30 AM ET, 10710 Marriottsville Rd, Randallstown MD 21133 — kids ministry, parking, and a warm welcome await.",
+    "Find a CACNA member church near you across the United States and Canada — 16 DCCs/Zones, each led by a Zonal Superintendent. CAC Village Convention: 14051 Stahley Road, Blue Ridge Summit, PA 17214.",
   alternates: { canonical: "/visit" },
 };
 

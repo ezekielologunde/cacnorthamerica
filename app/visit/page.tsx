@@ -8,27 +8,29 @@ import { MapPin, Clock, Phone, PartyPopper } from "lucide-react";
 import { submitLead, isValidEmail } from "@/lib/forms";
 
 const faqs = [
-  { q: "What should I wear?", a: "Come as you are. Some members dress formally, others casually — all are equally welcome." },
-  { q: "How long is the service?", a: "Sunday services typically run about 2 hours (10:30 AM – 12:30 PM ET)." },
-  { q: "Do you have childcare?", a: "Yes — we have a dedicated Kids Ministry for children during Sunday service." },
-  { q: "Can I join online?", a: "Absolutely. All Sunday services are streamed live. Wednesday and Friday services are online-only." },
-  { q: "Is Wakati Itusile for non-Yoruba speakers?", a: "It's primarily in Yoruba, our mother tongue. Even without the language, the worship and the presence of God carry across." },
+  { q: "What is CACNA?", a: "Christ Apostolic Church North America is the regional body uniting CAC member churches across the United States and Canada, organized into 16 DCCs (District Church Councils) / Zones, each led by a Zonal Superintendent." },
+  { q: "Do all CACNA member churches share the same service times?", a: "No — each member church sets its own weekly schedule. Reach out to the Zonal Superintendent nearest you to find service times for a specific church." },
+  { q: "Where is the CACNA Annual Convention held?", a: "At CAC Village, 14051 Stahley Road, Blue Ridge Summit, PA 17214 — six days of worship and teaching every July, onsite and online." },
+  { q: "Can I join a CACNA member church online?", a: "Many member churches stream their services — check with your nearest zone. The Annual Convention itself streams on YouTube and Zoom." },
 ];
 
 const VISIT_TYPES = [
   { value: "First-time visitor", label: "First-time visitor" },
   { value: "Returning visitor",  label: "Returning visitor" },
-  { value: "New member",         label: "Looking to join / become a member" },
+  { value: "New member",         label: "Looking for a member church" },
 ];
 
 const GROUPS = [
-  "Sisters Fellowship",
-  "Brothers Fellowship",
-  "Youth Fellowship",
-  "Choir / Worship Team",
-  "Ushers",
-  "Prayer Team",
-  "Evangelism Team",
+  "Administration",
+  "Christian Education",
+  "Evangelism, Prayer & Counselling",
+  "Youth & Young Adult",
+  "Missions",
+  "Music",
+  "Welfare & Outreach",
+  "ICT & Technical",
+  "CAC Good Women Association",
+  "CAC Men Association (CACMA)",
 ];
 
 const COUNTRIES = [
@@ -90,7 +92,7 @@ export default function VisitPage() {
       }, "Connect Card");
       setSubmitted(true);
     } catch {
-      setSubmitError("Something went wrong. Please try again, or call us at (443) 272-6794.");
+      setSubmitError("Something went wrong. Please try again, or call us at (305) 469-0346.");
     } finally { setLoading(false); }
   }
 
@@ -116,7 +118,7 @@ export default function VisitPage() {
       <section style={{ background: "var(--cream)", padding: "140px clamp(20px,5vw,64px) 60px", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", bottom: -80, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,#F15F22,#D62828 70%)", opacity: .1, filter: "blur(6px)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 780, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
-          <Reveal><span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Plan Your Visit</span></Reveal>
+          <Reveal><span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Find a Church</span></Reveal>
           <Reveal delay={80}>
             <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(46px,6.5vw,90px)", letterSpacing: "-2px", color: "var(--ink)", margin: "16px 0", lineHeight: .92 }}>
               We&apos;re ready<br />
@@ -125,7 +127,7 @@ export default function VisitPage() {
           </Reveal>
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(16px,1.8vw,19px)", color: "var(--ink-soft)", lineHeight: 1.65, maxWidth: 560, margin: "0 auto" }}>
-              Your first visit sets the tone. Here&apos;s everything you need — and a connect card so we can welcome you properly.
+              There&apos;s a CACNA member church waiting for you across the United States and Canada — here&apos;s how to find one, and a connect card so we can welcome you properly.
             </p>
           </Reveal>
         </div>
@@ -135,9 +137,9 @@ export default function VisitPage() {
       <section style={{ background: "var(--cream-2)", padding: "80px clamp(20px,5vw,64px)" }}>
         <div className="r3" style={{ maxWidth: 1100, margin: "0 auto", gap: 18 }}>
           {[
-            { icon: MapPin, title: "Address", value: "10710 Marriottsville Rd\nRandallstown, MD 21133", link: "https://maps.google.com/?q=10710+Marriottsville+Rd+Randallstown+MD+21133" },
-            { icon: Clock,  title: "Sunday Service", value: "Sunday School 9:25 AM\nService 10:30 AM ET", link: null },
-            { icon: Phone,  title: "Phone", value: "+1 443-272-6794\n+1 410-701-8315", link: "tel:+14432726794" },
+            { icon: MapPin, title: "CAC Village (Convention)", value: "14051 Stahley Road\nBlue Ridge Summit, PA 17214", link: "https://maps.google.com/?q=14051+Stahley+Road+Blue+Ridge+Summit+PA+17214" },
+            { icon: Clock,  title: "16 Zones", value: "Member churches across\nthe U.S. and Canada", link: null },
+            { icon: Phone,  title: "Phone", value: "(305) 469-0346", link: "tel:+13054690346" },
           ].map((card, i) => (
             <Reveal key={card.title} delay={i * 80}>
               <div style={{ background: "var(--paper)", borderRadius: 20, padding: "28px 24px", border: "1px solid var(--line)", boxShadow: "0 8px 22px rgba(27,19,14,.05)" }}>
@@ -158,20 +160,20 @@ export default function VisitPage() {
         <div className="r2" style={{ maxWidth: 1100, margin: "0 auto", gap: 60 }}>
           <Reveal>
             <div style={{ height: 320, borderRadius: 20, overflow: "hidden", border: "1px solid var(--line)", marginBottom: 20, boxShadow: "0 10px 26px rgba(27,19,14,.06)" }}>
-              <iframe title="Map to CAC Salvation Center" src="https://maps.google.com/maps?q=10710%20Marriottsville%20Rd%20Randallstown%20MD%2021133&z=15&output=embed" loading="lazy" referrerPolicy="no-referrer-when-downgrade" style={{ width: "100%", height: "100%", border: 0, display: "block" }} />
+              <iframe title="Map to CAC Village, Blue Ridge Summit, PA" src="https://maps.google.com/maps?q=14051%20Stahley%20Road%20Blue%20Ridge%20Summit%20PA%2017214&z=13&output=embed" loading="lazy" referrerPolicy="no-referrer-when-downgrade" style={{ width: "100%", height: "100%", border: 0, display: "block" }} />
             </div>
-            <a href="https://maps.google.com/?q=10710+Marriottsville+Rd+Randallstown+MD+21133" target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 14, fontWeight: 700, color: "var(--red)", textDecoration: "none" }}>
-              <MapPin size={16} strokeWidth={2} aria-hidden /> Get Directions →
+            <a href="https://maps.google.com/?q=14051+Stahley+Road+Blue+Ridge+Summit+PA+17214" target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 14, fontWeight: 700, color: "var(--red)", textDecoration: "none" }}>
+              <MapPin size={16} strokeWidth={2} aria-hidden /> Get Directions to CAC Village →
             </a>
           </Reveal>
           <Reveal delay={140}>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 32, color: "var(--ink)", margin: "0 0 28px" }}>Your First Sunday</h2>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 32, color: "var(--ink)", margin: "0 0 28px" }}>Finding Your Zone</h2>
             <ol style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 22 }}>
               {[
-                { num: "01", title: "Pick a service", body: "Sunday at 10:30 AM is our main gathering — perfect for a first visit." },
-                { num: "02", title: "Arrive & be welcomed", body: "Our welcome team greets you at the door. Parking is available. Bring nothing but yourself." },
-                { num: "03", title: "Experience worship", body: "Spirit-led worship, biblical teaching, and a warm, authentic community." },
-                { num: "04", title: "Connect after service", body: "Stay for coffee and conversation. Fill out the connect card below — no pressure." },
+                { num: "01", title: "Find your nearest zone", body: "CACNA is organized into 16 DCCs/Zones across the U.S. and Canada — see the directory on our homepage." },
+                { num: "02", title: "Reach out to the Superintendent", body: "Each zone has a Zonal Superintendent who can connect you with a member church near you." },
+                { num: "03", title: "Visit a member church", body: "Every member church welcomes visitors — reach out ahead to confirm service times." },
+                { num: "04", title: "Stay connected", body: "Fill out the connect card below, and join us each July at the Annual Convention." },
               ].map(s => (
                 <li key={s.num} style={{ display: "flex", gap: 18, alignItems: "flex-start" }}>
                   <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 24, color: "var(--red)", flexShrink: 0, minWidth: 40, lineHeight: 1, marginTop: 2 }}>{s.num}</span>
@@ -220,7 +222,7 @@ export default function VisitPage() {
               <div style={{ textAlign: "center", padding: "56px 32px", background: "rgba(255,247,239,.06)", borderRadius: 24, border: "1px solid rgba(255,247,239,.12)" }}>
                 <PartyPopper size={48} strokeWidth={1.75} color="var(--gold)" aria-hidden style={{ margin: "0 auto 18px" }} />
                 <p style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 24, color: "#fff", margin: "0 0 10px" }}>Welcome to the family!</p>
-                <p style={{ fontSize: 15, color: "rgba(255,247,239,.6)", margin: 0 }}>We&apos;ll be in touch soon. See you Sunday.</p>
+                <p style={{ fontSize: 15, color: "rgba(255,247,239,.6)", margin: 0 }}>We&apos;ll be in touch soon to connect you with a church near you.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} noValidate style={{ display: "flex", flexDirection: "column", gap: 24 }}>
@@ -278,9 +280,9 @@ export default function VisitPage() {
 
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(120px,1fr))", gap: 16 }}>
                   {[
-                    { id: "city",  label: "City / Town",   placeholder: "Randallstown", autoComplete: "address-level2" },
-                    { id: "state", label: "State / Province", placeholder: "MD",         autoComplete: "address-level1" },
-                    { id: "zip",   label: "Zip / Post Code", placeholder: "21133",        autoComplete: "postal-code" },
+                    { id: "city",  label: "City / Town",   placeholder: "Atlanta", autoComplete: "address-level2" },
+                    { id: "state", label: "State / Province", placeholder: "GA",         autoComplete: "address-level1" },
+                    { id: "zip",   label: "Zip / Post Code", placeholder: "30301",        autoComplete: "postal-code" },
                   ].map(f => (
                     <div key={f.id}>
                       <label htmlFor={f.id} style={labelBase}>{f.label}</label>
