@@ -7,9 +7,9 @@ import { bibleReadingPlan, FRIDAY_REFLECTION } from "@/lib/biblePlan";
 import { SITE } from "@/lib/site";
 
 export const metadata = {
-  title: "Weekly Bible Reading Plan — Hope for Today | CAC Salvation Center",
+  title: "Weekly Bible Reading Plan — Christ Apostolic Church North America (CACNA)",
   description:
-    "Hope for Today — a weekly Bible reading plan from CAC Salvation Center. Sunday through Thursday readings, with Friday set aside to reflect on how God's Word has spoken to you this week.",
+    "A weekly Bible reading plan from CACNA. Sunday through Thursday readings, with Friday set aside to reflect on how God's Word has spoken to you this week.",
   alternates: { canonical: "/bible-plan" },
 };
 
@@ -38,7 +38,7 @@ export default function BiblePlanPage() {
         <div style={{ maxWidth: 920, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal from="scale">
             <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 6, padding: "14px 22px", border: "1px solid rgba(232,163,61,.35)", borderRadius: 14, background: "rgba(232,163,61,.05)" }}>
-              <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "3.5px", textTransform: "uppercase", color: "var(--gold)" }}>Salvation Center</span>
+              <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "3.5px", textTransform: "uppercase", color: "var(--gold)" }}>CACNA</span>
               <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: "rgba(255,247,239,.7)" }}>One Fold, One Shepherd</span>
               <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: ".5px", color: "rgba(255,247,239,.55)" }}>{addressLine}</span>
               <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--flame)" }}>John 10:16</span>
@@ -53,7 +53,7 @@ export default function BiblePlanPage() {
           </h1>
           <Reveal delay={360}>
             <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "rgba(255,247,239,.72)", lineHeight: 1.7, maxWidth: 620, margin: "20px auto 0", textWrap: "pretty" }}>
-              Hope for Today — Sunday through Thursday in Scripture, with every Friday set aside to listen to what God has been saying to you this week.
+              Sunday through Thursday in Scripture, with every Friday set aside to listen to what God has been saying to you this week.
             </p>
           </Reveal>
         </div>
@@ -145,16 +145,16 @@ export default function BiblePlanPage() {
         </div>
       </section>
 
-      {/* Pair with the podcast */}
+      {/* Pair with the devotional */}
       <section style={{ background: "var(--ink)", padding: "clamp(56px,7vw,96px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 760, margin: "0 auto", textAlign: "center" }}>
           <Reveal>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Walk the week together</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,52px)", letterSpacing: "-0.02em", color: "var(--cream)", margin: "14px 0 0", lineHeight: 1.05 }}>
-              Pair it with the Hope for Today podcast.
+              Pair it with the daily devotional.
             </h2>
             <p style={{ fontSize: 16, color: "rgba(255,247,239,.7)", maxWidth: 520, margin: "16px auto 0", lineHeight: 1.7 }}>
-              Sermons and reflections from our pastors that line up with the readings — listen on your commute, in the kitchen, or in your stillness on Fridays.
+              Reflections that line up with the readings — carry a word into your commute, your kitchen, or your stillness on Fridays.
             </p>
           </Reveal>
           <Reveal delay={140} style={{ marginTop: 28 }}>

@@ -6,26 +6,21 @@ import Link from "next/link";
 import { getSermons, getLiveStream, formatSermonDate } from "@/lib/sermons";
 import { Video } from "lucide-react";
 
-const ZOOM_URL = "https://us02web.zoom.us/j/84635388414?pwd=UlNHRUU4VWdXNjdEMmhsaHZDUXYzdz09";
+const YOUTUBE_URL = "https://youtube.com/@cacnorthamericalatunderegi1330";
 
 const platforms = [
-  { name: "Zoom", desc: "Our online room for every service", href: "https://us02web.zoom.us/j/84635388414?pwd=UlNHRUU4VWdXNjdEMmhsaHZDUXYzdz09" },
-  { name: "YouTube", desc: "Live every Sunday & replays", href: "https://www.youtube.com/channel/UCoogH4HuVXSn4okSpRlsDQA" },
-  { name: "Facebook", desc: "Stream + community discussion", href: "https://www.facebook.com/CacSalvationCenterBaltimore" },
-  { name: "Spotify", desc: "Hope for Today — weekly podcast", href: "https://open.spotify.com/show/0wFUgSZq4CuVuM0M9gRFUw" },
-  { name: "Apple Podcasts", desc: "Subscribe for auto-downloads", href: "https://podcasts.apple.com/search?term=CAC+Salvation+Center" },
+  { name: "YouTube", desc: "The Annual Convention & message replays", href: YOUTUBE_URL },
+  { name: "Instagram", desc: "Updates from across CACNA", href: "https://instagram.com/cacnorthamericalatunderegion" },
 ];
 
 const schedule = [
-  { day: "Sunday", name: "Sunday Worship", time: "10:30 AM ET", type: "Onsite & Online" },
-  { day: "Wednesday", name: "Bible Study", time: "7:00 PM ET", type: "Online Only" },
-  { day: "Friday", name: "Wakati Itusile", time: "7:00 PM ET", type: "Online Only" },
   { day: "Daily", name: "Morning Prayer Line", time: "5:00 AM ET", type: "(857) 216-6700 · Code: 531312" },
+  { day: "July", name: "CACNA Annual Convention", time: "CAC Village, PA", type: "Streamed on YouTube & Zoom" },
 ];
 
 export const metadata = {
-  title: "Watch Online — CAC Salvation Center",
-  description: "Join CAC Salvation Center live or on demand — every Sunday 10:30 AM ET. Stream on YouTube, Facebook, and podcast.",
+  title: "Watch Online — Christ Apostolic Church North America (CACNA)",
+  description: "Watch CACNA's Annual Convention and message replays online — on YouTube, with Zoom available during the convention.",
   alternates: { canonical: "/online" },
 };
 
@@ -43,7 +38,7 @@ export default async function OnlinePage() {
           <Reveal>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)", background: "rgba(232,163,61,.12)", border: "1px solid rgba(232,163,61,.25)", padding: "6px 16px", borderRadius: 999 }}>
               <span style={{ width: 7, height: 7, borderRadius: "50%", background: "var(--red)", animation: "pulse-red 1.8s infinite", display: "inline-block" }} />
-              Live Sundays · 10:30 AM ET
+              Annual Convention · Streamed Live
             </span>
           </Reveal>
           <Reveal delay={80}>
@@ -54,41 +49,42 @@ export default async function OnlinePage() {
           </Reveal>
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "rgba(255,255,255,.55)", lineHeight: 1.65, maxWidth: 560, margin: "0 auto" }}>
-              Every service streamed live. Every sermon available on demand. The full experience — wherever you are.
+              The Annual Convention streams live, and messages are available on demand. The full experience — wherever you are.
             </p>
           </Reveal>
         </div>
       </section>
 
-      {/* Join on Zoom — the primary live action */}
+      {/* Watch on YouTube — the primary action */}
       <section style={{ padding: "0 clamp(20px,5vw,64px) 56px" }}>
         <Reveal>
-          <a href={ZOOM_URL} target="_blank" rel="noopener noreferrer" className="btn-sheen card-lift" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "clamp(20px,3vw,40px)", maxWidth: 900, margin: "0 auto", background: "linear-gradient(120deg,#2D8CFF,#0B5CD6)", borderRadius: 28, padding: "clamp(28px,4vw,44px)", textDecoration: "none", boxShadow: "0 30px 70px rgba(45,140,255,.35)" }}>
+          <a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer" className="btn-sheen card-lift" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "clamp(20px,3vw,40px)", maxWidth: 900, margin: "0 auto", background: "linear-gradient(120deg,#D62828,#9E1B1B)", borderRadius: 28, padding: "clamp(28px,4vw,44px)", textDecoration: "none", boxShadow: "0 30px 70px rgba(214,40,40,.35)" }}>
             <span style={{ flexShrink: 0, width: 72, height: 72, borderRadius: 20, background: "rgba(255,255,255,.18)", display: "grid", placeItems: "center", border: "1px solid rgba(255,255,255,.3)" }}>
               <Video size={36} color="#fff" strokeWidth={1.8} aria-hidden />
             </span>
             <div style={{ flex: "1 1 260px" }}>
               <div style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "rgba(255,255,255,.9)", marginBottom: 8 }}>
-                <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#fff", animation: "pulse-red 1.8s infinite", display: "inline-block" }} /> Join the service live
+                <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#fff", animation: "pulse-red 1.8s infinite", display: "inline-block" }} /> Watch on YouTube
               </div>
-              <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.4vw,40px)", letterSpacing: "-1px", color: "#fff", margin: "0 0 6px" }}>Join us on Zoom</h2>
-              <p style={{ fontSize: 15, color: "rgba(255,255,255,.88)", margin: 0 }}>Our online room for every service — Sun 10:30 AM · Wed &amp; Fri 7:00 PM ET · Meeting ID 846 3538 8414</p>
+              <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.4vw,40px)", letterSpacing: "-1px", color: "#fff", margin: "0 0 6px" }}>CAC North America (Latunde Region)</h2>
+              <p style={{ fontSize: 15, color: "rgba(255,255,255,.88)", margin: 0 }}>The Annual Convention and message replays — Zoom is also available during convention week.</p>
             </div>
-            <span style={{ flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 8, background: "#fff", color: "#0B5CD6", fontWeight: 800, fontSize: 16, padding: "15px 28px", borderRadius: 999 }}>
-              Open Zoom →
+            <span style={{ flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 8, background: "#fff", color: "#9E1B1B", fontWeight: 800, fontSize: 16, padding: "15px 28px", borderRadius: 999 }}>
+              Open YouTube →
             </span>
           </a>
         </Reveal>
       </section>
 
-      {/* Featured player — latest streamed service */}
+      {/* Featured player — latest streamed message */}
+      {featured && (
       <section style={{ padding: "0 clamp(20px,5vw,64px) 80px" }}>
         <Reveal>
           <div style={{ maxWidth: 900, margin: "0 auto", borderRadius: 28, overflow: "hidden", boxShadow: "0 40px 80px rgba(0,0,0,.5)" }}>
             <div style={{ position: "relative", width: "100%", paddingBottom: "56.25%" }}>
               <iframe
-                src={`https://www.youtube.com/embed/${featured?.id ?? "xIZBd9UYIDw"}`}
-                title={featured?.title ?? "CAC Salvation Center — Latest Service"}
+                src={`https://www.youtube.com/embed/${featured.id}`}
+                title={featured.title}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
                 style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
@@ -97,30 +93,32 @@ export default async function OnlinePage() {
             <div style={{ background: "#161B22", padding: "20px 28px", display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center" }}>
               {live
                 ? <span style={{ fontSize: 12, fontWeight: 700, color: "var(--red)", marginRight: 8, animation: "pulse-red 1.8s infinite" }}>● LIVE NOW</span>
-                : <span style={{ fontSize: 12, fontWeight: 700, color: "var(--gold)", marginRight: 8 }}>● Latest service</span>
+                : <span style={{ fontSize: 12, fontWeight: 700, color: "var(--gold)", marginRight: 8 }}>● Latest message</span>
               }
               <span style={{ fontSize: 12, color: "rgba(255,255,255,.4)", fontWeight: 600, marginRight: 4 }}>Watch on:</span>
-              {platforms.slice(0, 3).map(p => (
+              {platforms.map(p => (
                 <a key={p.name} href={p.href} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, fontWeight: 700, color: "rgba(255,255,255,.7)", textDecoration: "none", padding: "6px 14px", borderRadius: 999, border: "1px solid rgba(255,255,255,.12)" }}>
                   {p.name}
                 </a>
               ))}
-              <a href="https://www.youtube.com/channel/UCoogH4HuVXSn4okSpRlsDQA" target="_blank" rel="noopener noreferrer" style={{ marginLeft: "auto", fontSize: 13, fontWeight: 700, color: "var(--gold)", textDecoration: "none" }}>
+              <a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer" style={{ marginLeft: "auto", fontSize: 13, fontWeight: 700, color: "var(--gold)", textDecoration: "none" }}>
                 View channel →
               </a>
             </div>
           </div>
         </Reveal>
       </section>
+      )}
 
-      {/* Past sermons grid */}
+      {/* Past messages grid */}
+      {pastSermons.length > 0 && (
       <section style={{ padding: "20px clamp(20px,5vw,64px) 80px" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <Reveal style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 28 }}>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,36px)", letterSpacing: "-.8px", color: "#fff", margin: 0 }}>
-              Past Sermons
+              Past Messages
             </h2>
-            <a href="https://www.youtube.com/channel/UCoogH4HuVXSn4okSpRlsDQA" target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, fontWeight: 700, color: "var(--gold)", textDecoration: "none", whiteSpace: "nowrap" }}>
+            <a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, fontWeight: 700, color: "var(--gold)", textDecoration: "none", whiteSpace: "nowrap" }}>
               All videos →
             </a>
           </Reveal>
@@ -157,6 +155,7 @@ export default async function OnlinePage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* Platforms */}
       <section style={{ padding: "20px clamp(20px,5vw,64px) 60px" }}>

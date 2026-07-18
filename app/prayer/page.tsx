@@ -6,9 +6,9 @@ import { RevealText } from "@/components/ui/RevealText";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Prayer Requests — CAC Salvation Center",
+  title: "Prayer Requests — Christ Apostolic Church North America (CACNA)",
   description:
-    "Share a prayer request with the pastoral team at CAC Salvation Center, Randallstown MD. Confidential, personal, and covered in prayer. Join our daily 5 AM prayer line.",
+    "Share a prayer request with the CACNA family. Confidential, personal, and covered in prayer. Join our daily 5 AM prayer line.",
   alternates: { canonical: "/prayer" },
 };
 

@@ -1,4 +1,4 @@
-const CHANNEL_ID = "UCoogH4HuVXSn4okSpRlsDQA";
+const CHANNEL_ID = "UC9wwlYWGoII3B5vLtnIvJEw"; // CAC North America (Latunde Region)
 const FEED_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
 
 export interface Sermon {
@@ -7,11 +7,7 @@ export interface Sermon {
   published: string;
 }
 
-const FALLBACK: Sermon[] = [
-  { id: "RTfTTF8zoz0", title: "Sunday Worship Service", published: "" },
-  { id: "-Sr681xHLW0", title: "Sunday Worship Service", published: "" },
-  { id: "xIZBd9UYIDw", title: "Sunday Worship", published: "" },
-];
+const FALLBACK: Sermon[] = [];
 
 function decodeXml(s: string): string {
   return s
@@ -94,8 +90,8 @@ export async function getSermons(limit = 9): Promise<Sermon[]> {
 }
 
 export function formatSermonDate(iso: string): string {
-  if (!iso) return "CAC Salvation Center";
+  if (!iso) return "CACNA";
   const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "CAC Salvation Center";
+  if (Number.isNaN(d.getTime())) return "CACNA";
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }

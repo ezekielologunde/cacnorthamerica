@@ -6,7 +6,7 @@ import Link from "next/link";
 import { MapPin, Phone, Monitor } from "lucide-react";
 
 export const metadata = {
-  title: "Salvation — CAC Salvation Center",
+  title: "Salvation — Christ Apostolic Church North America (CACNA)",
   description: "Take the first step toward eternal life. Accept Jesus Christ as your Lord and Saviour today.",
   alternates: { canonical: "/salvation" },
 };
@@ -156,9 +156,9 @@ export default function SalvationPage() {
           </Reveal>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 18 }}>
             {[
-              { href: "/visit", Icon: MapPin, title: "Come to church", desc: "Join us Sunday at 10:30 AM · Randallstown, MD. The family is ready to receive you.", cta: "Plan your visit" },
+              { href: "/visit", Icon: MapPin, title: "Find a church", desc: "Find a CACNA member church near you across the U.S. and Canada. The family is ready to receive you.", cta: "Plan your visit" },
               { href: "/prayer", Icon: Phone, title: "Join the prayer line", desc: "Our daily 5 AM prayer call is open to everyone. Bring your requests; bring your burdens.", cta: "See prayer details" },
-              { href: "/online", Icon: Monitor, title: "Watch online", desc: "Every Sunday service streams live — YouTube, Facebook, and Zoom. Never miss a message.", cta: "Watch live" },
+              { href: "/online", Icon: Monitor, title: "Watch online", desc: "The Annual Convention streams live on YouTube — never miss a message.", cta: "Watch live" },
             ].map(({ href, Icon, title, desc, cta }) => (
               <Reveal key={href}>
                 <Link href={href} style={{ display: "flex", flexDirection: "column", height: "100%", textDecoration: "none", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 22, padding: "28px 26px", boxShadow: "0 10px 28px rgba(27,19,14,.07)" }}>

@@ -5,9 +5,9 @@ import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 
 export const metadata = {
-  title: "Devotional — CAC Salvation Center",
+  title: "Devotional — Christ Apostolic Church North America (CACNA)",
   description:
-    "Daily encouragement from God's Word — a verse of the day, written devotionals, and the Hope for Today podcast from CAC Salvation Center.",
+    "Daily encouragement from God's Word — a verse of the day and written devotionals from CACNA.",
   alternates: { canonical: "/devotional" },
 };
 
@@ -94,18 +94,13 @@ export default function DevotionalPage() {
           </Reveal>
           <Reveal delay={90}>
             <p style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4.2vw,52px)", letterSpacing: "-0.02em", color: "#fff", margin: "18px 0 0", lineHeight: 1.12, textWrap: "balance" }}>
-              “Open my eyes, that I may see wondrous things from Your law.”
-            </p>
-          </Reveal>
-          <Reveal delay={170}>
-            <p lang="yo" style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "clamp(18px,2.4vw,28px)", color: "rgba(255,247,239,.92)", margin: "20px 0 0", lineHeight: 1.3, textWrap: "balance" }}>
-              “Là mí li ojú, kí èmi kí ó lè máa wò ohun ìyanu wọ̀nnì láti inú òfin rẹ.”
+              “Remove from me reproach and contempt; for I have kept Thy testimonies.”
             </p>
           </Reveal>
           <Reveal delay={240}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 12, marginTop: 26, fontSize: 12.5, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)" }}>
               <span style={{ width: 28, height: 1, background: "rgba(232,163,61,.55)" }} aria-hidden />
-              Psalm 119:18 · NKJV &amp; Yorùbá
+              Psalm 119:22 · NKJV
               <span style={{ width: 28, height: 1, background: "rgba(232,163,61,.55)" }} aria-hidden />
             </div>
           </Reveal>
@@ -185,7 +180,7 @@ export default function DevotionalPage() {
             <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Confess it daily · 2026</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,52px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 0" }}>Our Daily Confession</h2>
             <p style={{ fontSize: 15.5, color: "var(--ink-soft)", lineHeight: 1.7, margin: "12px auto 0", maxWidth: 540 }}>
-              The declaration the Salvation Center family speaks over each day this year. Say it aloud, and walk in it.
+              The declaration the CACNA family speaks over each day this year. Say it aloud, and walk in it.
             </p>
           </Reveal>
           <Reveal delay={120}>
@@ -203,27 +198,6 @@ export default function DevotionalPage() {
                 )
               )}
             </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* Hope for Today podcast */}
-      <section style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto" }}>
-          <Reveal style={{ textAlign: "center", marginBottom: 36 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Listen anywhere</span>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,52px)", letterSpacing: "-1px", color: "var(--cream)", margin: "12px 0 0" }}>Hope for Today</h2>
-            <p style={{ fontSize: 16, color: "rgba(255,247,239,.6)", maxWidth: 480, margin: "14px auto 0", lineHeight: 1.6 }}>Our weekly podcast — inspired messages to strengthen your faith, wherever you are.</p>
-          </Reveal>
-          <Reveal delay={100}>
-            <iframe
-              style={{ borderRadius: 14, border: "none", display: "block" }}
-              src="https://open.spotify.com/embed/show/0wFUgSZq4CuVuM0M9gRFUw?utm_source=generator"
-              width="100%" height="352"
-              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-              loading="lazy"
-              title="Hope for Today podcast on Spotify"
-            />
           </Reveal>
         </div>
       </section>

@@ -11,8 +11,7 @@ export interface BibleReadingWeek {
 export const FRIDAY_REFLECTION =
   "Set aside time this Friday to reflect on how God's Word has spoken to you this week.";
 
-/** Hope for Today — the weeks the Salvation Center has released so far.
- *  More weeks are added as they come in from the pulpit. */
+/** The weeks released so far — more are added over time. */
 export const bibleReadingPlan: BibleReadingWeek[] = [
   {
     week: 21,
