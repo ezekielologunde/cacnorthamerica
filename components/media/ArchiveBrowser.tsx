@@ -14,7 +14,7 @@ import {
 const categoryAccent: Record<ArchiveCategory, string> = {
   Convention: "var(--red)",
   "Good Women Marathon": "var(--gold)",
-  CACMA: "#B8531F",
+  CACMA: "#1D5FBF",
   Ordination: "#7A5C2E",
   Other: "rgba(255,247,239,.5)",
 };

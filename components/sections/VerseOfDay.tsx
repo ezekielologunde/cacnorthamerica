@@ -36,11 +36,11 @@ export function VerseOfDay() {
         maxWidth: 820, margin: "0 auto",
         background: "linear-gradient(135deg,var(--red-deep),var(--red))",
         borderRadius: 28, padding: "clamp(36px,5vw,60px)",
-        boxShadow: "0 30px 70px rgba(23,128,85,.28)",
+        boxShadow: "0 30px 70px rgba(214,41,58,.28)",
         textAlign: "center",
       }}
     >
-      <div style={{ position: "absolute", inset: "-20%", background: "radial-gradient(circle at 75% 20%,rgba(184,83,31,.4),transparent 60%)", pointerEvents: "none", animation: "gradient-drift 14s ease-in-out infinite" }} />
+      <div style={{ position: "absolute", inset: "-20%", background: "radial-gradient(circle at 75% 20%,rgba(29,95,191,.4),transparent 60%)", pointerEvents: "none", animation: "gradient-drift 14s ease-in-out infinite" }} />
       <div style={{ position: "relative", zIndex: 1 }}>
         <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "rgba(255,255,255,.7)" }}>Verse of the Day</span>
         <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "clamp(24px,3.2vw,40px)", lineHeight: 1.3, letterSpacing: "-.5px", color: "#fff", margin: "20px 0 18px", textWrap: "balance" }}>

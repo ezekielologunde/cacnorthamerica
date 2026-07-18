@@ -91,7 +91,7 @@ export default function PilgrimagePage() {
       {/* Hero */}
       <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) clamp(80px,10vw,120px)", position: "relative", overflow: "hidden" }}>
         <div aria-hidden style={{ position: "absolute", top: -100, right: -80, width: 640, height: 520, background: "radial-gradient(circle,rgba(232,163,61,.3),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 20s ease-in-out infinite" }} />
-        <div aria-hidden style={{ position: "absolute", bottom: -60, left: -60, width: 480, height: 380, background: "radial-gradient(circle,rgba(23,128,85,.12),transparent 65%)", pointerEvents: "none" }} />
+        <div aria-hidden style={{ position: "absolute", bottom: -60, left: -60, width: 480, height: 380, background: "radial-gradient(circle,rgba(214,41,58,.12),transparent 65%)", pointerEvents: "none" }} />
 
         <div style={{ maxWidth: 960, margin: "0 auto", position: "relative", zIndex: 2 }}>
           <Reveal>

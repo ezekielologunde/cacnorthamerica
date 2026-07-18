@@ -64,7 +64,7 @@ export default function NewsletterBroadcast({ subscriberCount }: { subscriberCou
     >
       <style>{`
         .bc-inp { transition: border-color 0.15s, box-shadow 0.15s; }
-        .bc-inp:focus-visible { border-color: var(--red); box-shadow: 0 0 0 3px rgba(23,128,85,0.12); }
+        .bc-inp:focus-visible { border-color: var(--red); box-shadow: 0 0 0 3px rgba(214,41,58,0.12); }
         .bc-inp:hover:not(:focus-visible) { border-color: rgba(27,19,14,0.24); }
       `}</style>
 

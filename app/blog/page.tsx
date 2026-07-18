@@ -25,8 +25,8 @@ function dbPostToBlogPost(p: DbBlogRow): BlogPost {
     date: date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }),
     dateIso: p.published_at ?? p.created_at,
     category: "Ministry Update",
-    categoryColor: "#178055",
-    accent: "#178055",
+    categoryColor: "#D6293A",
+    accent: "#D6293A",
     readTime: `${Math.max(1, Math.round(words / 200))} min read`,
     body: p.body.split(/\n\n+/),
   };
@@ -135,7 +135,7 @@ function FeaturedCard({ post }: { post: typeof POSTS[number] }) {
             display: "inline-flex", alignItems: "center", gap: 8,
             background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 14,
             padding: "10px 22px", borderRadius: 999, textDecoration: "none",
-            boxShadow: "0 8px 20px rgba(23,128,85,.3)",
+            boxShadow: "0 8px 20px rgba(214,41,58,.3)",
           }}>
             Read full story <ArrowRight size={14} strokeWidth={2.5} aria-hidden />
           </Link>
@@ -221,7 +221,7 @@ function UpcomingEventWidget() {
 function StoreAdWidget() {
   return (
     <aside style={{
-      background: "linear-gradient(140deg,#0D4A32,#178055)",
+      background: "linear-gradient(140deg,#7A1420,#D6293A)",
       borderRadius: 20, padding: "24px 26px", position: "relative", overflow: "hidden",
       marginBottom: 24,
     }}>
@@ -373,11 +373,11 @@ export default async function BlogPage() {
         <Reveal>
           <div style={{
             maxWidth: 900, margin: "0 auto",
-            background: "linear-gradient(135deg,#0D4A32,#178055)",
+            background: "linear-gradient(135deg,#7A1420,#D6293A)",
             borderRadius: 28, padding: "clamp(28px,4vw,44px)",
             display: "flex", flexWrap: "wrap", alignItems: "center",
             justifyContent: "space-between", gap: 24,
-            boxShadow: "0 24px 60px rgba(23,128,85,.28)",
+            boxShadow: "0 24px 60px rgba(214,41,58,.28)",
             position: "relative", overflow: "hidden",
           }}>
             <div aria-hidden style={{ position: "absolute", top: -80, right: -60, width: 320, height: 280, background: "radial-gradient(circle,rgba(232,163,61,.3),transparent 65%)", pointerEvents: "none" }} />

@@ -66,7 +66,7 @@ function NetworkMap() {
           position: 'relative', width: '100%', aspectRatio: '16 / 10',
           borderRadius: 28, overflow: 'hidden',
           background: 'linear-gradient(160deg, var(--ink) 0%, var(--red-deep) 130%)',
-          boxShadow: '0 30px 70px rgba(13,74,50,.35)',
+          boxShadow: '0 30px 70px rgba(122,20,32,.35)',
         }}
       >
         {/* Dot-grid texture */}

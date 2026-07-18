@@ -161,7 +161,7 @@ export default function BiblePlanPage() {
             <Link
               href="/devotional"
               className="btn-sheen press"
-              style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "linear-gradient(120deg,#B8531F,#178055,#0D4A32)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "16px 28px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 36px rgba(23,128,85,.34)" }}
+              style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "linear-gradient(120deg,#1D5FBF,#D6293A,#7A1420)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "16px 28px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 36px rgba(214,41,58,.34)" }}
             >
               Open the devotional →
             </Link>
