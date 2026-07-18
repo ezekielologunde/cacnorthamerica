@@ -6,7 +6,7 @@ import { POSTS, type BlogPost } from "@/lib/blog";
 import { specialEvents } from "@/lib/events";
 import { bibleReadingPlan } from "@/lib/biblePlan";
 import Link from "next/link";
-import { Clock, Calendar, ShoppingBag, BookOpen, ArrowRight, Building2 } from "lucide-react";
+import { Clock, Calendar, ShoppingBag, BookOpen, ArrowRight } from "lucide-react";
 
 export const revalidate = 3600;
 
@@ -33,14 +33,14 @@ function dbPostToBlogPost(p: DbBlogRow): BlogPost {
 }
 
 export const metadata = {
-  title: "Blog & News — CAC Salvation Center",
+  title: "Blog & News — Christ Apostolic Church North America (CACNA)",
   description:
-    "Devotionals, ministry updates, and reflections from the Salvation Center — written for the body, by the body.",
+    "Devotionals, ministry updates, and reflections from across CACNA — written for the body, by the body.",
   alternates: { canonical: "/blog" },
 };
 
 const WHATSAPP_SHARE = (title: string, slug: string) =>
-  `https://wa.me/?text=${encodeURIComponent(`${title} — https://www.cacsalvationcenter.org/blog/${slug}`)}`;
+  `https://wa.me/?text=${encodeURIComponent(`${title} — https://www.cacnorthamerica.com/blog/${slug}`)}`;
 
 function CategoryBadge({ label, color }: { label: string; color: string }) {
   return (
@@ -237,7 +237,7 @@ function StoreAdWidget() {
           Wear the Word.
         </div>
         <p style={{ fontSize: 13, color: "rgba(255,247,239,.78)", lineHeight: 1.6, marginBottom: 18 }}>
-          CAC Salvation Center merchandise — shirts, bibles, custom prints, and more. Quality that carries the message.
+          CACNA merchandise — shirts, bibles, custom prints, and more. Quality that carries the message.
         </p>
         <Link href="/store" className="press" style={{
           display: "inline-flex", alignItems: "center", gap: 7,
@@ -245,42 +245,6 @@ function StoreAdWidget() {
           fontSize: 13, padding: "10px 20px", borderRadius: 999, textDecoration: "none",
         }}>
           Shop Now <ArrowRight size={13} strokeWidth={2.5} aria-hidden />
-        </Link>
-      </div>
-    </aside>
-  );
-}
-
-function HallRentalAdWidget() {
-  return (
-    <aside style={{
-      background: "linear-gradient(140deg,#1C3A2A,#2E6040)",
-      borderRadius: 20, padding: "24px 26px", position: "relative", overflow: "hidden",
-    }}>
-      <div aria-hidden style={{ position: "absolute", top: -30, right: -30, width: 130, height: 130, background: "radial-gradient(circle,rgba(232,163,61,.28),transparent 70%)", pointerEvents: "none" }} />
-      <div style={{ position: "relative", zIndex: 2 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 12 }}>
-          <Building2 size={12} strokeWidth={2.5} color="var(--gold)" aria-hidden />
-          <span style={{ fontSize: 9.5, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "rgba(255,247,239,.7)" }}>
-            Space for Rent
-          </span>
-        </div>
-        <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 21, color: "#fff", lineHeight: 1.1, marginBottom: 10 }}>
-          Host Your Event Here.
-        </div>
-        <p style={{ fontSize: 13, color: "rgba(255,247,239,.82)", lineHeight: 1.65, marginBottom: 14 }}>
-          Our hall and parking lots are available for events, conferences, and birthdays. Flexible packages for any size gathering.
-        </p>
-        <a href="mailto:info@cacsalvationcenter.org"
-          style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "var(--gold)", textDecoration: "none", marginBottom: 14 }}>
-          info@cacsalvationcenter.org
-        </a>
-        <Link href="/venue" className="press" style={{
-          display: "inline-flex", alignItems: "center", gap: 7,
-          background: "#fff", color: "#1C3A2A", fontWeight: 800,
-          fontSize: 13, padding: "10px 20px", borderRadius: 999, textDecoration: "none",
-        }}>
-          View Venue &amp; Book <ArrowRight size={13} strokeWidth={2.5} aria-hidden />
         </Link>
       </div>
     </aside>
@@ -317,7 +281,7 @@ export default async function BlogPage() {
           <Reveal>
             <div style={{ borderBottom: "1px solid rgba(255,247,239,.12)", paddingBottom: 18, marginBottom: 22, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
               <span style={{ fontSize: 11.5, fontWeight: 700, color: "rgba(255,247,239,.45)", letterSpacing: ".5px" }}>{dateStr}</span>
-              <span style={{ fontSize: 11.5, fontWeight: 700, color: "rgba(255,247,239,.45)", letterSpacing: ".5px" }}>cacsalvationcenter.org</span>
+              <span style={{ fontSize: 11.5, fontWeight: 700, color: "rgba(255,247,239,.45)", letterSpacing: ".5px" }}>cacnorthamerica.com</span>
             </div>
           </Reveal>
           <Reveal delay={80}>
@@ -325,11 +289,11 @@ export default async function BlogPage() {
               fontFamily: "var(--font-display)", fontWeight: 800,
               fontSize: "clamp(56px,9vw,130px)", letterSpacing: "-0.025em",
               color: "#fff", margin: "0 0 8px", lineHeight: 0.92, textAlign: "center",
-            }}>Salvation Herald</h1>
+            }}>CACNA Herald</h1>
           </Reveal>
           <Reveal delay={140}>
             <p style={{ textAlign: "center", fontSize: 13, fontWeight: 700, letterSpacing: "5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 0 }}>
-              Christ Apostolic Church Salvation Center · Baltimore
+              Christ Apostolic Church North America
             </p>
           </Reveal>
         </div>
@@ -352,9 +316,6 @@ export default async function BlogPage() {
             </Reveal>
             <Reveal delay={160}>
               <StoreAdWidget />
-            </Reveal>
-            <Reveal delay={200}>
-              <HallRentalAdWidget />
             </Reveal>
           </div>
         </div>

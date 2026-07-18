@@ -31,11 +31,9 @@ const quickLinks = [
   // Visit & Give
   ['/visit', 'Plan a Visit'],
   ['/giving', 'Giving'],
-  ['/building', 'Building Project'],
   // Resources
   ['/blog', 'Blog & News'],
   ['/gallery', 'Gallery'],
-  ['/venue', 'Venue Hire'],
   ['/store', 'Store'],
   ['/contact', 'Contact'],
 ] as const;

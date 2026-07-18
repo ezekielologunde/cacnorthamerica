@@ -7,15 +7,15 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { StoreProducts } from "@/components/store/StoreProducts";
 
 export const metadata = {
-  title: "Store — CAC Salvation Center",
+  title: "Store — Christ Apostolic Church North America (CACNA)",
   description:
-    "Salvation Center apparel, Bibles, original worship music, and custom prints. Every purchase supports the church's building project and ministries.",
+    "CACNA apparel, Bibles, original worship music, and custom prints. Every purchase supports CACNA's ministries and missions.",
   alternates: { canonical: "/store" },
 };
 
 const trust = [
-  { icon: Heart,   label: "Proceeds support ministries", desc: "Every sale funds the building project and outreach." },
-  { icon: Package, label: "Ships within 5 business days", desc: "Maryland local pickup available on request." },
+  { icon: Heart,   label: "Proceeds support ministries", desc: "Every sale funds CACNA's ministries and missions." },
+  { icon: Package, label: "Ships within 5 business days", desc: "Local pickup may be available on request." },
   { icon: Shield,  label: "Secure checkout",             desc: "Multiple payment options accepted. Receipt sent instantly." },
 ];
 
@@ -45,7 +45,7 @@ export default async function StorePage() {
         <div style={{ maxWidth: 1000, margin: "0 auto", position: "relative", zIndex: 2 }}>
           <Reveal>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 20 }}>
-              <ShoppingBag size={14} strokeWidth={2.5} aria-hidden /> Salvation Center Store
+              <ShoppingBag size={14} strokeWidth={2.5} aria-hidden /> CACNA Store
             </div>
           </Reveal>
 
@@ -63,7 +63,7 @@ export default async function StorePage() {
 
           <Reveal delay={200}>
             <p style={{ fontSize: "clamp(16px,2vw,20px)", color: "rgba(255,247,239,.72)", lineHeight: 1.7, maxWidth: 560, margin: "0 0 40px" }}>
-              Apparel, Bibles, worship music, and custom prints — resources for the family, inside the church and beyond it. Every purchase supports the ministries of CAC Salvation Center.
+              Apparel, Bibles, worship music, and custom prints — resources for the family, inside the church and beyond it. Every purchase supports CACNA&apos;s ministries.
             </p>
           </Reveal>
         </div>
@@ -96,7 +96,7 @@ export default async function StorePage() {
               <strong>Apparel &amp; Music</strong> — click "Add to Cart" to check out securely via Stripe, or "Request order" for custom sizing and we'll reply within 24 hours. Cards, Apple Pay, and Google Pay accepted.
             </p>
             <p style={{ fontSize: 15, color: "var(--ink)", lineHeight: 1.78, margin: 0 }}>
-              <strong>Bibles</strong> link directly to Amazon. <strong>Custom prints</strong> are ordered via email — we confirm details and quote the final price. All proceeds support CAC Salvation Center ministries.
+              <strong>Bibles</strong> link directly to Amazon. <strong>Custom prints</strong> are ordered via email — we confirm details and quote the final price. All proceeds support CACNA&apos;s ministries.
             </p>
           </Reveal>
         </div>

@@ -40,26 +40,18 @@ const navItems: NavItem[] = [
     label: 'Events',
     href: '/events',
     dropdown: [
-      { href: '/events', label: 'Upcoming Events', desc: 'Special gatherings & anniversaries' },
-      { href: '/calendar', label: 'Full Calendar', desc: 'Weekly, monthly & annual rhythm' },
+      { href: '/events', label: 'Upcoming Events', desc: 'Special gatherings & the Annual Convention' },
+      { href: '/calendar', label: 'Full Calendar', desc: 'CACNA\'s annual rhythm' },
     ],
   },
   { label: 'Visit', href: '/visit' },
-  {
-    label: 'Give',
-    href: '/giving',
-    dropdown: [
-      { href: '/giving', label: 'Giving', desc: 'Tithe & offering — support the work' },
-      { href: '/building', label: 'Building Project', desc: 'A house for His Name' },
-    ],
-  },
+  { label: 'Give', href: '/giving' },
   {
     label: 'Resources',
     href: '/blog',
     dropdown: [
       { href: '/blog', label: 'Blog & News', desc: 'Stories from the family' },
-      { href: '/gallery', label: 'Gallery', desc: 'Moments from our church family' },
-      { href: '/venue', label: 'Venue Hire', desc: 'Book our hall & parking for your event' },
+      { href: '/gallery', label: 'Gallery', desc: 'Moments from across CACNA' },
       { href: '/store', label: 'Store', desc: 'Apparel, Bibles, music & prints' },
     ],
   },

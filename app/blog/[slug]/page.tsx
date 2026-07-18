@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
-import { ArrowLeft, Share2, Clock, Calendar, ExternalLink, Building2, ArrowRight } from "lucide-react";
+import { ArrowLeft, Share2, Clock, Calendar, ExternalLink } from "lucide-react";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
@@ -77,7 +77,7 @@ export async function generateMetadata({
   const post = await resolvePost(slug);
   if (!post) return { title: "Not Found" };
   return {
-    title: `${post.title} — CAC Salvation Center`,
+    title: `${post.title} — CACNA`,
     description: post.excerpt,
     alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
@@ -602,39 +602,6 @@ export default async function BlogSlugPage({
                 {sidebarPosts.map((p) => (
                   <SidebarPostCard key={p.slug} post={p} />
                 ))}
-              </div>
-
-              {/* Hall rental ad */}
-              <div style={{
-                background: "linear-gradient(140deg,#1C3A2A,#2E6040)",
-                borderRadius: 18, padding: "24px 26px", position: "relative", overflow: "hidden",
-              }}>
-                <div aria-hidden style={{ position: "absolute", top: -30, right: -30, width: 120, height: 120, background: "radial-gradient(circle,rgba(232,163,61,.28),transparent 70%)", pointerEvents: "none" }} />
-                <div style={{ position: "relative", zIndex: 2 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 12 }}>
-                    <Building2 size={12} strokeWidth={2.5} color="var(--gold)" aria-hidden />
-                    <span style={{ fontSize: 9.5, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "rgba(255,247,239,.7)" }}>
-                      Space for Rent
-                    </span>
-                  </div>
-                  <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 19, color: "#fff", lineHeight: 1.1, marginBottom: 10 }}>
-                    Host Your Event Here.
-                  </div>
-                  <p style={{ fontSize: 13, color: "rgba(255,247,239,.82)", lineHeight: 1.65, marginBottom: 14 }}>
-                    Hall and parking lots available for events, conferences, and birthdays. Flexible packages for any size.
-                  </p>
-                  <a href="mailto:info@cacsalvationcenter.org"
-                    style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "var(--gold)", textDecoration: "none", marginBottom: 14 }}>
-                    info@cacsalvationcenter.org
-                  </a>
-                  <Link href="/venue" style={{
-                    display: "inline-flex", alignItems: "center", gap: 7,
-                    background: "#fff", color: "#1C3A2A", fontWeight: 800,
-                    fontSize: 13, padding: "9px 18px", borderRadius: 999, textDecoration: "none",
-                  }}>
-                    View Venue &amp; Book <ArrowRight size={13} strokeWidth={2.5} aria-hidden />
-                  </Link>
-                </div>
               </div>
             </aside>
           </Reveal>

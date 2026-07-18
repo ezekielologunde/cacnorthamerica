@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Give — CAC Salvation Center | Tithes, Offerings & Building Fund",
+  title: "Give — Christ Apostolic Church North America (CACNA)",
   description:
-    "Support the ministry of CAC Salvation Center — give securely toward tithes & offerings, missions, and the building fund, online or by Zelle. Thank you for your generosity.",
+    "Support CACNA's ministries and missions — contact us to learn about ways to give.",
   alternates: { canonical: "/giving" },
 };
 
