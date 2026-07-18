@@ -60,18 +60,8 @@ const nextConfig: NextConfig = {
       beforeFiles: [
         {
           source: "/",
-          has: [{ type: "host" as const, value: "blog.cacsalvationcenter.org" }],
+          has: [{ type: "host" as const, value: "blog.cacnorthamerica.com" }],
           destination: "/blog",
-        },
-        {
-          source: "/",
-          has: [{ type: "host" as const, value: "city.cacsalvationcenter.org" }],
-          destination: "/salvationcity",
-        },
-        {
-          source: "/",
-          has: [{ type: "host" as const, value: "ilorin.cacsalvationcenter.org" }],
-          destination: "/ilorin",
         },
       ],
       afterFiles: [],

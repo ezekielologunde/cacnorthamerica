@@ -18,10 +18,8 @@ const navItems: NavItem[] = [
     label: 'Who We Are',
     href: '/about',
     dropdown: [
-      { href: '/leadership', label: 'Leadership', desc: 'Meet our five pastors' },
+      { href: '/leadership', label: 'Leadership', desc: 'Meet our regional officers' },
       { href: '/ministries', label: 'Ministries', desc: 'Find your place to serve' },
-      { href: '/salvationcity', label: 'Salvation City', desc: 'Our Rosedale, MD assembly' },
-      { href: '/ilorin', label: 'Ilorin', desc: 'Our parent assembly in Nigeria' },
     ],
   },
   {
