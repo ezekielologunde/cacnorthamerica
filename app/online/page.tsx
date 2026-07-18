@@ -157,6 +157,26 @@ export default async function OnlinePage() {
       </section>
       )}
 
+      {/* Media Archive cross-link */}
+      <section style={{ padding: "0 clamp(20px,5vw,64px) 20px" }}>
+        <Reveal>
+          <a
+            href="/media"
+            className="press"
+            style={{
+              display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 16,
+              maxWidth: 1100, margin: "0 auto", padding: "22px 28px", borderRadius: 18,
+              background: "rgba(232,163,61,.08)", border: "1px solid rgba(232,163,61,.25)", textDecoration: "none",
+            }}
+          >
+            <span style={{ fontSize: 15, fontWeight: 700, color: "#fff" }}>Looking further back?</span>
+            <span style={{ fontSize: 14.5, fontWeight: 700, color: "var(--gold)", display: "inline-flex", alignItems: "center", gap: 8 }}>
+              Explore the full Media Archive <span aria-hidden>→</span>
+            </span>
+          </a>
+        </Reveal>
+      </section>
+
       {/* Platforms */}
       <section style={{ padding: "20px clamp(20px,5vw,64px) 60px" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>

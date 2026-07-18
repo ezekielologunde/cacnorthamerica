@@ -23,12 +23,12 @@ const CACNA_REG = "https://cacnaconvention.org/2026-cacna-national-convention-re
 const THEME = "The Bible: God’s Message to Man";
 
 const sessions = [
-  { day: "Mon · Jul 13", label: "Registration & Ministers' Prayers", desc: "The convention opens as families arrive and register, and the ministers gather to pray over the week ahead." },
-  { day: "Tue · Jul 14", label: "Ministers' Conference", desc: "A dedicated day for the clergy — teaching, fellowship, and business among the ministers of the region." },
-  { day: "Wed · Jul 15", label: "Departmental Day", desc: "CACMA, Ministers' Wives, Good Women, Youth & Young Adults, and Children each gather for their own sessions." },
-  { day: "Thu · Jul 16", label: "Picnic, Games & Worship Night", desc: "Picnic, games & sports, Sunday School, and the Business Group by day — a combined worship night to follow." },
-  { day: "Fri · Jul 17", label: "Convention Day & Empowerment Night", desc: "The main convention day program, closing with an empowerment night for the whole family." },
-  { day: "Sat · Jul 18", label: "Holy Communion & Departure", desc: "The convention closes with a Holy Communion service before the family departs, refreshed and rooted." },
+  { day: "Mon · Jul 13", label: "Registration & Revival Night", desc: "The convention opens as families arrive and register, followed by an evening Revival Night of worship and the Word." },
+  { day: "Tue · Jul 14", label: "Morning & Evening Sessions", desc: "A full day of teaching and worship under the convention theme, morning and evening." },
+  { day: "Wed · Jul 15", label: "Morning & Evening Sessions", desc: "Continued teaching sessions on the convention theme, with the Business Group Fellowship meeting alongside." },
+  { day: "Thu · Jul 16", label: "Sunday School, Business Group & Good Women Day", desc: "Sunday School General Session in the morning, the Business Group General Session and Good Women Convention by day, and a Praise Night to close the evening." },
+  { day: "Fri · Jul 17", label: "Theme Sessions & Revival Night", desc: "Morning and afternoon sessions on the convention theme, closing with a Revival Night of worship." },
+  { day: "Sat · Jul 18", label: "Holy Communion & Departure", desc: "The convention closes with a Holy Communion service — some years followed by a Graduation Program — before the family departs, refreshed and rooted." },
 ];
 
 const fees = [
