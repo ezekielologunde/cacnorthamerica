@@ -58,7 +58,7 @@ export default function AboutPage() {
         background: "var(--cream)", padding: "140px clamp(20px,5vw,64px) 80px",
         position: "relative", overflow: "hidden",
       }}>
-        <div style={{ position: "absolute", top: -60, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,#3D5FA1,#1E3A6B 70%)", opacity: .12, filter: "blur(6px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: -60, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,#B8531F,#1F4D3D 70%)", opacity: .12, filter: "blur(6px)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Who We Are</span>
@@ -66,7 +66,7 @@ export default function AboutPage() {
           <Reveal delay={80}>
             <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(48px,7vw,96px)", letterSpacing: "-2px", color: "var(--ink)", margin: "18px 0", lineHeight: .92 }}>
               More than a greeting.<br />
-              <span style={{ background: "linear-gradient(100deg,#3D5FA1,#1E3A6B,#0F1F3D)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>A lifestyle.</span>
+              <span style={{ color: "var(--red)" }}>A lifestyle.</span>
             </h1>
           </Reveal>
           <Reveal delay={160}>
@@ -75,7 +75,7 @@ export default function AboutPage() {
             </p>
           </Reveal>
           <Reveal delay={220}>
-            <Link href="/visit" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(30,58,107,.34)" }}>
+            <Link href="/visit" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(31,77,61,.34)" }}>
               Plan a Visit →
             </Link>
           </Reveal>
@@ -287,7 +287,7 @@ export default function AboutPage() {
                 <p style={{ fontSize: 14.5, lineHeight: 1.65, opacity: .82, margin: "16px 0 0" }}>Leading the CACNA family — building God’s ambassadors and welcoming every soul home.</p>
               </div>
             </Reveal>
-            <Reveal delay={120} style={{ background: "linear-gradient(155deg, var(--red), var(--red-deep))", color: "var(--cream)", borderRadius: 26, padding: "clamp(32px,4vw,48px) clamp(28px,3.5vw,40px)", display: "flex", flexDirection: "column", justifyContent: "center", boxShadow: "0 18px 36px rgba(30,58,107,.26)" }}>
+            <Reveal delay={120} style={{ background: "linear-gradient(155deg, var(--red), var(--red-deep))", color: "var(--cream)", borderRadius: 26, padding: "clamp(32px,4vw,48px) clamp(28px,3.5vw,40px)", display: "flex", flexDirection: "column", justifyContent: "center", boxShadow: "0 18px 36px rgba(31,77,61,.26)" }}>
               <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "rgba(255,247,239,.72)", marginBottom: 16 }}>The Regional Team</div>
               <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,3.6vw,40px)", letterSpacing: "-.8px", margin: "0 0 18px", lineHeight: 1 }}>
                 16 zones.<br />One family.<br />One Gospel.
@@ -309,7 +309,7 @@ export default function AboutPage() {
           <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(36px,5vw,64px)", letterSpacing: "-1.5px", color: "var(--cream)", margin: "0 0 16px", lineHeight: .95 }}>Ready to connect?</h2>
           <p style={{ fontSize: 17, color: "rgba(255,247,239,.6)", margin: "0 0 36px" }}>Find a CACNA member church near you — onsite or online.</p>
           <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
-            <Link href="/visit" style={{ background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(30,58,107,.4)" }}>Plan a Visit →</Link>
+            <Link href="/visit" style={{ background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(31,77,61,.4)" }}>Plan a Visit →</Link>
             <Link href="/online" style={{ background: "rgba(255,247,239,.1)", color: "var(--cream)", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(255,247,239,.2)" }}>Watch Online</Link>
           </div>
         </Reveal>

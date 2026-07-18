@@ -32,7 +32,7 @@ export function PlanVisit() {
             display: 'inline-flex', alignItems: 'center', gap: 10,
             marginTop: 34, background: 'var(--red)', color: '#fff',
             fontWeight: 700, fontSize: 16, padding: '16px 28px', borderRadius: 999,
-            textDecoration: 'none', boxShadow: '0 14px 30px rgba(30,58,107,.4)',
+            textDecoration: 'none', boxShadow: '0 14px 30px rgba(31,77,61,.4)',
           }}>
             Plan your visit →
           </Link>

@@ -18,14 +18,14 @@ export default function GalleryPage() {
 
       {/* Hero */}
       <section style={{ background: "var(--cream)", padding: "140px clamp(20px,5vw,64px) 60px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -60, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,#3D5FA1,#1E3A6B 70%)", opacity: 0.1, filter: "blur(6px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: -60, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,#B8531F,#1F4D3D 70%)", opacity: 0.1, filter: "blur(6px)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 780, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Gallery</span>
           </Reveal>
           <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(46px,6.5vw,90px)", letterSpacing: "-0.03em", color: "var(--ink)", margin: "16px 0", lineHeight: 0.92, textWrap: "balance" }}>
             <RevealText immediate>Life across</RevealText>{" "}
-            <RevealText immediate delay={0.12} style={{ background: "linear-gradient(100deg,#3D5FA1,#1E3A6B)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            <RevealText immediate delay={0.12} style={{ color: "var(--red)" }}>
               CACNA.
             </RevealText>
           </h1>

@@ -110,11 +110,11 @@ function buildOrderEmail(session: Stripe.Checkout.Session): string {
         <!-- What happens next -->
         <tr>
           <td style="padding:28px 32px 0">
-            <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#1E3A6B;margin-bottom:16px">What happens next</div>
+            <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#1F4D3D;margin-bottom:16px">What happens next</div>
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
                 <td style="padding:12px 0;border-bottom:1px solid #ede9e4;vertical-align:top;width:28px">
-                  <div style="width:24px;height:24px;background:#f9f8f6;border-radius:50%;font-size:12px;font-weight:700;color:#1E3A6B;text-align:center;line-height:24px">1</div>
+                  <div style="width:24px;height:24px;background:#f9f8f6;border-radius:50%;font-size:12px;font-weight:700;color:#1F4D3D;text-align:center;line-height:24px">1</div>
                 </td>
                 <td style="padding:12px 0 12px 12px;border-bottom:1px solid #ede9e4;font-size:14px;color:#1B130E;line-height:1.6">
                   <strong>Physical items</strong> ship within 5 business days to the address you provided.
@@ -122,7 +122,7 @@ function buildOrderEmail(session: Stripe.Checkout.Session): string {
               </tr>
               <tr>
                 <td style="padding:12px 0;vertical-align:top;width:28px">
-                  <div style="width:24px;height:24px;background:#f9f8f6;border-radius:50%;font-size:12px;font-weight:700;color:#1E3A6B;text-align:center;line-height:24px">2</div>
+                  <div style="width:24px;height:24px;background:#f9f8f6;border-radius:50%;font-size:12px;font-weight:700;color:#1F4D3D;text-align:center;line-height:24px">2</div>
                 </td>
                 <td style="padding:12px 0 12px 12px;font-size:14px;color:#1B130E;line-height:1.6">
                   <strong>Questions?</strong> Reach us on WhatsApp at
@@ -142,7 +142,7 @@ function buildOrderEmail(session: Stripe.Checkout.Session): string {
               We are grateful for you. 🙏
             </p>
             <p style="margin:12px 0 0;font-size:12px;color:#aaa">
-              <a href="https://cacnorthamerica.com" style="color:#1E3A6B;text-decoration:none;font-weight:700">cacnorthamerica.com</a>
+              <a href="https://cacnorthamerica.com" style="color:#1F4D3D;text-decoration:none;font-weight:700">cacnorthamerica.com</a>
               &nbsp;·&nbsp; Blue Ridge Summit, Pennsylvania
             </p>
           </td>
@@ -235,7 +235,7 @@ async function sendStaffOrderEmail(session: Stripe.Checkout.Session): Promise<vo
   <div style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#E8A33D;margin-bottom:8px">Customer</div>
   <table cellpadding="0" cellspacing="0" style="font-size:13px;color:#1B130E;line-height:1.7">
     ${name ? `<tr><td style="padding-right:12px;color:#5f5e5a">Name</td><td>${name}</td></tr>` : ""}
-    <tr><td style="padding-right:12px;color:#5f5e5a">Email</td><td><a href="mailto:${email}" style="color:#1E3A6B">${email}</a></td></tr>
+    <tr><td style="padding-right:12px;color:#5f5e5a">Email</td><td><a href="mailto:${email}" style="color:#1F4D3D">${email}</a></td></tr>
     ${phone ? `<tr><td style="padding-right:12px;color:#5f5e5a">Phone</td><td>${phone}</td></tr>` : ""}
   </table>
   <div style="margin-top:20px">
@@ -251,10 +251,10 @@ async function sendStaffOrderEmail(session: Stripe.Checkout.Session): Promise<vo
     <div style="margin-top:10px;text-align:right;font-size:15px;font-weight:700;color:#1B130E">Total: ${fmt(total)}</div>
   </div>
   ${shippingBlock}
-  <div style="margin-top:24px"><a href="https://www.cacnorthamerica.com/admin/orders" style="display:inline-block;background:#1E3A6B;color:#fff;font-size:13px;font-weight:700;text-decoration:none;padding:10px 20px;border-radius:8px">View in Admin</a></div>
+  <div style="margin-top:24px"><a href="https://www.cacnorthamerica.com/admin/orders" style="display:inline-block;background:#1F4D3D;color:#fff;font-size:13px;font-weight:700;text-decoration:none;padding:10px 20px;border-radius:8px">View in Admin</a></div>
 </td></tr>
 <tr><td style="padding:16px 28px;border-top:1px solid #ede9e4">
-  <p style="margin:0;font-size:12px;color:#aaa"><a href="https://cacnorthamerica.com" style="color:#1E3A6B;text-decoration:none;font-weight:700">cacnorthamerica.com</a> &nbsp;·&nbsp; Blue Ridge Summit, Pennsylvania</p>
+  <p style="margin:0;font-size:12px;color:#aaa"><a href="https://cacnorthamerica.com" style="color:#1F4D3D;text-decoration:none;font-weight:700">cacnorthamerica.com</a> &nbsp;·&nbsp; Blue Ridge Summit, Pennsylvania</p>
 </td></tr>
 </table></td></tr></table></body></html>`;
 
@@ -329,13 +329,13 @@ async function sendDownloadEmail(
     <p style="font-size:13px;color:#5f5e5a;margin:0;line-height:1.7">
       Questions? Reach us on WhatsApp at
       <a href="https://wa.me/14432726794" style="color:#25D366;font-weight:700;text-decoration:none">+1 (443) 272-6794</a>
-      or email <a href="mailto:info@cacnorthamerica.com" style="color:#1E3A6B;text-decoration:none">info@cacnorthamerica.com</a>.
+      or email <a href="mailto:info@cacnorthamerica.com" style="color:#1F4D3D;text-decoration:none">info@cacnorthamerica.com</a>.
     </p>
   </div>
 </td></tr>
 <tr><td style="padding:16px 32px;border-top:1px solid #ede9e4">
   <p style="margin:0;font-size:12px;color:#aaa">
-    <a href="https://cacnorthamerica.com" style="color:#1E3A6B;text-decoration:none;font-weight:700">cacnorthamerica.com</a>
+    <a href="https://cacnorthamerica.com" style="color:#1F4D3D;text-decoration:none;font-weight:700">cacnorthamerica.com</a>
     &nbsp;·&nbsp; Blue Ridge Summit, Pennsylvania
   </p>
 </td></tr>
@@ -405,7 +405,7 @@ async function sendRefundEmails(charge: Stripe.Charge): Promise<void> {
         <tr>
           <td style="padding:20px 32px;border-top:1px solid #ede9e4">
             <p style="margin:0;font-size:12px;color:#aaa">
-              <a href="https://cacnorthamerica.com" style="color:#1E3A6B;text-decoration:none;font-weight:700">cacnorthamerica.com</a>
+              <a href="https://cacnorthamerica.com" style="color:#1F4D3D;text-decoration:none;font-weight:700">cacnorthamerica.com</a>
               &nbsp;·&nbsp; Blue Ridge Summit, Pennsylvania
             </p>
           </td>
@@ -441,13 +441,13 @@ async function sendRefundEmails(charge: Stripe.Charge): Promise<void> {
 <tr><td style="padding:24px 28px;font-size:13px;color:#1B130E;line-height:1.8">
   <table cellpadding="0" cellspacing="0">
     ${customerName ? `<tr><td style="padding-right:12px;color:#5f5e5a">Customer</td><td>${customerName}</td></tr>` : ""}
-    ${customerEmail ? `<tr><td style="padding-right:12px;color:#5f5e5a">Email</td><td><a href="mailto:${customerEmail}" style="color:#1E3A6B">${customerEmail}</a></td></tr>` : ""}
+    ${customerEmail ? `<tr><td style="padding-right:12px;color:#5f5e5a">Email</td><td><a href="mailto:${customerEmail}" style="color:#1F4D3D">${customerEmail}</a></td></tr>` : ""}
     <tr><td style="padding-right:12px;color:#5f5e5a">Refunded</td><td style="font-weight:700">${fmt(refundedAmt)}</td></tr>
     <tr><td style="padding-right:12px;color:#5f5e5a">Original</td><td>${fmt(originalAmt)}</td></tr>
     <tr><td style="padding-right:12px;color:#5f5e5a">Charge ID</td><td style="font-family:monospace;font-size:12px">${charge.id}</td></tr>
     <tr><td style="padding-right:12px;color:#5f5e5a">Payment Intent</td><td style="font-family:monospace;font-size:12px">${piId}</td></tr>
   </table>
-  <div style="margin-top:20px"><a href="https://www.cacnorthamerica.com/admin/orders" style="display:inline-block;background:#1E3A6B;color:#fff;font-size:13px;font-weight:700;text-decoration:none;padding:10px 20px;border-radius:8px">View in Admin</a></div>
+  <div style="margin-top:20px"><a href="https://www.cacnorthamerica.com/admin/orders" style="display:inline-block;background:#1F4D3D;color:#fff;font-size:13px;font-weight:700;text-decoration:none;padding:10px 20px;border-radius:8px">View in Admin</a></div>
 </td></tr>
 </table></td></tr></table></body></html>`;
 

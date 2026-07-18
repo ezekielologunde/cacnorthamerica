@@ -73,7 +73,7 @@ function AddToCalendar({ ev, dark = false }: { ev: ChurchEvent; dark?: boolean }
     <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
       <a
         href={googleCalUrl(ev)} target="_blank" rel="noopener noreferrer"
-        className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 14, padding: "11px 18px", borderRadius: 999, textDecoration: "none", boxShadow: "0 8px 20px rgba(30,58,107,.3)" }}
+        className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 14, padding: "11px 18px", borderRadius: 999, textDecoration: "none", boxShadow: "0 8px 20px rgba(31,77,61,.3)" }}
       >
         <CalendarPlus size={16} strokeWidth={2} aria-hidden /> Google Calendar
       </a>
@@ -139,7 +139,7 @@ export default async function EventsPage() {
           <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(44px,6.5vw,92px)", letterSpacing: "-0.03em", color: "#fff", margin: "16px 0", lineHeight: 0.95, textWrap: "balance" }}>
             <RevealText immediate>Mark your</RevealText>
             <br />
-            <RevealText immediate delay={0.15} style={{ background: "linear-gradient(100deg,#3D5FA1,#1E3A6B,#E8A33D)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            <RevealText immediate delay={0.15} style={{ color: "var(--red)" }}>
               calendar.
             </RevealText>
           </h1>
@@ -166,7 +166,7 @@ export default async function EventsPage() {
               {upcoming.map((ev, i) => (
                 <Reveal key={ev.id} delay={i * 90}>
                   <div className="card-lift" style={{ display: "flex", flexWrap: "wrap", gap: "clamp(20px,3vw,36px)", alignItems: "center", background: "var(--paper)", borderRadius: 24, padding: "clamp(22px,3vw,32px)", border: "1px solid var(--line)", boxShadow: "0 14px 34px rgba(27,19,14,.08)" }}>
-                    <div style={{ flexShrink: 0, width: 104, height: 104, borderRadius: 20, background: "linear-gradient(150deg,var(--flame),var(--red))", color: "#fff", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", lineHeight: 1, boxShadow: "0 14px 30px rgba(30,58,107,.3)" }}>
+                    <div style={{ flexShrink: 0, width: 104, height: 104, borderRadius: 20, background: "linear-gradient(150deg,var(--flame),var(--red))", color: "#fff", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", lineHeight: 1, boxShadow: "0 14px 30px rgba(31,77,61,.3)" }}>
                       <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: "1.5px" }}>{ev.month}</span>
                       <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 44 }}>{ev.day}</span>
                     </div>
@@ -250,7 +250,7 @@ export default async function EventsPage() {
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,38px)", letterSpacing: "-.6px", color: "var(--cream)", margin: "0 0 8px" }}>Can&apos;t be there in person?</h2>
             <p style={{ fontSize: 15, color: "rgba(255,247,239,.6)", margin: 0 }}>The Annual Convention streams live — YouTube and Zoom. Never miss a message.</p>
           </div>
-          <Link href="/online" className="press btn-sheen" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 15, padding: "15px 28px", borderRadius: 999, textDecoration: "none", whiteSpace: "nowrap", flexShrink: 0, boxShadow: "0 10px 24px rgba(30,58,107,.35)" }}>
+          <Link href="/online" className="press btn-sheen" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 15, padding: "15px 28px", borderRadius: 999, textDecoration: "none", whiteSpace: "nowrap", flexShrink: 0, boxShadow: "0 10px 24px rgba(31,77,61,.35)" }}>
             Watch online →
           </Link>
         </Reveal>

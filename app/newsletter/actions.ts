@@ -24,12 +24,12 @@ function welcomeHtml(name: string | null): string {
         You'll hear from us about the Annual Convention, upcoming events, devotionals, and ways to get involved across CACNA's member churches.
       </p>
       <div style="text-align:center;margin-bottom:36px">
-        <a href="https://www.cacnorthamerica.com/online" style="display:inline-block;background:#1E3A6B;color:#fff;font-weight:700;font-size:15px;padding:15px 36px;border-radius:999px;text-decoration:none;box-shadow:0 8px 20px rgba(30,58,107,.30)">
+        <a href="https://www.cacnorthamerica.com/online" style="display:inline-block;background:#1F4D3D;color:#fff;font-weight:700;font-size:15px;padding:15px 36px;border-radius:999px;text-decoration:none;box-shadow:0 8px 20px rgba(31,77,61,.30)">
           Watch Online →
         </a>
       </div>
       <div style="background:#F9F8F6;border-radius:12px;padding:24px;margin-bottom:32px">
-        <p style="font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#1E3A6B;margin:0 0 12px">How We Gather</p>
+        <p style="font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#1F4D3D;margin:0 0 12px">How We Gather</p>
         <p style="font-size:14px;color:#1B130E;line-height:1.8;margin:0">
           📅 <strong>Annual Convention</strong> — July, CAC Village, PA<br>
           🙏 <strong>Morning Prayer Line</strong> — Daily 5:00 AM ET · (857) 216-6700
@@ -38,9 +38,9 @@ function welcomeHtml(name: string | null): string {
       <hr style="border:none;border-top:1px solid rgba(27,19,14,.08);margin:0 0 24px">
       <p style="font-size:12px;color:rgba(27,19,14,.4);line-height:1.7;margin:0">
         You're receiving this because you subscribed at
-        <a href="https://www.cacnorthamerica.com" style="color:#1E3A6B;text-decoration:none">cacnorthamerica.com</a>.
+        <a href="https://www.cacnorthamerica.com" style="color:#1F4D3D;text-decoration:none">cacnorthamerica.com</a>.
         Questions? Email us at
-        <a href="mailto:info@cacnorthamerica.com" style="color:#1E3A6B;text-decoration:none">info@cacnorthamerica.com</a>.
+        <a href="mailto:info@cacnorthamerica.com" style="color:#1F4D3D;text-decoration:none">info@cacnorthamerica.com</a>.
       </p>
     </div>
   </div>

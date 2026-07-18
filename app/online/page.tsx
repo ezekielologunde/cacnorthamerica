@@ -33,7 +33,7 @@ export default async function OnlinePage() {
 
       {/* Hero */}
       <section style={{ padding: "140px clamp(20px,5vw,64px) 80px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -80, right: -80, width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle,rgba(30,58,107,.25),transparent 70%)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: -80, right: -80, width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle,rgba(31,77,61,.25),transparent 70%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)", background: "rgba(232,163,61,.12)", border: "1px solid rgba(232,163,61,.25)", padding: "6px 16px", borderRadius: 999 }}>
@@ -44,7 +44,7 @@ export default async function OnlinePage() {
           <Reveal delay={80}>
             <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(48px,7vw,100px)", letterSpacing: "-2px", color: "#fff", margin: "20px 0", lineHeight: .92 }}>
               Worship from<br />
-              <span style={{ background: "linear-gradient(100deg,var(--flame),var(--red),var(--gold))", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>Anywhere.</span>
+              <span style={{ color: "var(--red)" }}>Anywhere.</span>
             </h1>
           </Reveal>
           <Reveal delay={160}>
@@ -58,7 +58,7 @@ export default async function OnlinePage() {
       {/* Watch on YouTube — the primary action */}
       <section style={{ padding: "0 clamp(20px,5vw,64px) 56px" }}>
         <Reveal>
-          <a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer" className="btn-sheen card-lift" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "clamp(20px,3vw,40px)", maxWidth: 900, margin: "0 auto", background: "linear-gradient(120deg,#1E3A6B,#0F1F3D)", borderRadius: 28, padding: "clamp(28px,4vw,44px)", textDecoration: "none", boxShadow: "0 30px 70px rgba(30,58,107,.35)" }}>
+          <a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer" className="btn-sheen card-lift" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "clamp(20px,3vw,40px)", maxWidth: 900, margin: "0 auto", background: "linear-gradient(120deg,#1F4D3D,#12302A)", borderRadius: 28, padding: "clamp(28px,4vw,44px)", textDecoration: "none", boxShadow: "0 30px 70px rgba(31,77,61,.35)" }}>
             <span style={{ flexShrink: 0, width: 72, height: 72, borderRadius: 20, background: "rgba(255,255,255,.18)", display: "grid", placeItems: "center", border: "1px solid rgba(255,255,255,.3)" }}>
               <Video size={36} color="#fff" strokeWidth={1.8} aria-hidden />
             </span>
@@ -69,7 +69,7 @@ export default async function OnlinePage() {
               <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.4vw,40px)", letterSpacing: "-1px", color: "#fff", margin: "0 0 6px" }}>CAC North America (Latunde Region)</h2>
               <p style={{ fontSize: 15, color: "rgba(255,255,255,.88)", margin: 0 }}>The Annual Convention and message replays — Zoom is also available during convention week.</p>
             </div>
-            <span style={{ flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 8, background: "#fff", color: "#0F1F3D", fontWeight: 800, fontSize: 16, padding: "15px 28px", borderRadius: 999 }}>
+            <span style={{ flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 8, background: "#fff", color: "#12302A", fontWeight: 800, fontSize: 16, padding: "15px 28px", borderRadius: 999 }}>
               Open YouTube →
             </span>
           </a>
@@ -222,7 +222,7 @@ export default async function OnlinePage() {
       </section>
 
       {/* Salvation CTA */}
-      <section style={{ padding: "80px clamp(20px,5vw,64px)", background: "linear-gradient(135deg,#1E3A6B,#0F1F3D)" }}>
+      <section style={{ padding: "80px clamp(20px,5vw,64px)", background: "linear-gradient(135deg,#1F4D3D,#12302A)" }}>
         <Reveal style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
           <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4.5vw,60px)", letterSpacing: "-1.2px", color: "#fff", margin: "0 0 16px", lineHeight: .96 }}>
             Ready to give your life to Christ?

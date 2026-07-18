@@ -6,11 +6,11 @@ export function Impact() {
   return (
     <section style={{
       position: "relative", overflow: "hidden",
-      background: "linear-gradient(135deg,#1E3A6B 0%,#0F1F3D 50%,#6B1010 100%)",
+      background: "linear-gradient(135deg,#1F4D3D 0%,#12302A 50%,#6B1010 100%)",
       padding: "80px clamp(20px,5vw,64px)",
     }}>
       {/* Decorative drifting glow */}
-      <div style={{ position: "absolute", inset: "-15%", background: "radial-gradient(circle at 70% 50%,rgba(61,95,161,.35),transparent 60%)", pointerEvents: "none", animation: "gradient-drift 14s ease-in-out infinite", willChange: "transform" }} />
+      <div style={{ position: "absolute", inset: "-15%", background: "radial-gradient(circle at 70% 50%,rgba(184,83,31,.35),transparent 60%)", pointerEvents: "none", animation: "gradient-drift 14s ease-in-out infinite", willChange: "transform" }} />
       <div style={{ position: "absolute", top: -40, right: -40, width: 300, height: 300, borderRadius: "50%", background: "rgba(255,255,255,.04)", pointerEvents: "none" }} />
 
       <div className="r2c" style={{ position: "relative", zIndex: 2, maxWidth: 1100, margin: "0 auto", gap: 60 }}>

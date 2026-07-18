@@ -46,10 +46,10 @@ function initials(name: string) {
 }
 
 const gradients = [
-  "linear-gradient(135deg,#0F1F3D,#1E3A6B)",
-  "linear-gradient(135deg,#1E3A6B,#3D5FA1)",
-  "linear-gradient(135deg,#3D5FA1,#E8A33D)",
-  "linear-gradient(135deg,#1B130E,#0F1F3D)",
+  "linear-gradient(135deg,#12302A,#1F4D3D)",
+  "linear-gradient(135deg,#1F4D3D,#B8531F)",
+  "linear-gradient(135deg,#B8531F,#E8A33D)",
+  "linear-gradient(135deg,#1B130E,#12302A)",
 ];
 
 export default function LeadershipPage() {
@@ -59,7 +59,7 @@ export default function LeadershipPage() {
 
       {/* Hero */}
       <section style={{ background: "var(--cream)", padding: "140px clamp(20px,5vw,64px) 72px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -60, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,#3D5FA1,#1E3A6B 70%)", opacity: .1, filter: "blur(6px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: -60, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,#B8531F,#1F4D3D 70%)", opacity: .1, filter: "blur(6px)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 820, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Leadership</span>
@@ -67,7 +67,7 @@ export default function LeadershipPage() {
           <Reveal delay={80}>
             <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(46px,6.5vw,90px)", letterSpacing: "-2px", color: "var(--ink)", margin: "16px 0", lineHeight: .92 }}>
               Meet Our<br />
-              <span style={{ background: "linear-gradient(100deg,#3D5FA1,#1E3A6B)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>Leadership.</span>
+              <span style={{ color: "var(--red)" }}>Leadership.</span>
             </h1>
           </Reveal>
           <Reveal delay={160}>
@@ -135,7 +135,7 @@ export default function LeadershipPage() {
                         background: gradients[i % gradients.length],
                         display: "grid", placeItems: "center",
                         color: "#fff", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22,
-                        letterSpacing: "-0.5px", boxShadow: "0 10px 22px rgba(30,58,107,.28)",
+                        letterSpacing: "-0.5px", boxShadow: "0 10px 22px rgba(31,77,61,.28)",
                         flexShrink: 0,
                       }}>{initials(p.name)}</div>
                     )}
@@ -158,7 +158,7 @@ export default function LeadershipPage() {
           <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4.5vw,60px)", letterSpacing: "-1.2px", color: "var(--cream)", margin: "0 0 16px", lineHeight: .96 }}>Connect with CACNA.</h2>
           <p style={{ fontSize: 17, color: "rgba(255,247,239,.6)", margin: "0 0 36px" }}>Find a member church near you across the United States and Canada.</p>
           <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
-            <Link href="/visit" style={{ background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(30,58,107,.4)" }}>Find a Church →</Link>
+            <Link href="/visit" style={{ background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(31,77,61,.4)" }}>Find a Church →</Link>
             <Link href="/about" style={{ background: "rgba(255,247,239,.1)", color: "var(--cream)", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(255,247,239,.2)" }}>Our Story</Link>
           </div>
         </Reveal>

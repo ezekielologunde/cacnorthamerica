@@ -6,8 +6,8 @@ const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', '
 
 // Reuse the original three-tone rhythm, indexed by card position.
 const dateBg = [
-  'linear-gradient(150deg,#1E3A6B,#0F1F3D)',
-  'linear-gradient(150deg,#3D5FA1,#1E3A6B)',
+  'linear-gradient(150deg,#1F4D3D,#12302A)',
+  'linear-gradient(150deg,#B8531F,#1F4D3D)',
   'var(--ink)',
 ];
 

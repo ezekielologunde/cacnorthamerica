@@ -30,9 +30,9 @@ const CATEGORY_ICONS: Record<string, typeof ShoppingBag> = {
 
 const CATEGORY_ACCENTS: Record<string, string> = {
   apparel: "linear-gradient(135deg,#1B130E,#3A2518)",
-  bibles:  "linear-gradient(135deg,#0F1F3D,#1E3A6B)",
+  bibles:  "linear-gradient(135deg,#12302A,#1F4D3D)",
   music:   "linear-gradient(135deg,#E8A33D,#C87E20)",
-  prints:  "linear-gradient(135deg,#1E3A6B,#0F1F3D)",
+  prints:  "linear-gradient(135deg,#1F4D3D,#12302A)",
   other:   "linear-gradient(135deg,#2C1F14,#4A2C18)",
 };
 

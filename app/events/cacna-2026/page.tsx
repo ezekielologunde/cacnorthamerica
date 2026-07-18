@@ -100,7 +100,7 @@ export default function CACNA2026Page() {
       {/* Hero */}
       <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) clamp(80px,10vw,120px)", position: "relative", overflow: "hidden" }}>
         <div aria-hidden style={{ position: "absolute", top: -140, right: -120, width: 760, height: 600, background: "radial-gradient(circle,rgba(232,163,61,.25),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 18s ease-in-out infinite" }} />
-        <div aria-hidden style={{ position: "absolute", bottom: -80, left: -80, width: 500, height: 400, background: "radial-gradient(circle,rgba(30,58,107,.15),transparent 65%)", pointerEvents: "none" }} />
+        <div aria-hidden style={{ position: "absolute", bottom: -80, left: -80, width: 500, height: 400, background: "radial-gradient(circle,rgba(31,77,61,.15),transparent 65%)", pointerEvents: "none" }} />
 
         <div style={{ maxWidth: 960, margin: "0 auto", position: "relative", zIndex: 2 }}>
           <Reveal>
@@ -111,7 +111,7 @@ export default function CACNA2026Page() {
 
           <Reveal>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 80, height: 80, borderRadius: 20, background: "linear-gradient(150deg,#E8A33D,#3D5FA1)", boxShadow: "0 20px 44px rgba(232,163,61,.4)" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 80, height: 80, borderRadius: 20, background: "linear-gradient(150deg,#E8A33D,#B8531F)", boxShadow: "0 20px 44px rgba(232,163,61,.4)" }}>
                 <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 13, color: "#fff", letterSpacing: 1 }}>JUL</span>
               </div>
               <div>
@@ -124,7 +124,7 @@ export default function CACNA2026Page() {
           <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(44px,7vw,100px)", letterSpacing: "-0.035em", color: "#fff", margin: "0 0 24px", lineHeight: 0.9, textWrap: "balance" }}>
             <RevealText immediate>CACNA 2026</RevealText>
             <br />
-            <RevealText immediate delay={0.12} style={{ background: "linear-gradient(100deg,#3D5FA1,#1E3A6B,#E8A33D)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            <RevealText immediate delay={0.12} style={{ color: "var(--red)" }}>
               National Convention
             </RevealText>
           </h1>
@@ -189,7 +189,7 @@ export default function CACNA2026Page() {
                 { icon: MapPin, label: "CAC Village", desc: "A purpose-built retreat campus in the mountains. Accommodation, dining, and sanctuary — all on site." },
               ].map((item, i) => (
                 <div key={i} style={{ display: "flex", gap: 16, alignItems: "flex-start", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 18, padding: "20px 22px", boxShadow: "0 8px 20px rgba(27,19,14,.06)" }}>
-                  <div style={{ flexShrink: 0, display: "grid", placeItems: "center", width: 44, height: 44, borderRadius: 12, background: "linear-gradient(135deg,var(--flame),var(--red))", boxShadow: "0 8px 16px rgba(30,58,107,.28)" }}>
+                  <div style={{ flexShrink: 0, display: "grid", placeItems: "center", width: 44, height: 44, borderRadius: 12, background: "linear-gradient(135deg,var(--flame),var(--red))", boxShadow: "0 8px 16px rgba(31,77,61,.28)" }}>
                     <item.icon size={20} color="#fff" strokeWidth={2} aria-hidden />
                   </div>
                   <div>

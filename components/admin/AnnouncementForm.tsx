@@ -53,7 +53,7 @@ export default function AnnouncementForm({
   const [body, setBody] = useState(announcement?.body ?? "");
   const [ctaText, setCtaText] = useState(announcement?.cta_text ?? "");
   const [ctaUrl, setCtaUrl] = useState(announcement?.cta_url ?? "");
-  const [bgColor, setBgColor] = useState(announcement?.bg_color ?? "#1E3A6B");
+  const [bgColor, setBgColor] = useState(announcement?.bg_color ?? "#1F4D3D");
   const [textColor, setTextColor] = useState(announcement?.text_color ?? "#ffffff");
   const [placement, setPlacement] = useState(announcement?.placement ?? "homepage");
   const [active, setActive] = useState(announcement?.active ?? true);
@@ -101,7 +101,7 @@ export default function AnnouncementForm({
     <div style={{ maxWidth: 720 }}>
       <style>{`
         .adm-inp { transition: border-color 0.15s, box-shadow 0.15s; }
-        .adm-inp:focus-visible { border-color: var(--red); box-shadow: 0 0 0 3px rgba(30,58,107,0.12); }
+        .adm-inp:focus-visible { border-color: var(--red); box-shadow: 0 0 0 3px rgba(31,77,61,0.12); }
         .adm-inp:hover:not(:focus-visible) { border-color: rgba(27,19,14,0.24); }
       `}</style>
       <form onSubmit={handleSubmit}>

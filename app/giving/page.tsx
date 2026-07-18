@@ -11,7 +11,7 @@ export default function GivingPage() {
 
       {/* Hero */}
       <section style={{ background: "var(--cream)", padding: "140px clamp(20px,5vw,64px) 56px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -80, left: -80, width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle,#3D5FA1,#1E3A6B 70%)", opacity: 0.1, filter: "blur(6px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: -80, left: -80, width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle,#B8531F,#1F4D3D 70%)", opacity: 0.1, filter: "blur(6px)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 720, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Give</span>
@@ -19,7 +19,7 @@ export default function GivingPage() {
           <Reveal delay={80}>
             <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(46px,6.5vw,90px)", letterSpacing: "-0.03em", color: "var(--ink)", margin: "16px 0", lineHeight: 0.92 }}>
               Your giving makes<br />
-              <span style={{ background: "linear-gradient(100deg,#3D5FA1,#1E3A6B)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>a difference.</span>
+              <span style={{ color: "var(--red)" }}>a difference.</span>
             </h1>
           </Reveal>
           <Reveal delay={160}>
