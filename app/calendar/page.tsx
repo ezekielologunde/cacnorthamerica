@@ -2,22 +2,15 @@ import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import Link from "next/link";
-import { CalendarPlus, Download, Sun, Moon, Sparkles, Flame } from "lucide-react";
-import { specialEvents, weeklyServices, monthlyServices, annualMoments, googleCalUrl, icsDataUri, splitByDate, type ChurchEvent } from "@/lib/events";
+import { CalendarPlus, Download } from "lucide-react";
+import { specialEvents, annualMoments, googleCalUrl, icsDataUri, splitByDate, type ChurchEvent } from "@/lib/events";
 
 export const metadata = {
-  title: "Calendar — CAC Salvation Center",
+  title: "Calendar — Christ Apostolic Church North America (CACNA)",
   description:
-    "All gatherings of the Salvation Center family — weekly services, prayer lines, and special events. Save any of them to Google, Apple, or Outlook.",
+    "CACNA's annual rhythm and special events — the Annual Convention, Ministers Retreat, Sunday School Rally, and more. Save any of them to Google, Apple, or Outlook.",
   alternates: { canonical: "/calendar" },
 };
-
-const dayPrograms = [
-  { icon: Sun, day: "Daily", title: "Prayer Line", time: "5:00 AM", desc: "Begin the day in agreement with the family — dial in from anywhere." },
-  { icon: Sparkles, day: "Sunday", title: "Worship Service", time: "10:30 AM ET", desc: "Our main gathering — Spirit-led worship, biblical teaching, communion." },
-  { icon: Moon, day: "Wednesday", title: "Bible Study", time: "7:00 PM ET", desc: "Mid-week scriptural teaching to ground the week in the Word. Online." },
-  { icon: Flame, day: "Friday", title: "Wakati Itusile", time: "7:00 PM ET", desc: "High-energy Yoruba worship in our mother tongue. Online." },
-];
 
 function AddToCalendar({ ev, dark = false }: { ev: ChurchEvent; dark?: boolean }) {
   const ghost = dark
@@ -56,34 +49,9 @@ export default function CalendarPage() {
           </Reveal>
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "rgba(255,247,239,.72)", lineHeight: 1.7, maxWidth: 580, margin: "0 auto" }}>
-              Weekly services, daily prayer, and the special moments — save any of them to your phone in one tap.
+              CACNA's annual rhythm and special gatherings — save any of them to your phone in one tap.
             </p>
           </Reveal>
-        </div>
-      </section>
-
-      {/* Weekly rhythm */}
-      <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <Reveal style={{ marginBottom: 40 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Every week</span>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,52px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 0" }}>Our weekly rhythm</h2>
-          </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 18 }}>
-            {dayPrograms.map((p, i) => (
-              <Reveal key={p.title} delay={i * 70}>
-                <div style={{ height: "100%", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 22, padding: "26px 24px", display: "flex", flexDirection: "column", boxShadow: "0 10px 26px rgba(27,19,14,.06)" }}>
-                  <div style={{ display: "grid", placeItems: "center", width: 48, height: 48, borderRadius: 14, background: "linear-gradient(135deg,var(--flame),var(--red))", marginBottom: 16, boxShadow: "0 8px 20px rgba(214,40,40,.28)" }}>
-                    <p.icon size={22} strokeWidth={2} color="#fff" aria-hidden />
-                  </div>
-                  <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 6 }}>{p.day}</div>
-                  <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20, letterSpacing: "-.3px", color: "var(--ink)", margin: "0 0 4px" }}>{p.title}</h3>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "var(--ink-soft)", marginBottom: 12 }}>{p.time}</div>
-                  <p style={{ fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.65, margin: 0, flex: 1 }}>{p.desc}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -128,59 +96,13 @@ export default function CalendarPage() {
         </div>
       </section>
 
-      {/* Weekly services raw list */}
-      <section style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-          <Reveal style={{ marginBottom: 36 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Save the rhythm</span>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,48px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 0" }}>Subscribe to weekly services</h2>
-          </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 18 }}>
-            {weeklyServices.map((ev, i) => (
-              <Reveal key={ev.id} delay={i * 80}>
-                <div style={{ height: "100%", background: "var(--paper)", borderRadius: 22, padding: "26px 24px", border: "1px solid var(--line)", display: "flex", flexDirection: "column" }}>
-                  <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 8 }}>{ev.dateLabel}</div>
-                  <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20, letterSpacing: "-.3px", color: "var(--ink)", margin: "0 0 4px" }}>{ev.title}</h3>
-                  <div style={{ fontWeight: 700, fontSize: 14, color: "var(--ink-soft)", marginBottom: 14 }}>{ev.timeLabel}</div>
-                  <p style={{ fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.6, margin: "0 0 18px", flex: 1 }}>{ev.desc}</p>
-                  <AddToCalendar ev={ev} />
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Monthly rhythm */}
-      <section style={{ background: "var(--paper)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-          <Reveal style={{ marginBottom: 36 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Every month</span>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,48px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 0" }}>The monthly rhythm</h2>
-          </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 18 }}>
-            {monthlyServices.map((ev, i) => (
-              <Reveal key={ev.id} delay={i * 80}>
-                <div style={{ height: "100%", background: "var(--cream-2)", borderRadius: 22, padding: "26px 24px", border: "1px solid var(--line)", display: "flex", flexDirection: "column" }}>
-                  <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 8 }}>{ev.dateLabel}</div>
-                  <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20, letterSpacing: "-.3px", color: "var(--ink)", margin: "0 0 4px" }}>{ev.title}</h3>
-                  <div style={{ fontWeight: 700, fontSize: 14, color: "var(--ink-soft)", marginBottom: 14 }}>{ev.timeLabel}</div>
-                  <p style={{ fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.6, margin: "0 0 18px", flex: 1 }}>{ev.desc}</p>
-                  <AddToCalendar ev={ev} />
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Annual moments */}
       <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px) clamp(70px,9vw,110px)" }}>
         <div style={{ maxWidth: 1000, margin: "0 auto" }}>
           <Reveal style={{ marginBottom: 36 }}>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Mark your year</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,48px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 10px" }}>Annual moments</h2>
-            <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.7, margin: 0, maxWidth: 620 }}>The yearly celebrations that mark the life of the family. Firm dates are announced from the pulpit and on the homepage as they approach.</p>
+            <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.7, margin: 0, maxWidth: 620 }}>The yearly gatherings that mark CACNA's calendar. Firm dates are announced on this site as they approach.</p>
           </Reveal>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 14 }}>
             {annualMoments.map((m, i) => (

@@ -5,7 +5,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import Link from "next/link";
 import { CalendarPlus, Download } from "lucide-react";
-import { specialEvents, weeklyServices, monthlyServices, googleCalUrl, icsDataUri, splitByDate, type ChurchEvent } from "@/lib/events";
+import { specialEvents, annualMoments, googleCalUrl, icsDataUri, splitByDate, type ChurchEvent } from "@/lib/events";
 import { SITE, SITE_URL } from "@/lib/site";
 
 export const revalidate = 3600;
@@ -59,9 +59,9 @@ function dbEventToChurchEvent(e: DbEventRow): ChurchEvent {
 }
 
 export const metadata = {
-  title: "Events — CAC Salvation Center",
+  title: "Events — Christ Apostolic Church North America (CACNA)",
   description:
-    "Upcoming events and weekly services at CAC Salvation Center, Randallstown MD. Add any service or event straight to your Google, Apple, or Outlook calendar.",
+    "Upcoming events across CACNA — the Annual Convention, Ministers Retreat, Sunday School Rally, and more. Add any event straight to your Google, Apple, or Outlook calendar.",
   alternates: { canonical: "/events" },
 };
 
@@ -145,7 +145,7 @@ export default async function EventsPage() {
           </h1>
           <Reveal delay={360}>
             <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "rgba(255,247,239,.72)", lineHeight: 1.7, maxWidth: 540, margin: "0 auto", textWrap: "pretty" }}>
-              Save our services and special gatherings straight to your phone — one tap for Google, Apple, or Outlook.
+              Save CACNA's events straight to your phone — one tap for Google, Apple, or Outlook.
             </p>
           </Reveal>
         </div>
@@ -222,45 +222,20 @@ export default async function EventsPage() {
         </section>
       )}
 
-      {/* Weekly rhythm */}
+      {/* Annual rhythm */}
       <section style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 1000, margin: "0 auto" }}>
           <Reveal style={{ marginBottom: 40 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Every week</span>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,52px)", letterSpacing: "-1px", color: "var(--cream)", margin: "12px 0 0" }}>Our weekly rhythm</h2>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Every year</span>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,52px)", letterSpacing: "-1px", color: "var(--cream)", margin: "12px 0 0" }}>Our annual rhythm</h2>
           </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: 18 }}>
-            {weeklyServices.map((ev, i) => (
-              <Reveal key={ev.id} delay={i * 80}>
-                <div style={{ height: "100%", background: "rgba(255,247,239,.05)", border: "1px solid rgba(255,247,239,.1)", borderRadius: 22, padding: "28px 26px", display: "flex", flexDirection: "column" }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 10 }}>{ev.dateLabel}</div>
-                  <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--cream)", letterSpacing: "-.4px", margin: "0 0 6px" }}>{ev.title}</h3>
-                  <div style={{ fontWeight: 700, fontSize: 15, color: "var(--gold)", marginBottom: 14 }}>{ev.timeLabel}</div>
-                  <p style={{ fontSize: 14.5, color: "rgba(255,247,239,.62)", lineHeight: 1.65, margin: "0 0 20px", flex: 1 }}>{ev.desc}</p>
-                  <AddToCalendar ev={ev} dark />
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Monthly gatherings */}
-      <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-          <Reveal style={{ marginBottom: 40 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Each month</span>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,52px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 0" }}>Monthly gatherings</h2>
-          </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: 18 }}>
-            {monthlyServices.map((ev, i) => (
-              <Reveal key={ev.id} delay={i * 80}>
-                <div className="card-lift" style={{ height: "100%", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 22, padding: "28px 26px", display: "flex", flexDirection: "column", boxShadow: "0 10px 28px rgba(27,19,14,.07)" }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 10 }}>{ev.dateLabel}</div>
-                  <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--ink)", letterSpacing: "-.4px", margin: "0 0 6px" }}>{ev.title}</h3>
-                  <div style={{ fontWeight: 700, fontSize: 15, color: "var(--flame)", marginBottom: 14 }}>{ev.timeLabel}</div>
-                  <p style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.65, margin: "0 0 20px", flex: 1 }}>{ev.desc}</p>
-                  <AddToCalendar ev={ev} />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: 18 }}>
+            {annualMoments.map((m, i) => (
+              <Reveal key={m.id} delay={i * 70}>
+                <div style={{ height: "100%", background: "rgba(255,247,239,.05)", border: "1px solid rgba(255,247,239,.1)", borderRadius: 22, padding: "26px 24px", display: "flex", flexDirection: "column" }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 10 }}>{m.when}</div>
+                  <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20, color: "var(--cream)", letterSpacing: "-.4px", margin: "0 0 8px" }}>{m.title}</h3>
+                  <p style={{ fontSize: 14, color: "rgba(255,247,239,.62)", lineHeight: 1.65, margin: 0, flex: 1 }}>{m.desc}</p>
                 </div>
               </Reveal>
             ))}
@@ -273,7 +248,7 @@ export default async function EventsPage() {
         <Reveal style={{ maxWidth: 900, margin: "0 auto", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
           <div>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,38px)", letterSpacing: "-.6px", color: "var(--cream)", margin: "0 0 8px" }}>Can&apos;t be there in person?</h2>
-            <p style={{ fontSize: 15, color: "rgba(255,247,239,.6)", margin: 0 }}>Every service streams live — YouTube, Facebook, and Zoom. Never miss a message.</p>
+            <p style={{ fontSize: 15, color: "rgba(255,247,239,.6)", margin: 0 }}>The Annual Convention streams live — YouTube and Zoom. Never miss a message.</p>
           </div>
           <Link href="/online" className="press btn-sheen" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 15, padding: "15px 28px", borderRadius: 999, textDecoration: "none", whiteSpace: "nowrap", flexShrink: 0, boxShadow: "0 10px 24px rgba(214,40,40,.35)" }}>
             Watch online →

@@ -10,7 +10,7 @@ import { SITE, SITE_URL, breadcrumbJsonLd } from "@/lib/site";
 export const revalidate = 3600;
 
 export const metadata = {
-  title: "Holy Land Pilgrimage 2026 — CAC Salvation Center",
+  title: "Holy Land Pilgrimage 2026 — CACNA Latunde Region",
   description:
     "CACNA Latunde Region Pilgrimage to Israel & Egypt, November 2–12, 2026. Led by Pastor Dr. H.O. Ilufoye & L/Evang. Bola Mustapha. From JFK, $4,795.",
   alternates: { canonical: "/events/pilgrimage-2026" },

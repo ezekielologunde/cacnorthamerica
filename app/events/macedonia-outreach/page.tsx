@@ -7,13 +7,13 @@ import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.cacsalvationcenter.org";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.cacnorthamerica.com";
 const IG = "https://www.instagram.com/macedonia.outreach/";
 const G  = "#1B4332";
 const GL = "#2D6A4F";
 
 export const metadata: Metadata = {
-  title: "Macedonia Outreach — CAC Salvation Center",
+  title: "Macedonia Outreach — Christ Apostolic Church North America (CACNA)",
   description:
     "An annual mission to forgotten rural ministers in hard-to-reach and unreachable places — carrying the full gospel where most cannot go. Follow @macedonia.outreach.",
   alternates: { canonical: "/events/macedonia-outreach" },
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     type: "website",
     title: "Macedonia Outreach — Where Most Cannot Go",
     description:
-      "Carrying the full gospel to forgotten rural ministers in hard-to-reach places. Annual mission of CAC Salvation Center.",
+      "Carrying the full gospel to forgotten rural ministers in hard-to-reach places. Annual mission of Christ Apostolic Church North America.",
     url: `${SITE_URL}/events/macedonia-outreach`,
     images: [{ url: "/images/macedonia-logo.png", width: 1200, height: 630, alt: "Macedonia Outreach logo" }],
   },
@@ -95,7 +95,7 @@ export default function MacedoniaPage() {
           <div>
             <Reveal>
               <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "rgba(255,247,239,.6)" }}>
-                Annual Mission · CAC Salvation Center
+                Annual Mission · CACNA
               </span>
             </Reveal>
             <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(44px,6.5vw,88px)", letterSpacing: "-0.03em", color: "#fff", margin: "18px 0 24px", lineHeight: 0.93, textWrap: "balance" }}>

@@ -4,53 +4,13 @@ import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { TestimonyForm } from "@/components/sections/TestimonyForm";
 import { Quote, Sparkles } from "lucide-react";
-import { googleReviews } from "@/lib/reviews";
 
 export const metadata = {
-  title: "Testimonies — CAC Salvation Center",
+  title: "Testimonies — Christ Apostolic Church North America (CACNA)",
   description:
-    "Real stories of God's faithfulness from the Salvation Center family — healing, restoration, salvation, and answered prayer.",
+    "Real stories of God's faithfulness from across CACNA's member churches — healing, restoration, salvation, and answered prayer.",
   alternates: { canonical: "/testimonies" },
 };
-
-const stories = [
-  {
-    name: "Grace O.",
-    where: "Baltimore",
-    quote: "After years of silence, God broke open the door to motherhood for my husband and me. Wakati Itusile carried us through the wait.",
-    tag: "Family",
-  },
-  {
-    name: "Daniel A.",
-    where: "Online · Lagos",
-    quote: "I joined Bible Study from across the ocean, broken and barely standing. The Word met me there. Today I am whole.",
-    tag: "Healing",
-  },
-  {
-    name: "Mary E.",
-    where: "Randallstown",
-    quote: "I walked in one Sunday looking for somewhere to belong. I left knowing I had walked into family — and into Christ.",
-    tag: "Salvation",
-  },
-  {
-    name: "Anonymous",
-    where: "Maryland",
-    quote: "An impossible diagnosis. The elders prayed. The next scan showed nothing. Glory be to God.",
-    tag: "Healing",
-  },
-  {
-    name: "Pastor F.",
-    where: "Sister Church",
-    quote: "The mantle on this house is real. The Salvation Center has discipled my own ministry across two continents.",
-    tag: "Ministry",
-  },
-  {
-    name: "Tunde & Bisi",
-    where: "Baltimore DCC",
-    quote: "Our marriage was in pieces. Through prayer ministry and the counsel of the pastors, God put us back together — better.",
-    tag: "Restoration",
-  },
-];
 
 const tagColor: Record<string, string> = {
   Family: "linear-gradient(135deg,#E8A33D,#F15F22)",
@@ -75,7 +35,7 @@ export default async function TestimoniesPage() {
     quote: t.content,
     tag: "Testimony",
   }));
-  const allStories = [...stories, ...dynamicStories];
+  const allStories = dynamicStories;
 
   return (
     <main>
@@ -97,7 +57,7 @@ export default async function TestimoniesPage() {
           </Reveal>
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "rgba(255,247,239,.72)", lineHeight: 1.7, maxWidth: 600, margin: "0 auto" }}>
-              Stories from the Salvation Center family — healing, restoration, answered prayer, and the steady hand of God.
+              Stories from across CACNA's member churches — healing, restoration, answered prayer, and the steady hand of God.
             </p>
           </Reveal>
         </div>
@@ -116,6 +76,11 @@ export default async function TestimoniesPage() {
       {/* Testimonies grid */}
       <section style={{ background: "var(--cream-2)", padding: "clamp(40px,5vw,72px) clamp(20px,5vw,64px) clamp(60px,8vw,100px)" }}>
         <div style={{ maxWidth: 1180, margin: "0 auto" }}>
+          {allStories.length === 0 ? (
+            <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.7, textAlign: "center" }}>
+              No testimonies have been shared yet — be the first to tell us what God has done.
+            </p>
+          ) : (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 22 }}>
             {allStories.map((s, i) => (
               <Reveal key={i} delay={(i % 3) * 80}>
@@ -135,44 +100,7 @@ export default async function TestimoniesPage() {
               </Reveal>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Google Reviews */}
-      <section style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 1180, margin: "0 auto" }}>
-          <Reveal style={{ marginBottom: 40 }}>
-            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "14px 24px", marginBottom: 18 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <div style={{ width: 36, height: 36, borderRadius: "50%", background: "#fff", boxShadow: "0 2px 10px rgba(0,0,0,.12)", display: "grid", placeItems: "center", flexShrink: 0 }}>
-                  <span style={{ fontWeight: 900, fontSize: 20, background: "linear-gradient(135deg,#4285F4 25%,#EA4335 50%,#FBBC05 75%,#34A853)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent", lineHeight: 1 }}>G</span>
-                </div>
-                <div>
-                  <div style={{ fontWeight: 800, fontSize: 24, color: "var(--ink)", lineHeight: 1 }}>4.9</div>
-                  <div style={{ fontSize: 11.5, color: "var(--ink-soft)", fontWeight: 600, marginTop: 1 }}>16 Google reviews</div>
-                </div>
-              </div>
-              <div style={{ fontSize: 22, letterSpacing: 1, color: "#FBBC04", lineHeight: 1 }}>★★★★★</div>
-            </div>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.6vw,46px)", letterSpacing: "-1px", color: "var(--ink)", margin: 0 }}>What our community says</h2>
-          </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 18 }}>
-            {googleReviews.map((r, i) => (
-              <Reveal key={i} delay={(i % 3) * 70}>
-                <article style={{ height: "100%", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 22, padding: "22px 22px 18px", display: "flex", flexDirection: "column", boxShadow: "0 8px 24px rgba(27,19,14,.05)" }}>
-                  <div style={{ fontSize: 17, letterSpacing: 1, color: "#FBBC04", marginBottom: 12 }}>★★★★★</div>
-                  <p style={{ fontSize: 15, color: "var(--ink)", lineHeight: 1.65, margin: "0 0 20px", flex: 1, fontStyle: "italic" }}>&ldquo;{r.quote}&rdquo;</p>
-                  <div style={{ borderTop: "1px solid var(--line)", paddingTop: 14, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-                    <div>
-                      <div style={{ fontWeight: 800, fontSize: 14, color: "var(--ink)" }}>{r.name}</div>
-                      {r.isLocalGuide && <div style={{ fontSize: 10.5, fontWeight: 700, color: "var(--ink-soft)", letterSpacing: "0.5px", marginTop: 2 }}>Local Guide</div>}
-                    </div>
-                    <div style={{ fontSize: 10.5, fontWeight: 700, color: "var(--ink-soft)", letterSpacing: "1px", textTransform: "uppercase" }}>Google</div>
-                  </div>
-                </article>
-              </Reveal>
-            ))}
-          </div>
+          )}
         </div>
       </section>
 

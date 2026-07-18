@@ -11,9 +11,9 @@ import { SITE, SITE_URL, breadcrumbJsonLd } from "@/lib/site";
 export const revalidate = 3600;
 
 export const metadata = {
-  title: "CACNA 2026 Annual Convention — CAC Salvation Center",
+  title: "CACNA 2026 Annual Convention — Christ Apostolic Church North America",
   description:
-    "Join CAC Salvation Center at the 2026 CACNA National Convention — July 13–18 at CAC Village, Blue Ridge Summit, PA. Theme: “The Bible: God’s Message to Man.” Six days of worship, the Word, and the whole CAC family in one place.",
+    "Join CACNA member churches at the 2026 National Convention — July 13–18 at CAC Village, Blue Ridge Summit, PA. Theme: “The Bible: God’s Message to Man.” Six days of worship, the Word, and the whole CAC family in one place.",
   alternates: { canonical: "/events/cacna-2026" },
 };
 
@@ -63,7 +63,7 @@ const packList = [
 
 const logistics = [
   { icon: MapPin, label: "Location", detail: "CAC Village, 14051 Stahley Rd, Blue Ridge Summit, PA 17214" },
-  { icon: Car, label: "Driving from Randallstown", detail: "Approx. 2 hours via I-70 W · Carpooling will be coordinated from the church" },
+  { icon: Car, label: "Carpooling", detail: "Reach out to your local zone or member church to coordinate carpooling to the village" },
   { icon: CalendarDays, label: "Dates", detail: "Monday July 13 – Saturday July 18, 2026" },
   { icon: Clock, label: "Registration", detail: "Opens Monday July 13 · Ministers' prayers the same day" },
 ];
@@ -275,7 +275,7 @@ export default function CACNA2026Page() {
                 ))}
               </div>
               <p style={{ fontSize: 13.5, color: "var(--ink-soft)", marginTop: 20, lineHeight: 1.6 }}>
-                Carpooling from Randallstown will be organised by the church. Speak to any elder or contact the office to join a car.
+                Carpooling is often organized by individual member churches — speak to your zone superintendent to join a car.
               </p>
             </div>
           </Reveal>

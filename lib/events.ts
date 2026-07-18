@@ -56,42 +56,12 @@ export function splitByDate(events: ChurchEvent[]): { upcoming: ChurchEvent[]; p
 
 export const specialEvents: ChurchEvent[] = [
   {
-    id: "good-women-anniversary-2026",
-    title: "2026 Good Women Anniversary",
-    desc: "The Baltimore DCC Good Women mark their annual anniversary — theme: “Who Are You: Mother or Murderer?” (1 Kings 3:16–27). Guest ministers Evang. Mrs Bisi Benson and Evang. Mrs Buky Awosanya, with the BDCC Good Women leadership.",
-    dateLabel: "June 28, 2026", timeLabel: "11:00 AM ET", month: "JUN", day: "28",
-    startLocal: "20260628T110000", endLocal: "20260628T133000",
-    href: "/events/good-women-anniversary", navLabel: "Good Women Anniversary",
-  },
-  {
     id: "cacna-convention-2026",
     title: "CACNA 2026 Annual Convention",
     desc: "Christ Apostolic Church North America Annual Convention — theme “The Bible: God’s Message to Man.” Six days of worship, teaching, and family at CAC Village, 14051 Stahley Rd, Blue Ridge Summit, PA.",
     dateLabel: "July 13–18, 2026", timeLabel: "All week", month: "JUL", day: "13",
     startLocal: "20260713T180000", endLocal: "20260718T220000",
     href: "/events/cacna-2026", navLabel: "CACNA 2026",
-  },
-  {
-    id: "church-anniversary-2026",
-    title: "24th Church Anniversary — Make a Joyful Noise",
-    desc: "Three days celebrating 24 years of God’s faithfulness to CAC Salvation Center — theme “Make a Joyful Noise to the Lord” (Psalm 95:1). Friday revival on Zoom (7:00 PM), a Saturday Star Event (movie time, exciting games, and lunch with the Center), and the Sunday Thanksgiving Service with special choir, youth playlet, and the anointed Word.",
-    dateLabel: "July 24–26, 2026", timeLabel: "Thanksgiving Sun · 10:30 AM ET", month: "JUL", day: "24",
-    startLocal: "20260724T190000", endLocal: "20260726T140000",
-    href: "/events/24th-anniversary", navLabel: "24th Anniversary",
-  },
-  {
-    id: "choir-anniversary-2026",
-    title: "Choir Anniversary",
-    desc: "A special Sunday of praise and thanksgiving celebrating our worship ministry.",
-    dateLabel: "September 3, 2026", timeLabel: "10:30 AM ET", month: "SEP", day: "03",
-    startLocal: "20260903T103000", endLocal: "20260903T123000",
-  },
-  {
-    id: "dcc-anniversary-2026",
-    title: "Baltimore DCC Anniversary",
-    desc: "Celebrating our District Coordinating Council with the wider CAC family.",
-    dateLabel: "October 1, 2026", timeLabel: "10:30 AM ET", month: "OCT", day: "01",
-    startLocal: "20261001T103000", endLocal: "20261001T123000",
   },
   {
     id: "holy-land-pilgrimage-2026",
@@ -105,57 +75,6 @@ export const specialEvents: ChurchEvent[] = [
 
 export const CACNA_LOCATION = "CAC Village, Blue Ridge Summit, PA";
 
-export const weeklyServices: ChurchEvent[] = [
-  {
-    id: "sunday-service",
-    title: "Sunday Worship",
-    desc: "Our main gathering — Spirit-led worship and biblical teaching, onsite and online.",
-    dateLabel: "Every Sunday", timeLabel: "10:30 AM ET",
-    startLocal: "20260628T103000", endLocal: "20260628T123000", recurDay: "SU",
-  },
-  {
-    id: "bible-study",
-    title: "Wednesday Bible Study",
-    desc: "Mid-week scriptural teaching to ground the week in the Word. Join online from anywhere.",
-    dateLabel: "Every Wednesday", timeLabel: "7:00 PM ET",
-    startLocal: "20260624T190000", endLocal: "20260624T203000", recurDay: "WE",
-  },
-  {
-    id: "wakati-itusile",
-    title: "Wakati Itusile",
-    desc: "High-energy Yoruba worship in our mother tongue. Online.",
-    dateLabel: "Every Friday", timeLabel: "7:00 PM ET",
-    startLocal: "20260626T190000", endLocal: "20260626T203000", recurDay: "FR",
-  },
-];
-
-export const monthlyServices: ChurchEvent[] = [
-  {
-    id: "bdcc-youth-fellowship",
-    title: "BDCC Youth Fellowship",
-    desc: "A monthly gathering of the next generation — worship, the Word, and real conversation. On Zoom from anywhere.",
-    dateLabel: "Every 3rd Saturday", timeLabel: "7:00 PM ET",
-    startLocal: "20260620T190000", endLocal: "20260620T203000",
-    recurMonthly: "3SA",
-  },
-  {
-    id: "bdcc-monthly-prayer",
-    title: "BDCC Monthly Prayer Meeting",
-    desc: "The whole house in agreement — intercession, worship, and waiting on the Lord together. Onsite and online.",
-    dateLabel: "Every 3rd Friday", timeLabel: "7:00 PM ET",
-    startLocal: "20260619T190000", endLocal: "20260619T210000",
-    recurMonthly: "3FR",
-  },
-  {
-    id: "crossover-service",
-    title: "Cross Over Service",
-    desc: "Crossing into the new month with the family — a late-night service of thanksgiving, prayer, and prophecy.",
-    dateLabel: "Last day of every month", timeLabel: "10:00 PM ET",
-    startLocal: "20260630T220000", endLocal: "20260701T000000",
-    recurMonthly: "-1",
-  },
-];
-
 export interface AnnualMoment {
   id: string;
   title: string;
@@ -164,13 +83,10 @@ export interface AnnualMoment {
 }
 
 export const annualMoments: AnnualMoment[] = [
+  { id: "cacna-convention", title: "CACNA Annual Convention", when: "July — CAC Village, PA", desc: "Six days of worship, teaching, and family across every CACNA member church — our flagship gathering, onsite and online." },
+  { id: "ministers-retreat", title: "Ministers Retreat", when: "Annually — Regional", desc: "A season of prayer, teaching, and fellowship for CACNA's ministers across the United States and Canada." },
+  { id: "sunday-school-rally", title: "Sunday School Rally", when: "Annually — Regional", desc: "Celebrating and equipping Sunday School departments across every CACNA zone." },
   { id: "macedonia-outreach", title: "Macedonia Outreach", when: "Annually", desc: "An annual mission to forgotten rural ministers in hard-to-reach and unreachable places — carrying the gospel where most cannot go. Follow the journey: @macedonia.outreach on Instagram." },
-  { id: "church-anniversary", title: "Church Anniversary", when: "July — 24 years strong in 2026", desc: "Celebrating God’s faithfulness to the Baltimore-Maryland DCC since 2002. Exact date announced from the pulpit each year." },
-  { id: "graduation-sunday", title: "Graduation Ceremony", when: "August — annually", desc: "Honoring the graduates of our family — high school, college, and beyond. Date set fresh each year." },
-  { id: "mothers-day", title: "Mother’s Day Sunday", when: "2nd Sunday of May", desc: "A Sunday set apart to celebrate and pray over every mother in the house." },
-  { id: "fathers-day", title: "Father’s Day Sunday", when: "3rd Sunday of June", desc: "A Sunday set apart to honor the fathers of the Salvation Center family." },
-  { id: "womens-day", title: "Women’s Day", when: "Annually — date to be announced", desc: "A special service celebrating the women of the Salvation Center." },
-  { id: "pastor-appreciation", title: "Pastor Appreciation", when: "Annually — date to be announced", desc: "A moment as a family to thank God for the shepherds He has given us." },
 ];
 
 function recurRule(ev: ChurchEvent): string | null {
@@ -202,10 +118,10 @@ export function icsDataUri(ev: ChurchEvent): string {
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//CAC Salvation Center//Events//EN",
+    "PRODID:-//CAC North America//Events//EN",
     "CALSCALE:GREGORIAN",
     "BEGIN:VEVENT",
-    `UID:${ev.id}@cacsalvationcenter.org`,
+    `UID:${ev.id}@cacnorthamerica.com`,
     "DTSTAMP:20260101T000000Z",
     `DTSTART;TZID=${TZ}:${ev.startLocal}`,
     `DTEND;TZID=${TZ}:${ev.endLocal}`,
