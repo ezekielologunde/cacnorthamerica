@@ -4,7 +4,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import Link from "next/link";
 import { MapPin, CalendarDays, Car, Package, Clock, Users, Heart, ArrowLeft, Phone, Ticket, Sparkles } from "lucide-react";
-import { specialEvents, googleCalUrl, icsDataUri, isEventPast } from "@/lib/events";
+import { specialEvents, googleCalUrl, icsDataUri, isEventPast, CACNA_REG_URL } from "@/lib/events";
 import { CalendarPlus, Download } from "lucide-react";
 import { SITE, SITE_URL, breadcrumbJsonLd } from "@/lib/site";
 
@@ -18,7 +18,7 @@ export const metadata = {
 };
 
 const ev = specialEvents.find((e) => e.id === "cacna-convention-2026")!;
-const CACNA_REG = "https://cacnaconvention.org/2026-cacna-national-convention-registration-credit-debit-card/";
+const CACNA_REG = CACNA_REG_URL;
 
 const THEME = "The Bible: God’s Message to Man";
 

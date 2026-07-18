@@ -75,6 +75,11 @@ export const specialEvents: ChurchEvent[] = [
 
 export const CACNA_LOCATION = "CAC Village, Blue Ridge Summit, PA";
 
+/** Single source of truth for the live registration link — reused by the
+ *  convention page, the nav, and the site-wide announcement bar so every
+ *  "Register" CTA points at the same place. */
+export const CACNA_REG_URL = "https://cacnaconvention.org/2026-cacna-national-convention-registration-credit-debit-card/";
+
 export interface AnnualMoment {
   id: string;
   title: string;

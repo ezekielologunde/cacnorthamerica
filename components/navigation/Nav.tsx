@@ -1,23 +1,37 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react';
 import { usePathname } from 'next/navigation';
 import { Search } from 'lucide-react';
 import { haptic } from '@/lib/haptics';
 import { SearchModal } from '@/components/ui/SearchModal';
+import { CACNA_REG_URL, specialEvents, isEventPast } from '@/lib/events';
 
 interface NavItem {
   label: string;
   href?: string;
-  dropdown?: { href: string; label: string; desc: string }[];
+  dropdown?: { href: string; label: string; desc: string; external?: boolean }[];
 }
 
+const isExternalHref = (href: string) => href.startsWith('http');
+
 const navItems: NavItem[] = [
+  {
+    label: 'Events & Convention',
+    href: '/events/cacna-2026',
+    dropdown: [
+      { href: CACNA_REG_URL, label: 'Register — CACNA 2026', desc: 'Secure your spot before rates rise', external: true },
+      { href: '/events/cacna-2026', label: 'Convention Details', desc: 'Theme, schedule, venue & travel' },
+      { href: '/events', label: 'Upcoming Events', desc: 'Special gatherings across CACNA' },
+      { href: '/calendar', label: 'Full Calendar', desc: 'CACNA\'s annual rhythm' },
+    ],
+  },
   {
     label: 'Who We Are',
     href: '/about',
     dropdown: [
+      { href: '/about', label: 'About CACNA', desc: 'A region of Christ Apostolic Church Worldwide' },
       { href: '/leadership', label: 'Leadership', desc: 'Meet our regional officers' },
       { href: '/ministries', label: 'Ministries', desc: 'Find your place to serve' },
     ],
@@ -33,14 +47,6 @@ const navItems: NavItem[] = [
       { href: '/prayer', label: 'Prayer', desc: 'Submit a prayer request' },
       { href: '/salvation', label: 'Salvation', desc: 'Accept Christ today' },
       { href: '/testimonies', label: 'Testimonies', desc: 'Stories of what God has done' },
-    ],
-  },
-  {
-    label: 'Events',
-    href: '/events',
-    dropdown: [
-      { href: '/events', label: 'Upcoming Events', desc: 'Special gatherings & the Annual Convention' },
-      { href: '/calendar', label: 'Full Calendar', desc: 'CACNA\'s annual rhythm' },
     ],
   },
   { label: 'Visit', href: '/visit' },
@@ -72,6 +78,15 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [openMobileSection, setOpenMobileSection] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [conventionOpen, setConventionOpen] = useState(true);
+
+  // Convention registration is CACNA's flagship annual CTA — keep it live in
+  // the nav until the event itself has passed, then fall back to the general
+  // Events page instead of an outdated "Register" prompt.
+  useEffect(() => {
+    const cacnaEv = specialEvents.find((e) => e.id === "cacna-convention-2026");
+    setConventionOpen(cacnaEv ? !isEventPast(cacnaEv) : false);
+  }, []);
 
   useEffect(() => {
     const nav = navRef.current;
@@ -195,15 +210,26 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                         border: `1px solid ${dark ? 'rgba(255,255,255,.1)' : 'var(--line)'}`,
                         minWidth: 200,
                       }}>
-                        {item.dropdown.map(d => (
-                          <Link key={d.href} href={d.href} style={{ display: 'block', padding: '10px 14px', borderRadius: 10, textDecoration: 'none', transition: 'background .15s' }}
-                            onMouseEnter={e => (e.currentTarget.style.background = dark ? 'rgba(255,255,255,.06)' : 'var(--cream-2)')}
-                            onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-                          >
-                            <div style={{ fontWeight: 700, fontSize: 14, color: dark ? 'var(--cream)' : 'var(--ink)' }}>{d.label}</div>
-                            <div style={{ fontSize: 12, color: dark ? 'rgba(255,247,239,.5)' : 'var(--ink-soft)', marginTop: 2 }}>{d.desc}</div>
-                          </Link>
-                        ))}
+                        {item.dropdown.map(d => {
+                          const props = {
+                            key: d.href,
+                            style: {
+                              display: 'block', padding: '10px 14px', borderRadius: 10, textDecoration: 'none', transition: 'background .15s',
+                              background: d.external ? (dark ? 'rgba(232,163,61,.12)' : 'var(--cream-2)') : undefined,
+                            } as CSSProperties,
+                            onMouseEnter: (e: MouseEvent<HTMLElement>) => (e.currentTarget.style.background = dark ? 'rgba(255,255,255,.06)' : 'var(--cream-2)'),
+                            onMouseLeave: (e: MouseEvent<HTMLElement>) => (e.currentTarget.style.background = d.external ? (dark ? 'rgba(232,163,61,.12)' : 'var(--cream-2)') : 'transparent'),
+                          };
+                          const content = (
+                            <>
+                              <div style={{ fontWeight: 700, fontSize: 14, color: d.external ? 'var(--gold)' : dark ? 'var(--cream)' : 'var(--ink)' }}>{d.label}</div>
+                              <div style={{ fontSize: 12, color: dark ? 'rgba(255,247,239,.5)' : 'var(--ink-soft)', marginTop: 2 }}>{d.desc}</div>
+                            </>
+                          );
+                          return d.external || isExternalHref(d.href)
+                            ? <a {...props} href={d.href} target="_blank" rel="noopener noreferrer">{content}</a>
+                            : <Link {...props} href={d.href}>{content}</Link>;
+                        })}
                       </div>
                     </div>
                   )}
@@ -233,13 +259,25 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
             >
               <Search size={16} strokeWidth={2} />
             </button>
+            {conventionOpen && (
+              <a
+                href={CACNA_REG_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => haptic('medium')}
+                className="btn-sheen press"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: 'var(--gold)', color: 'var(--ink)', fontWeight: 800, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '0 8px 22px rgba(232,163,61,.4)' }}
+              >
+                Register — CACNA 2026 →
+              </a>
+            )}
             <Link
               href="/online"
               onClick={() => haptic('medium')}
               className="press"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: isLive ? 'var(--red)' : (dark ? 'var(--red)' : 'var(--ink)'), color: 'var(--cream)', fontWeight: 700, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: isLive ? '0 8px 24px rgba(214,41,58,.5)' : 'none' }}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: isLive ? 'var(--red)' : (dark ? 'rgba(255,247,239,.1)' : 'var(--cream-2)'), color: isLive ? 'var(--cream)' : barInk, fontWeight: 700, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: isLive ? '0 8px 24px rgba(214,41,58,.5)' : 'none', border: isLive ? 'none' : `1px solid ${lightBar ? 'rgba(255,247,239,.18)' : 'var(--line)'}` }}
             >
-              <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#ff5252', animation: 'pulse-red 1.8s infinite', display: 'inline-block' }} />
+              <span style={{ width: 7, height: 7, borderRadius: '50%', background: isLive ? '#ff5252' : (lightBar ? 'rgba(255,247,239,.5)' : 'var(--ink-soft)'), animation: isLive ? 'pulse-red 1.8s infinite' : 'none', display: 'inline-block' }} />
               {isLive ? 'LIVE NOW' : 'Watch Live'}
             </Link>
           </div>
@@ -314,16 +352,25 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                   </div>
                   {item.dropdown && mobileOpen && (
                     <div style={{ paddingBottom: 14, display: 'flex', flexDirection: 'column', gap: 4 }}>
-                      {item.dropdown.map(d => (
-                        <Link key={d.href} href={d.href} onClick={() => setOpen(false)} style={{
+                      {item.dropdown.map(d => {
+                        const external = d.external || isExternalHref(d.href);
+                        const style: CSSProperties = {
                           display: 'block', padding: '10px 16px', borderRadius: 12,
                           textDecoration: 'none',
-                          background: dark ? 'rgba(255,255,255,.06)' : 'var(--cream-2)',
-                        }}>
-                          <div style={{ fontWeight: 700, fontSize: 16, color: ink }}>{d.label}</div>
-                          <div style={{ fontSize: 13, color: dark ? 'rgba(255,247,239,.5)' : 'var(--ink-soft)', marginTop: 2 }}>{d.desc}</div>
-                        </Link>
-                      ))}
+                          background: d.external ? (dark ? 'rgba(232,163,61,.14)' : 'rgba(232,163,61,.14)') : (dark ? 'rgba(255,255,255,.06)' : 'var(--cream-2)'),
+                        };
+                        const content = (
+                          <>
+                            <div style={{ fontWeight: d.external ? 800 : 700, fontSize: 16, color: ink }}>{d.label}</div>
+                            <div style={{ fontSize: 13, color: dark ? 'rgba(255,247,239,.5)' : 'var(--ink-soft)', marginTop: 2 }}>{d.desc}</div>
+                          </>
+                        );
+                        return external ? (
+                          <a key={d.href} href={d.href} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)} style={style}>{content}</a>
+                        ) : (
+                          <Link key={d.href} href={d.href} onClick={() => setOpen(false)} style={style}>{content}</Link>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
@@ -332,19 +379,30 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 32 }}>
+            {conventionOpen && (
+              <a
+                href={CACNA_REG_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => { haptic('medium'); setOpen(false); }}
+                className="press"
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'var(--gold)', color: 'var(--ink)', fontWeight: 800, fontSize: 17, padding: '18px 24px', borderRadius: 999, textDecoration: 'none', boxShadow: '0 14px 30px rgba(232,163,61,.4)' }}>
+                Register — CACNA 2026 →
+              </a>
+            )}
             <Link
               href="/online"
               onClick={() => { haptic('medium'); setOpen(false); }}
               className="press"
-              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, background: 'var(--red)', color: '#fff', fontWeight: 700, fontSize: 17, padding: '18px 24px', borderRadius: 999, textDecoration: 'none', boxShadow: '0 14px 30px rgba(214,41,58,.4)' }}>
-              <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#fff', animation: 'pulse-red 1.8s infinite', display: 'inline-block' }} />
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, background: isLive ? 'var(--red)' : 'transparent', color: isLive ? '#fff' : ink, fontWeight: 700, fontSize: 17, padding: '18px 24px', borderRadius: 999, textDecoration: 'none', boxShadow: isLive ? '0 14px 30px rgba(214,41,58,.4)' : 'none', border: isLive ? 'none' : `1.5px solid ${dark ? 'rgba(255,247,239,.3)' : 'var(--ink)'}` }}>
+              <span style={{ width: 9, height: 9, borderRadius: '50%', background: isLive ? '#fff' : (dark ? 'rgba(255,247,239,.5)' : 'var(--ink-soft)'), animation: isLive ? 'pulse-red 1.8s infinite' : 'none', display: 'inline-block' }} />
               {isLive ? 'LIVE NOW' : 'Watch Live'}
             </Link>
-            <Link href="/visit" onClick={() => setOpen(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 17, padding: '18px 24px', borderRadius: 999, textDecoration: 'none', border: `1.5px solid ${dark ? 'rgba(255,247,239,.3)' : 'var(--ink)'}`, color: ink }}>
+            <Link href="/visit" onClick={() => setOpen(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 15, padding: '14px 24px', borderRadius: 999, textDecoration: 'none', color: dark ? 'rgba(255,247,239,.7)' : 'var(--ink-soft)' }}>
               Find a Church
             </Link>
             <p style={{ fontSize: 12.5, color: dark ? 'rgba(255,247,239,.4)' : 'var(--ink-soft)', textAlign: 'center', margin: '8px 0 0' }}>
-              16 Zones · United States &amp; Canada
+              16 Zones · United States &amp; Canada · A region of Christ Apostolic Church Worldwide
             </p>
           </div>
         </div>
