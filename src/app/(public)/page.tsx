@@ -184,7 +184,7 @@ export default async function HomePage() {
             </p>
             <Link
               href="/about"
-              className="mt-6 inline-block text-sm font-semibold text-teal-600 hover:text-teal-500"
+              className="mt-6 inline-block text-sm font-semibold text-rose-600 hover:text-rose-500"
             >
               Read our story →
             </Link>
@@ -206,7 +206,7 @@ export default async function HomePage() {
               <Link
                 key={dept.id}
                 href={`/departments/${dept.slug}`}
-                className="group overflow-hidden rounded-xl border border-navy-800/10 hover:border-violet-500 hover:-translate-y-1 transition-all duration-300"
+                className="group overflow-hidden rounded-xl border border-navy-800/10 hover:border-gold-500 hover:-translate-y-1 transition-all duration-300"
                 style={{ transitionDelay: `${i * 50}ms` }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -216,7 +216,7 @@ export default async function HomePage() {
                   className="h-32 w-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="p-4">
-                  <h3 className="font-serif-display text-base text-navy-900 group-hover:text-violet-600 transition-colors">
+                  <h3 className="font-serif-display text-base text-navy-900 group-hover:text-gold-600 transition-colors">
                     {dept.name}
                   </h3>
                 </div>
@@ -225,7 +225,7 @@ export default async function HomePage() {
           </div>
           <Link
             href="/departments"
-            className="mt-8 inline-block text-sm font-semibold text-teal-600 hover:text-teal-500"
+            className="mt-8 inline-block text-sm font-semibold text-rose-600 hover:text-rose-500"
           >
             View all ministries →
           </Link>
@@ -243,15 +243,15 @@ export default async function HomePage() {
             {SERVICES.map((s, i) => (
               <div
                 key={s.name}
-                className="rounded-xl border border-cream-100/15 p-6 hover:border-transparent hover:bg-gradient-to-br hover:from-coral-500/20 hover:via-violet-500/20 hover:to-teal-500/20 transition-colors"
+                className="rounded-xl border border-cream-100/15 p-6 hover:border-transparent hover:bg-gradient-to-br hover:from-coral-500/20 hover:via-gold-500/20 hover:to-rose-500/20 transition-colors"
               >
                 <p
                   className="inline-block rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide text-navy-950"
                   style={{
                     background: [
                       "var(--color-coral-400)",
-                      "var(--color-teal-400)",
-                      "var(--color-violet-400)",
+                      "var(--color-rose-400)",
+                      "var(--color-gold-400)",
                     ][i % 3],
                   }}
                 >
@@ -304,9 +304,9 @@ export default async function HomePage() {
             return (
               <div
                 key={event.id}
-                className="rounded-xl border border-navy-800/10 p-6 flex gap-4 hover:shadow-lg hover:shadow-violet-500/10 hover:-translate-y-1 transition-all"
+                className="rounded-xl border border-navy-800/10 p-6 flex gap-4 hover:shadow-lg hover:shadow-gold-500/10 hover:-translate-y-1 transition-all"
               >
-                <div className="shrink-0 text-center rounded-lg bg-gradient-to-br from-coral-500 to-violet-500 px-3 py-2 text-cream-100 h-fit">
+                <div className="shrink-0 text-center rounded-lg bg-gradient-to-br from-coral-500 to-gold-500 px-3 py-2 text-cream-100 h-fit">
                   <p className="text-xs font-semibold uppercase">
                     {date.toLocaleString("en-US", { month: "short" })}
                   </p>
@@ -323,7 +323,7 @@ export default async function HomePage() {
                   </p>
                   <Link
                     href={`/events/${event.slug}`}
-                    className="mt-3 inline-block text-sm font-semibold text-teal-600 hover:text-teal-500"
+                    className="mt-3 inline-block text-sm font-semibold text-rose-600 hover:text-rose-500"
                   >
                     Full details →
                   </Link>
@@ -334,7 +334,7 @@ export default async function HomePage() {
         </div>
         <Link
           href="/events"
-          className="mt-8 inline-block text-sm font-semibold text-teal-600 hover:text-teal-500"
+          className="mt-8 inline-block text-sm font-semibold text-rose-600 hover:text-rose-500"
         >
           View all events →
         </Link>
@@ -357,9 +357,9 @@ export default async function HomePage() {
             {churches.map((church) => (
               <div
                 key={church.id}
-                className="rounded-xl bg-cream-100 border border-navy-800/10 p-5 hover:border-teal-400 transition-colors"
+                className="rounded-xl bg-cream-100 border border-navy-800/10 p-5 hover:border-rose-400 transition-colors"
               >
-                <p className="text-xs font-semibold uppercase tracking-wide text-teal-600">
+                <p className="text-xs font-semibold uppercase tracking-wide text-rose-600">
                   {church.city}, {church.region}
                 </p>
                 <h3 className="mt-1 font-serif-display text-lg text-navy-900">
@@ -371,7 +371,7 @@ export default async function HomePage() {
           </div>
           <Link
             href="/churches"
-            className="mt-8 inline-block text-sm font-semibold text-teal-600 hover:text-teal-500"
+            className="mt-8 inline-block text-sm font-semibold text-rose-600 hover:text-rose-500"
           >
             View all member churches →
           </Link>
@@ -388,7 +388,7 @@ export default async function HomePage() {
         </p>
         <Link
           href="/contact"
-          className="mt-6 inline-block rounded-full bg-gradient-to-r from-coral-500 via-violet-500 to-teal-500 px-6 py-3 text-sm font-semibold text-cream-100 shadow-lg hover:scale-105 transition-transform"
+          className="mt-6 inline-block rounded-full bg-gradient-to-r from-coral-500 via-gold-500 to-rose-500 px-6 py-3 text-sm font-semibold text-cream-100 shadow-lg hover:scale-105 transition-transform"
         >
           Plan Your Visit →
         </Link>

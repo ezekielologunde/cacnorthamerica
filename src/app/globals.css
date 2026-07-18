@@ -19,19 +19,15 @@
   --color-cream-100: #faf8f4;
   --color-cream-200: #f2ede1;
 
-  --color-coral-600: #e14f3a;
-  --color-coral-500: #ff6b4a;
-  --color-coral-400: #ff8f6b;
+  --color-coral-600: #c2603f;
+  --color-coral-500: #e2895f;
+  --color-coral-400: #edaa85;
 
-  --color-teal-600: #0d9488;
-  --color-teal-500: #14b8a6;
-  --color-teal-400: #2dd4bf;
+  --color-rose-600: #b06b64;
+  --color-rose-500: #dd9a91;
+  --color-rose-400: #eebfb8;
 
-  --color-violet-600: #7c3aed;
-  --color-violet-500: #9061f9;
-  --color-violet-400: #a78bfa;
-
-  --color-sunshine-400: #ffd166;
+  --color-sunshine-400: #f0c169;
 }
 
 @theme inline {
@@ -57,13 +53,9 @@
   --color-coral-500: var(--color-coral-500);
   --color-coral-400: var(--color-coral-400);
 
-  --color-teal-600: var(--color-teal-600);
-  --color-teal-500: var(--color-teal-500);
-  --color-teal-400: var(--color-teal-400);
-
-  --color-violet-600: var(--color-violet-600);
-  --color-violet-500: var(--color-violet-500);
-  --color-violet-400: var(--color-violet-400);
+  --color-rose-600: var(--color-rose-600);
+  --color-rose-500: var(--color-rose-500);
+  --color-rose-400: var(--color-rose-400);
 
   --color-sunshine-400: var(--color-sunshine-400);
 
@@ -103,19 +95,18 @@ body {
   background: linear-gradient(
     120deg,
     var(--color-coral-500),
-    var(--color-violet-500) 55%,
-    var(--color-teal-500)
+    var(--color-gold-500) 55%,
+    var(--color-rose-500)
   );
   background-size: 220% 220%;
-  animation: hero-gradient-shift 18s ease-in-out infinite;
+  animation: hero-gradient-shift 22s ease-in-out infinite;
 }
 
 .hero-blob {
   position: absolute;
   border-radius: 9999px;
-  filter: blur(60px);
-  opacity: 0.55;
-  mix-blend-mode: screen;
+  filter: blur(70px);
+  opacity: 0.35;
   will-change: transform;
 }
 
@@ -129,7 +120,7 @@ body {
 }
 
 .hero-blob-2 {
-  background: var(--color-teal-400);
+  background: var(--color-rose-400);
   width: 22rem;
   height: 22rem;
   bottom: -8rem;
