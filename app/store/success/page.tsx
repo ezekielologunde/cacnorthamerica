@@ -103,7 +103,7 @@ export default async function StoreSuccessPage({
         background: "var(--ink)", padding: "140px clamp(20px,5vw,64px) 100px",
         position: "relative", overflow: "hidden",
       }}>
-        <div aria-hidden style={{ position: "absolute", top: -80, right: -80, width: 500, height: 400, background: "radial-gradient(circle,rgba(201,162,39,.22),transparent 65%)", pointerEvents: "none" }} />
+        <div aria-hidden style={{ position: "absolute", top: -80, right: -80, width: 500, height: 400, background: "radial-gradient(circle,rgba(253,200,65,.22),transparent 65%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 680, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <div style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center",
@@ -120,9 +120,9 @@ export default async function StoreSuccessPage({
           }}>
             {name ? `Thank you, ${name.split(" ")[0]}.` : "Order confirmed."}
           </h1>
-          <p style={{ fontSize: 18, color: "rgba(244,246,248,.75)", lineHeight: 1.7 }}>
+          <p style={{ fontSize: 18, color: "rgba(245,246,250,.75)", lineHeight: 1.7 }}>
             {email ? (
-              <>Your receipt has been sent to <strong style={{ color: "rgba(244,246,248,.95)" }}>{email}</strong> by Stripe.</>
+              <>Your receipt has been sent to <strong style={{ color: "rgba(245,246,250,.95)" }}>{email}</strong> by Stripe.</>
             ) : (
               "Your receipt has been sent to your email by Stripe."
             )}
@@ -131,7 +131,7 @@ export default async function StoreSuccessPage({
           <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap", marginTop: 28 }}>
             {amountTotal && (
               <div style={{
-                background: "rgba(244,246,248,.07)", border: "1px solid rgba(244,246,248,.14)",
+                background: "rgba(245,246,250,.07)", border: "1px solid rgba(245,246,250,.14)",
                 borderRadius: 16, padding: "14px 28px",
               }}>
                 <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 6 }}>
@@ -144,7 +144,7 @@ export default async function StoreSuccessPage({
             )}
             {orderRef && (
               <div style={{
-                background: "rgba(244,246,248,.07)", border: "1px solid rgba(244,246,248,.14)",
+                background: "rgba(245,246,250,.07)", border: "1px solid rgba(245,246,250,.14)",
                 borderRadius: 16, padding: "14px 28px",
               }}>
                 <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 6 }}>
@@ -233,7 +233,7 @@ export default async function StoreSuccessPage({
               display: "inline-flex", alignItems: "center", gap: 8,
               background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 15,
               padding: "13px 26px", borderRadius: 999, textDecoration: "none",
-              boxShadow: "0 8px 22px rgba(200,30,58,.28)",
+              boxShadow: "0 8px 22px rgba(45,66,201,.28)",
             }}>
               <ShoppingBag size={15} strokeWidth={2} aria-hidden /> Continue shopping
             </Link>

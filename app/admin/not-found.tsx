@@ -9,7 +9,7 @@ export default function AdminNotFound() {
       <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "#dc2626", margin: "0 0 12px" }}>
         404
       </p>
-      <h1 style={{ fontSize: 20, fontWeight: 700, color: "#10161D", margin: "0 0 10px" }}>
+      <h1 style={{ fontSize: 20, fontWeight: 700, color: "#12141E", margin: "0 0 10px" }}>
         Page not found
       </h1>
       <p style={{ fontSize: 14, color: "var(--ink-soft)", maxWidth: 340, margin: "0 auto 28px", lineHeight: 1.6 }}>
@@ -19,7 +19,7 @@ export default function AdminNotFound() {
         href="/admin"
         style={{
           padding: "9px 20px", borderRadius: 8,
-          background: "#10161D", color: "#fff",
+          background: "#12141E", color: "#fff",
           fontWeight: 600, fontSize: 13,
           textDecoration: "none", fontFamily: "inherit",
           display: "inline-block",

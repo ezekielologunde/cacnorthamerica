@@ -55,7 +55,7 @@ function PrayerCard({ item, archived }: { item: PrayerRow; archived: boolean }) 
             <ActionButton style={{
               background: "transparent",
               color: "var(--ink-soft)",
-              border: "1px solid rgba(16,22,29,0.15)",
+              border: "1px solid rgba(18,20,30,0.15)",
               borderRadius: 6,
               padding: "5px 12px",
               fontSize: 12,

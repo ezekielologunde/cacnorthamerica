@@ -67,13 +67,13 @@ export const metadata = {
 
 function AddToCalendar({ ev, dark = false }: { ev: ChurchEvent; dark?: boolean }) {
   const ghost = dark
-    ? { color: "var(--cream)", border: "1.5px solid rgba(244,246,248,.28)", background: "rgba(244,246,248,.06)" }
+    ? { color: "var(--cream)", border: "1.5px solid rgba(245,246,250,.28)", background: "rgba(245,246,250,.06)" }
     : { color: "var(--ink)", border: "1.5px solid var(--line)", background: "var(--paper)" };
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
       <a
         href={googleCalUrl(ev)} target="_blank" rel="noopener noreferrer"
-        className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 14, padding: "11px 18px", borderRadius: 999, textDecoration: "none", boxShadow: "0 8px 20px rgba(200,30,58,.3)" }}
+        className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 14, padding: "11px 18px", borderRadius: 999, textDecoration: "none", boxShadow: "0 8px 20px rgba(45,66,201,.3)" }}
       >
         <CalendarPlus size={16} strokeWidth={2} aria-hidden /> Google Calendar
       </a>
@@ -131,7 +131,7 @@ export default async function EventsPage() {
 
       {/* Hero */}
       <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 90px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -100, right: -80, width: 620, height: 460, background: "radial-gradient(circle,rgba(201,162,39,.22),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 16s ease-in-out infinite" }} />
+        <div style={{ position: "absolute", top: -100, right: -80, width: 620, height: 460, background: "radial-gradient(circle,rgba(253,200,65,.22),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 16s ease-in-out infinite" }} />
         <div style={{ maxWidth: 820, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal from="scale">
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Events</span>
@@ -144,7 +144,7 @@ export default async function EventsPage() {
             </RevealText>
           </h1>
           <Reveal delay={360}>
-            <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "rgba(244,246,248,.72)", lineHeight: 1.7, maxWidth: 540, margin: "0 auto", textWrap: "pretty" }}>
+            <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "rgba(245,246,250,.72)", lineHeight: 1.7, maxWidth: 540, margin: "0 auto", textWrap: "pretty" }}>
               Save CACNA's events straight to your phone — one tap for Google, Apple, or Outlook.
             </p>
           </Reveal>
@@ -165,8 +165,8 @@ export default async function EventsPage() {
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               {upcoming.map((ev, i) => (
                 <Reveal key={ev.id} delay={i * 90}>
-                  <div className="card-lift" style={{ display: "flex", flexWrap: "wrap", gap: "clamp(20px,3vw,36px)", alignItems: "center", background: "var(--paper)", borderRadius: 24, padding: "clamp(22px,3vw,32px)", border: "1px solid var(--line)", boxShadow: "0 14px 34px rgba(16,22,29,.08)" }}>
-                    <div style={{ flexShrink: 0, width: 104, height: 104, borderRadius: 20, background: "linear-gradient(150deg,var(--flame),var(--red))", color: "#fff", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", lineHeight: 1, boxShadow: "0 14px 30px rgba(200,30,58,.3)" }}>
+                  <div className="card-lift" style={{ display: "flex", flexWrap: "wrap", gap: "clamp(20px,3vw,36px)", alignItems: "center", background: "var(--paper)", borderRadius: 24, padding: "clamp(22px,3vw,32px)", border: "1px solid var(--line)", boxShadow: "0 14px 34px rgba(18,20,30,.08)" }}>
+                    <div style={{ flexShrink: 0, width: 104, height: 104, borderRadius: 20, background: "linear-gradient(150deg,var(--flame),var(--red))", color: "#fff", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", lineHeight: 1, boxShadow: "0 14px 30px rgba(45,66,201,.3)" }}>
                       <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: "1.5px" }}>{ev.month}</span>
                       <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 44 }}>{ev.day}</span>
                     </div>
@@ -232,10 +232,10 @@ export default async function EventsPage() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: 18 }}>
             {annualMoments.map((m, i) => (
               <Reveal key={m.id} delay={i * 70}>
-                <div style={{ height: "100%", background: "rgba(244,246,248,.05)", border: "1px solid rgba(244,246,248,.1)", borderRadius: 22, padding: "26px 24px", display: "flex", flexDirection: "column" }}>
+                <div style={{ height: "100%", background: "rgba(245,246,250,.05)", border: "1px solid rgba(245,246,250,.1)", borderRadius: 22, padding: "26px 24px", display: "flex", flexDirection: "column" }}>
                   <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 10 }}>{m.when}</div>
                   <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20, color: "var(--cream)", letterSpacing: "-.4px", margin: "0 0 8px" }}>{m.title}</h3>
-                  <p style={{ fontSize: 14, color: "rgba(244,246,248,.62)", lineHeight: 1.65, margin: 0, flex: 1 }}>{m.desc}</p>
+                  <p style={{ fontSize: 14, color: "rgba(245,246,250,.62)", lineHeight: 1.65, margin: 0, flex: 1 }}>{m.desc}</p>
                 </div>
               </Reveal>
             ))}
@@ -248,9 +248,9 @@ export default async function EventsPage() {
         <Reveal style={{ maxWidth: 900, margin: "0 auto", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
           <div>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,38px)", letterSpacing: "-.6px", color: "var(--cream)", margin: "0 0 8px" }}>Can&apos;t be there in person?</h2>
-            <p style={{ fontSize: 15, color: "rgba(244,246,248,.6)", margin: 0 }}>The Annual Convention streams live — YouTube and Zoom. Never miss a message.</p>
+            <p style={{ fontSize: 15, color: "rgba(245,246,250,.6)", margin: 0 }}>The Annual Convention streams live — YouTube and Zoom. Never miss a message.</p>
           </div>
-          <Link href="/online" className="press btn-sheen" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 15, padding: "15px 28px", borderRadius: 999, textDecoration: "none", whiteSpace: "nowrap", flexShrink: 0, boxShadow: "0 10px 24px rgba(200,30,58,.35)" }}>
+          <Link href="/online" className="press btn-sheen" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 15, padding: "15px 28px", borderRadius: 999, textDecoration: "none", whiteSpace: "nowrap", flexShrink: 0, boxShadow: "0 10px 24px rgba(45,66,201,.35)" }}>
             Watch online →
           </Link>
         </Reveal>

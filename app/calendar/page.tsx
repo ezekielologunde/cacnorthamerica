@@ -14,11 +14,11 @@ export const metadata = {
 
 function AddToCalendar({ ev, dark = false }: { ev: ChurchEvent; dark?: boolean }) {
   const ghost = dark
-    ? { color: "var(--cream)", border: "1.5px solid rgba(244,246,248,.28)", background: "rgba(244,246,248,.06)" }
+    ? { color: "var(--cream)", border: "1.5px solid rgba(245,246,250,.28)", background: "rgba(245,246,250,.06)" }
     : { color: "var(--ink)", border: "1.5px solid var(--line)", background: "var(--paper)" };
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-      <a href={googleCalUrl(ev)} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 14, padding: "11px 18px", borderRadius: 999, textDecoration: "none", boxShadow: "0 8px 20px rgba(200,30,58,.3)" }}>
+      <a href={googleCalUrl(ev)} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 14, padding: "11px 18px", borderRadius: 999, textDecoration: "none", boxShadow: "0 8px 20px rgba(45,66,201,.3)" }}>
         <CalendarPlus size={16} strokeWidth={2} aria-hidden /> Google
       </a>
       <a href={icsDataUri(ev)} download={`${ev.id}.ics`} className="press" style={{ display: "inline-flex", alignItems: "center", gap: 8, fontWeight: 700, fontSize: 14, padding: "11px 18px", borderRadius: 999, textDecoration: "none", ...ghost }}>
@@ -36,7 +36,7 @@ export default function CalendarPage() {
 
       {/* Hero */}
       <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 90px", position: "relative", overflow: "hidden" }}>
-        <div aria-hidden style={{ position: "absolute", top: -100, right: -80, width: 620, height: 460, background: "radial-gradient(circle,rgba(201,162,39,.22),transparent 65%)", pointerEvents: "none" }} />
+        <div aria-hidden style={{ position: "absolute", top: -100, right: -80, width: 620, height: 460, background: "radial-gradient(circle,rgba(253,200,65,.22),transparent 65%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 880, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Calendar</span>
@@ -48,7 +48,7 @@ export default function CalendarPage() {
             </h1>
           </Reveal>
           <Reveal delay={160}>
-            <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "rgba(244,246,248,.72)", lineHeight: 1.7, maxWidth: 580, margin: "0 auto" }}>
+            <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "rgba(245,246,250,.72)", lineHeight: 1.7, maxWidth: 580, margin: "0 auto" }}>
               CACNA's annual rhythm and special gatherings — save any of them to your phone in one tap.
             </p>
           </Reveal>
@@ -64,7 +64,7 @@ export default function CalendarPage() {
           </Reveal>
           {upcomingSpecial.length === 0 ? (
             <Reveal>
-              <p style={{ fontSize: 16, color: "rgba(244,246,248,.6)", lineHeight: 1.7 }}>
+              <p style={{ fontSize: 16, color: "rgba(245,246,250,.6)", lineHeight: 1.7 }}>
                 No special events on the calendar right now — check back soon, or <Link href="/events" style={{ color: "var(--gold)", fontWeight: 700, textDecoration: "none" }}>browse past gatherings</Link>.
               </p>
             </Reveal>
@@ -72,15 +72,15 @@ export default function CalendarPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
             {upcomingSpecial.map((ev, i) => (
               <Reveal key={ev.id} delay={i * 90}>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "clamp(20px,3vw,36px)", alignItems: "center", background: "rgba(244,246,248,.05)", borderRadius: 24, padding: "clamp(22px,3vw,32px)", border: "1px solid rgba(244,246,248,.1)" }}>
-                  <div style={{ flexShrink: 0, width: 104, height: 104, borderRadius: 20, background: "linear-gradient(150deg,var(--flame),var(--red))", color: "#fff", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", lineHeight: 1, boxShadow: "0 14px 30px rgba(200,30,58,.3)" }}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "clamp(20px,3vw,36px)", alignItems: "center", background: "rgba(245,246,250,.05)", borderRadius: 24, padding: "clamp(22px,3vw,32px)", border: "1px solid rgba(245,246,250,.1)" }}>
+                  <div style={{ flexShrink: 0, width: 104, height: 104, borderRadius: 20, background: "linear-gradient(150deg,var(--flame),var(--red))", color: "#fff", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", lineHeight: 1, boxShadow: "0 14px 30px rgba(45,66,201,.3)" }}>
                     <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: "1.5px" }}>{ev.month}</span>
                     <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 44 }}>{ev.day}</span>
                   </div>
                   <div style={{ flex: "1 1 280px", minWidth: 0 }}>
                     <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,2.6vw,30px)", letterSpacing: "-.5px", color: "var(--cream)", margin: "0 0 6px" }}>{ev.title}</h3>
                     <div style={{ fontSize: 14, fontWeight: 700, color: "var(--gold)", marginBottom: 10 }}>{ev.dateLabel} · {ev.timeLabel}</div>
-                    <p style={{ fontSize: 15.5, color: "rgba(244,246,248,.7)", lineHeight: 1.65, margin: "0 0 18px" }}>{ev.desc}</p>
+                    <p style={{ fontSize: 15.5, color: "rgba(245,246,250,.7)", lineHeight: 1.65, margin: "0 0 18px" }}>{ev.desc}</p>
                     <AddToCalendar ev={ev} dark />
                     {ev.href && (
                       <Link href={ev.href} className="press" style={{ display: "inline-flex", alignItems: "center", gap: 7, marginTop: 16, fontSize: 14, fontWeight: 700, color: "var(--gold)", textDecoration: "none" }}>
@@ -107,7 +107,7 @@ export default function CalendarPage() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 14 }}>
             {annualMoments.map((m, i) => (
               <Reveal key={m.id} delay={(i % 3) * 70}>
-                <div style={{ height: "100%", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, padding: "22px 22px 24px", boxShadow: "0 6px 18px rgba(16,22,29,.04)" }}>
+                <div style={{ height: "100%", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, padding: "22px 22px 24px", boxShadow: "0 6px 18px rgba(18,20,30,.04)" }}>
                   <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 8 }}>{m.when}</div>
                   <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 19, letterSpacing: "-.3px", color: "var(--ink)", margin: "0 0 8px", lineHeight: 1.2 }}>{m.title}</h3>
                   <p style={{ fontSize: 13.5, color: "var(--ink-soft)", lineHeight: 1.6, margin: 0 }}>{m.desc}</p>

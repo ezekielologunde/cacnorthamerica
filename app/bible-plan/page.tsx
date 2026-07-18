@@ -34,13 +34,13 @@ export default function BiblePlanPage() {
 
       {/* Hero — flyer-style branding strip + big title */}
       <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 90px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -120, left: "50%", transform: "translateX(-50%)", width: 820, height: 480, background: "radial-gradient(circle,rgba(201,162,39,.22),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 16s ease-in-out infinite" }} />
+        <div style={{ position: "absolute", top: -120, left: "50%", transform: "translateX(-50%)", width: 820, height: 480, background: "radial-gradient(circle,rgba(253,200,65,.22),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 16s ease-in-out infinite" }} />
         <div style={{ maxWidth: 920, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal from="scale">
-            <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 6, padding: "14px 22px", border: "1px solid rgba(201,162,39,.35)", borderRadius: 14, background: "rgba(201,162,39,.05)" }}>
+            <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 6, padding: "14px 22px", border: "1px solid rgba(253,200,65,.35)", borderRadius: 14, background: "rgba(253,200,65,.05)" }}>
               <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "3.5px", textTransform: "uppercase", color: "var(--gold)" }}>CACNA</span>
-              <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: "rgba(244,246,248,.7)" }}>One Fold, One Shepherd</span>
-              <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: ".5px", color: "rgba(244,246,248,.55)" }}>{addressLine}</span>
+              <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: "rgba(245,246,250,.7)" }}>One Fold, One Shepherd</span>
+              <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: ".5px", color: "rgba(245,246,250,.55)" }}>{addressLine}</span>
               <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--flame)" }}>John 10:16</span>
             </div>
           </Reveal>
@@ -52,7 +52,7 @@ export default function BiblePlanPage() {
             </RevealText>
           </h1>
           <Reveal delay={360}>
-            <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "rgba(244,246,248,.72)", lineHeight: 1.7, maxWidth: 620, margin: "20px auto 0", textWrap: "pretty" }}>
+            <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "rgba(245,246,250,.72)", lineHeight: 1.7, maxWidth: 620, margin: "20px auto 0", textWrap: "pretty" }}>
               Sunday through Thursday in Scripture, with every Friday set aside to listen to what God has been saying to you this week.
             </p>
           </Reveal>
@@ -95,9 +95,9 @@ export default function BiblePlanPage() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))", gap: 22 }}>
             {[...bibleReadingPlan].sort((a, b) => b.week - a.week).map((w, i) => (
               <Reveal key={w.week} delay={i * 70}>
-                <article className="card-lift" style={{ height: "100%", background: "var(--paper)", borderRadius: 22, border: "1px solid var(--line)", boxShadow: "0 14px 34px rgba(16,22,29,.08)", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+                <article className="card-lift" style={{ height: "100%", background: "var(--paper)", borderRadius: 22, border: "1px solid var(--line)", boxShadow: "0 14px 34px rgba(18,20,30,.08)", overflow: "hidden", display: "flex", flexDirection: "column" }}>
                   {/* Header strip */}
-                  <header style={{ padding: "22px 26px 18px", borderBottom: "1px solid var(--line)", background: "linear-gradient(180deg,rgba(201,162,39,.06),transparent)" }}>
+                  <header style={{ padding: "22px 26px 18px", borderBottom: "1px solid var(--line)", background: "linear-gradient(180deg,rgba(253,200,65,.06),transparent)" }}>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
                       <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>
                         Week {pad(w.week)}
@@ -114,7 +114,7 @@ export default function BiblePlanPage() {
                   {/* Day list */}
                   <ol style={{ listStyle: "none", padding: "8px 0", margin: 0, flex: 1 }}>
                     {DAYS.map(({ key, label }) => (
-                      <li key={key} style={{ display: "grid", gridTemplateColumns: "82px 1fr", gap: 12, padding: "12px 26px", borderBottom: "1px solid rgba(16,22,29,.05)" }}>
+                      <li key={key} style={{ display: "grid", gridTemplateColumns: "82px 1fr", gap: 12, padding: "12px 26px", borderBottom: "1px solid rgba(18,20,30,.05)" }}>
                         <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "1.8px", textTransform: "uppercase", color: "var(--flame)", paddingTop: 2 }}>{label}</span>
                         <span style={{ fontSize: 14.5, color: "var(--ink)", lineHeight: 1.6 }}>{w[key]}</span>
                       </li>
@@ -153,7 +153,7 @@ export default function BiblePlanPage() {
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,52px)", letterSpacing: "-0.02em", color: "var(--cream)", margin: "14px 0 0", lineHeight: 1.05 }}>
               Pair it with the daily devotional.
             </h2>
-            <p style={{ fontSize: 16, color: "rgba(244,246,248,.7)", maxWidth: 520, margin: "16px auto 0", lineHeight: 1.7 }}>
+            <p style={{ fontSize: 16, color: "rgba(245,246,250,.7)", maxWidth: 520, margin: "16px auto 0", lineHeight: 1.7 }}>
               Reflections that line up with the readings — carry a word into your commute, your kitchen, or your stillness on Fridays.
             </p>
           </Reveal>
@@ -161,7 +161,7 @@ export default function BiblePlanPage() {
             <Link
               href="/devotional"
               className="btn-sheen press"
-              style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "linear-gradient(120deg,#1E3A8A,#C81E3A,#7A1128)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "16px 28px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 36px rgba(200,30,58,.34)" }}
+              style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "linear-gradient(120deg,#F0742F,#2D42C9,#1D2B83)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "16px 28px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 36px rgba(45,66,201,.34)" }}
             >
               Open the devotional →
             </Link>

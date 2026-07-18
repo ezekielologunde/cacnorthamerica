@@ -125,19 +125,19 @@ export function SiteOverlays({ bannerAnn }: { bannerAnn?: BannerAnn | null }) {
           onBlur={() => setBarPaused(false)}
           style={{
             position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000,
-            background: '#10161D', height: 44,
+            background: '#12141E', height: 44,
             display: 'flex', alignItems: 'center',
             padding: '0 clamp(16px,4vw,48px)', gap: 12,
           }}
         >
-          <div aria-hidden style={{ width: 7, height: 7, borderRadius: '50%', background: '#C9A227', flexShrink: 0 }} />
+          <div aria-hidden style={{ width: 7, height: 7, borderRadius: '50%', background: '#FDC841', flexShrink: 0 }} />
           <div key={currentBarEvent.id} style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1, minWidth: 0, animation: 'barFade .5s ease' }}>
-            <span style={{ color: 'rgba(244,246,248,.9)', fontSize: 13, fontWeight: 600, flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <span style={{ color: 'rgba(245,246,250,.9)', fontSize: 13, fontWeight: 600, flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {currentBarEvent.navLabel ?? currentBarEvent.title} · {currentBarEvent.dateLabel}
             </span>
             <Link
               href={currentBarEvent.href!}
-              style={{ color: '#C9A227', fontSize: 13, fontWeight: 800, textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0 }}
+              style={{ color: '#FDC841', fontSize: 13, fontWeight: 800, textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0 }}
             >
               Learn more →
             </Link>
@@ -145,7 +145,7 @@ export function SiteOverlays({ bannerAnn }: { bannerAnn?: BannerAnn | null }) {
           <button
             onClick={dismissBar}
             aria-label="Dismiss announcement"
-            style={{ background: 'none', border: 'none', color: 'rgba(244,246,248,.4)', cursor: 'pointer', fontSize: 20, lineHeight: 1, padding: '0 0 0 8px', flexShrink: 0 }}
+            style={{ background: 'none', border: 'none', color: 'rgba(245,246,250,.4)', cursor: 'pointer', fontSize: 20, lineHeight: 1, padding: '0 0 0 8px', flexShrink: 0 }}
           >
             ×
           </button>
@@ -160,7 +160,7 @@ export function SiteOverlays({ bannerAnn }: { bannerAnn?: BannerAnn | null }) {
           style={{
             position: 'fixed', bottom: 24, right: 24, zIndex: 850,
             background: '#fff', borderRadius: 18, maxWidth: 280,
-            border: '1px solid rgba(16,22,29,.1)',
+            border: '1px solid rgba(18,20,30,.1)',
             boxShadow: '0 16px 48px rgba(0,0,0,.18)',
             padding: '20px 20px 18px',
           }}
@@ -173,9 +173,9 @@ export function SiteOverlays({ bannerAnn }: { bannerAnn?: BannerAnn | null }) {
             ×
           </button>
           <div style={{ width: 38, height: 38, background: '#FCEBEB', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
-            <Heart size={18} strokeWidth={2} color="#C81E3A" aria-hidden />
+            <Heart size={18} strokeWidth={2} color="#2D42C9" aria-hidden />
           </div>
-          <div style={{ fontWeight: 800, fontSize: 15, color: '#10161D', marginBottom: 6 }}>Need prayer?</div>
+          <div style={{ fontWeight: 800, fontSize: 15, color: '#12141E', marginBottom: 6 }}>Need prayer?</div>
           <p style={{ fontSize: 13, color: '#5f5e5a', lineHeight: 1.6, marginBottom: 14 }}>
             Share your request and our pastors will pray with you this week.
           </p>
@@ -183,13 +183,13 @@ export function SiteOverlays({ bannerAnn }: { bannerAnn?: BannerAnn | null }) {
             <Link
               href="/prayer"
               onClick={() => setSlide(false)}
-              style={{ flex: 1, textAlign: 'center', background: '#C81E3A', color: '#fff', fontWeight: 700, fontSize: 13, padding: '9px 14px', borderRadius: 20, textDecoration: 'none' }}
+              style={{ flex: 1, textAlign: 'center', background: '#2D42C9', color: '#fff', fontWeight: 700, fontSize: 13, padding: '9px 14px', borderRadius: 20, textDecoration: 'none' }}
             >
               Send request
             </Link>
             <button
               onClick={() => setSlide(false)}
-              style={{ background: '#f4f3f1', color: '#10161D', fontWeight: 600, fontSize: 13, border: 'none', padding: '9px 14px', borderRadius: 20, cursor: 'pointer' }}
+              style={{ background: '#f4f3f1', color: '#12141E', fontWeight: 600, fontSize: 13, border: 'none', padding: '9px 14px', borderRadius: 20, cursor: 'pointer' }}
             >
               Not now
             </button>

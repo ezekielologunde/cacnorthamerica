@@ -86,7 +86,7 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
         onClick={onClose}
         style={{
           position: 'fixed', inset: 0, zIndex: 200,
-          background: 'rgba(16,22,29,.68)',
+          background: 'rgba(18,20,30,.68)',
           backdropFilter: 'blur(6px)',
         }}
       />
@@ -102,7 +102,7 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
           width: 'min(600px, calc(100vw - 32px))',
           background: 'var(--paper)',
           borderRadius: 20,
-          boxShadow: '0 28px 80px rgba(16,22,29,.3)',
+          boxShadow: '0 28px 80px rgba(18,20,30,.3)',
           border: '1px solid var(--line)',
           overflow: 'hidden',
         }}

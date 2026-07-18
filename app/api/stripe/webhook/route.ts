@@ -33,9 +33,9 @@ function buildOrderEmail(session: Stripe.Checkout.Session): string {
         .map(
           (li) => `
           <tr>
-            <td style="padding:10px 16px;font-size:14px;color:#10161D;border-bottom:1px solid #ede9e4">${li.description ?? "Item"}</td>
+            <td style="padding:10px 16px;font-size:14px;color:#12141E;border-bottom:1px solid #ede9e4">${li.description ?? "Item"}</td>
             <td style="padding:10px 16px;font-size:14px;color:#5f5e5a;text-align:center;border-bottom:1px solid #ede9e4">${li.quantity ?? 1}</td>
-            <td style="padding:10px 16px;font-size:14px;font-weight:700;color:#10161D;text-align:right;border-bottom:1px solid #ede9e4">${fmt(li.amount_total ?? 0)}</td>
+            <td style="padding:10px 16px;font-size:14px;font-weight:700;color:#12141E;text-align:right;border-bottom:1px solid #ede9e4">${fmt(li.amount_total ?? 0)}</td>
           </tr>`
         )
         .join("")
@@ -43,8 +43,8 @@ function buildOrderEmail(session: Stripe.Checkout.Session): string {
 
   const shippingBlock = address
     ? `<div style="margin-top:24px;background:#f9f8f6;border-radius:10px;padding:16px 20px">
-        <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#C9A227;margin-bottom:8px">Shipping to</div>
-        <div style="font-size:14px;color:#10161D;line-height:1.7">
+        <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#FDC841;margin-bottom:8px">Shipping to</div>
+        <div style="font-size:14px;color:#12141E;line-height:1.7">
           ${name ? `${name}<br>` : ""}
           ${address.line1 ?? ""}${address.line2 ? `, ${address.line2}` : ""}<br>
           ${address.city ?? ""}, ${address.state ?? ""} ${address.postal_code ?? ""}<br>
@@ -59,12 +59,12 @@ function buildOrderEmail(session: Stripe.Checkout.Session): string {
 <body style="margin:0;padding:0;background:#f0ede8;font-family:Georgia,serif">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0ede8;padding:40px 16px">
     <tr><td align="center">
-      <table width="100%" style="max-width:580px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(16,22,29,.1)">
+      <table width="100%" style="max-width:580px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(18,20,30,.1)">
 
         <!-- Header -->
         <tr>
-          <td style="background:#10161D;padding:28px 32px">
-            <div style="font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#C9A227;margin-bottom:6px">CACNA</div>
+          <td style="background:#12141E;padding:28px 32px">
+            <div style="font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#FDC841;margin-bottom:6px">CACNA</div>
             <div style="font-size:26px;font-weight:700;color:#fff;line-height:1.2">Your order is confirmed 🙏</div>
           </td>
         </tr>
@@ -72,7 +72,7 @@ function buildOrderEmail(session: Stripe.Checkout.Session): string {
         <!-- Greeting -->
         <tr>
           <td style="padding:28px 32px 0">
-            <p style="margin:0;font-size:16px;color:#10161D;line-height:1.7">${greeting}</p>
+            <p style="margin:0;font-size:16px;color:#12141E;line-height:1.7">${greeting}</p>
             <p style="margin:12px 0 0;font-size:15px;color:#5f5e5a;line-height:1.7">
               Thank you for your purchase — your support means everything to the ministry.
               Here's a summary of what you ordered.
@@ -94,8 +94,8 @@ function buildOrderEmail(session: Stripe.Checkout.Session): string {
               <tbody>${itemRows}</tbody>
             </table>
             <div style="margin-top:12px;text-align:right">
-              <div style="background:#10161D;display:inline-block;padding:12px 20px;border-radius:10px">
-                <span style="font-size:12px;color:rgba(244,246,248,.6);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:4px">Order total</span>
+              <div style="background:#12141E;display:inline-block;padding:12px 20px;border-radius:10px">
+                <span style="font-size:12px;color:rgba(245,246,250,.6);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:4px">Order total</span>
                 <span style="font-size:24px;font-weight:700;color:#fff">${fmt(total)}</span>
               </div>
             </div>
@@ -110,21 +110,21 @@ function buildOrderEmail(session: Stripe.Checkout.Session): string {
         <!-- What happens next -->
         <tr>
           <td style="padding:28px 32px 0">
-            <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#C81E3A;margin-bottom:16px">What happens next</div>
+            <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#2D42C9;margin-bottom:16px">What happens next</div>
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
                 <td style="padding:12px 0;border-bottom:1px solid #ede9e4;vertical-align:top;width:28px">
-                  <div style="width:24px;height:24px;background:#f9f8f6;border-radius:50%;font-size:12px;font-weight:700;color:#C81E3A;text-align:center;line-height:24px">1</div>
+                  <div style="width:24px;height:24px;background:#f9f8f6;border-radius:50%;font-size:12px;font-weight:700;color:#2D42C9;text-align:center;line-height:24px">1</div>
                 </td>
-                <td style="padding:12px 0 12px 12px;border-bottom:1px solid #ede9e4;font-size:14px;color:#10161D;line-height:1.6">
+                <td style="padding:12px 0 12px 12px;border-bottom:1px solid #ede9e4;font-size:14px;color:#12141E;line-height:1.6">
                   <strong>Physical items</strong> ship within 5 business days to the address you provided.
                 </td>
               </tr>
               <tr>
                 <td style="padding:12px 0;vertical-align:top;width:28px">
-                  <div style="width:24px;height:24px;background:#f9f8f6;border-radius:50%;font-size:12px;font-weight:700;color:#C81E3A;text-align:center;line-height:24px">2</div>
+                  <div style="width:24px;height:24px;background:#f9f8f6;border-radius:50%;font-size:12px;font-weight:700;color:#2D42C9;text-align:center;line-height:24px">2</div>
                 </td>
-                <td style="padding:12px 0 12px 12px;font-size:14px;color:#10161D;line-height:1.6">
+                <td style="padding:12px 0 12px 12px;font-size:14px;color:#12141E;line-height:1.6">
                   <strong>Questions?</strong> Reach us on WhatsApp at
                   <a href="https://wa.me/14432726794" style="color:#25D366;font-weight:700;text-decoration:none"> +1 (443) 272-6794</a>
                   with your order details.
@@ -142,7 +142,7 @@ function buildOrderEmail(session: Stripe.Checkout.Session): string {
               We are grateful for you. 🙏
             </p>
             <p style="margin:12px 0 0;font-size:12px;color:#aaa">
-              <a href="https://cacnorthamerica.com" style="color:#C81E3A;text-decoration:none;font-weight:700">cacnorthamerica.com</a>
+              <a href="https://cacnorthamerica.com" style="color:#2D42C9;text-decoration:none;font-weight:700">cacnorthamerica.com</a>
               &nbsp;·&nbsp; Blue Ridge Summit, Pennsylvania
             </p>
           </td>
@@ -196,9 +196,9 @@ async function sendStaffOrderEmail(session: Stripe.Checkout.Session): Promise<vo
           .map(
             (li) => `
             <tr>
-              <td style="padding:8px 12px;font-size:13px;color:#10161D;border-bottom:1px solid #ede9e4">${li.description ?? "Item"}</td>
+              <td style="padding:8px 12px;font-size:13px;color:#12141E;border-bottom:1px solid #ede9e4">${li.description ?? "Item"}</td>
               <td style="padding:8px 12px;font-size:13px;color:#5f5e5a;text-align:center;border-bottom:1px solid #ede9e4">${li.quantity ?? 1}</td>
-              <td style="padding:8px 12px;font-size:13px;font-weight:700;color:#10161D;text-align:right;border-bottom:1px solid #ede9e4">${fmt(li.amount_total ?? 0)}</td>
+              <td style="padding:8px 12px;font-size:13px;font-weight:700;color:#12141E;text-align:right;border-bottom:1px solid #ede9e4">${fmt(li.amount_total ?? 0)}</td>
             </tr>`
           )
           .join("")
@@ -206,8 +206,8 @@ async function sendStaffOrderEmail(session: Stripe.Checkout.Session): Promise<vo
 
     const shippingBlock = shipping?.address
       ? `<div style="margin-top:16px">
-          <div style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#C9A227;margin-bottom:6px">Ship to</div>
-          <div style="font-size:13px;color:#10161D;line-height:1.6">
+          <div style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#FDC841;margin-bottom:6px">Ship to</div>
+          <div style="font-size:13px;color:#12141E;line-height:1.6">
             ${shipping.name ? `${shipping.name}<br>` : ""}
             ${shipping.address.line1 ?? ""}${shipping.address.line2 ? `, ${shipping.address.line2}` : ""}<br>
             ${shipping.address.city ?? ""}, ${shipping.address.state ?? ""} ${shipping.address.postal_code ?? ""}<br>
@@ -225,21 +225,21 @@ async function sendStaffOrderEmail(session: Stripe.Checkout.Session): Promise<vo
     const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#f0ede8;font-family:Georgia,serif">
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0ede8;padding:32px 16px"><tr><td align="center">
-<table width="100%" style="max-width:560px;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(16,22,29,.08)">
-<tr><td style="background:#10161D;padding:24px 28px">
-  <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#C9A227;margin-bottom:4px">CACNA — Staff</div>
+<table width="100%" style="max-width:560px;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(18,20,30,.08)">
+<tr><td style="background:#12141E;padding:24px 28px">
+  <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#FDC841;margin-bottom:4px">CACNA — Staff</div>
   <div style="font-size:22px;font-weight:700;color:#fff">New Store Order</div>
 </td></tr>
 <tr><td style="padding:24px 28px">
   ${testModeBanner}
-  <div style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#C9A227;margin-bottom:8px">Customer</div>
-  <table cellpadding="0" cellspacing="0" style="font-size:13px;color:#10161D;line-height:1.7">
+  <div style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#FDC841;margin-bottom:8px">Customer</div>
+  <table cellpadding="0" cellspacing="0" style="font-size:13px;color:#12141E;line-height:1.7">
     ${name ? `<tr><td style="padding-right:12px;color:#5f5e5a">Name</td><td>${name}</td></tr>` : ""}
-    <tr><td style="padding-right:12px;color:#5f5e5a">Email</td><td><a href="mailto:${email}" style="color:#C81E3A">${email}</a></td></tr>
+    <tr><td style="padding-right:12px;color:#5f5e5a">Email</td><td><a href="mailto:${email}" style="color:#2D42C9">${email}</a></td></tr>
     ${phone ? `<tr><td style="padding-right:12px;color:#5f5e5a">Phone</td><td>${phone}</td></tr>` : ""}
   </table>
   <div style="margin-top:20px">
-    <div style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#C9A227;margin-bottom:8px">Items</div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#FDC841;margin-bottom:8px">Items</div>
     <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid #ede9e4;border-radius:8px;overflow:hidden">
       <thead><tr style="background:#f9f8f6">
         <th style="padding:8px 12px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#5f5e5a;text-align:left">Item</th>
@@ -248,13 +248,13 @@ async function sendStaffOrderEmail(session: Stripe.Checkout.Session): Promise<vo
       </tr></thead>
       <tbody>${itemRows}</tbody>
     </table>
-    <div style="margin-top:10px;text-align:right;font-size:15px;font-weight:700;color:#10161D">Total: ${fmt(total)}</div>
+    <div style="margin-top:10px;text-align:right;font-size:15px;font-weight:700;color:#12141E">Total: ${fmt(total)}</div>
   </div>
   ${shippingBlock}
-  <div style="margin-top:24px"><a href="https://www.cacnorthamerica.com/admin/orders" style="display:inline-block;background:#C81E3A;color:#fff;font-size:13px;font-weight:700;text-decoration:none;padding:10px 20px;border-radius:8px">View in Admin</a></div>
+  <div style="margin-top:24px"><a href="https://www.cacnorthamerica.com/admin/orders" style="display:inline-block;background:#2D42C9;color:#fff;font-size:13px;font-weight:700;text-decoration:none;padding:10px 20px;border-radius:8px">View in Admin</a></div>
 </td></tr>
 <tr><td style="padding:16px 28px;border-top:1px solid #ede9e4">
-  <p style="margin:0;font-size:12px;color:#aaa"><a href="https://cacnorthamerica.com" style="color:#C81E3A;text-decoration:none;font-weight:700">cacnorthamerica.com</a> &nbsp;·&nbsp; Blue Ridge Summit, Pennsylvania</p>
+  <p style="margin:0;font-size:12px;color:#aaa"><a href="https://cacnorthamerica.com" style="color:#2D42C9;text-decoration:none;font-weight:700">cacnorthamerica.com</a> &nbsp;·&nbsp; Blue Ridge Summit, Pennsylvania</p>
 </td></tr>
 </table></td></tr></table></body></html>`;
 
@@ -301,8 +301,8 @@ async function sendDownloadEmail(
       if (!url) return null;
       return `
         <div style="background:#F9F8F6;border-radius:12px;padding:18px 22px;margin-bottom:12px">
-          <div style="font-size:14px;font-weight:700;color:#10161D;margin-bottom:8px">${li.description}</div>
-          <a href="${url}" style="display:inline-block;background:#10161D;color:#fff;font-size:13px;font-weight:700;text-decoration:none;padding:9px 18px;border-radius:8px">
+          <div style="font-size:14px;font-weight:700;color:#12141E;margin-bottom:8px">${li.description}</div>
+          <a href="${url}" style="display:inline-block;background:#12141E;color:#fff;font-size:13px;font-weight:700;text-decoration:none;padding:9px 18px;border-radius:8px">
             Download file →
           </a>
         </div>`;
@@ -316,26 +316,26 @@ async function sendDownloadEmail(
   const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#f0ede8;font-family:Georgia,serif">
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0ede8;padding:40px 16px"><tr><td align="center">
-<table width="100%" style="max-width:580px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(16,22,29,.1)">
-<tr><td style="background:#10161D;padding:28px 32px">
-  <div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#C9A227;margin-bottom:6px">CACNA</div>
+<table width="100%" style="max-width:580px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(18,20,30,.1)">
+<tr><td style="background:#12141E;padding:28px 32px">
+  <div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#FDC841;margin-bottom:6px">CACNA</div>
   <div style="font-size:26px;font-weight:700;color:#fff;line-height:1.2">Your download is ready 🎵</div>
 </td></tr>
 <tr><td style="padding:28px 32px">
-  <p style="margin:0 0 8px;font-size:16px;color:#10161D;line-height:1.7">${greeting}</p>
+  <p style="margin:0 0 8px;font-size:16px;color:#12141E;line-height:1.7">${greeting}</p>
   <p style="margin:0 0 24px;font-size:15px;color:#5f5e5a;line-height:1.7">Thank you for your purchase. Click the button below to download your file.</p>
   ${downloadRows}
   <div style="margin-top:24px;background:#f9f8f6;border-radius:10px;padding:16px 20px">
     <p style="font-size:13px;color:#5f5e5a;margin:0;line-height:1.7">
       Questions? Reach us on WhatsApp at
       <a href="https://wa.me/14432726794" style="color:#25D366;font-weight:700;text-decoration:none">+1 (443) 272-6794</a>
-      or email <a href="mailto:info@cacnorthamerica.com" style="color:#C81E3A;text-decoration:none">info@cacnorthamerica.com</a>.
+      or email <a href="mailto:info@cacnorthamerica.com" style="color:#2D42C9;text-decoration:none">info@cacnorthamerica.com</a>.
     </p>
   </div>
 </td></tr>
 <tr><td style="padding:16px 32px;border-top:1px solid #ede9e4">
   <p style="margin:0;font-size:12px;color:#aaa">
-    <a href="https://cacnorthamerica.com" style="color:#C81E3A;text-decoration:none;font-weight:700">cacnorthamerica.com</a>
+    <a href="https://cacnorthamerica.com" style="color:#2D42C9;text-decoration:none;font-weight:700">cacnorthamerica.com</a>
     &nbsp;·&nbsp; Blue Ridge Summit, Pennsylvania
   </p>
 </td></tr>
@@ -374,23 +374,23 @@ async function sendRefundEmails(charge: Stripe.Charge): Promise<void> {
 <body style="margin:0;padding:0;background:#f0ede8;font-family:Georgia,serif">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0ede8;padding:40px 16px">
     <tr><td align="center">
-      <table width="100%" style="max-width:560px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(16,22,29,.1)">
+      <table width="100%" style="max-width:560px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(18,20,30,.1)">
         <tr>
-          <td style="background:#10161D;padding:28px 32px">
-            <div style="font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#C9A227;margin-bottom:6px">CACNA</div>
+          <td style="background:#12141E;padding:28px 32px">
+            <div style="font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#FDC841;margin-bottom:6px">CACNA</div>
             <div style="font-size:26px;font-weight:700;color:#fff;line-height:1.2">Your refund has been processed</div>
           </td>
         </tr>
         <tr>
           <td style="padding:28px 32px">
-            <p style="margin:0;font-size:16px;color:#10161D;line-height:1.7">${greeting}</p>
+            <p style="margin:0;font-size:16px;color:#12141E;line-height:1.7">${greeting}</p>
             <p style="margin:12px 0 0;font-size:15px;color:#5f5e5a;line-height:1.7">
               We've processed a refund of <strong>${fmt(refundedAmt)}</strong>
               ${refundedAmt < originalAmt ? ` (partial refund; original charge was ${fmt(originalAmt)})` : ""}.
             </p>
             <div style="margin:24px 0;background:#f9f8f6;border-radius:10px;padding:20px 24px">
-              <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#C9A227;margin-bottom:8px">Refund amount</div>
-              <div style="font-size:28px;font-weight:700;color:#10161D">${fmt(refundedAmt)}</div>
+              <div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#FDC841;margin-bottom:8px">Refund amount</div>
+              <div style="font-size:28px;font-weight:700;color:#12141E">${fmt(refundedAmt)}</div>
             </div>
             <p style="margin:0;font-size:14px;color:#5f5e5a;line-height:1.7">
               Refunds typically appear on your statement within <strong>5–7 business days</strong>,
@@ -405,7 +405,7 @@ async function sendRefundEmails(charge: Stripe.Charge): Promise<void> {
         <tr>
           <td style="padding:20px 32px;border-top:1px solid #ede9e4">
             <p style="margin:0;font-size:12px;color:#aaa">
-              <a href="https://cacnorthamerica.com" style="color:#C81E3A;text-decoration:none;font-weight:700">cacnorthamerica.com</a>
+              <a href="https://cacnorthamerica.com" style="color:#2D42C9;text-decoration:none;font-weight:700">cacnorthamerica.com</a>
               &nbsp;·&nbsp; Blue Ridge Summit, Pennsylvania
             </p>
           </td>
@@ -433,21 +433,21 @@ async function sendRefundEmails(charge: Stripe.Charge): Promise<void> {
   const staffHtml = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#f0ede8;font-family:Georgia,serif">
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0ede8;padding:32px 16px"><tr><td align="center">
-<table width="100%" style="max-width:560px;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(16,22,29,.08)">
-<tr><td style="background:#10161D;padding:24px 28px">
-  <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#C9A227;margin-bottom:4px">CACNA — Staff</div>
+<table width="100%" style="max-width:560px;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(18,20,30,.08)">
+<tr><td style="background:#12141E;padding:24px 28px">
+  <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#FDC841;margin-bottom:4px">CACNA — Staff</div>
   <div style="font-size:22px;font-weight:700;color:#fff">Refund Issued</div>
 </td></tr>
-<tr><td style="padding:24px 28px;font-size:13px;color:#10161D;line-height:1.8">
+<tr><td style="padding:24px 28px;font-size:13px;color:#12141E;line-height:1.8">
   <table cellpadding="0" cellspacing="0">
     ${customerName ? `<tr><td style="padding-right:12px;color:#5f5e5a">Customer</td><td>${customerName}</td></tr>` : ""}
-    ${customerEmail ? `<tr><td style="padding-right:12px;color:#5f5e5a">Email</td><td><a href="mailto:${customerEmail}" style="color:#C81E3A">${customerEmail}</a></td></tr>` : ""}
+    ${customerEmail ? `<tr><td style="padding-right:12px;color:#5f5e5a">Email</td><td><a href="mailto:${customerEmail}" style="color:#2D42C9">${customerEmail}</a></td></tr>` : ""}
     <tr><td style="padding-right:12px;color:#5f5e5a">Refunded</td><td style="font-weight:700">${fmt(refundedAmt)}</td></tr>
     <tr><td style="padding-right:12px;color:#5f5e5a">Original</td><td>${fmt(originalAmt)}</td></tr>
     <tr><td style="padding-right:12px;color:#5f5e5a">Charge ID</td><td style="font-family:monospace;font-size:12px">${charge.id}</td></tr>
     <tr><td style="padding-right:12px;color:#5f5e5a">Payment Intent</td><td style="font-family:monospace;font-size:12px">${piId}</td></tr>
   </table>
-  <div style="margin-top:20px"><a href="https://www.cacnorthamerica.com/admin/orders" style="display:inline-block;background:#C81E3A;color:#fff;font-size:13px;font-weight:700;text-decoration:none;padding:10px 20px;border-radius:8px">View in Admin</a></div>
+  <div style="margin-top:20px"><a href="https://www.cacnorthamerica.com/admin/orders" style="display:inline-block;background:#2D42C9;color:#fff;font-size:13px;font-weight:700;text-decoration:none;padding:10px 20px;border-radius:8px">View in Admin</a></div>
 </td></tr>
 </table></td></tr></table></body></html>`;
 

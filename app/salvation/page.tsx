@@ -47,8 +47,8 @@ export default function SalvationPage() {
 
       {/* Hero */}
       <section style={{ background: "var(--ink)", padding: "140px clamp(20px,5vw,64px) 80px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -80, right: -80, width: 440, height: 440, borderRadius: "50%", background: "radial-gradient(circle,rgba(200,30,58,.3),transparent 70%)", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", bottom: -60, left: -60, width: 320, height: 320, borderRadius: "50%", background: "radial-gradient(circle,rgba(201,162,39,.2),transparent 70%)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: -80, right: -80, width: 440, height: 440, borderRadius: "50%", background: "radial-gradient(circle,rgba(45,66,201,.3),transparent 70%)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", bottom: -60, left: -60, width: 320, height: 320, borderRadius: "50%", background: "radial-gradient(circle,rgba(253,200,65,.2),transparent 70%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 780, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Salvation</span>
@@ -60,12 +60,12 @@ export default function SalvationPage() {
             </h1>
           </Reveal>
           <Reveal delay={160}>
-            <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "rgba(244,246,248,.7)", lineHeight: 1.65, maxWidth: 580, margin: "0 auto 36px" }}>
+            <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "rgba(245,246,250,.7)", lineHeight: 1.65, maxWidth: 580, margin: "0 auto 36px" }}>
               God loves you exactly as you are — and He has a plan for your life. Salvation is a gift, freely given. All you have to do is receive it.
             </p>
           </Reveal>
           <Reveal delay={220}>
-            <Link href="/contact" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 32px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(200,30,58,.4)" }}>
+            <Link href="/contact" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 32px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(45,66,201,.4)" }}>
               Connect With Us →
             </Link>
           </Reveal>
@@ -83,7 +83,7 @@ export default function SalvationPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
             {steps.map((s, i) => (
               <Reveal key={s.num} delay={i * 80}>
-                <div style={{ background: "var(--paper)", borderRadius: 22, padding: "32px 36px", border: "1px solid var(--line)", display: "flex", gap: 28, alignItems: "flex-start", boxShadow: "0 8px 24px rgba(16,22,29,.06)" }}>
+                <div style={{ background: "var(--paper)", borderRadius: 22, padding: "32px 36px", border: "1px solid var(--line)", display: "flex", gap: 28, alignItems: "flex-start", boxShadow: "0 8px 24px rgba(18,20,30,.06)" }}>
                   <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 42, color: "var(--red)", lineHeight: 1, flexShrink: 0, minWidth: 54 }}>{s.num}</span>
                   <div>
                     <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--ink)", margin: "0 0 10px" }}>{s.title}</h3>
@@ -161,7 +161,7 @@ export default function SalvationPage() {
               { href: "/online", Icon: Monitor, title: "Watch online", desc: "The Annual Convention streams live on YouTube — never miss a message.", cta: "Watch live" },
             ].map(({ href, Icon, title, desc, cta }) => (
               <Reveal key={href}>
-                <Link href={href} style={{ display: "flex", flexDirection: "column", height: "100%", textDecoration: "none", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 22, padding: "28px 26px", boxShadow: "0 10px 28px rgba(16,22,29,.07)" }}>
+                <Link href={href} style={{ display: "flex", flexDirection: "column", height: "100%", textDecoration: "none", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 22, padding: "28px 26px", boxShadow: "0 10px 28px rgba(18,20,30,.07)" }}>
                   <div style={{ width: 44, height: 44, borderRadius: 14, background: "var(--red)", display: "grid", placeItems: "center", marginBottom: 18, flexShrink: 0 }}>
                     <Icon size={20} color="#fff" strokeWidth={2} aria-hidden />
                   </div>

@@ -46,7 +46,7 @@ export function InstagramFeed() {
             </h2>
           </div>
           <a href={IG_URL} target="_blank" rel="noopener noreferrer" className="btn-sheen press"
-            style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "linear-gradient(120deg,#1E3A8A,#C81E3A,#7A1128)", color: "#fff", fontWeight: 700, fontSize: 15, padding: "13px 24px", borderRadius: 999, textDecoration: "none", boxShadow: "0 12px 28px rgba(200,30,58,.32)" }}>
+            style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "linear-gradient(120deg,#F0742F,#2D42C9,#1D2B83)", color: "#fff", fontWeight: 700, fontSize: 15, padding: "13px 24px", borderRadius: 999, textDecoration: "none", boxShadow: "0 12px 28px rgba(45,66,201,.32)" }}>
             <InstagramIcon size={18} aria-hidden /> {HANDLE}
           </a>
         </div>
@@ -63,7 +63,7 @@ export function InstagramFeed() {
                 className="gallery-img" style={{ objectFit: "cover" }}
               />
               <span className="gallery-scrim"
-                style={{ position: "absolute", inset: 0, background: "rgba(200,30,58,.42)", display: "grid", placeItems: "center", opacity: 0, transition: "opacity .3s", color: "#fff" }}>
+                style={{ position: "absolute", inset: 0, background: "rgba(45,66,201,.42)", display: "grid", placeItems: "center", opacity: 0, transition: "opacity .3s", color: "#fff" }}>
                 <InstagramIcon size={30} aria-hidden />
               </span>
             </a>

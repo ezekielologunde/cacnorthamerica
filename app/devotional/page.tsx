@@ -43,13 +43,13 @@ const children = [
     affirmation: "I am forgiven",
     ref: "Ephesians 1:6-8",
     text: "So we praise God for the glorious grace he has poured out on us who belong to his dear Son. He is so rich in kindness and grace that he purchased our freedom with the blood of his Son and forgave our sins. He has showered his kindness on us, along with all wisdom and understanding.",
-    accent: "linear-gradient(140deg,#1E3A8A,#C81E3A)",
+    accent: "linear-gradient(140deg,#F0742F,#2D42C9)",
   },
   {
     affirmation: "I am reconciled with God",
     ref: "2 Corinthians 5:18-19",
     text: "All this is from God, who reconciled us to himself through Christ and gave us the ministry of reconciliation: that God was reconciling the world to himself in Christ, not counting people's sins against them. And he has committed to us the message of reconciliation.",
-    accent: "linear-gradient(140deg,#C9A227,#1E3A8A)",
+    accent: "linear-gradient(140deg,#FDC841,#F0742F)",
   },
 ];
 
@@ -65,7 +65,7 @@ export default function DevotionalPage() {
 
       {/* Hero */}
       <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 90px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -100, left: "50%", transform: "translateX(-50%)", width: 740, height: 460, background: "radial-gradient(circle,rgba(201,162,39,.22),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 16s ease-in-out infinite" }} />
+        <div style={{ position: "absolute", top: -100, left: "50%", transform: "translateX(-50%)", width: 740, height: 460, background: "radial-gradient(circle,rgba(253,200,65,.22),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 16s ease-in-out infinite" }} />
         <div style={{ maxWidth: 820, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal from="scale">
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Devotional</span>
@@ -78,7 +78,7 @@ export default function DevotionalPage() {
             </RevealText>
           </h1>
           <Reveal delay={360}>
-            <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "rgba(244,246,248,.72)", lineHeight: 1.7, maxWidth: 540, margin: "0 auto", textWrap: "pretty" }}>
+            <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "rgba(245,246,250,.72)", lineHeight: 1.7, maxWidth: 540, margin: "0 auto", textWrap: "pretty" }}>
               A word of encouragement to carry into your day — straight from Scripture and from our family to yours.
             </p>
           </Reveal>
@@ -86,8 +86,8 @@ export default function DevotionalPage() {
       </section>
 
       {/* 2026 Watchword */}
-      <section style={{ background: "linear-gradient(135deg,#7A1128,#C81E3A)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)", position: "relative", overflow: "hidden" }}>
-        <div aria-hidden style={{ position: "absolute", top: -120, right: -80, width: 520, height: 420, background: "radial-gradient(circle,rgba(201,162,39,.28),transparent 65%)", pointerEvents: "none" }} />
+      <section style={{ background: "linear-gradient(135deg,#1D2B83,#2D42C9)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)", position: "relative", overflow: "hidden" }}>
+        <div aria-hidden style={{ position: "absolute", top: -120, right: -80, width: 520, height: 420, background: "radial-gradient(circle,rgba(253,200,65,.28),transparent 65%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 860, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
             <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Our 2026 Watchword</span>
@@ -99,9 +99,9 @@ export default function DevotionalPage() {
           </Reveal>
           <Reveal delay={240}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 12, marginTop: 26, fontSize: 12.5, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)" }}>
-              <span style={{ width: 28, height: 1, background: "rgba(201,162,39,.55)" }} aria-hidden />
+              <span style={{ width: 28, height: 1, background: "rgba(253,200,65,.55)" }} aria-hidden />
               Psalm 119:22 · NKJV
-              <span style={{ width: 28, height: 1, background: "rgba(201,162,39,.55)" }} aria-hidden />
+              <span style={{ width: 28, height: 1, background: "rgba(253,200,65,.55)" }} aria-hidden />
             </div>
           </Reveal>
         </div>
@@ -121,7 +121,7 @@ export default function DevotionalPage() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: 20 }}>
             {devotionals.map((d, i) => (
               <Reveal key={d.title} delay={i * 90}>
-                <article className="card-lift" style={{ height: "100%", background: "var(--paper)", borderRadius: 22, padding: "30px 28px", border: "1px solid var(--line)", boxShadow: "0 12px 30px rgba(16,22,29,.07)", display: "flex", flexDirection: "column" }}>
+                <article className="card-lift" style={{ height: "100%", background: "var(--paper)", borderRadius: 22, padding: "30px 28px", border: "1px solid var(--line)", boxShadow: "0 12px 30px rgba(18,20,30,.07)", display: "flex", flexDirection: "column" }}>
                   <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 12 }}>{d.ref}</div>
                   <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, letterSpacing: "-.4px", color: "var(--ink)", margin: "0 0 12px" }}>{d.title}</h3>
                   <p style={{ fontSize: 15.5, color: "var(--ink-soft)", lineHeight: 1.75, margin: 0 }}>{d.body}</p>
@@ -145,7 +145,7 @@ export default function DevotionalPage() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: 20 }}>
             {children.map((c, i) => (
               <Reveal key={c.affirmation} delay={i * 90}>
-                <article style={{ height: "100%", background: "var(--paper)", borderRadius: 24, overflow: "hidden", border: "1px solid var(--line)", boxShadow: "0 12px 30px rgba(16,22,29,.07)", display: "flex", flexDirection: "column" }}>
+                <article style={{ height: "100%", background: "var(--paper)", borderRadius: 24, overflow: "hidden", border: "1px solid var(--line)", boxShadow: "0 12px 30px rgba(18,20,30,.07)", display: "flex", flexDirection: "column" }}>
                   <div style={{ background: c.accent, padding: "26px 28px" }}>
                     <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "rgba(255,255,255,.8)", marginBottom: 6 }}>Say it out loud</div>
                     <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3vw,32px)", letterSpacing: "-.5px", color: "#fff", lineHeight: 1.05 }}>{c.affirmation}.</div>
@@ -160,7 +160,7 @@ export default function DevotionalPage() {
           </div>
           <Reveal delay={160} style={{ marginTop: 24 }}>
             <div style={{ background: "linear-gradient(140deg,#1C3A2A,#2E6040)", borderRadius: 24, padding: "clamp(28px,4vw,40px)", textAlign: "center", position: "relative", overflow: "hidden" }}>
-              <div aria-hidden style={{ position: "absolute", top: -40, right: -40, width: 180, height: 180, background: "radial-gradient(circle,rgba(201,162,39,.22),transparent 70%)", pointerEvents: "none" }} />
+              <div aria-hidden style={{ position: "absolute", top: -40, right: -40, width: 180, height: 180, background: "radial-gradient(circle,rgba(253,200,65,.22),transparent 70%)", pointerEvents: "none" }} />
               <div style={{ position: "relative", zIndex: 1 }}>
                 <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>This week&apos;s memory verse</span>
                 <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "clamp(18px,2.4vw,26px)", color: "#fff", lineHeight: 1.5, letterSpacing: "-.3px", margin: "16px auto 0", maxWidth: 720, textWrap: "balance" }}>
@@ -184,7 +184,7 @@ export default function DevotionalPage() {
             </p>
           </Reveal>
           <Reveal delay={120}>
-            <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 24, padding: "clamp(28px,4vw,46px)", boxShadow: "0 16px 40px rgba(16,22,29,.08)" }}>
+            <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 24, padding: "clamp(28px,4vw,46px)", boxShadow: "0 16px 40px rgba(18,20,30,.08)" }}>
               {confession.map((seg, i) =>
                 seg.kind === "verse" ? (
                   <div key={i} style={{ marginBottom: i === confession.length - 1 ? 0 : 26 }}>

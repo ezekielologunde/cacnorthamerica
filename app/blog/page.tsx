@@ -25,8 +25,8 @@ function dbPostToBlogPost(p: DbBlogRow): BlogPost {
     date: date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }),
     dateIso: p.published_at ?? p.created_at,
     category: "Ministry Update",
-    categoryColor: "#C81E3A",
-    accent: "#C81E3A",
+    categoryColor: "#2D42C9",
+    accent: "#2D42C9",
     readTime: `${Math.max(1, Math.round(words / 200))} min read`,
     body: p.body.split(/\n\n+/),
   };
@@ -101,7 +101,7 @@ function FeaturedCard({ post }: { post: typeof POSTS[number] }) {
     <article style={{
       background: "var(--paper)", border: "1px solid var(--line)",
       borderRadius: 28, overflow: "hidden",
-      boxShadow: "0 16px 50px rgba(16,22,29,.10)",
+      boxShadow: "0 16px 50px rgba(18,20,30,.10)",
     }}>
       <div style={{ height: 220, background: post.accent, position: "relative" }}>
         <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 70% 30%,rgba(255,255,255,.2),transparent 65%)" }} />
@@ -135,7 +135,7 @@ function FeaturedCard({ post }: { post: typeof POSTS[number] }) {
             display: "inline-flex", alignItems: "center", gap: 8,
             background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 14,
             padding: "10px 22px", borderRadius: 999, textDecoration: "none",
-            boxShadow: "0 8px 20px rgba(200,30,58,.3)",
+            boxShadow: "0 8px 20px rgba(45,66,201,.3)",
           }}>
             Read full story <ArrowRight size={14} strokeWidth={2.5} aria-hidden />
           </Link>
@@ -156,7 +156,7 @@ function ScriptureWidget() {
       background: "var(--ink)", borderRadius: 20, padding: "24px 26px",
       marginBottom: 24, position: "relative", overflow: "hidden",
     }}>
-      <div aria-hidden style={{ position: "absolute", top: -40, right: -40, width: 180, height: 140, background: "radial-gradient(circle,rgba(201,162,39,.25),transparent 70%)", pointerEvents: "none" }} />
+      <div aria-hidden style={{ position: "absolute", top: -40, right: -40, width: 180, height: 140, background: "radial-gradient(circle,rgba(253,200,65,.25),transparent 70%)", pointerEvents: "none" }} />
       <div style={{ position: "relative", zIndex: 2 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 14 }}>
           <BookOpen size={12} strokeWidth={2.5} color="var(--gold)" aria-hidden />
@@ -164,7 +164,7 @@ function ScriptureWidget() {
             This Week&apos;s Reading
           </span>
         </div>
-        <div style={{ fontSize: 12.5, fontWeight: 700, color: "rgba(244,246,248,.55)", marginBottom: 10 }}>Week 2 — {week.theme}</div>
+        <div style={{ fontSize: 12.5, fontWeight: 700, color: "rgba(245,246,250,.55)", marginBottom: 10 }}>Week 2 — {week.theme}</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           {[
             ["Sun", week.sun], ["Mon", week.mon], ["Tue", week.tue],
@@ -172,7 +172,7 @@ function ScriptureWidget() {
           ].map(([day, reading]) => (
             <div key={day} style={{ display: "flex", gap: 10, fontSize: 13 }}>
               <span style={{ minWidth: 30, fontWeight: 800, color: "var(--gold)", fontSize: 11 }}>{day}</span>
-              <span style={{ color: "rgba(244,246,248,.75)", lineHeight: 1.45 }}>{reading}</span>
+              <span style={{ color: "rgba(245,246,250,.75)", lineHeight: 1.45 }}>{reading}</span>
             </div>
           ))}
         </div>
@@ -221,22 +221,22 @@ function UpcomingEventWidget() {
 function StoreAdWidget() {
   return (
     <aside style={{
-      background: "linear-gradient(140deg,#7A1128,#C81E3A)",
+      background: "linear-gradient(140deg,#1D2B83,#2D42C9)",
       borderRadius: 20, padding: "24px 26px", position: "relative", overflow: "hidden",
       marginBottom: 24,
     }}>
-      <div aria-hidden style={{ position: "absolute", top: -30, right: -30, width: 130, height: 130, background: "radial-gradient(circle,rgba(201,162,39,.35),transparent 70%)", pointerEvents: "none" }} />
+      <div aria-hidden style={{ position: "absolute", top: -30, right: -30, width: 130, height: 130, background: "radial-gradient(circle,rgba(253,200,65,.35),transparent 70%)", pointerEvents: "none" }} />
       <div style={{ position: "relative", zIndex: 2 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 12 }}>
           <ShoppingBag size={12} strokeWidth={2.5} color="var(--gold)" aria-hidden />
-          <span style={{ fontSize: 9.5, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "rgba(244,246,248,.7)" }}>
+          <span style={{ fontSize: 9.5, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "rgba(245,246,250,.7)" }}>
             From the Store
           </span>
         </div>
         <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "#fff", lineHeight: 1.1, marginBottom: 10 }}>
           Wear the Word.
         </div>
-        <p style={{ fontSize: 13, color: "rgba(244,246,248,.78)", lineHeight: 1.6, marginBottom: 18 }}>
+        <p style={{ fontSize: 13, color: "rgba(245,246,250,.78)", lineHeight: 1.6, marginBottom: 18 }}>
           CACNA merchandise — shirts, bibles, custom prints, and more. Quality that carries the message.
         </p>
         <Link href="/store" className="press" style={{
@@ -276,12 +276,12 @@ export default async function BlogPage() {
 
       {/* Masthead */}
       <section style={{ background: "var(--ink)", padding: "130px clamp(20px,5vw,64px) 72px", position: "relative", overflow: "hidden" }}>
-        <div aria-hidden style={{ position: "absolute", top: -100, right: -80, width: 560, height: 440, background: "radial-gradient(circle,rgba(201,162,39,.2),transparent 65%)", pointerEvents: "none" }} />
+        <div aria-hidden style={{ position: "absolute", top: -100, right: -80, width: 560, height: 440, background: "radial-gradient(circle,rgba(253,200,65,.2),transparent 65%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 1140, margin: "0 auto", position: "relative", zIndex: 2 }}>
           <Reveal>
-            <div style={{ borderBottom: "1px solid rgba(244,246,248,.12)", paddingBottom: 18, marginBottom: 22, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
-              <span style={{ fontSize: 11.5, fontWeight: 700, color: "rgba(244,246,248,.45)", letterSpacing: ".5px" }}>{dateStr}</span>
-              <span style={{ fontSize: 11.5, fontWeight: 700, color: "rgba(244,246,248,.45)", letterSpacing: ".5px" }}>cacnorthamerica.com</span>
+            <div style={{ borderBottom: "1px solid rgba(245,246,250,.12)", paddingBottom: 18, marginBottom: 22, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+              <span style={{ fontSize: 11.5, fontWeight: 700, color: "rgba(245,246,250,.45)", letterSpacing: ".5px" }}>{dateStr}</span>
+              <span style={{ fontSize: 11.5, fontWeight: 700, color: "rgba(245,246,250,.45)", letterSpacing: ".5px" }}>cacnorthamerica.com</span>
             </div>
           </Reveal>
           <Reveal delay={80}>
@@ -373,22 +373,22 @@ export default async function BlogPage() {
         <Reveal>
           <div style={{
             maxWidth: 900, margin: "0 auto",
-            background: "linear-gradient(135deg,#7A1128,#C81E3A)",
+            background: "linear-gradient(135deg,#1D2B83,#2D42C9)",
             borderRadius: 28, padding: "clamp(28px,4vw,44px)",
             display: "flex", flexWrap: "wrap", alignItems: "center",
             justifyContent: "space-between", gap: 24,
-            boxShadow: "0 24px 60px rgba(200,30,58,.28)",
+            boxShadow: "0 24px 60px rgba(45,66,201,.28)",
             position: "relative", overflow: "hidden",
           }}>
-            <div aria-hidden style={{ position: "absolute", top: -80, right: -60, width: 320, height: 280, background: "radial-gradient(circle,rgba(201,162,39,.3),transparent 65%)", pointerEvents: "none" }} />
+            <div aria-hidden style={{ position: "absolute", top: -80, right: -60, width: 320, height: 280, background: "radial-gradient(circle,rgba(253,200,65,.3),transparent 65%)", pointerEvents: "none" }} />
             <div style={{ flex: "1 1 320px", position: "relative", zIndex: 2 }}>
-              <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "rgba(244,246,248,.8)", marginBottom: 10 }}>
+              <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "rgba(245,246,250,.8)", marginBottom: 10 }}>
                 Registration open
               </div>
               <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,36px)", letterSpacing: "-.6px", color: "#fff", margin: "0 0 8px", lineHeight: 1.05 }}>
                 Register for CACNA 2026
               </h2>
-              <p style={{ fontSize: 15, color: "rgba(244,246,248,.82)", margin: 0, lineHeight: 1.6 }}>
+              <p style={{ fontSize: 15, color: "rgba(245,246,250,.82)", margin: 0, lineHeight: 1.6 }}>
                 July 13–18 at CAC Village, Blue Ridge Summit, PA.
               </p>
             </div>

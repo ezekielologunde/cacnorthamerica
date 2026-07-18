@@ -48,13 +48,13 @@ export function WhatToExpect() {
               <div style={{
                 borderRadius: 24, padding: "36px 32px",
                 background: s.dark ? "var(--ink)" : "var(--paper)",
-                boxShadow: s.dark ? "0 24px 50px rgba(16,22,29,.28)" : "0 10px 26px rgba(16,22,29,.06)",
+                boxShadow: s.dark ? "0 24px 50px rgba(18,20,30,.28)" : "0 10px 26px rgba(18,20,30,.06)",
                 border: s.dark ? "none" : "1px solid var(--line)",
                 height: "100%",
               }}>
                 <div style={{
                   display: "inline-flex", alignItems: "center", gap: 8, marginBottom: 24,
-                  background: s.dark ? "rgba(244,246,248,.1)" : "var(--cream-2)",
+                  background: s.dark ? "rgba(245,246,250,.1)" : "var(--cream-2)",
                   padding: "6px 14px", borderRadius: 999,
                 }}>
                   <span style={{ fontSize: 12, fontWeight: 700, color: s.dark ? "var(--gold)" : "var(--red)", letterSpacing: "1px", textTransform: "uppercase" }}>{s.day}</span>
@@ -63,12 +63,12 @@ export function WhatToExpect() {
                   {s.name}
                 </h3>
                 <div style={{ fontWeight: 700, fontSize: 15, color: s.dark ? "var(--gold)" : "var(--red)", marginBottom: 18 }}>{s.time}</div>
-                <p style={{ fontSize: 15, color: s.dark ? "rgba(244,246,248,.65)" : "var(--ink-soft)", lineHeight: 1.65, margin: 0 }}>
+                <p style={{ fontSize: 15, color: s.dark ? "rgba(245,246,250,.65)" : "var(--ink-soft)", lineHeight: 1.65, margin: 0 }}>
                   {s.desc}
                 </p>
                 <div style={{ marginTop: 28, display: "flex", alignItems: "center", gap: 8 }}>
                   <span style={{ width: 8, height: 8, borderRadius: "50%", background: s.dark ? "var(--gold)" : "var(--red)", display: "inline-block" }} />
-                  <span style={{ fontSize: 13, fontWeight: 600, color: s.dark ? "rgba(244,246,248,.5)" : "var(--ink-soft)" }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: s.dark ? "rgba(245,246,250,.5)" : "var(--ink-soft)" }}>
                     {s.mode}
                   </span>
                 </div>

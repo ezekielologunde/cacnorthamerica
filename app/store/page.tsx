@@ -39,8 +39,8 @@ export default async function StorePage() {
         padding: "150px clamp(20px,5vw,64px) clamp(70px,9vw,110px)",
         position: "relative", overflow: "hidden",
       }}>
-        <div aria-hidden style={{ position: "absolute", top: -140, right: -100, width: 640, height: 520, background: "radial-gradient(circle,rgba(201,162,39,.2),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 18s ease-in-out infinite" }} />
-        <div aria-hidden style={{ position: "absolute", bottom: -60, left: -80, width: 400, height: 340, background: "radial-gradient(circle,rgba(200,30,58,.14),transparent 65%)", pointerEvents: "none" }} />
+        <div aria-hidden style={{ position: "absolute", top: -140, right: -100, width: 640, height: 520, background: "radial-gradient(circle,rgba(253,200,65,.2),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 18s ease-in-out infinite" }} />
+        <div aria-hidden style={{ position: "absolute", bottom: -60, left: -80, width: 400, height: 340, background: "radial-gradient(circle,rgba(45,66,201,.14),transparent 65%)", pointerEvents: "none" }} />
 
         <div style={{ maxWidth: 1000, margin: "0 auto", position: "relative", zIndex: 2 }}>
           <Reveal>
@@ -62,7 +62,7 @@ export default async function StorePage() {
           </h1>
 
           <Reveal delay={200}>
-            <p style={{ fontSize: "clamp(16px,2vw,20px)", color: "rgba(244,246,248,.72)", lineHeight: 1.7, maxWidth: 560, margin: "0 0 40px" }}>
+            <p style={{ fontSize: "clamp(16px,2vw,20px)", color: "rgba(245,246,250,.72)", lineHeight: 1.7, maxWidth: 560, margin: "0 0 40px" }}>
               Apparel, Bibles, worship music, and custom prints — resources for the family, inside the church and beyond it. Every purchase supports CACNA&apos;s ministries.
             </p>
           </Reveal>
@@ -111,12 +111,12 @@ export default async function StorePage() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px,1fr))", gap: 18 }}>
             {trust.map((t, i) => (
               <Reveal key={t.label} delay={i * 80}>
-                <div style={{ background: "rgba(244,246,248,.05)", border: "1px solid rgba(244,246,248,.1)", borderRadius: 18, padding: "24px 22px" }}>
+                <div style={{ background: "rgba(245,246,250,.05)", border: "1px solid rgba(245,246,250,.1)", borderRadius: 18, padding: "24px 22px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
                     <t.icon size={18} strokeWidth={2} color="var(--gold)" aria-hidden />
                     <span style={{ fontWeight: 700, fontSize: 15, color: "var(--cream)" }}>{t.label}</span>
                   </div>
-                  <p style={{ fontSize: 14, color: "rgba(244,246,248,.58)", lineHeight: 1.65, margin: 0 }}>{t.desc}</p>
+                  <p style={{ fontSize: 14, color: "rgba(245,246,250,.58)", lineHeight: 1.65, margin: 0 }}>{t.desc}</p>
                 </div>
               </Reveal>
             ))}

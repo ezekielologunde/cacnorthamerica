@@ -11,7 +11,7 @@ export default function GivingPage() {
 
       {/* Hero */}
       <section style={{ background: "var(--cream)", padding: "140px clamp(20px,5vw,64px) 56px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -80, left: -80, width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle,#1E3A8A,#C81E3A 70%)", opacity: 0.1, filter: "blur(6px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: -80, left: -80, width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle,#F0742F,#2D42C9 70%)", opacity: 0.1, filter: "blur(6px)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 720, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Give</span>
@@ -28,7 +28,7 @@ export default function GivingPage() {
             </p>
           </Reveal>
           <Reveal delay={220}>
-            <figure style={{ maxWidth: 620, margin: "44px auto 0", padding: "26px 28px", borderRadius: 22, background: "var(--paper)", border: "1px solid var(--line)", boxShadow: "0 14px 36px rgba(16,22,29,.08)", textAlign: "left" }}>
+            <figure style={{ maxWidth: 620, margin: "44px auto 0", padding: "26px 28px", borderRadius: 22, background: "var(--paper)", border: "1px solid var(--line)", boxShadow: "0 14px 36px rgba(18,20,30,.08)", textAlign: "left" }}>
               <p style={{ fontSize: "clamp(16px,1.7vw,19px)", color: "var(--ink)", lineHeight: 1.7, margin: 0, fontStyle: "italic" }}>
                 &ldquo;As it is written: <strong style={{ fontStyle: "normal" }}>&lsquo;They have freely scattered their gifts to the poor; their righteousness endures forever.&rsquo;</strong>&rdquo;
               </p>
@@ -53,7 +53,7 @@ export default function GivingPage() {
               { icon: Mail, title: "By email", desc: "Email info@cacnorthamerica.com and we'll follow up with details." },
             ].map((w, i) => (
               <Reveal key={w.title} delay={i * 80}>
-                <div style={{ background: "var(--paper)", borderRadius: 20, padding: "28px 24px", border: "1px solid var(--line)", boxShadow: "0 8px 22px rgba(16,22,29,.05)", height: "100%" }}>
+                <div style={{ background: "var(--paper)", borderRadius: 20, padding: "28px 24px", border: "1px solid var(--line)", boxShadow: "0 8px 22px rgba(18,20,30,.05)", height: "100%" }}>
                   <IconBadge icon={w.icon} style={{ marginBottom: 16 }} />
                   <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20, color: "var(--ink)", margin: "0 0 10px" }}>{w.title}</h3>
                   <p style={{ fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.65, margin: 0 }}>{w.desc}</p>

@@ -22,7 +22,7 @@ export default async function MediaArchivePage() {
 
       {/* Hero */}
       <section style={{ padding: "140px clamp(20px,5vw,64px) 70px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -80, right: -80, width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle,rgba(201,162,39,.2),transparent 70%)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: -80, right: -80, width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle,rgba(253,200,65,.2),transparent 70%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Media Archive</span>

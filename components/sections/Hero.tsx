@@ -256,7 +256,7 @@ export function Hero() {
                 fontWeight: 700, fontSize: 16,
                 padding: "17px 30px", borderRadius: 999,
                 textDecoration: "none",
-                boxShadow: "0 14px 34px rgba(200,30,58,.45)",
+                boxShadow: "0 14px 34px rgba(45,66,201,.45)",
               }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" aria-hidden><path d="M8 5v14l11-7z" /></svg>
                 Join Us Online
@@ -288,7 +288,7 @@ export function Hero() {
             padding: "14px 22px", borderRadius: 18,
             backdropFilter: "blur(12px)",
           }}>
-            <span style={{ width: 9, height: 9, borderRadius: "50%", background: "#ff5252", animation: "pulse-red 1.8s infinite", display: "inline-block", flexShrink: 0 }} />
+            <span style={{ width: 9, height: 9, borderRadius: "50%", background: "#EB6342", animation: "pulse-red 1.8s infinite", display: "inline-block", flexShrink: 0 }} />
             <span style={{ fontSize: 13, fontWeight: 600, opacity: .75 }}>Next: {nextLabel} in</span>
             <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, letterSpacing: "-.4px", color: "#FFD9A8" }}>{countdown}</span>
           </div>
