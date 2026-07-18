@@ -5,9 +5,9 @@ import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 
 export const metadata = {
-  title: "Gallery — CAC Salvation Center",
+  title: "Gallery — Christ Apostolic Church North America (CACNA)",
   description:
-    "Moments of worship, fellowship, and celebration at CAC Salvation Center, Randallstown MD.",
+    "Moments of worship, fellowship, and celebration from across CACNA's member churches and the Annual Convention.",
   alternates: { canonical: "/gallery" },
 };
 
@@ -24,14 +24,14 @@ export default function GalleryPage() {
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Gallery</span>
           </Reveal>
           <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(46px,6.5vw,90px)", letterSpacing: "-0.03em", color: "var(--ink)", margin: "16px 0", lineHeight: 0.92, textWrap: "balance" }}>
-            <RevealText immediate>Life at the</RevealText>{" "}
+            <RevealText immediate>Life across</RevealText>{" "}
             <RevealText immediate delay={0.12} style={{ background: "linear-gradient(100deg,#F15F22,#D62828)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              Center.
+              CACNA.
             </RevealText>
           </h1>
           <Reveal delay={200}>
             <p style={{ fontSize: "clamp(16px,1.8vw,19px)", color: "var(--ink-soft)", lineHeight: 1.65, maxWidth: 520, margin: "0 auto", textWrap: "pretty" }}>
-              A glimpse of our worship, our family, and the joy of God&apos;s presence among us. Tap any photo to explore.
+              A glimpse of worship, family, and the joy of God&apos;s presence across CACNA&apos;s member churches. Tap any photo to explore.
             </p>
           </Reveal>
         </div>

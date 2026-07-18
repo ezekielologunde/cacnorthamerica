@@ -4,7 +4,9 @@ import { createServiceClient } from "@/lib/supabase/server";
 
 // Gallery images are pre-fetched from Cloudinary and stored in lib/gallery-ids.json.
 // Run `node scripts/fetch-gallery.mjs` locally to refresh after new uploads.
-const CLOUD = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ?? "dkmn2rtbc";
+// No hardcoded fallback cloud name — an unset env var must not silently
+// serve another church's Cloudinary photos.
+const CLOUD = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
 
 export const revalidate = 3600; // 1h — allows DB images to appear within an hour
 
@@ -37,6 +39,14 @@ export async function GET() {
       .eq("published", true)
       .order("sort_order");
     dbImages = data ?? [];
+  }
+
+  // No Cloudinary cloud configured yet — DB-managed images (if any) are the
+  // only source; the static JSON fallback belongs to a different Cloudinary
+  // account entirely and must not be resolved against an unrelated cloud.
+  if (!CLOUD) {
+    const photos = dbImages.map((img) => cloudinaryPhoto(img.cloudinary_public_id));
+    return NextResponse.json({ photos, total: photos.length });
   }
 
   const dbPhotos = dbImages.map((img) => cloudinaryPhoto(img.cloudinary_public_id));

@@ -7,14 +7,9 @@ import { X, ChevronLeft, ChevronRight, Images } from "lucide-react";
 import { haptic } from "@/lib/haptics";
 import { cloudinaryLoader } from "@/lib/cloudinary-loader";
 
-const STATIC_PHOTOS = [
-  { src: "/images/congregation.jpg", alt: "Congregation in colorful African attire worshipping together", id: "s1" },
-  { src: "/images/worship.jpg",      alt: "Women singing at Easter Sunday service",                       id: "s2" },
-  { src: "/images/choir.jpg",        alt: "The Salvation Center choir in red and white robes",            id: "s3" },
-  { src: "/images/stage.jpg",        alt: "Church stage with leadership beneath the CAC banner",          id: "s4" },
-  { src: "/images/pastor.jpg",       alt: "Pastor Dr. H.O. Ilufoye preaching",                           id: "s5" },
-  { src: "/images/pastor-choir.jpg", alt: "Pastor Dr. H.O. Ilufoye with the choir in worship",           id: "s6" },
-];
+// No real CACNA gallery photos are available yet — the admin console
+// (Cloudinary-backed /api/gallery) is the source of truth once populated.
+const STATIC_PHOTOS: Photo[] = [];
 
 interface Photo { src: string; alt: string; id: string; }
 
@@ -72,6 +67,14 @@ export function Gallery() {
   }, [open, close, go]);
 
   if (loading) return <Skeleton />;
+
+  if (photos.length === 0) {
+    return (
+      <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.7, textAlign: "center", padding: "40px 0" }}>
+        No photos have been added yet — check back soon.
+      </p>
+    );
+  }
 
   return (
     <>
