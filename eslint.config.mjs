@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // WordPress backup directories at repo root:
+    "cacsalva_11760/**",
+    "wp_www.cacsalvationcenter.org_2026-06-16_23-14-16/**",
   ]),
 ]);
 
