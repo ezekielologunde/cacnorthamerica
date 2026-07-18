@@ -5,43 +5,38 @@ import Image from "next/image";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Our Pastors — CAC Salvation Center | Randallstown, MD",
-  description: "Meet the pastoral team at CAC Salvation Center in Randallstown, MD — led by Superintendent Pastor Dr. Hezekiah O. Ilufoye and our associate pastors.",
+  title: "Leadership — Christ Apostolic Church North America (CACNA)",
+  description: "Meet CACNA's regional leadership — led by Regional Superintendent Pastor Dr. T.O. Agbeja and the CACNA Coordinating Council.",
   alternates: { canonical: "/leadership" },
 };
 
 const featured = {
-  name: "Pastor Dr. Hezekiah O. Ilufoye, PhD",
-  partner: "Evang. Mrs Victoria Ilufoye",
-  title: "Baltimore DCC Superintendent · First Lady",
-  bio: "Pastor Dr. Hezekiah O. Ilufoye carries the vision of CAC Salvation Centre Ilorin — established in Nigeria on July 6, 1997 — into the Baltimore-Maryland District Coordinating Council, planted in 2002. Together with the First Lady, Evang. Mrs Victoria Ilufoye, he leads the family with a clear call to preach the whole Gospel, raise God's ambassadors, and steward the multi-generational mission of the Christ Apostolic Church.",
-  image: "/images/pastor-couple.jpg",
+  name: "Pastor Dr. T.O. Agbeja",
+  title: "Regional Superintendent & Superintendent, C.A.C. WADCC",
+  bio: "Pastor Dr. Timothy Omolayo Agbeja leads Christ Apostolic Church North America as Regional Superintendent, carrying the mandate to preach the whole Gospel in a clear and undiluted manner across every CACNA member church. He also serves as Superintendent of C.A.C. WADCC, guiding the regional Coordinating Council that oversees CACNA's 16 DCCs and Zones across the United States and Canada.",
+  image: "https://cacnorthamerica.com/wp-content/uploads/2024/03/Pastor-Dr.-T.A.O-Agbeja-1-240x300.jpg",
 };
 
 const team: { name: string; title: string; bio: string; image?: string }[] = [
   {
-    name: "Pastor Felix Osunkiyesi",
-    title: "Curate",
-    bio: "Serving alongside the Superintendent in the day-to-day pastoral oversight of the Salvation Center — preaching, discipleship, and caring for the flock with steadiness and grace.",
-    image: "/images/pastor-osunkiyesi.webp",
+    name: "Pastor David Adenodi, Ph.D.",
+    title: "Chairman, CACNA Convention",
+    bio: "Chairman of the CACNA Convention and member of the CACNA Coordinating Council. Also serves as Provost of the CACNA Bible Institute and Superintendent of the V.O.C-USA DCC.",
   },
   {
-    name: "Pastor Alfred Aremo",
-    title: "Associate Pastor",
-    bio: "An associate minister carrying the work of teaching, prayer, and shepherding — committed to seeing every member grow up in Christ and walk in their God-given purpose.",
-    image: "/images/pastor-aremo.webp",
+    name: "Pastor Joseph Olawale Latunde",
+    title: "Regional Secretary, CACNA",
+    bio: "Regional Secretary of CACNA and member of the CACNA Coordinating Council. Also serves as Registrar of the CACNA Bible Institute and Superintendent of the Texas DCC.",
   },
   {
-    name: "Pastor Oludapo Eludoyin",
-    title: "Associate Pastor",
-    bio: "An associate minister with a heart for evangelism and pastoral care, serving the congregation in worship, prayer ministry, and the equipping of saints for the work of the kingdom.",
-    image: "/images/pastor-eludoyin.webp",
+    name: "Pastor Timothy Adelani",
+    title: "Regional Treasurer, CACNA",
+    bio: "Regional Treasurer of CACNA and member of the CACNA Coordinating Council, also serving as Superintendent of the Manhattan NY DCC.",
   },
   {
-    name: "Pastor Enoch Ilufoye",
-    title: "Assembly Pastor · CAC Kingdom Embassy",
-    bio: "Leading the CAC Kingdom Embassy assembly within the Baltimore DCC family — a next-generation voice carrying the Gospel with clarity, conviction, and cultural intelligence.",
-    image: "/images/pastor-enoch.webp",
+    name: "Pastor John Oluwatimilehin, Ph.D.",
+    title: "Chairman, CAC Village Management Council",
+    bio: "Chairman of the CAC Village Management Council and member of the CACNA Coordinating Council, also serving as Superintendent of the Bethel DCC.",
   },
 ];
 
@@ -72,12 +67,12 @@ export default function LeadershipPage() {
           <Reveal delay={80}>
             <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(46px,6.5vw,90px)", letterSpacing: "-2px", color: "var(--ink)", margin: "16px 0", lineHeight: .92 }}>
               Meet Our<br />
-              <span style={{ background: "linear-gradient(100deg,#F15F22,#D62828)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>Pastors.</span>
+              <span style={{ background: "linear-gradient(100deg,#F15F22,#D62828)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>Leadership.</span>
             </h1>
           </Reveal>
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(16px,1.8vw,19px)", color: "var(--ink-soft)", lineHeight: 1.65, maxWidth: 580, margin: "0 auto" }}>
-              Servant leaders of the Baltimore-Maryland District Coordinating Council, committed to preaching the whole Gospel and shepherding every soul home.
+              The CACNA Coordinating Council, committed to preaching the whole Gospel and shepherding every member church across the United States and Canada.
             </p>
           </Reveal>
         </div>
@@ -94,17 +89,17 @@ export default function LeadershipPage() {
             <div className="ldr-card" style={{ background: "var(--ink)", borderRadius: 28, overflow: "hidden", boxShadow: "0 30px 60px rgba(27,19,14,.22)" }}>
               <div style={{ padding: "clamp(36px,5vw,60px)", display: "flex", flexDirection: "column", justifyContent: "center", color: "var(--cream)" }}>
                 <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 14 }}>{featured.title}</div>
-                <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3vw,42px)", letterSpacing: "-1px", margin: "0 0 6px", lineHeight: 1.04 }}>{featured.name}</h2>
-                <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "clamp(18px,2vw,26px)", color: "rgba(255,247,239,.8)", letterSpacing: "-.4px", margin: "0 0 22px" }}>&amp; {featured.partner}</div>
+                <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3vw,42px)", letterSpacing: "-1px", margin: "0 0 22px", lineHeight: 1.04 }}>{featured.name}</h2>
                 <p style={{ fontSize: 16.5, lineHeight: 1.75, color: "rgba(255,247,239,.78)", margin: 0 }}>{featured.bio}</p>
               </div>
               <div className="ldr-photo" style={{ position: "relative" }}>
                 <Image
                   src={featured.image}
-                  alt={`${featured.name} & ${featured.partner}`}
+                  alt={featured.name}
                   fill
                   style={{ objectFit: "contain", objectPosition: "center bottom" }}
                   sizes="(max-width: 680px) 100vw, 400px"
+                  unoptimized
                 />
               </div>
             </div>
@@ -157,33 +152,13 @@ export default function LeadershipPage() {
         </div>
       </section>
 
-      {/* Choir / Worship Team */}
-      <section style={{ background: "var(--cream)", padding: "80px clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 1080, margin: "0 auto" }}>
-          <Reveal style={{ textAlign: "center", marginBottom: 44 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Worship Team</span>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4vw,52px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 0", lineHeight: .95 }}>The Choir</h2>
-          </Reveal>
-          <Reveal delay={80}>
-            <div style={{ borderRadius: 24, overflow: "hidden", position: "relative", height: "clamp(280px,36vw,440px)", boxShadow: "0 24px 50px rgba(27,19,14,.16)" }}>
-              <Image src="/images/choir.jpg" alt="CAC Salvation Center choir" fill style={{ objectFit: "cover", objectPosition: "center 30%" }} sizes="100vw" />
-              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(0,0,0,.6),transparent 60%)" }} />
-              <div style={{ position: "absolute", bottom: 32, left: 36, color: "#fff" }}>
-                <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 28 }}>Salvation Center Choir</div>
-                <div style={{ fontSize: 14, opacity: .75, marginTop: 4 }}>Leading the congregation in Spirit-filled worship every Sunday</div>
-              </div>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
       {/* CTA */}
       <section style={{ background: "var(--ink)", padding: "80px clamp(20px,5vw,64px)", textAlign: "center" }}>
         <Reveal>
-          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4.5vw,60px)", letterSpacing: "-1.2px", color: "var(--cream)", margin: "0 0 16px", lineHeight: .96 }}>Come worship with us.</h2>
-          <p style={{ fontSize: 17, color: "rgba(255,247,239,.6)", margin: "0 0 36px" }}>Sundays at 10:30 AM — 10710 Marriottsville Rd, Randallstown MD.</p>
+          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4.5vw,60px)", letterSpacing: "-1.2px", color: "var(--cream)", margin: "0 0 16px", lineHeight: .96 }}>Connect with CACNA.</h2>
+          <p style={{ fontSize: 17, color: "rgba(255,247,239,.6)", margin: "0 0 36px" }}>Find a member church near you across the United States and Canada.</p>
           <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
-            <Link href="/visit" style={{ background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(214,40,40,.4)" }}>Plan a Visit →</Link>
+            <Link href="/visit" style={{ background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(214,40,40,.4)" }}>Find a Church →</Link>
             <Link href="/about" style={{ background: "rgba(255,247,239,.1)", color: "var(--cream)", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(255,247,239,.2)" }}>Our Story</Link>
           </div>
         </Reveal>
