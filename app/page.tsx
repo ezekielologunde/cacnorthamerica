@@ -27,23 +27,23 @@ const faqJsonLd = {
   mainEntity: [
     {
       "@type": "Question",
-      name: "What time is Sunday service at CAC Salvation Center?",
-      acceptedAnswer: { "@type": "Answer", text: "Sunday worship begins at 10:30 AM ET at 10710 Marriottsville Rd, Randallstown, MD 21133. All are welcome — in person or online." },
+      name: "What is Christ Apostolic Church North America (CACNA)?",
+      acceptedAnswer: { "@type": "Answer", text: "CACNA is the regional body uniting Christ Apostolic Church member churches across the United States and Canada, organized under 16 DCCs (District Church Councils)/Zones, each led by a Zonal Superintendent." },
     },
     {
       "@type": "Question",
-      name: "Where is CAC Salvation Center located?",
-      acceptedAnswer: { "@type": "Answer", text: "10710 Marriottsville Rd, Randallstown, MD 21133 — part of the Christ Apostolic Church Baltimore-Maryland District." },
+      name: "Where is the CACNA Annual Convention held?",
+      acceptedAnswer: { "@type": "Answer", text: "At CAC Village, 14051 Stahley Road, Blue Ridge Summit, PA 17214." },
     },
     {
       "@type": "Question",
-      name: "Can I watch the Sunday service online?",
-      acceptedAnswer: { "@type": "Answer", text: "Yes. Every Sunday at 10:30 AM ET we stream live on YouTube, Facebook, and Zoom. Visit cacsalvationcenter.org/online for the links." },
+      name: "Can I watch CACNA services and the convention online?",
+      acceptedAnswer: { "@type": "Answer", text: "Yes. Services and the Annual Convention are streamed on YouTube, and a Zoom option is available for the convention. Visit the Watch & Grow page for links." },
     },
     {
       "@type": "Question",
-      name: "How do I contact CAC Salvation Center?",
-      acceptedAnswer: { "@type": "Answer", text: "Call or WhatsApp +1 443-272-6794, or email info@cacsalvationcenter.org. Address: 10710 Marriottsville Rd, Randallstown, MD 21133." },
+      name: "How do I contact CACNA?",
+      acceptedAnswer: { "@type": "Answer", text: "Call (305) 469-0346, or email info@cacnorthamerica.com. Address: 14051 Stahley Road, Blue Ridge Summit, PA 17214." },
     },
   ],
 };

@@ -9,8 +9,8 @@ import { useCountdown } from "@/lib/useCountdown";
 import { haptic } from "@/lib/haptics";
 
 const HERO_T = {
-  en: { badge: "SUNDAYS", line1: "Welcome", line2: "Home." },
-  yo: { badge: "ỌJỌ́ ÀÌKÚ", line1: "Káàbọ̀", line2: "sí Ilé." },
+  en: { badge: "CACNA", line1: "One Fold.", line2: "One Shepherd." },
+  yo: { badge: "CACNA", line1: "Agbo Kan.", line2: "Oluṣọ-Agutan Kan." },
 } as const;
 
 const BG_WORDS = [
@@ -62,20 +62,9 @@ export function Hero() {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
 
-  // Defer the YouTube player until the browser is idle so it never blocks
-  // initial load — the poster image shows instantly, then the video fades in.
-  // Reduced-motion users keep the still poster (no autoplaying video).
-  const [showVideo, setShowVideo] = useState(false);
-  useEffect(() => {
-    if (reduce) return;
-    const start = () => setShowVideo(true);
-    if (typeof window.requestIdleCallback === "function") {
-      const id = window.requestIdleCallback(start, { timeout: 2000 });
-      return () => window.cancelIdleCallback(id);
-    }
-    const t = setTimeout(start, 800);
-    return () => clearTimeout(t);
-  }, [reduce]);
+  // No CACNA-specific background video is available yet (the source site's
+  // video belongs to a different, unrelated congregation) — a static photo
+  // stands in below until CACNA supplies its own footage.
 
   // Bilingual hero greeting (English / Yorùbá). Scoped to the greeting;
   // persists per visit.
@@ -113,38 +102,24 @@ export function Hero() {
         padding: "140px clamp(20px,5vw,64px) 80px",
         overflow: "hidden",
         background: "#0d0a08",
-        backgroundImage: "url(https://img.youtube.com/vi/RX1NjOYtDxo/maxresdefault.jpg)",
+        backgroundImage: "url(https://cacnorthamerica.com/wp-content/uploads/2024/01/DSC_8969-1030x688.jpg)",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      {/* YouTube background video — muted autoplay, scroll-linked parallax */}
+      {/* Static background photo, scroll-linked parallax (no video yet — see note above) */}
       <motion.div
+        aria-hidden
         style={{
-          position: "absolute", inset: 0, zIndex: 0, overflow: "hidden",
+          position: "absolute", inset: "-10%", zIndex: 0, overflow: "hidden",
+          backgroundImage: "url(https://cacnorthamerica.com/wp-content/uploads/2024/01/DSC_8969-1030x688.jpg)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
           scale: reduce ? 1 : videoScale,
           y: reduce ? 0 : videoY,
           willChange: "transform",
         }}
-      >
-        {showVideo && (
-          <iframe
-            src="https://www.youtube.com/embed/RX1NjOYtDxo?autoplay=1&mute=1&loop=1&playlist=RX1NjOYtDxo&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&disablekb=1&fs=0"
-            title="CAC Salvation Center worship service background video"
-            allow="autoplay; encrypted-media"
-            aria-hidden="true"
-            tabIndex={-1}
-            className="hero-video-fade"
-            style={{
-              position: "absolute", top: "50%", left: "50%",
-              transform: "translate(-50%,-50%)",
-              width: "calc(177.78vh + 200px)", height: "calc(56.25vw + 200px)",
-              minWidth: "calc(100% + 200px)", minHeight: "calc(100% + 200px)",
-              border: "none", pointerEvents: "none",
-            }}
-          />
-        )}
-      </motion.div>
+      />
 
       {/* Dark shadow overlay + grain vignette */}
       <div style={{
@@ -207,7 +182,7 @@ export function Hero() {
             backdropFilter: "blur(8px)",
           }}>
             <span style={{ background: "var(--red)", color: "#fff", fontSize: 11, fontWeight: 800, padding: "3px 9px", borderRadius: 999, letterSpacing: ".5px" }}>{t.badge}</span>
-            Onsite &amp; Online · 10:30 AM ET
+            16 Zones · United States &amp; Canada
           </span>
         </Reveal>
 
@@ -222,7 +197,7 @@ export function Hero() {
             textWrap: "balance",
           }}
         >
-          <span className="sr-only">Christ Apostolic Church Salvation Center — a Nigerian church in Randallstown, Maryland. </span>
+          <span className="sr-only">Christ Apostolic Church North America — uniting CAC member churches across the United States and Canada. </span>
           <AnimLetters key={`l1-${lang}`}>{t.line1}</AnimLetters>
           <br />
           <RevealText
@@ -265,13 +240,13 @@ export function Hero() {
               {lang === "en" ? (
                 <motion.span key="sub-en" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
                   Real worship, real community — preaching the whole Gospel in a clear
-                  and undiluted manner. It&apos;s more than a greeting.{" "}
-                  <strong style={{ color: "#fff" }}>It&apos;s our lifestyle.</strong>
+                  and undiluted manner across every CACNA member church.{" "}
+                  <strong style={{ color: "#fff" }}>One fold, one Shepherd.</strong>
                 </motion.span>
               ) : (
                 <motion.span key="sub-yo" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-                  Ìjọsìn tòótọ́, ẹbí tòótọ́. Ó ju ìkíni lọ —{" "}
-                  <strong style={{ color: "#fff" }}>ìgbé ayé wa ni.</strong>
+                  Ìjọsìn tòótọ́, ẹbí tòótọ́ ní gbogbo ìjọ CACNA —{" "}
+                  <strong style={{ color: "#fff" }}>agbo kan, oluṣọ-agutan kan.</strong>
                 </motion.span>
               )}
             </AnimatePresence>
@@ -303,7 +278,7 @@ export function Hero() {
                 border: "1.5px solid rgba(255,255,255,.35)",
                 backdropFilter: "blur(8px)",
               }}>
-                Plan a Visit
+                Find a Church
               </Link>
             </Magnetic>
           </div>

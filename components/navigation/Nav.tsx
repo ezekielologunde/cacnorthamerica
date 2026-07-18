@@ -155,10 +155,10 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
       >
         {/* Logo */}
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', color: barInk, flexShrink: 0, transition: 'color .4s' }}>
-          <Image src="/images/logo.png" alt="CAC Salvation Center" width={42} height={42} style={{ borderRadius: 12, objectFit: 'cover', flexShrink: 0 }} />
+          <Image src="/images/logo.png" alt="CAC North America" width={42} height={42} style={{ borderRadius: 12, objectFit: 'cover', flexShrink: 0 }} />
           <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
             <span style={{ fontSize: 10, letterSpacing: '2.5px', textTransform: 'uppercase', color: barAccent, fontWeight: 700, transition: 'color .4s' }}>Christ Apostolic Church</span>
-            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 19, letterSpacing: '-.3px', marginTop: 3 }}>Salvation Center</span>
+            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 19, letterSpacing: '-.3px', marginTop: 3 }}>North America</span>
           </span>
         </Link>
 
@@ -350,10 +350,10 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
               {isLive ? 'LIVE NOW' : 'Watch Live'}
             </Link>
             <Link href="/visit" onClick={() => setOpen(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 17, padding: '18px 24px', borderRadius: 999, textDecoration: 'none', border: `1.5px solid ${dark ? 'rgba(255,247,239,.3)' : 'var(--ink)'}`, color: ink }}>
-              Plan a Visit
+              Find a Church
             </Link>
             <p style={{ fontSize: 12.5, color: dark ? 'rgba(255,247,239,.4)' : 'var(--ink-soft)', textAlign: 'center', margin: '8px 0 0' }}>
-              Sundays 10:30 AM · 10710 Marriottsville Rd, Randallstown MD
+              16 Zones · United States &amp; Canada
             </p>
           </div>
         </div>
