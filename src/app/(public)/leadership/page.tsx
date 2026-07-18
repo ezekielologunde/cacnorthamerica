@@ -11,12 +11,28 @@ function LeaderGrid({ leaders }: { leaders: Leader[] }) {
         <Link
           key={leader.id}
           href={`/leadership/${leader.id}`}
-          className="rounded-xl border border-navy-800/10 p-6 hover:border-gold-400 transition-colors"
+          className="overflow-hidden rounded-xl border border-navy-800/10 hover:border-gold-400 transition-colors"
         >
-          <h3 className="font-serif-display text-lg text-navy-900">
-            {leader.fullName}
-          </h3>
-          <p className="mt-1 text-sm text-gold-600">{leader.title}</p>
+          {leader.photoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={leader.photoUrl}
+              alt={leader.fullName}
+              className="h-40 w-full object-cover object-top"
+            />
+          ) : (
+            <div className="h-40 w-full bg-cream-200 flex items-center justify-center">
+              <span className="font-serif-display text-3xl text-gold-500">
+                {leader.fullName.replace(/^(Pastor|Prophet|Apostle|Evangelist)\s+/, "")[0]}
+              </span>
+            </div>
+          )}
+          <div className="p-6">
+            <h3 className="font-serif-display text-lg text-navy-900">
+              {leader.fullName}
+            </h3>
+            <p className="mt-1 text-sm text-gold-600">{leader.title}</p>
+          </div>
         </Link>
       ))}
     </div>

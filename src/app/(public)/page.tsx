@@ -4,9 +4,13 @@ import {
   getFeaturedEvent,
   getUpcomingEvents,
   getChurches,
+  getDepartments,
   getSiteContent,
   getSiteSettings,
 } from "@/lib/data/queries";
+
+const HERO_IMAGE =
+  "https://cacnorthamerica.com/wp-content/uploads/2024/01/DSC_8969-1030x688.jpg";
 
 const SERVICES = [
   {
@@ -33,23 +37,40 @@ const SERVICES = [
 ];
 
 export default async function HomePage() {
-  const [featuredEvent, upcomingEventsAll, churches, settings, welcome, watchword, presidentsWord] =
-    await Promise.all([
-      getFeaturedEvent(),
-      getUpcomingEvents(),
-      getChurches(),
-      getSiteSettings(),
-      getSiteContent("home", "welcome"),
-      getSiteContent("home", "watchword"),
-      getSiteContent("home", "presidents_word"),
-    ]);
+  const [
+    featuredEvent,
+    upcomingEventsAll,
+    churches,
+    departments,
+    settings,
+    welcome,
+    watchword,
+    presidentsWord,
+  ] = await Promise.all([
+    getFeaturedEvent(),
+    getUpcomingEvents(),
+    getChurches(),
+    getDepartments(),
+    getSiteSettings(),
+    getSiteContent("home", "welcome"),
+    getSiteContent("home", "watchword"),
+    getSiteContent("home", "presidents_word"),
+  ]);
   const upcomingEvents = upcomingEventsAll.slice(0, 3);
+  const ministryTeasers = departments.filter((d) => d.imageUrl).slice(0, 4);
 
   return (
     <>
       {/* Hero */}
       <section className="relative overflow-hidden bg-navy-950 text-cream-100">
-        <div className="section-shell py-20 md:py-28 grid gap-10 md:grid-cols-2 md:items-center">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={HERO_IMAGE}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover opacity-25"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-navy-950 via-navy-950/90 to-navy-950/60" />
+        <div className="relative section-shell py-20 md:py-28 grid gap-10 md:grid-cols-2 md:items-center">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold-400">
               Welcome to
@@ -76,6 +97,14 @@ export default async function HomePage() {
 
           {featuredEvent && (
             <div className="rounded-2xl border border-cream-100/15 bg-cream-100/5 p-6 md:p-8">
+              {featuredEvent.bannerImageUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={featuredEvent.bannerImageUrl}
+                  alt={featuredEvent.title}
+                  className="mb-5 h-40 w-full rounded-xl object-cover object-top"
+                />
+              )}
               <p className="text-xs font-semibold uppercase tracking-wide text-gold-400">
                 Mark Your Calendar
               </p>
@@ -140,6 +169,45 @@ export default async function HomePage() {
               Read our story →
             </Link>
           </div>
+        </section>
+      )}
+
+      {/* Ministry teasers */}
+      {ministryTeasers.length > 0 && (
+        <section className="section-shell py-20">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold-600">
+            Serving Together
+          </p>
+          <h2 className="mt-2 font-serif-display text-3xl text-navy-900">
+            Our Ministries
+          </h2>
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {ministryTeasers.map((dept) => (
+              <Link
+                key={dept.id}
+                href={`/departments/${dept.slug}`}
+                className="group overflow-hidden rounded-xl border border-navy-800/10 hover:border-gold-400 transition-colors"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={dept.imageUrl}
+                  alt={dept.name}
+                  className="h-32 w-full object-cover"
+                />
+                <div className="p-4">
+                  <h3 className="font-serif-display text-base text-navy-900 group-hover:text-gold-600 transition-colors">
+                    {dept.name}
+                  </h3>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <Link
+            href="/departments"
+            className="mt-8 inline-block text-sm font-semibold text-gold-600 hover:text-gold-500"
+          >
+            View all ministries →
+          </Link>
         </section>
       )}
 

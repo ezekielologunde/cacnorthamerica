@@ -33,6 +33,14 @@ export default async function EventDetailPage({
           Theme: &ldquo;{event.themeText}&rdquo;
         </p>
       )}
+      {event.bannerImageUrl && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={event.bannerImageUrl}
+          alt={event.title}
+          className="mt-6 h-72 w-full rounded-xl object-cover object-top"
+        />
+      )}
       <p className="mt-4 text-sm font-semibold text-gold-600">
         {start.toDateString() === end.toDateString()
           ? start.toLocaleDateString()

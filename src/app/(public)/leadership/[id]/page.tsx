@@ -20,6 +20,15 @@ export default async function LeaderDetailPage({
       </h1>
       <p className="mt-2 text-gold-600 font-medium">{leader.title}</p>
 
+      {leader.photoUrl && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={leader.photoUrl}
+          alt={leader.fullName}
+          className="mt-6 h-56 w-44 rounded-xl object-cover object-top"
+        />
+      )}
+
       <p className="mt-8 text-navy-800/80 leading-relaxed">
         {leader.bio ?? "Bio coming soon."}
       </p>

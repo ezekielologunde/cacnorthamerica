@@ -39,6 +39,11 @@ yarn-error.log*
 # local dev data store (placeholder db, see src/lib/data/store.ts)
 /data/db.json
 
+# claude code session artifacts
+/.claude/scheduled_tasks.lock
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.vercel

@@ -18,6 +18,14 @@ export default async function DepartmentDetailPage({
       <h1 className="mt-2 font-serif-display text-4xl text-navy-900">
         {department.name}
       </h1>
+      {department.imageUrl && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={department.imageUrl}
+          alt={department.name}
+          className="mt-6 h-56 w-full rounded-xl object-cover"
+        />
+      )}
       <p className="mt-6 text-navy-800/80 leading-relaxed">
         {department.description}
       </p>
