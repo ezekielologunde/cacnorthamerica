@@ -9,23 +9,18 @@ import { submitLead, isValidEmail } from "@/lib/forms";
 
 const SUBJECTS = [
   "General Enquiry",
-  "New Membership / Join Church",
-  "Join Sisters Fellowship",
-  "Join Brothers Fellowship",
-  "First Visit",
+  "Find a Member Church",
+  "Zone / DCC Inquiry",
+  "Annual Convention",
   "Prayer Request",
   "Pastoral Care",
-  "Hall / Venue Hire",
   "Giving & Donations",
   "Media & Livestream",
   "Other",
 ];
 
 const MEMBERSHIP_SUBJECTS = new Set([
-  "New Membership / Join Church",
-  "Join Sisters Fellowship",
-  "Join Brothers Fellowship",
-  "First Visit",
+  "Find a Member Church",
 ]);
 
 const COUNTRIES = [
@@ -196,10 +191,10 @@ export default function ContactPage() {
           </Reveal>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 18 }}>
             {[
-              { icon: MapPin, title: "Address", lines: ["10710 Marriottsville Rd", "Randallstown, MD 21133"], href: "https://maps.google.com/?q=10710+Marriottsville+Rd+Randallstown+MD+21133" },
-              { icon: Phone, title: "Phone", lines: ["+1 443-272-6794", "+1 410-701-8315"], href: "tel:+14432726794" },
-              { icon: Mail, title: "Email", lines: ["info@cacsalvationcenter.org"], href: "mailto:info@cacsalvationcenter.org" },
-              { icon: Clock, title: "Sunday Service", lines: ["Sunday School 9:25 AM", "Sunday Worship 10:30 AM ET"], href: null },
+              { icon: MapPin, title: "Address", lines: ["14051 Stahley Road", "Blue Ridge Summit, PA 17214"], href: "https://maps.google.com/?q=14051+Stahley+Road+Blue+Ridge+Summit+PA+17214" },
+              { icon: Phone, title: "Phone", lines: ["(305) 469-0346"], href: "tel:+13054690346" },
+              { icon: Mail, title: "Email", lines: ["info@cacnorthamerica.com"], href: "mailto:info@cacnorthamerica.com" },
+              { icon: Clock, title: "Annual Convention", lines: ["Six days in July", "CAC Village, PA"], href: null },
             ].map((card) => (
               <Reveal key={card.title}>
                 <div style={{ background: "var(--paper)", borderRadius: 20, padding: "28px 24px", border: "1px solid var(--line)", boxShadow: "0 8px 22px rgba(27,19,14,.05)" }}>

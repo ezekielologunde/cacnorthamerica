@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Contact — CAC Salvation Center | Randallstown, MD",
+  title: "Contact — Christ Apostolic Church North America (CACNA)",
   description:
-    "Reach us by call or WhatsApp at +1 443-272-6794, or email info@cacsalvationcenter.org. 10710 Marriottsville Rd, Randallstown MD 21133. We'd love to connect.",
+    "Reach CACNA at (305) 469-0346 or info@cacnorthamerica.com. 14051 Stahley Road, Blue Ridge Summit, PA 17214. We'd love to connect.",
   alternates: { canonical: "/contact" },
 };
 
