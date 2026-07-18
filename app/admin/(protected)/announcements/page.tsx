@@ -56,7 +56,7 @@ export default async function AnnouncementsListPage() {
                     width: 14,
                     height: 14,
                     borderRadius: "50%",
-                    background: a.bg_color ?? "#D62828",
+                    background: a.bg_color ?? "#1E3A6B",
                     flexShrink: 0,
                     border: "1px solid rgba(0,0,0,0.1)",
                   }}

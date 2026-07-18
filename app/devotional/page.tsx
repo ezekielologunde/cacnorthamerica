@@ -43,13 +43,13 @@ const children = [
     affirmation: "I am forgiven",
     ref: "Ephesians 1:6-8",
     text: "So we praise God for the glorious grace he has poured out on us who belong to his dear Son. He is so rich in kindness and grace that he purchased our freedom with the blood of his Son and forgave our sins. He has showered his kindness on us, along with all wisdom and understanding.",
-    accent: "linear-gradient(140deg,#F15F22,#D62828)",
+    accent: "linear-gradient(140deg,#3D5FA1,#1E3A6B)",
   },
   {
     affirmation: "I am reconciled with God",
     ref: "2 Corinthians 5:18-19",
     text: "All this is from God, who reconciled us to himself through Christ and gave us the ministry of reconciliation: that God was reconciling the world to himself in Christ, not counting people's sins against them. And he has committed to us the message of reconciliation.",
-    accent: "linear-gradient(140deg,#E8A33D,#F15F22)",
+    accent: "linear-gradient(140deg,#E8A33D,#3D5FA1)",
   },
 ];
 
@@ -73,7 +73,7 @@ export default function DevotionalPage() {
           <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(44px,6.5vw,92px)", letterSpacing: "-0.03em", color: "#fff", margin: "16px 0", lineHeight: 0.95, textWrap: "balance" }}>
             <RevealText immediate>Daily bread</RevealText>
             <br />
-            <RevealText immediate delay={0.15} style={{ background: "linear-gradient(100deg,#F15F22,#D62828,#E8A33D)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            <RevealText immediate delay={0.15} style={{ background: "linear-gradient(100deg,#3D5FA1,#1E3A6B,#E8A33D)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               for the soul.
             </RevealText>
           </h1>
@@ -86,7 +86,7 @@ export default function DevotionalPage() {
       </section>
 
       {/* 2026 Watchword */}
-      <section style={{ background: "linear-gradient(135deg,#9E1B1B,#D62828)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)", position: "relative", overflow: "hidden" }}>
+      <section style={{ background: "linear-gradient(135deg,#0F1F3D,#1E3A6B)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)", position: "relative", overflow: "hidden" }}>
         <div aria-hidden style={{ position: "absolute", top: -120, right: -80, width: 520, height: 420, background: "radial-gradient(circle,rgba(232,163,61,.28),transparent 65%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 860, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>

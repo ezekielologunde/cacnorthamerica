@@ -85,13 +85,13 @@ function shippingHtml(opts: {
         <p style="font-size:14px;color:#1B130E;line-height:1.75;margin:0">
           📦 <strong>Ships within 5–7 business days</strong><br>
           Questions about your order? Reach us on WhatsApp or email
-          <a href="mailto:info@cacnorthamerica.com" style="color:#D62828;text-decoration:none">info@cacnorthamerica.com</a>.
+          <a href="mailto:info@cacnorthamerica.com" style="color:#1E3A6B;text-decoration:none">info@cacnorthamerica.com</a>.
         </p>
       </div>
 
       <hr style="border:none;border-top:1px solid rgba(27,19,14,.08);margin:0 0 24px">
       <p style="font-size:12px;color:rgba(27,19,14,.4);line-height:1.7;margin:0;text-align:center">
-        <a href="https://www.cacnorthamerica.com" style="color:#D62828;text-decoration:none">cacnorthamerica.com</a>
+        <a href="https://www.cacnorthamerica.com" style="color:#1E3A6B;text-decoration:none">cacnorthamerica.com</a>
       </p>
     </div>
   </div>
@@ -228,7 +228,7 @@ export async function resendDownloadLink(
   </div>
 </td></tr>
 <tr><td style="padding:16px 32px;border-top:1px solid #ede9e4">
-  <p style="margin:0;font-size:12px;color:#aaa"><a href="https://cacnorthamerica.com" style="color:#D62828;text-decoration:none;font-weight:700">cacnorthamerica.com</a> &nbsp;·&nbsp; Blue Ridge Summit, Pennsylvania</p>
+  <p style="margin:0;font-size:12px;color:#aaa"><a href="https://cacnorthamerica.com" style="color:#1E3A6B;text-decoration:none;font-weight:700">cacnorthamerica.com</a> &nbsp;·&nbsp; Blue Ridge Summit, Pennsylvania</p>
 </td></tr>
 </table></td></tr></table></body></html>`;
 

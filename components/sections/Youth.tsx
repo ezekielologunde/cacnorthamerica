@@ -16,21 +16,19 @@ export function Youth() {
 
         <div className="r3" style={{ gap: 22 }}>
           <Reveal>
-            <a
-              href="https://open.spotify.com/show/0wFUgSZq4CuVuM0M9gRFUw"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/devotional"
               style={{ textDecoration: 'none', color: '#fff', background: 'var(--ink)', borderRadius: 24, padding: 34, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 280, position: 'relative', overflow: 'hidden' }}
             >
-              <div style={{ position: 'absolute', top: -50, right: -50, width: 200, height: 200, borderRadius: '50%', background: 'radial-gradient(circle,#1DB954,transparent 68%)', opacity: .4 }} />
+              <div style={{ position: 'absolute', top: -50, right: -50, width: 200, height: 200, borderRadius: '50%', background: 'radial-gradient(circle,var(--gold),transparent 68%)', opacity: .4 }} />
               <div style={{ position: 'relative' }}>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(29,185,84,.2)', color: '#5be584', fontWeight: 800, fontSize: 12, padding: '7px 13px', borderRadius: 999 }}>PODCAST · Spotify</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(232,163,61,.18)', color: 'var(--gold)', fontWeight: 800, fontSize: 12, padding: '7px 13px', borderRadius: 999 }}>DAILY DEVOTIONAL</span>
               </div>
               <div style={{ position: 'relative' }}>
-                <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 38, lineHeight: 1, letterSpacing: '-1px' }}>Hope for<br />Today</div>
-                <div style={{ marginTop: 14, fontSize: 14.5, opacity: .8, display: 'flex', alignItems: 'center', gap: 8 }}>Listen to inspired messages <span style={{ fontSize: 18 }}>→</span></div>
+                <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 38, lineHeight: 1, letterSpacing: '-1px' }}>Daily Bread<br />for the Soul</div>
+                <div style={{ marginTop: 14, fontSize: 14.5, opacity: .8, display: 'flex', alignItems: 'center', gap: 8 }}>Read today&apos;s word <span style={{ fontSize: 18 }}>→</span></div>
               </div>
-            </a>
+            </Link>
           </Reveal>
 
           <Reveal delay={100}>
@@ -41,8 +39,8 @@ export function Youth() {
             >
               <IconBadge icon={BookOpen} />
               <div>
-                <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 24, letterSpacing: '-.5px', lineHeight: 1.05 }}>2026 Bible Reading Calendar</div>
-                <div style={{ fontSize: 14, color: 'var(--ink-soft)', marginTop: 10 }}>The Hope for Today weekly reading, a chapter a day as one church.</div>
+                <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 24, letterSpacing: '-.5px', lineHeight: 1.05 }}>Weekly Bible Reading Plan</div>
+                <div style={{ fontSize: 14, color: 'var(--ink-soft)', marginTop: 10 }}>A chapter a day, walked through together as one family.</div>
                 <div style={{ marginTop: 14, fontSize: 14, fontWeight: 700, color: 'var(--red)', display: 'flex', alignItems: 'center', gap: 7 }}>Open the weekly plan <span style={{ fontSize: 17 }}>→</span></div>
               </div>
             </Link>

@@ -38,7 +38,7 @@ export function PastorWelcome() {
           <Reveal delay={160}>
             <p style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,2.6vw,34px)", letterSpacing: "-.5px", lineHeight: 1.15, margin: "0 0 8px", color: "var(--ink)" }}>
               With this in our heart, we say{" "}
-              <span style={{ background: "linear-gradient(100deg,#F15F22,#D62828)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>Welcome Home!</span>
+              <span style={{ background: "linear-gradient(100deg,#3D5FA1,#1E3A6B)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>Welcome Home!</span>
             </p>
           </Reveal>
           <Reveal delay={200}>

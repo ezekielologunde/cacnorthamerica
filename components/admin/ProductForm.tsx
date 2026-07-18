@@ -152,7 +152,7 @@ export default function ProductForm({ product }: { product?: Product }) {
     <form onSubmit={handleSubmit} style={{ maxWidth: 720 }}>
       <style>{`
         .adm-inp { transition: border-color 0.15s, box-shadow 0.15s; }
-        .adm-inp:focus-visible { border-color: var(--red); box-shadow: 0 0 0 3px rgba(214,40,40,0.12); }
+        .adm-inp:focus-visible { border-color: var(--red); box-shadow: 0 0 0 3px rgba(30,58,107,0.12); }
         .adm-inp:hover:not(:focus-visible) { border-color: rgba(27,19,14,0.24); }
       `}</style>
       <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>

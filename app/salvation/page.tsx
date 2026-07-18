@@ -47,7 +47,7 @@ export default function SalvationPage() {
 
       {/* Hero */}
       <section style={{ background: "var(--ink)", padding: "140px clamp(20px,5vw,64px) 80px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -80, right: -80, width: 440, height: 440, borderRadius: "50%", background: "radial-gradient(circle,rgba(214,40,40,.3),transparent 70%)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: -80, right: -80, width: 440, height: 440, borderRadius: "50%", background: "radial-gradient(circle,rgba(30,58,107,.3),transparent 70%)", pointerEvents: "none" }} />
         <div style={{ position: "absolute", bottom: -60, left: -60, width: 320, height: 320, borderRadius: "50%", background: "radial-gradient(circle,rgba(232,163,61,.2),transparent 70%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 780, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
@@ -56,7 +56,7 @@ export default function SalvationPage() {
           <Reveal delay={80}>
             <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(46px,6.5vw,96px)", letterSpacing: "-2px", color: "#fff", margin: "16px 0", lineHeight: .92 }}>
               Your life can<br />
-              <span style={{ background: "linear-gradient(100deg,#F15F22,#D62828,#E8A33D)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>change today.</span>
+              <span style={{ background: "linear-gradient(100deg,#3D5FA1,#1E3A6B,#E8A33D)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>change today.</span>
             </h1>
           </Reveal>
           <Reveal delay={160}>
@@ -65,7 +65,7 @@ export default function SalvationPage() {
             </p>
           </Reveal>
           <Reveal delay={220}>
-            <Link href="/contact" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 32px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(214,40,40,.4)" }}>
+            <Link href="/contact" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 32px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(30,58,107,.4)" }}>
               Connect With Us →
             </Link>
           </Reveal>

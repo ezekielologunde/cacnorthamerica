@@ -205,7 +205,7 @@ export function Hero() {
             immediate
             delay={0.18}
             style={{
-              background: "linear-gradient(100deg,#F15F22,#D62828,#9E1B1B,#D62828)",
+              background: "linear-gradient(100deg,#3D5FA1,#1E3A6B,#0F1F3D,#1E3A6B)",
               backgroundSize: "200% auto",
               WebkitBackgroundClip: "text", backgroundClip: "text",
               WebkitTextFillColor: "transparent",
@@ -262,7 +262,7 @@ export function Hero() {
                 fontWeight: 700, fontSize: 16,
                 padding: "17px 30px", borderRadius: 999,
                 textDecoration: "none",
-                boxShadow: "0 14px 34px rgba(214,40,40,.45)",
+                boxShadow: "0 14px 34px rgba(30,58,107,.45)",
               }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" aria-hidden><path d="M8 5v14l11-7z" /></svg>
                 Join Us Online

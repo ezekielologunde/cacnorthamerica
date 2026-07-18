@@ -173,7 +173,7 @@ export function SiteOverlays({ bannerAnn }: { bannerAnn?: BannerAnn | null }) {
             ×
           </button>
           <div style={{ width: 38, height: 38, background: '#FCEBEB', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
-            <Heart size={18} strokeWidth={2} color="#D62828" aria-hidden />
+            <Heart size={18} strokeWidth={2} color="#1E3A6B" aria-hidden />
           </div>
           <div style={{ fontWeight: 800, fontSize: 15, color: '#1B130E', marginBottom: 6 }}>Need prayer?</div>
           <p style={{ fontSize: 13, color: '#5f5e5a', lineHeight: 1.6, marginBottom: 14 }}>
@@ -183,7 +183,7 @@ export function SiteOverlays({ bannerAnn }: { bannerAnn?: BannerAnn | null }) {
             <Link
               href="/prayer"
               onClick={() => setSlide(false)}
-              style={{ flex: 1, textAlign: 'center', background: '#D62828', color: '#fff', fontWeight: 700, fontSize: 13, padding: '9px 14px', borderRadius: 20, textDecoration: 'none' }}
+              style={{ flex: 1, textAlign: 'center', background: '#1E3A6B', color: '#fff', fontWeight: 700, fontSize: 13, padding: '9px 14px', borderRadius: 20, textDecoration: 'none' }}
             >
               Send request
             </Link>

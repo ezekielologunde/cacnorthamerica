@@ -14,7 +14,7 @@ export default async function GalleryAdminPage() {
     <div>
       <style>{`
         .adm-inp { transition: border-color 0.15s, box-shadow 0.15s; }
-        .adm-inp:focus-visible { border-color: var(--red); box-shadow: 0 0 0 3px rgba(214,40,40,0.12); outline: none; }
+        .adm-inp:focus-visible { border-color: var(--red); box-shadow: 0 0 0 3px rgba(30,58,107,0.12); outline: none; }
         .adm-inp:hover:not(:focus-visible) { border-color: rgba(27,19,14,0.24); }
       `}</style>
       <div style={{ marginBottom: 28 }}>

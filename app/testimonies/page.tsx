@@ -13,12 +13,12 @@ export const metadata = {
 };
 
 const tagColor: Record<string, string> = {
-  Family: "linear-gradient(135deg,#E8A33D,#F15F22)",
-  Healing: "linear-gradient(135deg,#D62828,#9E1B1B)",
-  Salvation: "linear-gradient(135deg,#F15F22,#D62828)",
-  Ministry: "linear-gradient(135deg,#9E1B1B,#1B130E)",
-  Restoration: "linear-gradient(135deg,#F15F22,#E8A33D)",
-  Testimony: "linear-gradient(135deg,#D62828,#F15F22)",
+  Family: "linear-gradient(135deg,#E8A33D,#3D5FA1)",
+  Healing: "linear-gradient(135deg,#1E3A6B,#0F1F3D)",
+  Salvation: "linear-gradient(135deg,#3D5FA1,#1E3A6B)",
+  Ministry: "linear-gradient(135deg,#0F1F3D,#1B130E)",
+  Restoration: "linear-gradient(135deg,#3D5FA1,#E8A33D)",
+  Testimony: "linear-gradient(135deg,#1E3A6B,#3D5FA1)",
 };
 
 export default async function TestimoniesPage() {
@@ -44,7 +44,7 @@ export default async function TestimoniesPage() {
       {/* Hero */}
       <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 96px", position: "relative", overflow: "hidden" }}>
         <div aria-hidden style={{ position: "absolute", top: -120, right: -80, width: 560, height: 460, background: "radial-gradient(circle,rgba(232,163,61,.22),transparent 65%)", pointerEvents: "none" }} />
-        <div aria-hidden style={{ position: "absolute", bottom: -120, left: -100, width: 480, height: 480, background: "radial-gradient(circle,rgba(214,40,40,.18),transparent 65%)", pointerEvents: "none" }} />
+        <div aria-hidden style={{ position: "absolute", bottom: -120, left: -100, width: 480, height: 480, background: "radial-gradient(circle,rgba(30,58,107,.18),transparent 65%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 880, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Testimonies</span>
@@ -52,7 +52,7 @@ export default async function TestimoniesPage() {
           <Reveal delay={80}>
             <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(46px,7vw,98px)", letterSpacing: "-2.2px", color: "#fff", margin: "16px 0 24px", lineHeight: 0.93 }}>
               What God has<br />
-              <span style={{ background: "linear-gradient(100deg,#F15F22,#D62828,#E8A33D)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>done for us.</span>
+              <span style={{ background: "linear-gradient(100deg,#3D5FA1,#1E3A6B,#E8A33D)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>done for us.</span>
             </h1>
           </Reveal>
           <Reveal delay={160}>
@@ -86,7 +86,7 @@ export default async function TestimoniesPage() {
               <Reveal key={i} delay={(i % 3) * 80}>
                 <article style={{ height: "100%", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 24, padding: "28px 28px 26px", display: "flex", flexDirection: "column", boxShadow: "0 12px 30px rgba(27,19,14,.06)" }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 18 }}>
-                    <div style={{ display: "grid", placeItems: "center", width: 42, height: 42, borderRadius: 12, background: tagColor[s.tag] || "var(--ink)", boxShadow: "0 8px 18px rgba(214,40,40,.22)" }}>
+                    <div style={{ display: "grid", placeItems: "center", width: 42, height: 42, borderRadius: 12, background: tagColor[s.tag] || "var(--ink)", boxShadow: "0 8px 18px rgba(30,58,107,.22)" }}>
                       <Quote size={18} strokeWidth={2.5} color="#fff" aria-hidden />
                     </div>
                     <span style={{ fontSize: 10.5, fontWeight: 800, letterSpacing: "1.8px", textTransform: "uppercase", color: "var(--red)" }}>{s.tag}</span>

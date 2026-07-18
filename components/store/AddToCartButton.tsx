@@ -44,7 +44,7 @@ export function AddToCartButton({ id, name, category, priceCents, priceDisplay, 
         transition: "background 0.2s",
         boxShadow: added
           ? "0 8px 20px rgba(21,128,61,.28)"
-          : "0 8px 20px rgba(214,40,40,.28)",
+          : "0 8px 20px rgba(30,58,107,.28)",
         fontFamily: "var(--font-body)",
       }}
     >

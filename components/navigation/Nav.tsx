@@ -28,7 +28,7 @@ const navItems: NavItem[] = [
     dropdown: [
       { href: '/online', label: 'Watch Online', desc: 'Live & on-demand services' },
       { href: '/devotional', label: 'Devotional', desc: 'Daily Word & podcast' },
-      { href: '/bible-plan', label: 'Bible Reading Plan', desc: 'Hope for Today — weekly readings' },
+      { href: '/bible-plan', label: 'Bible Reading Plan', desc: 'A chapter a day, as one family' },
       { href: '/prayer', label: 'Prayer', desc: 'Submit a prayer request' },
       { href: '/salvation', label: 'Salvation', desc: 'Accept Christ today' },
       { href: '/testimonies', label: 'Testimonies', desc: 'Stories of what God has done' },
@@ -236,7 +236,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
               href="/online"
               onClick={() => haptic('medium')}
               className="press"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: isLive ? 'var(--red)' : (dark ? 'var(--red)' : 'var(--ink)'), color: 'var(--cream)', fontWeight: 700, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: isLive ? '0 8px 24px rgba(214,40,40,.5)' : 'none' }}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: isLive ? 'var(--red)' : (dark ? 'var(--red)' : 'var(--ink)'), color: 'var(--cream)', fontWeight: 700, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: isLive ? '0 8px 24px rgba(30,58,107,.5)' : 'none' }}
             >
               <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#ff5252', animation: 'pulse-red 1.8s infinite', display: 'inline-block' }} />
               {isLive ? 'LIVE NOW' : 'Watch Live'}
@@ -335,7 +335,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
               href="/online"
               onClick={() => { haptic('medium'); setOpen(false); }}
               className="press"
-              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, background: 'var(--red)', color: '#fff', fontWeight: 700, fontSize: 17, padding: '18px 24px', borderRadius: 999, textDecoration: 'none', boxShadow: '0 14px 30px rgba(214,40,40,.4)' }}>
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, background: 'var(--red)', color: '#fff', fontWeight: 700, fontSize: 17, padding: '18px 24px', borderRadius: 999, textDecoration: 'none', boxShadow: '0 14px 30px rgba(30,58,107,.4)' }}>
               <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#fff', animation: 'pulse-red 1.8s infinite', display: 'inline-block' }} />
               {isLive ? 'LIVE NOW' : 'Watch Live'}
             </Link>

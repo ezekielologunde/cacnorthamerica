@@ -40,7 +40,7 @@ export default async function StorePage() {
         position: "relative", overflow: "hidden",
       }}>
         <div aria-hidden style={{ position: "absolute", top: -140, right: -100, width: 640, height: 520, background: "radial-gradient(circle,rgba(232,163,61,.2),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 18s ease-in-out infinite" }} />
-        <div aria-hidden style={{ position: "absolute", bottom: -60, left: -80, width: 400, height: 340, background: "radial-gradient(circle,rgba(214,40,40,.14),transparent 65%)", pointerEvents: "none" }} />
+        <div aria-hidden style={{ position: "absolute", bottom: -60, left: -80, width: 400, height: 340, background: "radial-gradient(circle,rgba(30,58,107,.14),transparent 65%)", pointerEvents: "none" }} />
 
         <div style={{ maxWidth: 1000, margin: "0 auto", position: "relative", zIndex: 2 }}>
           <Reveal>
@@ -56,7 +56,7 @@ export default async function StorePage() {
           }}>
             <RevealText immediate>Carry the</RevealText>{" "}
             <RevealText immediate delay={0.12}
-              style={{ background: "linear-gradient(100deg,#F15F22,#D62828,#E8A33D)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              style={{ background: "linear-gradient(100deg,#3D5FA1,#1E3A6B,#E8A33D)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               message.
             </RevealText>
           </h1>

@@ -47,7 +47,7 @@ export default function BiblePlanPage() {
           <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(40px,6.2vw,86px)", letterSpacing: "-0.03em", color: "#fff", margin: "24px 0 0", lineHeight: 0.95, textWrap: "balance" }}>
             <RevealText immediate>Weekly Bible</RevealText>
             <br />
-            <RevealText immediate delay={0.15} style={{ background: "linear-gradient(100deg,#F15F22,#D62828,#E8A33D)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            <RevealText immediate delay={0.15} style={{ background: "linear-gradient(100deg,#3D5FA1,#1E3A6B,#E8A33D)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               Reading Plan.
             </RevealText>
           </h1>
@@ -161,7 +161,7 @@ export default function BiblePlanPage() {
             <Link
               href="/devotional"
               className="btn-sheen press"
-              style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "linear-gradient(120deg,#F15F22,#D62828,#9E1B1B)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "16px 28px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 36px rgba(214,40,40,.34)" }}
+              style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "linear-gradient(120deg,#3D5FA1,#1E3A6B,#0F1F3D)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "16px 28px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 36px rgba(30,58,107,.34)" }}
             >
               Open the devotional →
             </Link>

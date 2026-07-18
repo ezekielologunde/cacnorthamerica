@@ -31,8 +31,8 @@ function dbRowToPost(row: {
     date: date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }),
     dateIso: row.published_at ?? row.created_at,
     category: "Ministry Update",
-    categoryColor: "#D62828",
-    accent: "#D62828",
+    categoryColor: "#1E3A6B",
+    accent: "#1E3A6B",
     readTime: `${Math.max(1, Math.round(words / 200))} min read`,
     body: row.body.split(/\n\n+/),
   };
