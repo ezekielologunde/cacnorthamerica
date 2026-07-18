@@ -106,7 +106,7 @@ export default function AdminSidebar({ email }: { email: string }) {
           }}>
             <img
               src="/images/logo.png"
-              alt="CAC Salvation Center"
+              alt="CACNA"
               style={{ width: 34, height: 34, objectFit: "contain" }}
             />
           </div>

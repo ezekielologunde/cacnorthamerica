@@ -5,7 +5,7 @@ const phrases = [
   "Come As You Are",
   "Real Worship",
   "Onsite & Online",
-  "Every Sunday 10:30 AM",
+  "16 Zones, One Family",
   "Undiluted Gospel",
   "Real Community",
   "Prayer Changes Things",

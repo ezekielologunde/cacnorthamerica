@@ -123,7 +123,7 @@ export default function AdminLogin() {
             transition={{ delay: 0.35, duration: 0.4 }}
             style={{ color: "var(--ink)", fontSize: 13, marginTop: 6 }}
           >
-            CAC Salvation Center
+            CACNA
           </motion.p>
         </motion.div>
 

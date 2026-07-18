@@ -3,7 +3,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rateLimit";
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.cacsalvationcenter.org";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.cacnorthamerica.com";
 
 type OrderItem = { id: string; quantity: number; variant?: string };
 
@@ -113,8 +113,8 @@ export async function POST(req: Request) {
       custom_text: {
         submit: {
           message: allDigital
-            ? "Download link emailed within minutes. All proceeds support CAC Salvation Center ministries."
-            : "Your receipt will be emailed. All proceeds support CAC Salvation Center ministries.",
+            ? "Download link emailed within minutes. All proceeds support CACNA's ministries."
+            : "Your receipt will be emailed. All proceeds support CACNA's ministries.",
         },
       },
       metadata: {

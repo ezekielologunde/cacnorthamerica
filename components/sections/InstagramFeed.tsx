@@ -4,18 +4,12 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { InstagramIcon } from "@/components/ui/SocialIcons";
 
-const IG_URL = "https://www.instagram.com/salvationcenterbaltimore/";
-const HANDLE = "@salvationcenterbaltimore";
+const IG_URL = "https://instagram.com/cacnorthamericalatunderegion";
+const HANDLE = "@cacnorthamericalatunderegion";
 
-// Static fallback shown while the API loads or if the token isn't configured yet.
-const FALLBACK = [
-  { id: "f1", image: "/images/congregation.jpg", permalink: IG_URL, caption: "Congregation worshipping together" },
-  { id: "f2", image: "/images/worship.jpg",      permalink: IG_URL, caption: "Women singing at Sunday service" },
-  { id: "f3", image: "/images/choir.jpg",         permalink: IG_URL, caption: "The choir in red and white robes" },
-  { id: "f4", image: "/images/pastor-choir.jpg",  permalink: IG_URL, caption: "Pastor with the choir in worship" },
-  { id: "f5", image: "/images/stage.jpg",         permalink: IG_URL, caption: "Church stage and leadership" },
-  { id: "f6", image: "/images/pastor.jpg",        permalink: IG_URL, caption: "Pastor Dr. H.O. Ilufoye preaching" },
-];
+// No real CACNA Instagram photos are available locally yet — the live
+// feed (Behold-backed /api/instagram) is the source of truth once configured.
+const FALLBACK: Post[] = [];
 
 interface Post { id: string; image: string; permalink: string; caption: string; }
 
@@ -34,6 +28,8 @@ export function InstagramFeed() {
       })
       .catch(() => {/* keep fallback */});
   }, []);
+
+  if (posts.length === 0) return null;
 
   return (
     <section style={{ background: "var(--cream)", padding: "clamp(70px,9vw,120px) clamp(20px,5vw,64px)" }}>

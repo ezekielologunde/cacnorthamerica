@@ -6,8 +6,8 @@ import Stripe from "stripe";
 import { createServiceClient } from "@/lib/supabase/server";
 
 export const metadata = {
-  title: "Order Confirmed — CAC Salvation Center Store",
-  description: "Thank you for your order from the Salvation Center Store.",
+  title: "Order Confirmed — CACNA Store",
+  description: "Thank you for your order from the CACNA Store.",
   robots: { index: false, follow: false },
 };
 
@@ -222,7 +222,7 @@ export default async function StoreSuccessPage({
               <div>
                 <div style={{ fontWeight: 700, fontSize: 15, color: "var(--ink)", marginBottom: 4 }}>Your purchase supports the ministry</div>
                 <div style={{ fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.65 }}>
-                  Every sale funds the building project, outreach, and the work of CAC Salvation Center in Randallstown and beyond.
+                  Every sale funds CACNA's ministries and missions across every member church.
                 </div>
               </div>
             </div>

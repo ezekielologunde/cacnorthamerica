@@ -215,7 +215,7 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
               >
                 <Globe size={15} color="var(--ink-soft)" strokeWidth={2} aria-hidden style={{ flexShrink: 0 }} />
                 <span style={{ flex: 1, fontSize: 13.5, fontWeight: 600, color: 'var(--ink)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  On cacsalvationcenter.org — &ldquo;{query}&rdquo;
+                  On cacnorthamerica.com — &ldquo;{query}&rdquo;
                 </span>
                 <ExternalLink size={13} color="var(--ink-soft)" strokeWidth={2.5} aria-hidden style={{ flexShrink: 0 }} />
               </a>

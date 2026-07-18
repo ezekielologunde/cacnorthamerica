@@ -85,13 +85,13 @@ function shippingHtml(opts: {
         <p style="font-size:14px;color:#1B130E;line-height:1.75;margin:0">
           📦 <strong>Ships within 5–7 business days</strong><br>
           Questions about your order? Reach us on WhatsApp or email
-          <a href="mailto:info@cacsalvationcenter.org" style="color:#D62828;text-decoration:none">info@cacsalvationcenter.org</a>.
+          <a href="mailto:info@cacnorthamerica.com" style="color:#D62828;text-decoration:none">info@cacnorthamerica.com</a>.
         </p>
       </div>
 
       <hr style="border:none;border-top:1px solid rgba(27,19,14,.08);margin:0 0 24px">
       <p style="font-size:12px;color:rgba(27,19,14,.4);line-height:1.7;margin:0;text-align:center">
-        <a href="https://www.cacsalvationcenter.org" style="color:#D62828;text-decoration:none">cacsalvationcenter.org</a>
+        <a href="https://www.cacnorthamerica.com" style="color:#D62828;text-decoration:none">cacnorthamerica.com</a>
       </p>
     </div>
   </div>
@@ -134,9 +134,9 @@ export async function markShipped(
     if (apiKey) {
       new Resend(apiKey)
         .emails.send({
-          from: "CAC Salvation Center <noreply@cacsalvationcenter.org>",
+          from: "CACNA <noreply@cacnorthamerica.com>",
           to: order.customer_email,
-          subject: "Your order has shipped — CAC Salvation Center",
+          subject: "Your order has shipped — CACNA",
           html: shippingHtml({
             customerName: order.customer_name,
             trackingNumber: trackingNumber || null,
@@ -214,12 +214,12 @@ export async function resendDownloadLink(
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0ede8;padding:40px 16px"><tr><td align="center">
 <table width="100%" style="max-width:580px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(27,19,14,.1)">
 <tr><td style="background:#1B130E;padding:28px 32px">
-  <div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#E8A33D;margin-bottom:6px">CAC Salvation Center</div>
+  <div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#E8A33D;margin-bottom:6px">CACNA</div>
   <div style="font-size:26px;font-weight:700;color:#fff;line-height:1.2">Your download is ready 🎵</div>
 </td></tr>
 <tr><td style="padding:28px 32px">
   <p style="margin:0 0 8px;font-size:16px;color:#1B130E;line-height:1.7">${greeting}</p>
-  <p style="margin:0 0 24px;font-size:15px;color:#5f5e5a;line-height:1.7">Here is your download link from CAC Salvation Center.</p>
+  <p style="margin:0 0 24px;font-size:15px;color:#5f5e5a;line-height:1.7">Here is your download link from CACNA.</p>
   ${downloadRows}
   <div style="margin-top:24px;background:#f9f8f6;border-radius:10px;padding:16px 20px">
     <p style="font-size:13px;color:#5f5e5a;margin:0;line-height:1.7">
@@ -228,15 +228,15 @@ export async function resendDownloadLink(
   </div>
 </td></tr>
 <tr><td style="padding:16px 32px;border-top:1px solid #ede9e4">
-  <p style="margin:0;font-size:12px;color:#aaa"><a href="https://cacsalvationcenter.org" style="color:#D62828;text-decoration:none;font-weight:700">cacsalvationcenter.org</a> &nbsp;·&nbsp; Randallstown, Maryland</p>
+  <p style="margin:0;font-size:12px;color:#aaa"><a href="https://cacnorthamerica.com" style="color:#D62828;text-decoration:none;font-weight:700">cacnorthamerica.com</a> &nbsp;·&nbsp; Blue Ridge Summit, Pennsylvania</p>
 </td></tr>
 </table></td></tr></table></body></html>`;
 
   try {
     await new Resend(apiKey).emails.send({
-      from: "CAC Salvation Center <noreply@cacsalvationcenter.org>",
+      from: "CACNA <noreply@cacnorthamerica.com>",
       to: order.customer_email as string,
-      subject: "Your digital download — CAC Salvation Center",
+      subject: "Your digital download — CACNA",
       html,
     });
     return { ok: true };

@@ -22,7 +22,7 @@ function buildBroadcastHtml(subject: string, body: string): string {
 <body style="margin:0;padding:0;background:#f0ede8;font-family:Georgia,serif">
   <div style="max-width:600px;margin:40px auto;background:#fff;border-radius:16px;overflow:hidden">
     <div style="background:#1B130E;padding:28px 32px">
-      <div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#E8A33D;margin-bottom:6px">CAC Salvation Center</div>
+      <div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#E8A33D;margin-bottom:6px">CACNA</div>
       <div style="font-size:22px;font-weight:700;color:#fff">${subject}</div>
     </div>
     <div style="padding:28px 32px">
@@ -30,7 +30,7 @@ function buildBroadcastHtml(subject: string, body: string): string {
     </div>
     <div style="padding:20px 32px;border-top:1px solid #ede9e4;font-size:12px;color:#999">
       You're receiving this because you subscribed at
-      <a href="https://www.cacsalvationcenter.org" style="color:#D62828">cacsalvationcenter.org</a>.
+      <a href="https://www.cacnorthamerica.com" style="color:#D62828">cacnorthamerica.com</a>.
     </div>
   </div>
 </body>
@@ -82,7 +82,7 @@ export async function broadcastAction(
   for (const subscriber of subscribers) {
     try {
       await resend.emails.send({
-        from: "CAC Salvation Center <noreply@cacsalvationcenter.org>",
+        from: "CACNA <noreply@cacnorthamerica.com>",
         to: subscriber.email,
         subject,
         html,

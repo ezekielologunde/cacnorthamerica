@@ -49,7 +49,7 @@ function PrayerCard({ item, archived }: { item: PrayerRow; archived: boolean }) 
         <div style={{ display: "flex", gap: 8, flexShrink: 0, flexWrap: "wrap", justifyContent: "flex-end" }}>
           <ForwardToStaff
             subject={`Fwd: Prayer request${item.urgent ? " (URGENT)" : ""}`}
-            body={`Forwarding a prayer request from the CAC Salvation Center website.\n\nFrom: ${item.name ?? "Anonymous"}${item.email ? ` <${item.email}>` : ""}\nDate: ${date}${item.urgent ? "\nMarked URGENT" : ""}\n\n${item.request}`}
+            body={`Forwarding a prayer request from the CACNA website.\n\nFrom: ${item.name ?? "Anonymous"}${item.email ? ` <${item.email}>` : ""}\nDate: ${date}${item.urgent ? "\nMarked URGENT" : ""}\n\n${item.request}`}
           />
           <form action={archived ? unarchivePrayer.bind(null, item.id) : archivePrayer.bind(null, item.id)}>
             <ActionButton style={{

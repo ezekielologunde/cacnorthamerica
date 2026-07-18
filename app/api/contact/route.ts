@@ -3,8 +3,8 @@ import { Resend } from "resend";
 import { createServiceClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rateLimit";
 
-const FROM = "CAC Salvation Center <noreply@cacsalvationcenter.org>";
-const TO   = "info@cacsalvationcenter.org";
+const FROM = "CACNA <noreply@cacnorthamerica.com>";
+const TO   = "info@cacnorthamerica.com";
 
 const ALLOWED_FORM_PREFIXES = ["Prayer request", "Testimony", "Contact —", "Contact Form"];
 const MAX_FIELD_LENGTH = 10_000;
@@ -25,9 +25,9 @@ function buildHtml(rows: [string, string][]): string {
     .map(([k, v]) => `<tr><td style="padding:8px 14px;font-weight:600;color:#5f5e5a;white-space:nowrap;vertical-align:top">${escapeHtml(k)}</td><td style="padding:8px 14px;color:#1B130E">${escapeHtml(v).replace(/\n/g, "<br>")}</td></tr>`)
     .join("");
   return `<!DOCTYPE html><html><body style="font-family:sans-serif;max-width:640px;margin:40px auto;background:#f9f8f6;border-radius:12px;overflow:hidden">
-<div style="background:#1B130E;padding:24px 32px"><p style="margin:0;font-size:18px;font-weight:700;color:#fff">CAC Salvation Center</p></div>
+<div style="background:#1B130E;padding:24px 32px"><p style="margin:0;font-size:18px;font-weight:700;color:#fff">CACNA</p></div>
 <table style="width:100%;border-collapse:collapse;background:#fff">${trs}</table>
-<p style="padding:16px 32px;font-size:12px;color:#888;margin:0">Sent via cacsalvationcenter.org</p>
+<p style="padding:16px 32px;font-size:12px;color:#888;margin:0">Sent via cacnorthamerica.com</p>
 </body></html>`;
 }
 
@@ -87,7 +87,7 @@ export async function POST(req: Request) {
   }
   const fields = rawFields as Record<string, string>;
 
-  const subject = `${formName} — CAC Salvation Center`;
+  const subject = `${formName} — CACNA`;
   const rows = Object.entries(fields).filter(([, v]) => v?.trim()) as [string, string][];
 
   // Save to Supabase — fire-and-forget

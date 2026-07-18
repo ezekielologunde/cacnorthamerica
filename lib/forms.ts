@@ -26,14 +26,14 @@ export async function submitLead(data: LeadData, formName: string): Promise<"sen
   const json: { success?: boolean; method?: string } = await res.json();
 
   if (json.method === "mailto") {
-    const subject = encodeURIComponent(`${formName} — CAC Salvation Center`);
+    const subject = encodeURIComponent(`${formName} — CACNA`);
     const body = encodeURIComponent(
       Object.entries(data)
         .filter(([, v]) => v.trim())
         .map(([k, v]) => `${k}: ${v}`)
         .join("\n")
     );
-    window.location.href = `mailto:info@cacsalvationcenter.org?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:info@cacnorthamerica.com?subject=${subject}&body=${body}`;
     return "mailto";
   }
 

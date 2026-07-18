@@ -39,9 +39,9 @@ const CATEGORY_ACCENTS: Record<string, string> = {
 function mailLink(name: string) {
   const sub = encodeURIComponent(`Store Order: ${name}`);
   const body = encodeURIComponent(
-    `Hello,\n\nI would like to order "${name}" from the Salvation Center Store.\n\nPlease send me details on sizing/options, pricing, and how to proceed.\n\nThank you.`
+    `Hello,\n\nI would like to order "${name}" from the CACNA Store.\n\nPlease send me details on sizing/options, pricing, and how to proceed.\n\nThank you.`
   );
-  return `mailto:info@cacsalvationcenter.org?subject=${sub}&body=${body}`;
+  return `mailto:info@cacnorthamerica.com?subject=${sub}&body=${body}`;
 }
 
 function capitalize(s: string) {
@@ -113,7 +113,7 @@ export function StoreProducts({ products }: { products: Product[] }) {
             <p style={{ fontSize: 18, fontWeight: 700, color: "var(--ink)", margin: "20px 0 8px" }}>Coming soon</p>
             <p style={{ fontSize: 14, color: "var(--ink-soft)", margin: 0 }}>
               Products will be listed here. Check back soon, or{" "}
-              <a href="mailto:info@cacsalvationcenter.org" style={{ color: "var(--red)", fontWeight: 600 }}>
+              <a href="mailto:info@cacnorthamerica.com" style={{ color: "var(--red)", fontWeight: 600 }}>
                 contact us
               </a>{" "}
               to order directly.

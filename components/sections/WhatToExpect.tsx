@@ -38,7 +38,7 @@ export function WhatToExpect() {
         </Reveal>
         <Reveal delay={80} style={{ textAlign: "center", marginBottom: 60 }}>
           <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(36px,5vw,68px)", letterSpacing: "-1.5px", color: "var(--ink)", margin: 0, lineHeight: .95 }}>
-            Weekly Services
+            Our Annual Rhythm
           </h2>
         </Reveal>
 

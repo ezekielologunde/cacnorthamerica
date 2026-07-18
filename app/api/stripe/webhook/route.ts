@@ -10,8 +10,8 @@ function getStripe(): Stripe | null {
   return new Stripe(key, { apiVersion: "2024-06-20" as any });
 }
 
-const FROM = "CAC Salvation Center <noreply@cacsalvationcenter.org>";
-const STAFF_EMAIL = "info@cacsalvationcenter.org";
+const FROM = "CACNA <noreply@cacnorthamerica.com>";
+const STAFF_EMAIL = "info@cacnorthamerica.com";
 
 function fmt(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
@@ -64,7 +64,7 @@ function buildOrderEmail(session: Stripe.Checkout.Session): string {
         <!-- Header -->
         <tr>
           <td style="background:#1B130E;padding:28px 32px">
-            <div style="font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#E8A33D;margin-bottom:6px">CAC Salvation Center</div>
+            <div style="font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#E8A33D;margin-bottom:6px">CACNA</div>
             <div style="font-size:26px;font-weight:700;color:#fff;line-height:1.2">Your order is confirmed 🙏</div>
           </td>
         </tr>
@@ -138,12 +138,12 @@ function buildOrderEmail(session: Stripe.Checkout.Session): string {
         <tr>
           <td style="padding:28px 32px;border-top:1px solid #ede9e4;margin-top:28px">
             <p style="margin:0;font-size:13px;color:#888;line-height:1.7">
-              Every purchase supports the building project, outreach, and the ministry of CAC Salvation Center.
+              Every purchase supports CACNA's ministries and missions.
               We are grateful for you. 🙏
             </p>
             <p style="margin:12px 0 0;font-size:12px;color:#aaa">
-              <a href="https://cacsalvationcenter.org" style="color:#D62828;text-decoration:none;font-weight:700">cacsalvationcenter.org</a>
-              &nbsp;·&nbsp; Randallstown, Maryland
+              <a href="https://cacnorthamerica.com" style="color:#D62828;text-decoration:none;font-weight:700">cacnorthamerica.com</a>
+              &nbsp;·&nbsp; Blue Ridge Summit, Pennsylvania
             </p>
           </td>
         </tr>
@@ -162,8 +162,8 @@ async function sendOrderEmail(session: Stripe.Checkout.Session): Promise<void> {
     const resend = new Resend(process.env.RESEND_API_KEY);
     const name = session.customer_details?.name;
     const subject = name
-      ? `Order confirmed, ${name.split(" ")[0]} — CAC Salvation Center`
-      : "Order confirmed — CAC Salvation Center";
+      ? `Order confirmed, ${name.split(" ")[0]} — CACNA`
+      : "Order confirmed — CACNA";
     await resend.emails.send({
       from: FROM,
       to: email,
@@ -227,7 +227,7 @@ async function sendStaffOrderEmail(session: Stripe.Checkout.Session): Promise<vo
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0ede8;padding:32px 16px"><tr><td align="center">
 <table width="100%" style="max-width:560px;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(27,19,14,.08)">
 <tr><td style="background:#1B130E;padding:24px 28px">
-  <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#E8A33D;margin-bottom:4px">CAC Salvation Center — Staff</div>
+  <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#E8A33D;margin-bottom:4px">CACNA — Staff</div>
   <div style="font-size:22px;font-weight:700;color:#fff">New Store Order</div>
 </td></tr>
 <tr><td style="padding:24px 28px">
@@ -251,10 +251,10 @@ async function sendStaffOrderEmail(session: Stripe.Checkout.Session): Promise<vo
     <div style="margin-top:10px;text-align:right;font-size:15px;font-weight:700;color:#1B130E">Total: ${fmt(total)}</div>
   </div>
   ${shippingBlock}
-  <div style="margin-top:24px"><a href="https://www.cacsalvationcenter.org/admin/orders" style="display:inline-block;background:#D62828;color:#fff;font-size:13px;font-weight:700;text-decoration:none;padding:10px 20px;border-radius:8px">View in Admin</a></div>
+  <div style="margin-top:24px"><a href="https://www.cacnorthamerica.com/admin/orders" style="display:inline-block;background:#D62828;color:#fff;font-size:13px;font-weight:700;text-decoration:none;padding:10px 20px;border-radius:8px">View in Admin</a></div>
 </td></tr>
 <tr><td style="padding:16px 28px;border-top:1px solid #ede9e4">
-  <p style="margin:0;font-size:12px;color:#aaa"><a href="https://cacsalvationcenter.org" style="color:#D62828;text-decoration:none;font-weight:700">cacsalvationcenter.org</a> &nbsp;·&nbsp; Randallstown, Maryland</p>
+  <p style="margin:0;font-size:12px;color:#aaa"><a href="https://cacnorthamerica.com" style="color:#D62828;text-decoration:none;font-weight:700">cacnorthamerica.com</a> &nbsp;·&nbsp; Blue Ridge Summit, Pennsylvania</p>
 </td></tr>
 </table></td></tr></table></body></html>`;
 
@@ -318,7 +318,7 @@ async function sendDownloadEmail(
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0ede8;padding:40px 16px"><tr><td align="center">
 <table width="100%" style="max-width:580px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(27,19,14,.1)">
 <tr><td style="background:#1B130E;padding:28px 32px">
-  <div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#E8A33D;margin-bottom:6px">CAC Salvation Center</div>
+  <div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#E8A33D;margin-bottom:6px">CACNA</div>
   <div style="font-size:26px;font-weight:700;color:#fff;line-height:1.2">Your download is ready 🎵</div>
 </td></tr>
 <tr><td style="padding:28px 32px">
@@ -329,14 +329,14 @@ async function sendDownloadEmail(
     <p style="font-size:13px;color:#5f5e5a;margin:0;line-height:1.7">
       Questions? Reach us on WhatsApp at
       <a href="https://wa.me/14432726794" style="color:#25D366;font-weight:700;text-decoration:none">+1 (443) 272-6794</a>
-      or email <a href="mailto:info@cacsalvationcenter.org" style="color:#D62828;text-decoration:none">info@cacsalvationcenter.org</a>.
+      or email <a href="mailto:info@cacnorthamerica.com" style="color:#D62828;text-decoration:none">info@cacnorthamerica.com</a>.
     </p>
   </div>
 </td></tr>
 <tr><td style="padding:16px 32px;border-top:1px solid #ede9e4">
   <p style="margin:0;font-size:12px;color:#aaa">
-    <a href="https://cacsalvationcenter.org" style="color:#D62828;text-decoration:none;font-weight:700">cacsalvationcenter.org</a>
-    &nbsp;·&nbsp; Randallstown, Maryland
+    <a href="https://cacnorthamerica.com" style="color:#D62828;text-decoration:none;font-weight:700">cacnorthamerica.com</a>
+    &nbsp;·&nbsp; Blue Ridge Summit, Pennsylvania
   </p>
 </td></tr>
 </table></td></tr></table></body></html>`;
@@ -346,7 +346,7 @@ async function sendDownloadEmail(
     await resend.emails.send({
       from: FROM,
       to: customerEmail,
-      subject: "Your digital download — CAC Salvation Center",
+      subject: "Your digital download — CACNA",
       html,
     });
     console.log("[webhook] Download email sent to:", customerEmail);
@@ -377,7 +377,7 @@ async function sendRefundEmails(charge: Stripe.Charge): Promise<void> {
       <table width="100%" style="max-width:560px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(27,19,14,.1)">
         <tr>
           <td style="background:#1B130E;padding:28px 32px">
-            <div style="font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#E8A33D;margin-bottom:6px">CAC Salvation Center</div>
+            <div style="font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#E8A33D;margin-bottom:6px">CACNA</div>
             <div style="font-size:26px;font-weight:700;color:#fff;line-height:1.2">Your refund has been processed</div>
           </td>
         </tr>
@@ -405,8 +405,8 @@ async function sendRefundEmails(charge: Stripe.Charge): Promise<void> {
         <tr>
           <td style="padding:20px 32px;border-top:1px solid #ede9e4">
             <p style="margin:0;font-size:12px;color:#aaa">
-              <a href="https://cacsalvationcenter.org" style="color:#D62828;text-decoration:none;font-weight:700">cacsalvationcenter.org</a>
-              &nbsp;·&nbsp; Randallstown, Maryland
+              <a href="https://cacnorthamerica.com" style="color:#D62828;text-decoration:none;font-weight:700">cacnorthamerica.com</a>
+              &nbsp;·&nbsp; Blue Ridge Summit, Pennsylvania
             </p>
           </td>
         </tr>
@@ -419,7 +419,7 @@ async function sendRefundEmails(charge: Stripe.Charge): Promise<void> {
     resend.emails.send({
       from: FROM,
       to: customerEmail,
-      subject: "Your refund has been processed — CAC Salvation Center",
+      subject: "Your refund has been processed — CACNA",
       html: customerHtml,
     }).catch(() => {});
     console.log("[webhook] Refund email sent to customer:", customerEmail);
@@ -435,7 +435,7 @@ async function sendRefundEmails(charge: Stripe.Charge): Promise<void> {
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0ede8;padding:32px 16px"><tr><td align="center">
 <table width="100%" style="max-width:560px;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(27,19,14,.08)">
 <tr><td style="background:#1B130E;padding:24px 28px">
-  <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#E8A33D;margin-bottom:4px">CAC Salvation Center — Staff</div>
+  <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#E8A33D;margin-bottom:4px">CACNA — Staff</div>
   <div style="font-size:22px;font-weight:700;color:#fff">Refund Issued</div>
 </td></tr>
 <tr><td style="padding:24px 28px;font-size:13px;color:#1B130E;line-height:1.8">
@@ -447,7 +447,7 @@ async function sendRefundEmails(charge: Stripe.Charge): Promise<void> {
     <tr><td style="padding-right:12px;color:#5f5e5a">Charge ID</td><td style="font-family:monospace;font-size:12px">${charge.id}</td></tr>
     <tr><td style="padding-right:12px;color:#5f5e5a">Payment Intent</td><td style="font-family:monospace;font-size:12px">${piId}</td></tr>
   </table>
-  <div style="margin-top:20px"><a href="https://www.cacsalvationcenter.org/admin/orders" style="display:inline-block;background:#D62828;color:#fff;font-size:13px;font-weight:700;text-decoration:none;padding:10px 20px;border-radius:8px">View in Admin</a></div>
+  <div style="margin-top:20px"><a href="https://www.cacnorthamerica.com/admin/orders" style="display:inline-block;background:#D62828;color:#fff;font-size:13px;font-weight:700;text-decoration:none;padding:10px 20px;border-radius:8px">View in Admin</a></div>
 </td></tr>
 </table></td></tr></table></body></html>`;
 

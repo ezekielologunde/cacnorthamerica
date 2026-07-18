@@ -37,7 +37,7 @@ function ContactCard({ item, archived }: { item: ContactRow; archived: boolean }
           </p>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
             <a
-              href={`mailto:${item.email}?subject=Re: ${encodeURIComponent(item.subject ?? "Your message to CAC Salvation Center")}`}
+              href={`mailto:${item.email}?subject=Re: ${encodeURIComponent(item.subject ?? "Your message to CACNA")}`}
               style={{ fontSize: 13, color: "var(--red)", textDecoration: "none", fontWeight: 500 }}
             >
               {item.email}
@@ -47,7 +47,7 @@ function ContactCard({ item, archived }: { item: ContactRow; archived: boolean }
         </div>
         <div style={{ display: "flex", gap: 8, flexShrink: 0, flexWrap: "wrap", justifyContent: "flex-end" }}>
           <a
-            href={`mailto:${item.email}?subject=Re: ${encodeURIComponent(item.subject ?? "Your message to CAC Salvation Center")}`}
+            href={`mailto:${item.email}?subject=Re: ${encodeURIComponent(item.subject ?? "Your message to CACNA")}`}
             style={{
               background: "var(--red)",
               color: "white",
@@ -64,7 +64,7 @@ function ContactCard({ item, archived }: { item: ContactRow; archived: boolean }
           </a>
           <ForwardToStaff
             subject={`Fwd: ${item.subject ?? "Contact form message"} — from ${item.name}`}
-            body={`Forwarding a message from the CAC Salvation Center contact form.\n\nFrom: ${item.name} <${item.email}>\nDate: ${date}\nSubject: ${item.subject ?? "(no subject)"}\n\n${item.message}`}
+            body={`Forwarding a message from the CACNA contact form.\n\nFrom: ${item.name} <${item.email}>\nDate: ${date}\nSubject: ${item.subject ?? "(no subject)"}\n\n${item.message}`}
           />
           <form action={archived ? unarchiveContact.bind(null, item.id) : archiveContact.bind(null, item.id)}>
             <ActionButton style={{

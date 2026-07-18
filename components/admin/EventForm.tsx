@@ -135,7 +135,7 @@ export default function EventForm({ event }: { event?: Event }) {
 
         <div>
           <label style={label}>Location <span style={muted}>— optional</span></label>
-          <input name="location" value={location} onChange={(e) => { setLocation(e.target.value); setSaved(false); }} className="adm-inp" style={inp} placeholder="e.g. CAC Salvation Center, Lagos" />
+          <input name="location" value={location} onChange={(e) => { setLocation(e.target.value); setSaved(false); }} className="adm-inp" style={inp} placeholder="e.g. CAC Village, Blue Ridge Summit, PA" />
         </div>
 
         <div>

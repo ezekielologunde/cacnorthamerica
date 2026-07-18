@@ -26,13 +26,13 @@ const jakarta = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "CAC Salvation Center — Nigerian Christ Apostolic Church in Randallstown, MD",
-  description: "Spirit-filled Sunday worship at 10:30 AM ET in Randallstown, MD — streaming live on YouTube, Facebook & Zoom. A Nigerian Christ Apostolic Church (CAC) family, with Yoruba worship. Real community, real faith.",
+  title: "Christ Apostolic Church North America (CACNA)",
+  description: "CACNA unites Christ Apostolic Church member churches across the United States and Canada under 16 DCCs/Zones, preaching the whole Gospel in a clear and undiluted manner.",
   keywords: [
-    "CAC Salvation Center", "Christ Apostolic Church", "Nigerian church Baltimore",
-    "Nigerian church near me", "Yoruba church Maryland", "Aladura church USA",
-    "church in Randallstown MD", "Baltimore church", "CAC Maryland",
-    "Sunday service", "online church", "prayer line", "Pastor H.O. Ilufoye",
+    "CACNA", "Christ Apostolic Church North America", "Christ Apostolic Church",
+    "Nigerian church USA", "Yoruba church", "Aladura church USA",
+    "CAC Village", "Blue Ridge Summit convention", "CAC member church",
+    "Annual Convention", "online church", "prayer line",
   ],
   applicationName: SITE.shortName,
   alternates: { canonical: "/" },
@@ -40,15 +40,15 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: SITE.name,
-    title: "CAC Salvation Center — Welcome Home",
+    title: "Christ Apostolic Church North America — Welcome Home",
     description: SITE.description,
     url: SITE_URL,
     locale: "en_US",
-    images: [{ url: "/images/congregation.jpg", width: 1200, height: 630, alt: "CAC Salvation Center congregation in worship" }],
+    images: [{ url: "/images/congregation.jpg", width: 1200, height: 630, alt: "CACNA congregation in worship" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "CAC Salvation Center — Welcome Home",
+    title: "Christ Apostolic Church North America — Welcome Home",
     description: SITE.description,
     images: ["/images/congregation.jpg"],
   },
