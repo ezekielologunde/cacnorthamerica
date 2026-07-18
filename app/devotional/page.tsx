@@ -43,7 +43,7 @@ const children = [
     affirmation: "I am forgiven",
     ref: "Ephesians 1:6-8",
     text: "So we praise God for the glorious grace he has poured out on us who belong to his dear Son. He is so rich in kindness and grace that he purchased our freedom with the blood of his Son and forgave our sins. He has showered his kindness on us, along with all wisdom and understanding.",
-    accent: "linear-gradient(140deg,#B8531F,#1F4D3D)",
+    accent: "linear-gradient(140deg,#B8531F,#178055)",
   },
   {
     affirmation: "I am reconciled with God",
@@ -86,7 +86,7 @@ export default function DevotionalPage() {
       </section>
 
       {/* 2026 Watchword */}
-      <section style={{ background: "linear-gradient(135deg,#12302A,#1F4D3D)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)", position: "relative", overflow: "hidden" }}>
+      <section style={{ background: "linear-gradient(135deg,#0D4A32,#178055)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)", position: "relative", overflow: "hidden" }}>
         <div aria-hidden style={{ position: "absolute", top: -120, right: -80, width: 520, height: 420, background: "radial-gradient(circle,rgba(232,163,61,.28),transparent 65%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 860, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>

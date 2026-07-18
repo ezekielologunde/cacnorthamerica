@@ -18,7 +18,7 @@ function AddToCalendar({ ev, dark = false }: { ev: ChurchEvent; dark?: boolean }
     : { color: "var(--ink)", border: "1.5px solid var(--line)", background: "var(--paper)" };
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-      <a href={googleCalUrl(ev)} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 14, padding: "11px 18px", borderRadius: 999, textDecoration: "none", boxShadow: "0 8px 20px rgba(31,77,61,.3)" }}>
+      <a href={googleCalUrl(ev)} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 14, padding: "11px 18px", borderRadius: 999, textDecoration: "none", boxShadow: "0 8px 20px rgba(23,128,85,.3)" }}>
         <CalendarPlus size={16} strokeWidth={2} aria-hidden /> Google
       </a>
       <a href={icsDataUri(ev)} download={`${ev.id}.ics`} className="press" style={{ display: "inline-flex", alignItems: "center", gap: 8, fontWeight: 700, fontSize: 14, padding: "11px 18px", borderRadius: 999, textDecoration: "none", ...ghost }}>
@@ -73,7 +73,7 @@ export default function CalendarPage() {
             {upcomingSpecial.map((ev, i) => (
               <Reveal key={ev.id} delay={i * 90}>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "clamp(20px,3vw,36px)", alignItems: "center", background: "rgba(255,247,239,.05)", borderRadius: 24, padding: "clamp(22px,3vw,32px)", border: "1px solid rgba(255,247,239,.1)" }}>
-                  <div style={{ flexShrink: 0, width: 104, height: 104, borderRadius: 20, background: "linear-gradient(150deg,var(--flame),var(--red))", color: "#fff", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", lineHeight: 1, boxShadow: "0 14px 30px rgba(31,77,61,.3)" }}>
+                  <div style={{ flexShrink: 0, width: 104, height: 104, borderRadius: 20, background: "linear-gradient(150deg,var(--flame),var(--red))", color: "#fff", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", lineHeight: 1, boxShadow: "0 14px 30px rgba(23,128,85,.3)" }}>
                     <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: "1.5px" }}>{ev.month}</span>
                     <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 44 }}>{ev.day}</span>
                   </div>

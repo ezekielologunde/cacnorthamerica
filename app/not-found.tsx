@@ -33,7 +33,7 @@ export default function NotFound() {
           background: "var(--red)", color: "#fff",
           fontWeight: 700, fontSize: 15, textDecoration: "none",
           fontFamily: "var(--font-body)",
-          boxShadow: "0 8px 24px rgba(31,77,61,.35)",
+          boxShadow: "0 8px 24px rgba(23,128,85,.35)",
           display: "inline-block",
         }}
       >

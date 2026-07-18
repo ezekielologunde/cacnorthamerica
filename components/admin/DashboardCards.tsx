@@ -44,7 +44,7 @@ export default function DashboardCards({ stats }: { stats: Stats }) {
         .quick-btn:hover {
           border-color: var(--red);
           color: var(--red);
-          box-shadow: 0 2px 8px rgba(31,77,61,0.1);
+          box-shadow: 0 2px 8px rgba(23,128,85,0.1);
           transform: translateY(-1px);
         }
       `}</style>

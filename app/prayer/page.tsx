@@ -25,7 +25,7 @@ export default function PrayerPage() {
 
       {/* Hero */}
       <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 90px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -120, left: "50%", transform: "translateX(-50%)", width: 720, height: 480, background: "radial-gradient(circle,rgba(31,77,61,.32),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 16s ease-in-out infinite" }} />
+        <div style={{ position: "absolute", top: -120, left: "50%", transform: "translateX(-50%)", width: 720, height: 480, background: "radial-gradient(circle,rgba(23,128,85,.32),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 16s ease-in-out infinite" }} />
         <div style={{ position: "absolute", bottom: -80, right: -60, width: 320, height: 320, borderRadius: "50%", background: "radial-gradient(circle,rgba(232,163,61,.18),transparent 70%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 760, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal from="scale">
@@ -97,7 +97,7 @@ export default function PrayerPage() {
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,38px)", letterSpacing: "-.6px", color: "var(--cream)", margin: "0 0 8px" }}>Ready to give your life to Christ?</h2>
             <p style={{ fontSize: 15, color: "rgba(255,247,239,.6)", margin: 0 }}>Salvation is the beginning — and the door is always open. Take the first step today.</p>
           </div>
-          <Link href="/salvation" className="press btn-sheen" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 15, padding: "15px 28px", borderRadius: 999, textDecoration: "none", whiteSpace: "nowrap", flexShrink: 0, boxShadow: "0 10px 24px rgba(31,77,61,.35)" }}>
+          <Link href="/salvation" className="press btn-sheen" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 15, padding: "15px 28px", borderRadius: 999, textDecoration: "none", whiteSpace: "nowrap", flexShrink: 0, boxShadow: "0 10px 24px rgba(23,128,85,.35)" }}>
             Accept Christ today →
           </Link>
         </Reveal>

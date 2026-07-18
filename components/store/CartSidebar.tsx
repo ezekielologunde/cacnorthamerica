@@ -228,7 +228,7 @@ export function CartSidebar() {
               </span>
             </div>
             {error && (
-              <div style={{ background: "#FFF0F0", border: "1px solid #1F4D3D", borderRadius: 10, padding: "10px 14px", fontSize: 13, color: "#12302A", marginBottom: 14 }}>
+              <div style={{ background: "#FFF0F0", border: "1px solid #178055", borderRadius: 10, padding: "10px 14px", fontSize: 13, color: "#0D4A32", marginBottom: 14 }}>
                 {error}
               </div>
             )}
@@ -241,7 +241,7 @@ export function CartSidebar() {
                 color: "#fff", fontWeight: 800, fontSize: 16,
                 padding: "16px 24px", borderRadius: 999, border: "none",
                 cursor: loading ? "not-allowed" : "pointer",
-                boxShadow: "0 10px 28px rgba(31,77,61,.32)",
+                boxShadow: "0 10px 28px rgba(23,128,85,.32)",
                 transition: "background .2s",
               }}
             >

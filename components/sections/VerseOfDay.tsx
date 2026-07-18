@@ -36,7 +36,7 @@ export function VerseOfDay() {
         maxWidth: 820, margin: "0 auto",
         background: "linear-gradient(135deg,var(--red-deep),var(--red))",
         borderRadius: 28, padding: "clamp(36px,5vw,60px)",
-        boxShadow: "0 30px 70px rgba(31,77,61,.28)",
+        boxShadow: "0 30px 70px rgba(23,128,85,.28)",
         textAlign: "center",
       }}
     >

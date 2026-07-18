@@ -77,7 +77,7 @@ export function PrayerForm() {
           initial={reduce ? { opacity: 0 } : { scale: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", stiffness: 240, damping: 16, delay: 0.1 }}
-          style={{ display: "grid", placeItems: "center", width: 76, height: 76, borderRadius: "50%", background: "linear-gradient(140deg,var(--flame),var(--red))", margin: "0 auto 24px", boxShadow: "0 14px 34px rgba(31,77,61,.36)" }}
+          style={{ display: "grid", placeItems: "center", width: 76, height: 76, borderRadius: "50%", background: "linear-gradient(140deg,var(--flame),var(--red))", margin: "0 auto 24px", boxShadow: "0 14px 34px rgba(23,128,85,.36)" }}
         >
           <Check size={36} strokeWidth={2.5} color="#fff" aria-hidden />
         </motion.span>
@@ -149,7 +149,7 @@ export function PrayerForm() {
             background: "var(--red)", color: "#fff", fontWeight: 800, fontSize: 16,
             fontFamily: "var(--font-body)", border: "none", padding: "18px 28px", borderRadius: 999,
             cursor: loading ? "wait" : "pointer", opacity: loading ? 0.7 : 1,
-            boxShadow: "0 16px 34px rgba(31,77,61,.4)", width: "100%",
+            boxShadow: "0 16px 34px rgba(23,128,85,.4)", width: "100%",
           }}
         >
           {loading ? (

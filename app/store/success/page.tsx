@@ -233,7 +233,7 @@ export default async function StoreSuccessPage({
               display: "inline-flex", alignItems: "center", gap: 8,
               background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 15,
               padding: "13px 26px", borderRadius: 999, textDecoration: "none",
-              boxShadow: "0 8px 22px rgba(31,77,61,.28)",
+              boxShadow: "0 8px 22px rgba(23,128,85,.28)",
             }}>
               <ShoppingBag size={15} strokeWidth={2} aria-hidden /> Continue shopping
             </Link>

@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --red: #1F4D3D;
-  --red-deep: #12302A;
+  --red: #178055;
+  --red-deep: #0D4A32;
   --flame: #B8531F;
   --gold: #E8A33D;
   --cream: #FFF7EF;
@@ -81,9 +81,9 @@
 }
 
 @keyframes pulse-red {
-  0% { box-shadow: 0 0 0 0 rgba(31, 77, 61, 0.55); }
-  70% { box-shadow: 0 0 0 14px rgba(31, 77, 61, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(31, 77, 61, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(23, 128, 85, 0.55); }
+  70% { box-shadow: 0 0 0 14px rgba(23, 128, 85, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(23, 128, 85, 0); }
 }
 
 /* Announcement bar crossfade as it rotates between events */
@@ -245,7 +245,7 @@ html.lenis body { height: auto; }
 .field-input::placeholder { color: var(--ink-soft); opacity: .55; }
 .field-input:focus {
   border-color: var(--red) !important;
-  box-shadow: 0 0 0 4px rgba(31,77,61,.12);
+  box-shadow: 0 0 0 4px rgba(23,128,85,.12);
   background: var(--paper) !important;
 }
 .field-input.on-dark:focus {
