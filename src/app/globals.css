@@ -19,15 +19,13 @@
   --color-cream-100: #faf8f4;
   --color-cream-200: #f2ede1;
 
-  --color-plum-600: #5b2456;
-  --color-plum-500: #7c3373;
-  --color-plum-400: #a2599b;
+  --color-sky-600: #1d6fa5;
+  --color-sky-500: #2f93d6;
+  --color-sky-400: #6ab8ea;
 
-  --color-mauve-600: #8a5a83;
-  --color-mauve-500: #b17ea9;
-  --color-mauve-400: #cda3c4;
-
-  --color-sunshine-400: #f0c169;
+  --color-emerald-600: #0f7a5c;
+  --color-emerald-500: #18a374;
+  --color-emerald-400: #55c99a;
 }
 
 @theme inline {
@@ -49,15 +47,13 @@
   --color-cream-100: var(--color-cream-100);
   --color-cream-200: var(--color-cream-200);
 
-  --color-plum-600: var(--color-plum-600);
-  --color-plum-500: var(--color-plum-500);
-  --color-plum-400: var(--color-plum-400);
+  --color-sky-600: var(--color-sky-600);
+  --color-sky-500: var(--color-sky-500);
+  --color-sky-400: var(--color-sky-400);
 
-  --color-mauve-600: var(--color-mauve-600);
-  --color-mauve-500: var(--color-mauve-500);
-  --color-mauve-400: var(--color-mauve-400);
-
-  --color-sunshine-400: var(--color-sunshine-400);
+  --color-emerald-600: var(--color-emerald-600);
+  --color-emerald-500: var(--color-emerald-500);
+  --color-emerald-400: var(--color-emerald-400);
 
   --font-sans: var(--font-inter);
   --font-serif: var(--font-fraunces);
@@ -108,11 +104,11 @@ body {
   will-change: transform;
   background: repeating-conic-gradient(
     from 0deg,
-    var(--color-gold-300) 0deg 6deg,
+    var(--color-sky-400) 0deg 6deg,
     transparent 6deg 30deg,
-    var(--color-plum-400) 30deg 36deg,
+    var(--color-emerald-400) 30deg 36deg,
     transparent 36deg 60deg,
-    var(--color-mauve-400) 60deg 66deg,
+    var(--color-sky-500) 60deg 66deg,
     transparent 66deg 90deg
   );
   animation: rays-spin 120s linear infinite;
@@ -131,7 +127,7 @@ body {
   will-change: transform;
   background: repeating-conic-gradient(
     from 15deg,
-    var(--color-sunshine-400) 0deg 4deg,
+    var(--color-emerald-500) 0deg 4deg,
     transparent 4deg 24deg
   );
   animation: rays-spin-reverse 80s linear infinite;
@@ -139,7 +135,7 @@ body {
 
 .hero-sparkle {
   position: absolute;
-  background: var(--color-gold-500);
+  background: var(--color-emerald-500);
   clip-path: polygon(
     50% 0%,
     61% 39%,
@@ -157,7 +153,7 @@ body {
 .hero-particle {
   position: absolute;
   border-radius: 9999px;
-  background: var(--color-plum-400);
+  background: var(--color-sky-400);
   opacity: 0.7;
   animation: particle-drift 9s ease-in-out infinite;
   will-change: transform, opacity;
