@@ -60,10 +60,30 @@ export default async function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="hero-vibrant relative overflow-hidden text-cream-100">
-        <div aria-hidden className="hero-blob hero-blob-1" />
-        <div aria-hidden className="hero-blob hero-blob-2" />
-        <div aria-hidden className="hero-blob hero-blob-3" />
+      <section className="hero-sunburst relative overflow-hidden text-navy-950">
+        <div aria-hidden className="hero-rays" />
+        <div aria-hidden className="hero-rays-inner" />
+        {[
+          { top: "18%", left: "12%", size: 14, delay: "0s" },
+          { top: "70%", left: "8%", size: 10, delay: "0.7s" },
+          { top: "12%", left: "78%", size: 12, delay: "1.4s" },
+          { top: "55%", left: "88%", size: 16, delay: "2.1s" },
+          { top: "82%", left: "45%", size: 10, delay: "2.8s" },
+          { top: "35%", left: "60%", size: 8, delay: "1.9s" },
+        ].map((s, i) => (
+          <span
+            key={i}
+            aria-hidden
+            className="hero-sparkle"
+            style={{
+              top: s.top,
+              left: s.left,
+              width: s.size,
+              height: s.size,
+              animationDelay: s.delay,
+            }}
+          />
+        ))}
         {[
           { left: "8%", size: 10, delay: "0s" },
           { left: "22%", size: 6, delay: "1.5s" },
@@ -88,23 +108,23 @@ export default async function HomePage() {
 
         <div className="relative section-shell py-20 md:py-28 grid gap-10 md:grid-cols-2 md:items-center">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-sunshine-400">
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-plum-500">
               Welcome to
             </p>
-            <h1 className="mt-3 font-serif-display text-4xl md:text-5xl leading-tight drop-shadow-sm">
+            <h1 className="mt-3 font-serif-display text-4xl md:text-5xl leading-tight text-navy-950">
               Christ Apostolic Church North America
             </h1>
-            <p className="mt-5 max-w-lg text-cream-100/90">{welcome}</p>
+            <p className="mt-5 max-w-lg text-navy-800/80">{welcome}</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="/live"
-                className="rounded-full bg-sunshine-400 px-5 py-3 text-sm font-semibold text-navy-950 shadow-lg shadow-black/10 hover:scale-105 transition-transform"
+                className="rounded-full bg-gradient-to-r from-plum-500 to-gold-500 px-5 py-3 text-sm font-semibold text-cream-100 shadow-lg shadow-plum-500/20 hover:scale-105 transition-transform"
               >
                 Join Us Online
               </Link>
               <Link
                 href="/churches"
-                className="rounded-full border-2 border-cream-100/60 px-5 py-3 text-sm font-semibold hover:bg-cream-100/15 transition-colors"
+                className="rounded-full border-2 border-navy-800/25 px-5 py-3 text-sm font-semibold text-navy-900 hover:bg-navy-900/5 transition-colors"
               >
                 Find a Church Near You
               </Link>
@@ -112,7 +132,7 @@ export default async function HomePage() {
           </div>
 
           {featuredEvent && (
-            <div className="overflow-hidden rounded-2xl border border-cream-100/25 bg-navy-950/30 backdrop-blur-sm shadow-2xl">
+            <div className="overflow-hidden rounded-2xl border border-navy-900/10 bg-navy-950 text-cream-100 shadow-2xl shadow-plum-500/20">
               {featuredEvent.bannerImageUrl && (
                 <div className="h-40 w-full overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}

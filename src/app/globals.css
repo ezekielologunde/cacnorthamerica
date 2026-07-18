@@ -88,59 +88,76 @@ body {
   }
 }
 
-/* ---------- Hero motion ---------- */
+/* ---------- Hero motion: sunburst ---------- */
 
-.hero-vibrant {
+.hero-sunburst {
   position: relative;
-  background: linear-gradient(
-    120deg,
-    var(--color-plum-600),
-    var(--color-gold-500) 55%,
-    var(--color-plum-400)
-  );
-  background-size: 220% 220%;
-  animation: hero-gradient-shift 22s ease-in-out infinite;
+  background: var(--color-cream-100);
 }
 
-.hero-blob {
+.hero-rays {
   position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 180vmax;
+  height: 180vmax;
+  margin-left: -90vmax;
+  margin-top: -90vmax;
   border-radius: 9999px;
-  filter: blur(70px);
-  opacity: 0.35;
+  opacity: 0.45;
   will-change: transform;
+  background: repeating-conic-gradient(
+    from 0deg,
+    var(--color-gold-300) 0deg 6deg,
+    transparent 6deg 30deg,
+    var(--color-plum-400) 30deg 36deg,
+    transparent 36deg 60deg,
+    var(--color-mauve-400) 60deg 66deg,
+    transparent 66deg 90deg
+  );
+  animation: rays-spin 120s linear infinite;
 }
 
-.hero-blob-1 {
-  background: var(--color-sunshine-400);
-  width: 26rem;
-  height: 26rem;
-  top: -6rem;
-  left: -6rem;
-  animation: blob-float-a 16s ease-in-out infinite;
+.hero-rays-inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 90vmax;
+  height: 90vmax;
+  margin-left: -45vmax;
+  margin-top: -45vmax;
+  border-radius: 9999px;
+  opacity: 0.3;
+  will-change: transform;
+  background: repeating-conic-gradient(
+    from 15deg,
+    var(--color-sunshine-400) 0deg 4deg,
+    transparent 4deg 24deg
+  );
+  animation: rays-spin-reverse 80s linear infinite;
 }
 
-.hero-blob-2 {
-  background: var(--color-mauve-400);
-  width: 22rem;
-  height: 22rem;
-  bottom: -8rem;
-  right: -4rem;
-  animation: blob-float-b 20s ease-in-out infinite;
-}
-
-.hero-blob-3 {
-  background: var(--color-plum-400);
-  width: 18rem;
-  height: 18rem;
-  top: 40%;
-  right: 15%;
-  animation: blob-float-c 14s ease-in-out infinite;
+.hero-sparkle {
+  position: absolute;
+  background: var(--color-gold-500);
+  clip-path: polygon(
+    50% 0%,
+    61% 39%,
+    100% 50%,
+    61% 61%,
+    50% 100%,
+    39% 61%,
+    0% 50%,
+    39% 39%
+  );
+  animation: sparkle-twinkle 3.5s ease-in-out infinite;
+  will-change: transform, opacity;
 }
 
 .hero-particle {
   position: absolute;
   border-radius: 9999px;
-  background: var(--color-cream-100);
+  background: var(--color-plum-400);
   opacity: 0.7;
   animation: particle-drift 9s ease-in-out infinite;
   will-change: transform, opacity;
@@ -150,43 +167,33 @@ body {
   animation: photo-kenburns 24s ease-in-out infinite;
 }
 
-@keyframes hero-gradient-shift {
-  0%,
-  100% {
-    background-position: 0% 50%;
+@keyframes rays-spin {
+  from {
+    transform: rotate(0deg);
   }
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
-@keyframes blob-float-a {
-  0%,
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
-  50% {
-    transform: translate(3rem, 4rem) scale(1.15);
+  to {
+    transform: rotate(360deg);
   }
 }
 
-@keyframes blob-float-b {
-  0%,
-  100% {
-    transform: translate(0, 0) scale(1);
+@keyframes rays-spin-reverse {
+  from {
+    transform: rotate(0deg);
   }
-  50% {
-    transform: translate(-2.5rem, -3rem) scale(1.1);
+  to {
+    transform: rotate(-360deg);
   }
 }
 
-@keyframes blob-float-c {
+@keyframes sparkle-twinkle {
   0%,
   100% {
-    transform: translate(0, 0) scale(1);
+    opacity: 0.2;
+    transform: scale(0.6) rotate(0deg);
   }
   50% {
-    transform: translate(-2rem, 2.5rem) scale(0.9);
+    opacity: 1;
+    transform: scale(1.15) rotate(20deg);
   }
 }
 
@@ -232,8 +239,9 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-vibrant,
-  .hero-blob,
+  .hero-rays,
+  .hero-rays-inner,
+  .hero-sparkle,
   .hero-particle,
   .hero-photo-pan {
     animation: none !important;
