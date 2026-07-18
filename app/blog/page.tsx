@@ -2,7 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
-import { POSTS, type BlogPost } from "@/lib/blog";
+import { POSTS, type BlogPost, badgeTextColor } from "@/lib/blog";
 import { specialEvents } from "@/lib/events";
 import { bibleReadingPlan } from "@/lib/biblePlan";
 import Link from "next/link";
@@ -47,7 +47,7 @@ function CategoryBadge({ label, color }: { label: string; color: string }) {
     <span style={{
       display: "inline-block", fontSize: 10, fontWeight: 800,
       letterSpacing: "1.8px", textTransform: "uppercase",
-      color: "#fff", background: color,
+      color: badgeTextColor(color), background: color,
       borderRadius: 999, padding: "3px 11px",
     }}>{label}</span>
   );

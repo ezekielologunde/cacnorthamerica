@@ -12,7 +12,7 @@ import {
 } from "@/lib/archive";
 
 const categoryAccent: Record<ArchiveCategory, string> = {
-  Convention: "var(--red)",
+  Convention: "#EB6342",
   "Good Women Marathon": "var(--gold)",
   CACMA: "#F0742F",
   Ordination: "#7A5C2E",

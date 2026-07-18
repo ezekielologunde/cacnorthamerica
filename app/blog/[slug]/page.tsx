@@ -7,7 +7,7 @@ import { ArrowLeft, Share2, Clock, Calendar, ExternalLink } from "lucide-react";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
-import { POSTS, getPost } from "@/lib/blog";
+import { POSTS, getPost, badgeTextColor } from "@/lib/blog";
 import type { BlogPost } from "@/lib/blog";
 import { SITE_URL } from "@/lib/site";
 
@@ -203,7 +203,7 @@ function RelatedCard({ post }: { post: BlogPost }) {
             fontWeight: 800,
             letterSpacing: "2px",
             textTransform: "uppercase",
-            color: "#fff",
+            color: badgeTextColor(post.categoryColor),
             background: post.categoryColor,
             borderRadius: 999,
             padding: "3px 10px",
@@ -400,7 +400,7 @@ export default async function BlogSlugPage({
                 fontWeight: 800,
                 letterSpacing: "2px",
                 textTransform: "uppercase",
-                color: "#fff",
+                color: badgeTextColor(post.categoryColor),
                 background: post.categoryColor,
                 borderRadius: 999,
                 padding: "4px 13px",
