@@ -34,7 +34,7 @@ export default function DashboardCards({ stats }: { stats: Stats }) {
         .quick-btn {
           display: flex; align-items: center; gap: 8px;
           padding: 9px 16px; border-radius: 8px;
-          border: 1.5px solid rgba(27,19,14,0.12);
+          border: 1.5px solid rgba(16,22,29,0.12);
           background: white; color: var(--ink);
           text-decoration: none; font-size: 13.5px; font-weight: 500;
           font-family: inherit; cursor: pointer;
@@ -44,7 +44,7 @@ export default function DashboardCards({ stats }: { stats: Stats }) {
         .quick-btn:hover {
           border-color: var(--red);
           color: var(--red);
-          box-shadow: 0 2px 8px rgba(214,41,58,0.1);
+          box-shadow: 0 2px 8px rgba(200,30,58,0.1);
           transform: translateY(-1px);
         }
       `}</style>

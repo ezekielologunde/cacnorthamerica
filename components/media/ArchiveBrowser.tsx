@@ -14,9 +14,9 @@ import {
 const categoryAccent: Record<ArchiveCategory, string> = {
   Convention: "var(--red)",
   "Good Women Marathon": "var(--gold)",
-  CACMA: "#1D5FBF",
+  CACMA: "#1E3A8A",
   Ordination: "#7A5C2E",
-  Other: "rgba(255,247,239,.5)",
+  Other: "rgba(244,246,248,.5)",
 };
 
 export function ArchiveBrowser({ entries }: { entries: ArchiveEntry[] }) {
@@ -45,9 +45,9 @@ export function ArchiveBrowser({ entries }: { entries: ArchiveEntry[] }) {
               fontWeight: 700,
               fontFamily: "inherit",
               cursor: "pointer",
-              border: active === cat ? "none" : "1px solid rgba(255,247,239,.2)",
+              border: active === cat ? "none" : "1px solid rgba(244,246,248,.2)",
               background: active === cat ? "var(--gold)" : "transparent",
-              color: active === cat ? "#1B130E" : "rgba(255,247,239,.7)",
+              color: active === cat ? "#10161D" : "rgba(244,246,248,.7)",
             }}
           >
             {cat}
@@ -56,7 +56,7 @@ export function ArchiveBrowser({ entries }: { entries: ArchiveEntry[] }) {
       </div>
 
       {grouped.length === 0 && (
-        <p style={{ color: "rgba(255,247,239,.6)", fontSize: 15 }}>No entries in this category yet.</p>
+        <p style={{ color: "rgba(244,246,248,.6)", fontSize: 15 }}>No entries in this category yet.</p>
       )}
 
       {grouped.map(({ year, entries: yearEntries }) => (
@@ -90,8 +90,8 @@ export function ArchiveBrowser({ entries }: { entries: ArchiveEntry[] }) {
                     gap: 14,
                     padding: "22px 22px 20px",
                     borderRadius: 18,
-                    background: "rgba(255,247,239,.05)",
-                    border: "1px solid rgba(255,247,239,.1)",
+                    background: "rgba(244,246,248,.05)",
+                    border: "1px solid rgba(244,246,248,.1)",
                     textDecoration: "none",
                   }}
                 >
@@ -110,13 +110,13 @@ export function ArchiveBrowser({ entries }: { entries: ArchiveEntry[] }) {
                     >
                       <PlayCircle size={13} strokeWidth={2} aria-hidden /> {entry.category}
                     </span>
-                    <span style={{ fontSize: 11.5, color: "rgba(255,247,239,.45)", fontWeight: 600 }}>{entry.duration}</span>
+                    <span style={{ fontSize: 11.5, color: "rgba(244,246,248,.45)", fontWeight: 600 }}>{entry.duration}</span>
                   </div>
                   <div style={{ fontSize: 15, fontWeight: 700, color: "var(--cream)", lineHeight: 1.4, flex: 1 }}>
                     {entry.title}
                   </div>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-                    <span style={{ fontSize: 12, color: "rgba(255,247,239,.4)" }}>{entry.approxViews}</span>
+                    <span style={{ fontSize: 12, color: "rgba(244,246,248,.4)" }}>{entry.approxViews}</span>
                     <span style={{ fontSize: 12.5, fontWeight: 700, color: "var(--gold)" }}>Watch →</span>
                   </div>
                 </a>

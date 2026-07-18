@@ -18,7 +18,7 @@ export default function ForwardToStaff({ subject, body }: { subject: string; bod
           fontSize: 12,
           fontWeight: 600,
           color: "var(--ink-soft)",
-          border: "1px solid rgba(27,19,14,0.15)",
+          border: "1px solid rgba(16,22,29,0.15)",
           borderRadius: 6,
           padding: "5px 8px",
           background: "white",
@@ -35,7 +35,7 @@ export default function ForwardToStaff({ subject, body }: { subject: string; bod
         style={{
           background: "transparent",
           color: "var(--ink-soft)",
-          border: "1px solid rgba(27,19,14,0.15)",
+          border: "1px solid rgba(16,22,29,0.15)",
           borderRadius: 6,
           padding: "5px 12px",
           fontSize: 12,

@@ -95,12 +95,12 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
       const isScrolled = window.scrollY > 36;
       setScrolled(isScrolled);
       nav.style.background = open
-        ? dark ? 'rgba(12,14,19,.97)' : 'rgba(255,247,239,.97)'
+        ? dark ? 'rgba(12,14,19,.97)' : 'rgba(244,246,248,.97)'
         : isScrolled
-        ? dark ? 'rgba(12,14,19,.85)' : 'rgba(255,247,239,.92)'
+        ? dark ? 'rgba(12,14,19,.85)' : 'rgba(244,246,248,.92)'
         : 'transparent';
       nav.style.boxShadow = isScrolled && !open
-        ? dark ? '0 6px 24px rgba(0,0,0,.4)' : '0 6px 24px rgba(27,19,14,.08)'
+        ? dark ? '0 6px 24px rgba(0,0,0,.4)' : '0 6px 24px rgba(16,22,29,.08)'
         : 'none';
       nav.style.backdropFilter = isScrolled || open ? 'blur(12px)' : 'none';
     };
@@ -206,29 +206,26 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                       <div style={{
                         background: dark ? 'rgba(18,20,26,.97)' : 'var(--paper)',
                         borderRadius: 16, padding: 8,
-                        boxShadow: '0 20px 50px rgba(27,19,14,.16)',
+                        boxShadow: '0 20px 50px rgba(16,22,29,.16)',
                         border: `1px solid ${dark ? 'rgba(255,255,255,.1)' : 'var(--line)'}`,
                         minWidth: 200,
                       }}>
                         {item.dropdown.map(d => {
-                          const props = {
-                            key: d.href,
-                            style: {
-                              display: 'block', padding: '10px 14px', borderRadius: 10, textDecoration: 'none', transition: 'background .15s',
-                              background: d.external ? (dark ? 'rgba(232,163,61,.12)' : 'var(--cream-2)') : undefined,
-                            } as CSSProperties,
-                            onMouseEnter: (e: MouseEvent<HTMLElement>) => (e.currentTarget.style.background = dark ? 'rgba(255,255,255,.06)' : 'var(--cream-2)'),
-                            onMouseLeave: (e: MouseEvent<HTMLElement>) => (e.currentTarget.style.background = d.external ? (dark ? 'rgba(232,163,61,.12)' : 'var(--cream-2)') : 'transparent'),
+                          const itemStyle: CSSProperties = {
+                            display: 'block', padding: '10px 14px', borderRadius: 10, textDecoration: 'none', transition: 'background .15s',
+                            background: d.external ? (dark ? 'rgba(201,162,39,.12)' : 'var(--cream-2)') : undefined,
                           };
+                          const onMouseEnter = (e: MouseEvent<HTMLElement>) => (e.currentTarget.style.background = dark ? 'rgba(255,255,255,.06)' : 'var(--cream-2)');
+                          const onMouseLeave = (e: MouseEvent<HTMLElement>) => (e.currentTarget.style.background = d.external ? (dark ? 'rgba(201,162,39,.12)' : 'var(--cream-2)') : 'transparent');
                           const content = (
                             <>
                               <div style={{ fontWeight: 700, fontSize: 14, color: d.external ? 'var(--gold)' : dark ? 'var(--cream)' : 'var(--ink)' }}>{d.label}</div>
-                              <div style={{ fontSize: 12, color: dark ? 'rgba(255,247,239,.5)' : 'var(--ink-soft)', marginTop: 2 }}>{d.desc}</div>
+                              <div style={{ fontSize: 12, color: dark ? 'rgba(244,246,248,.5)' : 'var(--ink-soft)', marginTop: 2 }}>{d.desc}</div>
                             </>
                           );
                           return d.external || isExternalHref(d.href)
-                            ? <a {...props} href={d.href} target="_blank" rel="noopener noreferrer">{content}</a>
-                            : <Link {...props} href={d.href}>{content}</Link>;
+                            ? <a key={d.href} href={d.href} target="_blank" rel="noopener noreferrer" style={itemStyle} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>{content}</a>
+                            : <Link key={d.href} href={d.href} style={itemStyle} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>{content}</Link>;
                         })}
                       </div>
                     </div>
@@ -255,7 +252,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
               onClick={() => setSearchOpen(true)}
               aria-label="Search"
               title="Search (Ctrl+K)"
-              style={{ background: lightBar ? 'rgba(255,247,239,.1)' : 'var(--cream-2)', border: `1px solid ${lightBar ? 'rgba(255,247,239,.18)' : 'var(--line)'}`, borderRadius: 999, cursor: 'pointer', padding: '9px 13px', color: barInk, display: 'flex', alignItems: 'center', transition: 'all .4s' }}
+              style={{ background: lightBar ? 'rgba(244,246,248,.1)' : 'var(--cream-2)', border: `1px solid ${lightBar ? 'rgba(244,246,248,.18)' : 'var(--line)'}`, borderRadius: 999, cursor: 'pointer', padding: '9px 13px', color: barInk, display: 'flex', alignItems: 'center', transition: 'all .4s' }}
             >
               <Search size={16} strokeWidth={2} />
             </button>
@@ -266,7 +263,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                 rel="noopener noreferrer"
                 onClick={() => haptic('medium')}
                 className="btn-sheen press"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: 'var(--gold)', color: 'var(--ink)', fontWeight: 800, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '0 8px 22px rgba(232,163,61,.4)' }}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: 'var(--gold)', color: 'var(--ink)', fontWeight: 800, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '0 8px 22px rgba(201,162,39,.4)' }}
               >
                 Register — CACNA 2026 →
               </a>
@@ -275,9 +272,9 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
               href="/online"
               onClick={() => haptic('medium')}
               className="press"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: isLive ? 'var(--red)' : (dark ? 'rgba(255,247,239,.1)' : 'var(--cream-2)'), color: isLive ? 'var(--cream)' : barInk, fontWeight: 700, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: isLive ? '0 8px 24px rgba(214,41,58,.5)' : 'none', border: isLive ? 'none' : `1px solid ${lightBar ? 'rgba(255,247,239,.18)' : 'var(--line)'}` }}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: isLive ? 'var(--red)' : (dark ? 'rgba(244,246,248,.1)' : 'var(--cream-2)'), color: isLive ? 'var(--cream)' : barInk, fontWeight: 700, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: isLive ? '0 8px 24px rgba(200,30,58,.5)' : 'none', border: isLive ? 'none' : `1px solid ${lightBar ? 'rgba(244,246,248,.18)' : 'var(--line)'}` }}
             >
-              <span style={{ width: 7, height: 7, borderRadius: '50%', background: isLive ? '#ff5252' : (lightBar ? 'rgba(255,247,239,.5)' : 'var(--ink-soft)'), animation: isLive ? 'pulse-red 1.8s infinite' : 'none', display: 'inline-block' }} />
+              <span style={{ width: 7, height: 7, borderRadius: '50%', background: isLive ? '#ff5252' : (lightBar ? 'rgba(244,246,248,.5)' : 'var(--ink-soft)'), animation: isLive ? 'pulse-red 1.8s infinite' : 'none', display: 'inline-block' }} />
               {isLive ? 'LIVE NOW' : 'Watch Live'}
             </Link>
           </div>
@@ -311,7 +308,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
       {open && (
         <div style={{
           position: 'fixed', inset: 0, zIndex: 99,
-          background: dark ? 'rgba(12,14,19,.97)' : 'rgba(255,247,239,.97)',
+          background: dark ? 'rgba(12,14,19,.97)' : 'rgba(244,246,248,.97)',
           backdropFilter: 'blur(14px)',
           display: 'flex', flexDirection: 'column',
           padding: '110px 32px 48px',
@@ -323,7 +320,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
               const mobileOpen = openMobileSection === item.label;
 
               return (
-                <div key={item.label} style={{ borderBottom: `1px solid ${dark ? 'rgba(255,247,239,.1)' : 'var(--line)'}` }}>
+                <div key={item.label} style={{ borderBottom: `1px solid ${dark ? 'rgba(244,246,248,.1)' : 'var(--line)'}` }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <Link
                       href={item.href ?? (item.dropdown?.[0]?.href ?? '/')}
@@ -357,12 +354,12 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                         const style: CSSProperties = {
                           display: 'block', padding: '10px 16px', borderRadius: 12,
                           textDecoration: 'none',
-                          background: d.external ? (dark ? 'rgba(232,163,61,.14)' : 'rgba(232,163,61,.14)') : (dark ? 'rgba(255,255,255,.06)' : 'var(--cream-2)'),
+                          background: d.external ? (dark ? 'rgba(201,162,39,.14)' : 'rgba(201,162,39,.14)') : (dark ? 'rgba(255,255,255,.06)' : 'var(--cream-2)'),
                         };
                         const content = (
                           <>
                             <div style={{ fontWeight: d.external ? 800 : 700, fontSize: 16, color: ink }}>{d.label}</div>
-                            <div style={{ fontSize: 13, color: dark ? 'rgba(255,247,239,.5)' : 'var(--ink-soft)', marginTop: 2 }}>{d.desc}</div>
+                            <div style={{ fontSize: 13, color: dark ? 'rgba(244,246,248,.5)' : 'var(--ink-soft)', marginTop: 2 }}>{d.desc}</div>
                           </>
                         );
                         return external ? (
@@ -386,7 +383,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                 rel="noopener noreferrer"
                 onClick={() => { haptic('medium'); setOpen(false); }}
                 className="press"
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'var(--gold)', color: 'var(--ink)', fontWeight: 800, fontSize: 17, padding: '18px 24px', borderRadius: 999, textDecoration: 'none', boxShadow: '0 14px 30px rgba(232,163,61,.4)' }}>
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'var(--gold)', color: 'var(--ink)', fontWeight: 800, fontSize: 17, padding: '18px 24px', borderRadius: 999, textDecoration: 'none', boxShadow: '0 14px 30px rgba(201,162,39,.4)' }}>
                 Register — CACNA 2026 →
               </a>
             )}
@@ -394,14 +391,14 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
               href="/online"
               onClick={() => { haptic('medium'); setOpen(false); }}
               className="press"
-              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, background: isLive ? 'var(--red)' : 'transparent', color: isLive ? '#fff' : ink, fontWeight: 700, fontSize: 17, padding: '18px 24px', borderRadius: 999, textDecoration: 'none', boxShadow: isLive ? '0 14px 30px rgba(214,41,58,.4)' : 'none', border: isLive ? 'none' : `1.5px solid ${dark ? 'rgba(255,247,239,.3)' : 'var(--ink)'}` }}>
-              <span style={{ width: 9, height: 9, borderRadius: '50%', background: isLive ? '#fff' : (dark ? 'rgba(255,247,239,.5)' : 'var(--ink-soft)'), animation: isLive ? 'pulse-red 1.8s infinite' : 'none', display: 'inline-block' }} />
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, background: isLive ? 'var(--red)' : 'transparent', color: isLive ? '#fff' : ink, fontWeight: 700, fontSize: 17, padding: '18px 24px', borderRadius: 999, textDecoration: 'none', boxShadow: isLive ? '0 14px 30px rgba(200,30,58,.4)' : 'none', border: isLive ? 'none' : `1.5px solid ${dark ? 'rgba(244,246,248,.3)' : 'var(--ink)'}` }}>
+              <span style={{ width: 9, height: 9, borderRadius: '50%', background: isLive ? '#fff' : (dark ? 'rgba(244,246,248,.5)' : 'var(--ink-soft)'), animation: isLive ? 'pulse-red 1.8s infinite' : 'none', display: 'inline-block' }} />
               {isLive ? 'LIVE NOW' : 'Watch Live'}
             </Link>
-            <Link href="/visit" onClick={() => setOpen(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 15, padding: '14px 24px', borderRadius: 999, textDecoration: 'none', color: dark ? 'rgba(255,247,239,.7)' : 'var(--ink-soft)' }}>
+            <Link href="/visit" onClick={() => setOpen(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 15, padding: '14px 24px', borderRadius: 999, textDecoration: 'none', color: dark ? 'rgba(244,246,248,.7)' : 'var(--ink-soft)' }}>
               Find a Church
             </Link>
-            <p style={{ fontSize: 12.5, color: dark ? 'rgba(255,247,239,.4)' : 'var(--ink-soft)', textAlign: 'center', margin: '8px 0 0' }}>
+            <p style={{ fontSize: 12.5, color: dark ? 'rgba(244,246,248,.4)' : 'var(--ink-soft)', textAlign: 'center', margin: '8px 0 0' }}>
               16 Zones · United States &amp; Canada · A region of Christ Apostolic Church Worldwide
             </p>
           </div>

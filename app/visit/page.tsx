@@ -98,15 +98,15 @@ export default function VisitPage() {
 
   const inputBase: React.CSSProperties = {
     width: "100%", boxSizing: "border-box",
-    background: "rgba(255,247,239,.07)",
-    border: "1px solid rgba(255,247,239,.16)",
+    background: "rgba(244,246,248,.07)",
+    border: "1px solid rgba(244,246,248,.16)",
     borderRadius: 14, padding: "13px 18px",
     fontSize: 15, color: "var(--cream)",
     fontFamily: "inherit", outline: "none",
   };
   const labelBase: React.CSSProperties = {
     display: "block", fontSize: 12, fontWeight: 700,
-    color: "rgba(255,247,239,.45)", letterSpacing: "1px",
+    color: "rgba(244,246,248,.45)", letterSpacing: "1px",
     textTransform: "uppercase", marginBottom: 8,
   };
 
@@ -116,7 +116,7 @@ export default function VisitPage() {
 
       {/* Hero */}
       <section style={{ background: "var(--cream)", padding: "140px clamp(20px,5vw,64px) 60px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", bottom: -80, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,#1D5FBF,#D6293A 70%)", opacity: .1, filter: "blur(6px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", bottom: -80, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,#1E3A8A,#C81E3A 70%)", opacity: .1, filter: "blur(6px)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 780, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal><span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Find a Church</span></Reveal>
           <Reveal delay={80}>
@@ -142,7 +142,7 @@ export default function VisitPage() {
             { icon: Phone,  title: "Phone", value: "(305) 469-0346", link: "tel:+13054690346" },
           ].map((card, i) => (
             <Reveal key={card.title} delay={i * 80}>
-              <div style={{ background: "var(--paper)", borderRadius: 20, padding: "28px 24px", border: "1px solid var(--line)", boxShadow: "0 8px 22px rgba(27,19,14,.05)" }}>
+              <div style={{ background: "var(--paper)", borderRadius: 20, padding: "28px 24px", border: "1px solid var(--line)", boxShadow: "0 8px 22px rgba(16,22,29,.05)" }}>
                 <IconBadge icon={card.icon} style={{ marginBottom: 16 }} />
                 <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 8 }}>{card.title}</div>
                 {card.link
@@ -159,7 +159,7 @@ export default function VisitPage() {
       <section style={{ background: "var(--cream)", padding: "80px clamp(20px,5vw,64px)" }}>
         <div className="r2" style={{ maxWidth: 1100, margin: "0 auto", gap: 60 }}>
           <Reveal>
-            <div style={{ height: 320, borderRadius: 20, overflow: "hidden", border: "1px solid var(--line)", marginBottom: 20, boxShadow: "0 10px 26px rgba(27,19,14,.06)" }}>
+            <div style={{ height: 320, borderRadius: 20, overflow: "hidden", border: "1px solid var(--line)", marginBottom: 20, boxShadow: "0 10px 26px rgba(16,22,29,.06)" }}>
               <iframe title="Map to CAC Village, Blue Ridge Summit, PA" src="https://maps.google.com/maps?q=14051%20Stahley%20Road%20Blue%20Ridge%20Summit%20PA%2017214&z=13&output=embed" loading="lazy" referrerPolicy="no-referrer-when-downgrade" style={{ width: "100%", height: "100%", border: 0, display: "block" }} />
             </div>
             <a href="https://maps.google.com/?q=14051+Stahley+Road+Blue+Ridge+Summit+PA+17214" target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 14, fontWeight: 700, color: "var(--red)", textDecoration: "none" }}>
@@ -214,15 +214,15 @@ export default function VisitPage() {
           <Reveal style={{ textAlign: "center", marginBottom: 48 }}>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Connect Card</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4vw,52px)", letterSpacing: "-1px", color: "#fff", margin: "12px 0 14px" }}>Let us know you&apos;re here</h2>
-            <p style={{ fontSize: 16, color: "rgba(255,247,239,.6)", margin: 0 }}>Whether it&apos;s your first visit or you&apos;re ready to join — we&apos;d love to connect with you.</p>
+            <p style={{ fontSize: 16, color: "rgba(244,246,248,.6)", margin: 0 }}>Whether it&apos;s your first visit or you&apos;re ready to join — we&apos;d love to connect with you.</p>
           </Reveal>
 
           <Reveal delay={80}>
             {submitted ? (
-              <div style={{ textAlign: "center", padding: "56px 32px", background: "rgba(255,247,239,.06)", borderRadius: 24, border: "1px solid rgba(255,247,239,.12)" }}>
+              <div style={{ textAlign: "center", padding: "56px 32px", background: "rgba(244,246,248,.06)", borderRadius: 24, border: "1px solid rgba(244,246,248,.12)" }}>
                 <PartyPopper size={48} strokeWidth={1.75} color="var(--gold)" aria-hidden style={{ margin: "0 auto 18px" }} />
                 <p style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 24, color: "#fff", margin: "0 0 10px" }}>Welcome to the family!</p>
-                <p style={{ fontSize: 15, color: "rgba(255,247,239,.6)", margin: 0 }}>We&apos;ll be in touch soon to connect you with a church near you.</p>
+                <p style={{ fontSize: 15, color: "rgba(244,246,248,.6)", margin: 0 }}>We&apos;ll be in touch soon to connect you with a church near you.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} noValidate style={{ display: "flex", flexDirection: "column", gap: 24 }}>
@@ -233,7 +233,7 @@ export default function VisitPage() {
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
                     {VISIT_TYPES.map(t => (
                       <button key={t.value} type="button" onClick={() => setForm(p => ({ ...p, visitType: t.value }))}
-                        style={{ padding: "10px 18px", borderRadius: 999, fontSize: 14, fontWeight: 700, fontFamily: "inherit", cursor: "pointer", border: form.visitType === t.value ? "none" : "1px solid rgba(255,247,239,.2)", background: form.visitType === t.value ? "var(--red)" : "transparent", color: form.visitType === t.value ? "#fff" : "rgba(255,247,239,.7)" }}>
+                        style={{ padding: "10px 18px", borderRadius: 999, fontSize: 14, fontWeight: 700, fontFamily: "inherit", cursor: "pointer", border: form.visitType === t.value ? "none" : "1px solid rgba(244,246,248,.2)", background: form.visitType === t.value ? "var(--red)" : "transparent", color: form.visitType === t.value ? "#fff" : "rgba(244,246,248,.7)" }}>
                         {t.label}
                       </button>
                     ))}
@@ -308,7 +308,7 @@ export default function VisitPage() {
                       const active = groups.includes(g);
                       return (
                         <button key={g} type="button" onClick={() => toggleGroup(g)}
-                          style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "9px 16px", borderRadius: 999, fontSize: 13.5, fontWeight: 700, fontFamily: "inherit", cursor: "pointer", transition: "all .15s", border: active ? "none" : "1px solid rgba(255,247,239,.2)", background: active ? "var(--gold)" : "transparent", color: active ? "#1B130E" : "rgba(255,247,239,.7)" }}>
+                          style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "9px 16px", borderRadius: 999, fontSize: 13.5, fontWeight: 700, fontFamily: "inherit", cursor: "pointer", transition: "all .15s", border: active ? "none" : "1px solid rgba(244,246,248,.2)", background: active ? "var(--gold)" : "transparent", color: active ? "#10161D" : "rgba(244,246,248,.7)" }}>
                           {active && <span aria-hidden style={{ fontSize: 12 }}>✓</span>}
                           {g}
                         </button>
@@ -320,10 +320,10 @@ export default function VisitPage() {
                 {submitError && <p role="alert" style={{ fontSize: 14, fontWeight: 600, color: "#ff8a8a", margin: 0 }}>{submitError}</p>}
 
                 <button type="submit" disabled={loading}
-                  style={{ padding: "18px", borderRadius: 999, background: "var(--red)", color: "#fff", fontWeight: 800, fontSize: 16, border: "none", cursor: loading ? "wait" : "pointer", opacity: loading ? 0.6 : 1, boxShadow: "0 14px 30px rgba(214,41,58,.4)" }}>
+                  style={{ padding: "18px", borderRadius: 999, background: "var(--red)", color: "#fff", fontWeight: 800, fontSize: 16, border: "none", cursor: loading ? "wait" : "pointer", opacity: loading ? 0.6 : 1, boxShadow: "0 14px 30px rgba(200,30,58,.4)" }}>
                   {loading ? "Sending…" : "Submit Connect Card →"}
                 </button>
-                <p style={{ fontSize: 12.5, color: "rgba(255,247,239,.35)", textAlign: "center", margin: "-10px 0 0" }}>We&apos;ll only use your details to welcome you. No spam, ever.</p>
+                <p style={{ fontSize: 12.5, color: "rgba(244,246,248,.35)", textAlign: "center", margin: "-10px 0 0" }}>We&apos;ll only use your details to welcome you. No spam, ever.</p>
               </form>
             )}
           </Reveal>

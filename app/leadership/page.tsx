@@ -46,10 +46,10 @@ function initials(name: string) {
 }
 
 const gradients = [
-  "linear-gradient(135deg,#7A1420,#D6293A)",
-  "linear-gradient(135deg,#D6293A,#1D5FBF)",
-  "linear-gradient(135deg,#1D5FBF,#E8A33D)",
-  "linear-gradient(135deg,#1B130E,#7A1420)",
+  "linear-gradient(135deg,#7A1128,#C81E3A)",
+  "linear-gradient(135deg,#C81E3A,#1E3A8A)",
+  "linear-gradient(135deg,#1E3A8A,#C9A227)",
+  "linear-gradient(135deg,#10161D,#7A1128)",
 ];
 
 export default function LeadershipPage() {
@@ -59,7 +59,7 @@ export default function LeadershipPage() {
 
       {/* Hero */}
       <section style={{ background: "var(--cream)", padding: "140px clamp(20px,5vw,64px) 72px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -60, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,#1D5FBF,#D6293A 70%)", opacity: .1, filter: "blur(6px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: -60, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,#1E3A8A,#C81E3A 70%)", opacity: .1, filter: "blur(6px)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 820, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Leadership</span>
@@ -86,11 +86,11 @@ export default function LeadershipPage() {
         `}</style>
         <div style={{ maxWidth: 1080, margin: "0 auto" }}>
           <Reveal>
-            <div className="ldr-card" style={{ background: "var(--ink)", borderRadius: 28, overflow: "hidden", boxShadow: "0 30px 60px rgba(27,19,14,.22)" }}>
+            <div className="ldr-card" style={{ background: "var(--ink)", borderRadius: 28, overflow: "hidden", boxShadow: "0 30px 60px rgba(16,22,29,.22)" }}>
               <div style={{ padding: "clamp(36px,5vw,60px)", display: "flex", flexDirection: "column", justifyContent: "center", color: "var(--cream)" }}>
                 <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 14 }}>{featured.title}</div>
                 <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3vw,42px)", letterSpacing: "-1px", margin: "0 0 22px", lineHeight: 1.04 }}>{featured.name}</h2>
-                <p style={{ fontSize: 16.5, lineHeight: 1.75, color: "rgba(255,247,239,.78)", margin: 0 }}>{featured.bio}</p>
+                <p style={{ fontSize: 16.5, lineHeight: 1.75, color: "rgba(244,246,248,.78)", margin: 0 }}>{featured.bio}</p>
               </div>
               <div className="ldr-photo" style={{ position: "relative" }}>
                 <Image
@@ -121,12 +121,12 @@ export default function LeadershipPage() {
               <Reveal key={p.name} delay={i * 70}>
                 <div style={{
                   background: "var(--paper)", borderRadius: 22, padding: "28px 28px 30px",
-                  border: "1px solid var(--line)", boxShadow: "0 10px 28px rgba(27,19,14,.07)",
+                  border: "1px solid var(--line)", boxShadow: "0 10px 28px rgba(16,22,29,.07)",
                   height: "100%", display: "flex", flexDirection: "column", gap: 18,
                 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
                     {p.image ? (
-                      <div style={{ position: "relative", width: 64, height: 64, borderRadius: 18, overflow: "hidden", flexShrink: 0, boxShadow: "0 10px 22px rgba(27,19,14,.2)" }}>
+                      <div style={{ position: "relative", width: 64, height: 64, borderRadius: 18, overflow: "hidden", flexShrink: 0, boxShadow: "0 10px 22px rgba(16,22,29,.2)" }}>
                         <Image src={p.image} alt={p.name} fill style={{ objectFit: "cover", objectPosition: "center top" }} sizes="64px" />
                       </div>
                     ) : (
@@ -135,7 +135,7 @@ export default function LeadershipPage() {
                         background: gradients[i % gradients.length],
                         display: "grid", placeItems: "center",
                         color: "#fff", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22,
-                        letterSpacing: "-0.5px", boxShadow: "0 10px 22px rgba(214,41,58,.28)",
+                        letterSpacing: "-0.5px", boxShadow: "0 10px 22px rgba(200,30,58,.28)",
                         flexShrink: 0,
                       }}>{initials(p.name)}</div>
                     )}
@@ -156,10 +156,10 @@ export default function LeadershipPage() {
       <section style={{ background: "var(--ink)", padding: "80px clamp(20px,5vw,64px)", textAlign: "center" }}>
         <Reveal>
           <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4.5vw,60px)", letterSpacing: "-1.2px", color: "var(--cream)", margin: "0 0 16px", lineHeight: .96 }}>Connect with CACNA.</h2>
-          <p style={{ fontSize: 17, color: "rgba(255,247,239,.6)", margin: "0 0 36px" }}>Find a member church near you across the United States and Canada.</p>
+          <p style={{ fontSize: 17, color: "rgba(244,246,248,.6)", margin: "0 0 36px" }}>Find a member church near you across the United States and Canada.</p>
           <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
-            <Link href="/visit" style={{ background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(214,41,58,.4)" }}>Find a Church →</Link>
-            <Link href="/about" style={{ background: "rgba(255,247,239,.1)", color: "var(--cream)", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(255,247,239,.2)" }}>Our Story</Link>
+            <Link href="/visit" style={{ background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(200,30,58,.4)" }}>Find a Church →</Link>
+            <Link href="/about" style={{ background: "rgba(244,246,248,.1)", color: "var(--cream)", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(244,246,248,.2)" }}>Our Story</Link>
           </div>
         </Reveal>
       </section>

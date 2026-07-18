@@ -91,7 +91,7 @@ export default function CACNA2026Page() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Events", path: "/events" }, { name: ev.navLabel ?? ev.title, path: "/events/cacna-2026" }])).replace(/</g, "\\u003c") }} />
       <Nav heroDark />
       {isPast && (
-        <div role="status" style={{ background: '#2c2825', padding: '13px clamp(20px,5vw,64px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px 20px', fontSize: 14, fontWeight: 600, color: 'rgba(255,247,239,.7)' }}>
+        <div role="status" style={{ background: '#2c2825', padding: '13px clamp(20px,5vw,64px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px 20px', fontSize: 14, fontWeight: 600, color: 'rgba(244,246,248,.7)' }}>
           <span>This event has passed — page kept as an archive.</span>
           <Link href="/events" style={{ color: 'var(--gold)', fontWeight: 700, fontSize: 13, textDecoration: 'none', whiteSpace: 'nowrap' }}>See upcoming events →</Link>
         </div>
@@ -99,19 +99,19 @@ export default function CACNA2026Page() {
 
       {/* Hero */}
       <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) clamp(80px,10vw,120px)", position: "relative", overflow: "hidden" }}>
-        <div aria-hidden style={{ position: "absolute", top: -140, right: -120, width: 760, height: 600, background: "radial-gradient(circle,rgba(232,163,61,.25),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 18s ease-in-out infinite" }} />
-        <div aria-hidden style={{ position: "absolute", bottom: -80, left: -80, width: 500, height: 400, background: "radial-gradient(circle,rgba(214,41,58,.15),transparent 65%)", pointerEvents: "none" }} />
+        <div aria-hidden style={{ position: "absolute", top: -140, right: -120, width: 760, height: 600, background: "radial-gradient(circle,rgba(201,162,39,.25),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 18s ease-in-out infinite" }} />
+        <div aria-hidden style={{ position: "absolute", bottom: -80, left: -80, width: 500, height: 400, background: "radial-gradient(circle,rgba(200,30,58,.15),transparent 65%)", pointerEvents: "none" }} />
 
         <div style={{ maxWidth: 960, margin: "0 auto", position: "relative", zIndex: 2 }}>
           <Reveal>
-            <Link href="/events" style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 700, color: "rgba(255,247,239,.6)", textDecoration: "none", marginBottom: 32 }}>
+            <Link href="/events" style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 700, color: "rgba(244,246,248,.6)", textDecoration: "none", marginBottom: 32 }}>
               <ArrowLeft size={14} strokeWidth={2.5} aria-hidden /> All events
             </Link>
           </Reveal>
 
           <Reveal>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 80, height: 80, borderRadius: 20, background: "linear-gradient(150deg,#E8A33D,#1D5FBF)", boxShadow: "0 20px 44px rgba(232,163,61,.4)" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 80, height: 80, borderRadius: 20, background: "linear-gradient(150deg,#C9A227,#1E3A8A)", boxShadow: "0 20px 44px rgba(201,162,39,.4)" }}>
                 <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 13, color: "#fff", letterSpacing: 1 }}>JUL</span>
               </div>
               <div>
@@ -130,7 +130,7 @@ export default function CACNA2026Page() {
           </h1>
 
           <Reveal delay={160}>
-            <div style={{ display: "inline-flex", alignItems: "flex-start", gap: 12, marginBottom: 22, padding: "14px 20px", borderRadius: 16, background: "rgba(232,163,61,.1)", border: "1px solid rgba(232,163,61,.3)", maxWidth: 620 }}>
+            <div style={{ display: "inline-flex", alignItems: "flex-start", gap: 12, marginBottom: 22, padding: "14px 20px", borderRadius: 16, background: "rgba(201,162,39,.1)", border: "1px solid rgba(201,162,39,.3)", maxWidth: 620 }}>
               <Sparkles size={20} strokeWidth={2} color="var(--gold)" aria-hidden style={{ flexShrink: 0, marginTop: 3 }} />
               <div>
                 <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 4 }}>Convention Theme</div>
@@ -140,7 +140,7 @@ export default function CACNA2026Page() {
           </Reveal>
 
           <Reveal delay={200}>
-            <p style={{ fontSize: "clamp(16px,2vw,20px)", color: "rgba(255,247,239,.72)", lineHeight: 1.7, maxWidth: 620, margin: "0 0 44px", textWrap: "pretty" }}>
+            <p style={{ fontSize: "clamp(16px,2vw,20px)", color: "rgba(244,246,248,.72)", lineHeight: 1.7, maxWidth: 620, margin: "0 0 44px", textWrap: "pretty" }}>
               Six days of worship, the Word, and the whole CAC family in one place. CAC Village, Blue Ridge Summit, PA — July 13–18, 2026. This is the gathering you do not want to miss.
             </p>
           </Reveal>
@@ -148,13 +148,13 @@ export default function CACNA2026Page() {
           {!isPast && (
           <Reveal delay={280}>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
-              <a href={CACNA_REG} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(232,163,61,.4)" }}>
+              <a href={CACNA_REG} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(201,162,39,.4)" }}>
                 Register Now →
               </a>
-              <a href={googleCalUrl(ev)} target="_blank" rel="noopener noreferrer" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(255,247,239,.09)", color: "var(--cream)", fontWeight: 700, fontSize: 15, padding: "16px 28px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(255,247,239,.2)" }}>
+              <a href={googleCalUrl(ev)} target="_blank" rel="noopener noreferrer" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(244,246,248,.09)", color: "var(--cream)", fontWeight: 700, fontSize: 15, padding: "16px 28px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(244,246,248,.2)" }}>
                 <CalendarPlus size={17} strokeWidth={2} aria-hidden /> Add to Calendar
               </a>
-              <a href={icsDataUri(ev)} download="cacna-2026.ics" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(255,247,239,.06)", color: "rgba(255,247,239,.7)", fontWeight: 700, fontSize: 14, padding: "16px 22px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(255,247,239,.14)" }}>
+              <a href={icsDataUri(ev)} download="cacna-2026.ics" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(244,246,248,.06)", color: "rgba(244,246,248,.7)", fontWeight: 700, fontSize: 14, padding: "16px 22px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(244,246,248,.14)" }}>
                 <Download size={16} strokeWidth={2} aria-hidden /> Apple / Outlook
               </a>
             </div>
@@ -188,8 +188,8 @@ export default function CACNA2026Page() {
                 { icon: Heart, label: "Six days of Spirit", desc: "Morning and evening sessions of prayer, worship, and the Word. Outdoor prayer walks. Late-night tarrying." },
                 { icon: MapPin, label: "CAC Village", desc: "A purpose-built retreat campus in the mountains. Accommodation, dining, and sanctuary — all on site." },
               ].map((item, i) => (
-                <div key={i} style={{ display: "flex", gap: 16, alignItems: "flex-start", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 18, padding: "20px 22px", boxShadow: "0 8px 20px rgba(27,19,14,.06)" }}>
-                  <div style={{ flexShrink: 0, display: "grid", placeItems: "center", width: 44, height: 44, borderRadius: 12, background: "linear-gradient(135deg,var(--flame),var(--red))", boxShadow: "0 8px 16px rgba(214,41,58,.28)" }}>
+                <div key={i} style={{ display: "flex", gap: 16, alignItems: "flex-start", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 18, padding: "20px 22px", boxShadow: "0 8px 20px rgba(16,22,29,.06)" }}>
+                  <div style={{ flexShrink: 0, display: "grid", placeItems: "center", width: 44, height: 44, borderRadius: 12, background: "linear-gradient(135deg,var(--flame),var(--red))", boxShadow: "0 8px 16px rgba(200,30,58,.28)" }}>
                     <item.icon size={20} color="#fff" strokeWidth={2} aria-hidden />
                   </div>
                   <div>
@@ -213,21 +213,21 @@ export default function CACNA2026Page() {
           <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
             {sessions.map((s, i) => (
               <Reveal key={i} delay={i * 70}>
-                <div style={{ display: "flex", gap: "clamp(16px,3vw,32px)", alignItems: "flex-start", background: "rgba(255,247,239,.05)", border: "1px solid rgba(255,247,239,.1)", borderRadius: 20, padding: "clamp(20px,3vw,28px)" }}>
+                <div style={{ display: "flex", gap: "clamp(16px,3vw,32px)", alignItems: "flex-start", background: "rgba(244,246,248,.05)", border: "1px solid rgba(244,246,248,.1)", borderRadius: 20, padding: "clamp(20px,3vw,28px)" }}>
                   <div style={{ flexShrink: 0, minWidth: 88, textAlign: "center" }}>
                     <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 15, color: "var(--gold)", lineHeight: 1.2 }}>{s.day}</div>
                   </div>
                   <div>
                     <div style={{ fontWeight: 800, fontSize: 18, color: "var(--cream)", marginBottom: 6 }}>{s.label}</div>
-                    <div style={{ fontSize: 14.5, color: "rgba(255,247,239,.62)", lineHeight: 1.68 }}>{s.desc}</div>
+                    <div style={{ fontSize: 14.5, color: "rgba(244,246,248,.62)", lineHeight: 1.68 }}>{s.desc}</div>
                   </div>
                 </div>
               </Reveal>
             ))}
           </div>
           <Reveal delay={400}>
-            <p style={{ fontSize: 14, color: "rgba(255,247,239,.45)", marginTop: 22, lineHeight: 1.6 }}>
-              Every night is a <strong style={{ color: "rgba(255,247,239,.7)" }}>combined revival for all</strong>, with <strong style={{ color: "rgba(255,247,239,.7)" }}>free food for all</strong>. Schedule is subject to change — follow <strong style={{ color: "rgba(255,247,239,.7)" }}>@CACNA Latunde Region</strong> or cacnaconvention.org for updates.
+            <p style={{ fontSize: 14, color: "rgba(244,246,248,.45)", marginTop: 22, lineHeight: 1.6 }}>
+              Every night is a <strong style={{ color: "rgba(244,246,248,.7)" }}>combined revival for all</strong>, with <strong style={{ color: "rgba(244,246,248,.7)" }}>free food for all</strong>. Schedule is subject to change — follow <strong style={{ color: "rgba(244,246,248,.7)" }}>@CACNA Latunde Region</strong> or cacnaconvention.org for updates.
             </p>
           </Reveal>
         </div>
@@ -263,7 +263,7 @@ export default function CACNA2026Page() {
               <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.5vw,40px)", letterSpacing: "-.6px", color: "var(--ink)", margin: "0 0 24px" }}>Logistics</h2>
               <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                 {logistics.map((l, i) => (
-                  <div key={i} style={{ display: "flex", gap: 16, alignItems: "flex-start", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 16, padding: "18px 20px", boxShadow: "0 6px 16px rgba(27,19,14,.06)" }}>
+                  <div key={i} style={{ display: "flex", gap: 16, alignItems: "flex-start", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 16, padding: "18px 20px", boxShadow: "0 6px 16px rgba(16,22,29,.06)" }}>
                     <div style={{ flexShrink: 0, display: "grid", placeItems: "center", width: 40, height: 40, borderRadius: 10, background: "linear-gradient(135deg,var(--flame),var(--red))" }}>
                       <l.icon size={18} color="#fff" strokeWidth={2} aria-hidden />
                     </div>
@@ -298,7 +298,7 @@ export default function CACNA2026Page() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,280px),1fr))", gap: 18 }}>
             {fees.map((f, i) => (
               <Reveal key={f.tier} delay={i * 90}>
-                <div style={{ height: "100%", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, padding: "26px 24px", boxShadow: "0 10px 26px rgba(27,19,14,.06)", display: "flex", flexDirection: "column" }}>
+                <div style={{ height: "100%", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, padding: "26px 24px", boxShadow: "0 10px 26px rgba(16,22,29,.06)", display: "flex", flexDirection: "column" }}>
                   <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--ink)", letterSpacing: "-.3px" }}>{f.tier}</div>
                   <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginTop: 4, marginBottom: 18 }}>{f.age}</div>
                   {f.free ? (
@@ -324,7 +324,7 @@ export default function CACNA2026Page() {
           <Reveal delay={200}>
             <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,260px),1fr))", gap: 16 }}>
               {contacts.map((c) => (
-                <a key={c.name} href={`tel:${c.tel}`} className="press" style={{ display: "flex", gap: 14, alignItems: "center", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 16, padding: "18px 20px", textDecoration: "none", boxShadow: "0 6px 16px rgba(27,19,14,.05)" }}>
+                <a key={c.name} href={`tel:${c.tel}`} className="press" style={{ display: "flex", gap: 14, alignItems: "center", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 16, padding: "18px 20px", textDecoration: "none", boxShadow: "0 6px 16px rgba(16,22,29,.05)" }}>
                   <div style={{ flexShrink: 0, display: "grid", placeItems: "center", width: 44, height: 44, borderRadius: 12, background: "linear-gradient(135deg,var(--flame),var(--red))" }}>
                     <Phone size={18} color="#fff" strokeWidth={2} aria-hidden />
                   </div>
@@ -353,14 +353,14 @@ export default function CACNA2026Page() {
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(34px,5.5vw,72px)", letterSpacing: "-1.5px", color: "#fff", margin: "0 0 22px", lineHeight: 0.95 }}>
               Register before rates rise.
             </h2>
-            <p style={{ fontSize: "clamp(15px,1.8vw,18px)", color: "rgba(255,247,239,.68)", lineHeight: 1.72, marginBottom: 40, textWrap: "pretty" }}>
+            <p style={{ fontSize: "clamp(15px,1.8vw,18px)", color: "rgba(244,246,248,.68)", lineHeight: 1.72, marginBottom: 40, textWrap: "pretty" }}>
               Registration is open online now, and the price goes up as the convention draws near. Register early to pay less — and remember to book your hotel ahead of time.
             </p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 16, justifyContent: "center" }}>
-              <a href={CACNA_REG} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 17, padding: "18px 36px", borderRadius: 999, textDecoration: "none", boxShadow: "0 20px 50px rgba(232,163,61,.35)" }}>
+              <a href={CACNA_REG} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 17, padding: "18px 36px", borderRadius: 999, textDecoration: "none", boxShadow: "0 20px 50px rgba(201,162,39,.35)" }}>
                 Register on CACNA.org →
               </a>
-              <Link href="/giving" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "rgba(255,247,239,.08)", color: "var(--cream)", fontWeight: 700, fontSize: 15, padding: "18px 30px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(255,247,239,.18)" }}>
+              <Link href="/giving" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "rgba(244,246,248,.08)", color: "var(--cream)", fontWeight: 700, fontSize: 15, padding: "18px 30px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(244,246,248,.18)" }}>
                 Support the trip
               </Link>
             </div>

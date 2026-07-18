@@ -22,7 +22,7 @@ export function Youth() {
             >
               <div style={{ position: 'absolute', top: -50, right: -50, width: 200, height: 200, borderRadius: '50%', background: 'radial-gradient(circle,var(--gold),transparent 68%)', opacity: .4 }} />
               <div style={{ position: 'relative' }}>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(232,163,61,.18)', color: 'var(--gold)', fontWeight: 800, fontSize: 12, padding: '7px 13px', borderRadius: 999 }}>DAILY DEVOTIONAL</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(201,162,39,.18)', color: 'var(--gold)', fontWeight: 800, fontSize: 12, padding: '7px 13px', borderRadius: 999 }}>DAILY DEVOTIONAL</span>
               </div>
               <div style={{ position: 'relative' }}>
                 <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 38, lineHeight: 1, letterSpacing: '-1px' }}>Daily Bread<br />for the Soul</div>
@@ -35,7 +35,7 @@ export function Youth() {
             <Link
               href="/bible-plan"
               className="card-lift"
-              style={{ textDecoration: 'none', color: 'inherit', background: 'var(--paper)', borderRadius: 24, padding: 32, boxShadow: '0 10px 26px rgba(27,19,14,.06)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 260, height: '100%' }}
+              style={{ textDecoration: 'none', color: 'inherit', background: 'var(--paper)', borderRadius: 24, padding: 32, boxShadow: '0 10px 26px rgba(16,22,29,.06)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 260, height: '100%' }}
             >
               <IconBadge icon={BookOpen} />
               <div>
@@ -50,7 +50,7 @@ export function Youth() {
             <Link
               href="/bible-plan"
               className="card-lift"
-              style={{ textDecoration: 'none', color: 'inherit', background: 'var(--paper)', borderRadius: 24, padding: 32, boxShadow: '0 10px 26px rgba(27,19,14,.06)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 260, height: '100%' }}
+              style={{ textDecoration: 'none', color: 'inherit', background: 'var(--paper)', borderRadius: 24, padding: 32, boxShadow: '0 10px 26px rgba(16,22,29,.06)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 260, height: '100%' }}
             >
               <IconBadge icon={Target} />
               <div>

@@ -24,16 +24,16 @@ const homes: Home[] = [
 
 const homeCardStyle: CSSProperties = {
   height: "100%", display: "flex", flexDirection: "column",
-  background: "rgba(255,247,239,.05)", border: "1px solid rgba(255,247,239,.12)",
+  background: "rgba(244,246,248,.05)", border: "1px solid rgba(244,246,248,.12)",
   borderRadius: 16, padding: "16px 18px", textDecoration: "none",
 };
 
 function HomeCard({ h }: { h: Home }) {
   const content = (
     <>
-      <span style={{ alignSelf: "flex-start", fontSize: 10, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)", background: "rgba(232,163,61,.12)", border: "1px solid rgba(232,163,61,.28)", padding: "3px 10px", borderRadius: 999, marginBottom: 10 }}>{h.tag}</span>
+      <span style={{ alignSelf: "flex-start", fontSize: 10, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)", background: "rgba(201,162,39,.12)", border: "1px solid rgba(201,162,39,.28)", padding: "3px 10px", borderRadius: 999, marginBottom: 10 }}>{h.tag}</span>
       <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 17, letterSpacing: "-.3px", color: "var(--cream)", margin: "0 0 4px", lineHeight: 1.2 }}>{h.name}</h3>
-      <p style={{ fontSize: 13, color: "rgba(255,247,239,.55)", lineHeight: 1.5, margin: "0 0 12px", flex: 1 }}>{h.place}</p>
+      <p style={{ fontSize: 13, color: "rgba(244,246,248,.55)", lineHeight: 1.5, margin: "0 0 12px", flex: 1 }}>{h.place}</p>
       <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 700, color: "var(--gold)" }}>{h.cta} <span aria-hidden>→</span></span>
     </>
   );
@@ -58,7 +58,7 @@ export default function AboutPage() {
         background: "var(--cream)", padding: "140px clamp(20px,5vw,64px) 80px",
         position: "relative", overflow: "hidden",
       }}>
-        <div style={{ position: "absolute", top: -60, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,#1D5FBF,#D6293A 70%)", opacity: .12, filter: "blur(6px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: -60, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,#1E3A8A,#C81E3A 70%)", opacity: .12, filter: "blur(6px)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Who We Are</span>
@@ -75,7 +75,7 @@ export default function AboutPage() {
             </p>
           </Reveal>
           <Reveal delay={220}>
-            <Link href="/visit" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(214,41,58,.34)" }}>
+            <Link href="/visit" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(200,30,58,.34)" }}>
               Plan a Visit →
             </Link>
           </Reveal>
@@ -102,7 +102,7 @@ export default function AboutPage() {
           </Reveal>
           <Reveal delay={180}>
             <div style={{ marginTop: 36 }}>
-              <Link href="/visit" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--ink)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "16px 28px", borderRadius: 999, textDecoration: "none", boxShadow: "0 12px 28px rgba(27,19,14,.18)" }}>
+              <Link href="/visit" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--ink)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "16px 28px", borderRadius: 999, textDecoration: "none", boxShadow: "0 12px 28px rgba(16,22,29,.18)" }}>
                 Get plugged in →
               </Link>
             </div>
@@ -156,7 +156,7 @@ export default function AboutPage() {
           <div className="r3" style={{ gap: 18 }}>
             {values.map((v, i) => (
               <Reveal key={v.title} delay={i * 80}>
-                <div style={{ background: "var(--paper)", borderRadius: 20, padding: "28px 24px", border: "1px solid var(--line)", boxShadow: "0 8px 22px rgba(27,19,14,.05)" }}>
+                <div style={{ background: "var(--paper)", borderRadius: 20, padding: "28px 24px", border: "1px solid var(--line)", boxShadow: "0 8px 22px rgba(16,22,29,.05)" }}>
                   <IconBadge icon={v.icon} style={{ marginBottom: 16 }} />
                   <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20, color: "var(--ink)", margin: "0 0 10px" }}>{v.title}</h3>
                   <p style={{ fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.65, margin: 0 }}>{v.desc}</p>
@@ -190,7 +190,7 @@ export default function AboutPage() {
               </Link>
             </Reveal>
             <Reveal delay={120}>
-              <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 24, padding: "30px 28px", boxShadow: "0 14px 32px rgba(27,19,14,.06)" }}>
+              <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 24, padding: "30px 28px", boxShadow: "0 14px 32px rgba(16,22,29,.06)" }}>
                 {[
                   { year: "16", text: "DCCs (District Church Councils) and Zones across the U.S. and Canada." },
                   { year: "1", text: "Regional leadership uniting every member church under one mandate." },
@@ -209,7 +209,7 @@ export default function AboutPage() {
 
       {/* One family, many homes */}
       <section style={{ background: "var(--ink)", padding: "60px clamp(20px,5vw,64px)", position: "relative", overflow: "hidden" }}>
-        <div aria-hidden style={{ position: "absolute", top: -80, left: "50%", transform: "translateX(-50%)", width: 600, height: 320, background: "radial-gradient(circle,rgba(232,163,61,.14),transparent 65%)", pointerEvents: "none" }} />
+        <div aria-hidden style={{ position: "absolute", top: -80, left: "50%", transform: "translateX(-50%)", width: 600, height: 320, background: "radial-gradient(circle,rgba(201,162,39,.14),transparent 65%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative", zIndex: 2 }}>
           <Reveal style={{ textAlign: "center", marginBottom: 28 }}>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Our Homes</span>
@@ -256,7 +256,7 @@ export default function AboutPage() {
               { n: "13", t: "The Second Coming", d: "The bodily return of Christ, the resurrection, and the eternal state." },
             ].map((t, i) => (
               <Reveal key={t.n} delay={(i % 3) * 60}>
-                <div style={{ height: "100%", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 18, padding: "22px 22px 24px", boxShadow: "0 6px 18px rgba(27,19,14,.04)" }}>
+                <div style={{ height: "100%", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 18, padding: "22px 22px 24px", boxShadow: "0 6px 18px rgba(16,22,29,.04)" }}>
                   <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 13, color: "var(--red)", letterSpacing: "1.5px", marginBottom: 8 }}>{t.n}</div>
                   <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, letterSpacing: "-.3px", color: "var(--ink)", margin: "0 0 8px", lineHeight: 1.2 }}>{t.t}</h3>
                   <p style={{ fontSize: 13.5, color: "var(--ink-soft)", lineHeight: 1.6, margin: 0 }}>{t.d}</p>
@@ -287,8 +287,8 @@ export default function AboutPage() {
                 <p style={{ fontSize: 14.5, lineHeight: 1.65, opacity: .82, margin: "16px 0 0" }}>Leading the CACNA family — building God’s ambassadors and welcoming every soul home.</p>
               </div>
             </Reveal>
-            <Reveal delay={120} style={{ background: "linear-gradient(155deg, var(--red), var(--red-deep))", color: "var(--cream)", borderRadius: 26, padding: "clamp(32px,4vw,48px) clamp(28px,3.5vw,40px)", display: "flex", flexDirection: "column", justifyContent: "center", boxShadow: "0 18px 36px rgba(214,41,58,.26)" }}>
-              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "rgba(255,247,239,.72)", marginBottom: 16 }}>The Regional Team</div>
+            <Reveal delay={120} style={{ background: "linear-gradient(155deg, var(--red), var(--red-deep))", color: "var(--cream)", borderRadius: 26, padding: "clamp(32px,4vw,48px) clamp(28px,3.5vw,40px)", display: "flex", flexDirection: "column", justifyContent: "center", boxShadow: "0 18px 36px rgba(200,30,58,.26)" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "rgba(244,246,248,.72)", marginBottom: 16 }}>The Regional Team</div>
               <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,3.6vw,40px)", letterSpacing: "-.8px", margin: "0 0 18px", lineHeight: 1 }}>
                 16 zones.<br />One family.<br />One Gospel.
               </h3>
@@ -307,10 +307,10 @@ export default function AboutPage() {
       <section style={{ background: "var(--ink)", padding: "80px clamp(20px,5vw,64px)", textAlign: "center" }}>
         <Reveal>
           <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(36px,5vw,64px)", letterSpacing: "-1.5px", color: "var(--cream)", margin: "0 0 16px", lineHeight: .95 }}>Ready to connect?</h2>
-          <p style={{ fontSize: 17, color: "rgba(255,247,239,.6)", margin: "0 0 36px" }}>Find a CACNA member church near you — onsite or online.</p>
+          <p style={{ fontSize: 17, color: "rgba(244,246,248,.6)", margin: "0 0 36px" }}>Find a CACNA member church near you — onsite or online.</p>
           <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
-            <Link href="/visit" style={{ background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(214,41,58,.4)" }}>Plan a Visit →</Link>
-            <Link href="/online" style={{ background: "rgba(255,247,239,.1)", color: "var(--cream)", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(255,247,239,.2)" }}>Watch Online</Link>
+            <Link href="/visit" style={{ background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(200,30,58,.4)" }}>Plan a Visit →</Link>
+            <Link href="/online" style={{ background: "rgba(244,246,248,.1)", color: "var(--cream)", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(244,246,248,.2)" }}>Watch Online</Link>
           </div>
         </Reveal>
       </section>

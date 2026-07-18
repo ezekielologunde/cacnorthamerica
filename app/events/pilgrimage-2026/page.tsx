@@ -82,7 +82,7 @@ export default function PilgrimagePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Events", path: "/events" }, { name: ev.navLabel ?? ev.title, path: "/events/pilgrimage-2026" }])).replace(/</g, "\\u003c") }} />
       <Nav heroDark />
       {isPast && (
-        <div role="status" style={{ background: '#2c2825', padding: '13px clamp(20px,5vw,64px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px 20px', fontSize: 14, fontWeight: 600, color: 'rgba(255,247,239,.7)' }}>
+        <div role="status" style={{ background: '#2c2825', padding: '13px clamp(20px,5vw,64px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px 20px', fontSize: 14, fontWeight: 600, color: 'rgba(244,246,248,.7)' }}>
           <span>This event has passed — page kept as an archive.</span>
           <Link href="/events" style={{ color: 'var(--gold)', fontWeight: 700, fontSize: 13, textDecoration: 'none', whiteSpace: 'nowrap' }}>See upcoming events →</Link>
         </div>
@@ -90,12 +90,12 @@ export default function PilgrimagePage() {
 
       {/* Hero */}
       <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) clamp(80px,10vw,120px)", position: "relative", overflow: "hidden" }}>
-        <div aria-hidden style={{ position: "absolute", top: -100, right: -80, width: 640, height: 520, background: "radial-gradient(circle,rgba(232,163,61,.3),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 20s ease-in-out infinite" }} />
-        <div aria-hidden style={{ position: "absolute", bottom: -60, left: -60, width: 480, height: 380, background: "radial-gradient(circle,rgba(214,41,58,.12),transparent 65%)", pointerEvents: "none" }} />
+        <div aria-hidden style={{ position: "absolute", top: -100, right: -80, width: 640, height: 520, background: "radial-gradient(circle,rgba(201,162,39,.3),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 20s ease-in-out infinite" }} />
+        <div aria-hidden style={{ position: "absolute", bottom: -60, left: -60, width: 480, height: 380, background: "radial-gradient(circle,rgba(200,30,58,.12),transparent 65%)", pointerEvents: "none" }} />
 
         <div style={{ maxWidth: 960, margin: "0 auto", position: "relative", zIndex: 2 }}>
           <Reveal>
-            <Link href="/events" style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 700, color: "rgba(255,247,239,.6)", textDecoration: "none", marginBottom: 32 }}>
+            <Link href="/events" style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 700, color: "rgba(244,246,248,.6)", textDecoration: "none", marginBottom: 32 }}>
               <ArrowLeft size={14} strokeWidth={2.5} aria-hidden /> All events
             </Link>
           </Reveal>
@@ -108,7 +108,7 @@ export default function PilgrimagePage() {
 
           <Reveal>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 12, marginBottom: 28 }}>
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: 80, height: 80, borderRadius: 20, background: "linear-gradient(150deg,#E8A33D,#B8860B)", boxShadow: "0 20px 44px rgba(232,163,61,.4)" }}>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: 80, height: 80, borderRadius: 20, background: "linear-gradient(150deg,#C9A227,#B8860B)", boxShadow: "0 20px 44px rgba(201,162,39,.4)" }}>
                 <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 12, color: "#fff", letterSpacing: 1 }}>NOV</span>
                 <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 24, color: "#fff", lineHeight: 1 }}>2</span>
               </div>
@@ -128,7 +128,7 @@ export default function PilgrimagePage() {
           </h1>
 
           <Reveal delay={200}>
-            <p style={{ fontSize: "clamp(16px,1.9vw,20px)", color: "rgba(255,247,239,.72)", lineHeight: 1.72, maxWidth: 600, margin: "0 0 44px", textWrap: "pretty" }}>
+            <p style={{ fontSize: "clamp(16px,1.9vw,20px)", color: "rgba(244,246,248,.72)", lineHeight: 1.72, maxWidth: 600, margin: "0 0 44px", textWrap: "pretty" }}>
               Walk where Jesus walked. Stand where Moses stood. Ten days in the land of Scripture — Israel and Egypt — with your CAC family.
             </p>
           </Reveal>
@@ -136,15 +136,15 @@ export default function PilgrimagePage() {
           {!isPast && (
           <Reveal delay={280}>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
-              <a href="mailto:info@cacnapilgrimage.org?subject=Holy Land Pilgrimage 2026 — Registration" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(232,163,61,.4)" }}>
+              <a href="mailto:info@cacnapilgrimage.org?subject=Holy Land Pilgrimage 2026 — Registration" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(201,162,39,.4)" }}>
                 Register — $500 Deposit →
               </a>
               {ev && (
                 <>
-                  <a href={googleCalUrl(ev)} target="_blank" rel="noopener noreferrer" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(255,247,239,.09)", color: "var(--cream)", fontWeight: 700, fontSize: 15, padding: "16px 28px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(255,247,239,.2)" }}>
+                  <a href={googleCalUrl(ev)} target="_blank" rel="noopener noreferrer" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(244,246,248,.09)", color: "var(--cream)", fontWeight: 700, fontSize: 15, padding: "16px 28px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(244,246,248,.2)" }}>
                     <CalendarPlus size={17} strokeWidth={2} aria-hidden /> Add to Calendar
                   </a>
-                  <a href={icsDataUri(ev)} download="holy-land-pilgrimage-2026.ics" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(255,247,239,.06)", color: "rgba(255,247,239,.7)", fontWeight: 700, fontSize: 14, padding: "16px 22px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(255,247,239,.14)" }}>
+                  <a href={icsDataUri(ev)} download="holy-land-pilgrimage-2026.ics" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(244,246,248,.06)", color: "rgba(244,246,248,.7)", fontWeight: 700, fontSize: 14, padding: "16px 22px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(244,246,248,.14)" }}>
                     <Download size={16} strokeWidth={2} aria-hidden /> Apple / Outlook
                   </a>
                 </>
@@ -174,7 +174,7 @@ export default function PilgrimagePage() {
               { label: "Directed by", names: ["Pastor S.O. Oladele", "Pastor Dr. T.O.A. Agbeja"] },
             ].map((g, i) => (
               <Reveal key={i} delay={i * 80}>
-                <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, padding: "24px 26px", boxShadow: "0 8px 20px rgba(27,19,14,.06)" }}>
+                <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, padding: "24px 26px", boxShadow: "0 8px 20px rgba(16,22,29,.06)" }}>
                   <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 12 }}>{g.label}</div>
                   {g.names.map((n, j) => (
                     <div key={j} style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 19, color: "var(--ink)", lineHeight: 1.3, marginBottom: 4 }}>{n}</div>
@@ -198,13 +198,13 @@ export default function PilgrimagePage() {
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {highlights.map((h, i) => (
               <Reveal key={i} delay={i * 60}>
-                <div style={{ display: "flex", gap: "clamp(16px,3vw,28px)", alignItems: "flex-start", background: "rgba(255,247,239,.05)", border: "1px solid rgba(255,247,239,.1)", borderRadius: 20, padding: "clamp(18px,3vw,26px)" }}>
-                  <div style={{ flexShrink: 0, display: "grid", placeItems: "center", width: 50, height: 50, borderRadius: 14, background: "linear-gradient(135deg,#E8A33D,#B8860B)", boxShadow: "0 8px 20px rgba(232,163,61,.3)" }}>
+                <div style={{ display: "flex", gap: "clamp(16px,3vw,28px)", alignItems: "flex-start", background: "rgba(244,246,248,.05)", border: "1px solid rgba(244,246,248,.1)", borderRadius: 20, padding: "clamp(18px,3vw,26px)" }}>
+                  <div style={{ flexShrink: 0, display: "grid", placeItems: "center", width: 50, height: 50, borderRadius: 14, background: "linear-gradient(135deg,#C9A227,#B8860B)", boxShadow: "0 8px 20px rgba(201,162,39,.3)" }}>
                     <h.icon size={22} color="#fff" strokeWidth={1.9} aria-hidden />
                   </div>
                   <div>
                     <div style={{ fontWeight: 800, fontSize: 18, color: "var(--cream)", marginBottom: 6 }}>{h.label}</div>
-                    <div style={{ fontSize: 15, color: "rgba(255,247,239,.65)", lineHeight: 1.68 }}>{h.desc}</div>
+                    <div style={{ fontSize: 15, color: "rgba(244,246,248,.65)", lineHeight: 1.68 }}>{h.desc}</div>
                   </div>
                 </div>
               </Reveal>
@@ -249,7 +249,7 @@ export default function PilgrimagePage() {
 
               <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 28 }}>
                 <div style={{ background: "var(--ink)", borderRadius: 18, padding: "22px 24px" }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "rgba(255,247,239,.5)", marginBottom: 6 }}>Total trip price</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "rgba(244,246,248,.5)", marginBottom: 6 }}>Total trip price</div>
                   <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 48, color: "#fff", letterSpacing: "-1px", lineHeight: 1 }}>$4,795</div>
                 </div>
                 <div style={{ display: "flex", gap: 10 }}>
@@ -301,15 +301,15 @@ export default function PilgrimagePage() {
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(32px,5vw,68px)", letterSpacing: "-1.2px", color: "#fff", margin: "0 0 20px", lineHeight: 0.96 }}>
               Seats are limited.<br />Don&apos;t wait.
             </h2>
-            <p style={{ fontSize: "clamp(15px,1.8vw,18px)", color: "rgba(255,247,239,.65)", lineHeight: 1.72, marginBottom: 40 }}>
+            <p style={{ fontSize: "clamp(15px,1.8vw,18px)", color: "rgba(244,246,248,.65)", lineHeight: 1.72, marginBottom: 40 }}>
               Send your $500 deposit and reach out to one of the contacts below to confirm your registration.
             </p>
 
             <div style={{ display: "flex", flexWrap: "wrap", gap: 14, justifyContent: "center", marginBottom: 44 }}>
-              <a href="mailto:info@cacnapilgrimage.org?subject=Holy Land Pilgrimage 2026 — Registration" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "17px 32px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(232,163,61,.4)" }}>
+              <a href="mailto:info@cacnapilgrimage.org?subject=Holy Land Pilgrimage 2026 — Registration" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "17px 32px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(201,162,39,.4)" }}>
                 Email to Register →
               </a>
-              <a href="mailto:cacnapilgrimage@gmail.com" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(255,247,239,.08)", color: "var(--cream)", fontWeight: 700, fontSize: 15, padding: "17px 28px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(255,247,239,.18)" }}>
+              <a href="mailto:cacnapilgrimage@gmail.com" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(244,246,248,.08)", color: "var(--cream)", fontWeight: 700, fontSize: 15, padding: "17px 28px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(244,246,248,.18)" }}>
                 <Mail size={16} strokeWidth={2} aria-hidden /> Gmail
               </a>
             </div>
@@ -320,8 +320,8 @@ export default function PilgrimagePage() {
                 { name: "Pastor Dr. H.O. Ilufoye", phone: "4432268748", display: "(443) 226-8748" },
               ].map((c, i) => (
                 <Reveal key={i} delay={i * 80}>
-                  <a href={`tel:${c.phone}`} style={{ display: "flex", alignItems: "center", gap: 14, background: "rgba(255,247,239,.07)", border: "1px solid rgba(255,247,239,.14)", borderRadius: 18, padding: "18px 22px", textDecoration: "none" }}>
-                    <div style={{ flexShrink: 0, display: "grid", placeItems: "center", width: 42, height: 42, borderRadius: 12, background: "linear-gradient(135deg,#E8A33D,#B8860B)" }}>
+                  <a href={`tel:${c.phone}`} style={{ display: "flex", alignItems: "center", gap: 14, background: "rgba(244,246,248,.07)", border: "1px solid rgba(244,246,248,.14)", borderRadius: 18, padding: "18px 22px", textDecoration: "none" }}>
+                    <div style={{ flexShrink: 0, display: "grid", placeItems: "center", width: 42, height: 42, borderRadius: 12, background: "linear-gradient(135deg,#C9A227,#B8860B)" }}>
                       <Phone size={19} color="#fff" strokeWidth={2} aria-hidden />
                     </div>
                     <div style={{ textAlign: "left" }}>

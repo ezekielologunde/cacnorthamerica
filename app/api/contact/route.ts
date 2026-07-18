@@ -22,10 +22,10 @@ function escapeHtml(str: string): string {
 
 function buildHtml(rows: [string, string][]): string {
   const trs = rows
-    .map(([k, v]) => `<tr><td style="padding:8px 14px;font-weight:600;color:#5f5e5a;white-space:nowrap;vertical-align:top">${escapeHtml(k)}</td><td style="padding:8px 14px;color:#1B130E">${escapeHtml(v).replace(/\n/g, "<br>")}</td></tr>`)
+    .map(([k, v]) => `<tr><td style="padding:8px 14px;font-weight:600;color:#5f5e5a;white-space:nowrap;vertical-align:top">${escapeHtml(k)}</td><td style="padding:8px 14px;color:#10161D">${escapeHtml(v).replace(/\n/g, "<br>")}</td></tr>`)
     .join("");
   return `<!DOCTYPE html><html><body style="font-family:sans-serif;max-width:640px;margin:40px auto;background:#f9f8f6;border-radius:12px;overflow:hidden">
-<div style="background:#1B130E;padding:24px 32px"><p style="margin:0;font-size:18px;font-weight:700;color:#fff">CACNA</p></div>
+<div style="background:#10161D;padding:24px 32px"><p style="margin:0;font-size:18px;font-weight:700;color:#fff">CACNA</p></div>
 <table style="width:100%;border-collapse:collapse;background:#fff">${trs}</table>
 <p style="padding:16px 32px;font-size:12px;color:#888;margin:0">Sent via cacnorthamerica.com</p>
 </body></html>`;

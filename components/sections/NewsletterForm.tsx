@@ -69,16 +69,16 @@ export function NewsletterForm() {
             flex: "1 1 220px",
             height: 46,
             padding: "0 16px",
-            background: "rgba(255,247,239,.07)",
-            border: "1px solid rgba(255,247,239,.15)",
+            background: "rgba(244,246,248,.07)",
+            border: "1px solid rgba(244,246,248,.15)",
             borderRadius: 10,
             fontSize: 14,
             color: "#fff",
             fontFamily: "inherit",
             outline: "none",
           }}
-          onFocus={(e) => { e.currentTarget.style.borderColor = "rgba(255,247,239,.4)"; }}
-          onBlur={(e) => { e.currentTarget.style.borderColor = "rgba(255,247,239,.15)"; }}
+          onFocus={(e) => { e.currentTarget.style.borderColor = "rgba(244,246,248,.4)"; }}
+          onBlur={(e) => { e.currentTarget.style.borderColor = "rgba(244,246,248,.15)"; }}
         />
         <SubmitButton />
       </div>

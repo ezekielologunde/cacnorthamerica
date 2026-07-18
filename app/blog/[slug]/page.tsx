@@ -31,8 +31,8 @@ function dbRowToPost(row: {
     date: date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }),
     dateIso: row.published_at ?? row.created_at,
     category: "Ministry Update",
-    categoryColor: "#D6293A",
-    accent: "#D6293A",
+    categoryColor: "#C81E3A",
+    accent: "#C81E3A",
     readTime: `${Math.max(1, Math.round(words / 200))} min read`,
     body: row.body.split(/\n\n+/),
   };
@@ -185,7 +185,7 @@ function RelatedCard({ post }: { post: BlogPost }) {
         overflow: "hidden",
         display: "flex",
         flexDirection: "column",
-        boxShadow: "0 8px 24px rgba(27,19,14,.07)",
+        boxShadow: "0 8px 24px rgba(16,22,29,.07)",
       }}
     >
       <div
@@ -361,7 +361,7 @@ export default async function BlogSlugPage({
             width: 540,
             height: 420,
             background:
-              "radial-gradient(circle,rgba(232,163,61,.2),transparent 65%)",
+              "radial-gradient(circle,rgba(201,162,39,.2),transparent 65%)",
             pointerEvents: "none",
           }}
         />
@@ -382,7 +382,7 @@ export default async function BlogSlugPage({
                 gap: 7,
                 fontSize: 13,
                 fontWeight: 700,
-                color: "rgba(255,247,239,.62)",
+                color: "rgba(244,246,248,.62)",
                 textDecoration: "none",
                 marginBottom: 28,
                 letterSpacing: ".3px",
@@ -431,7 +431,7 @@ export default async function BlogSlugPage({
             <p
               style={{
                 fontSize: "clamp(16px,1.7vw,19px)",
-                color: "rgba(255,247,239,.7)",
+                color: "rgba(244,246,248,.7)",
                 lineHeight: 1.7,
                 margin: "0 0 28px",
                 maxWidth: 660,
@@ -457,7 +457,7 @@ export default async function BlogSlugPage({
                   gap: 6,
                   fontSize: 12.5,
                   fontWeight: 700,
-                  color: "rgba(255,247,239,.55)",
+                  color: "rgba(244,246,248,.55)",
                   letterSpacing: ".3px",
                 }}
               >
@@ -471,7 +471,7 @@ export default async function BlogSlugPage({
                   gap: 6,
                   fontSize: 12.5,
                   fontWeight: 700,
-                  color: "rgba(255,247,239,.55)",
+                  color: "rgba(244,246,248,.55)",
                   letterSpacing: ".3px",
                 }}
               >
@@ -532,7 +532,7 @@ export default async function BlogSlugPage({
                   borderRadius: 18,
                   padding: "24px 26px",
                   marginBottom: 28,
-                  boxShadow: "0 4px 16px rgba(27,19,14,.06)",
+                  boxShadow: "0 4px 16px rgba(16,22,29,.06)",
                 }}
               >
                 <p
@@ -583,7 +583,7 @@ export default async function BlogSlugPage({
                   background: "var(--paper)",
                   borderRadius: 18,
                   padding: "24px 26px",
-                  boxShadow: "0 4px 16px rgba(27,19,14,.06)",
+                  boxShadow: "0 4px 16px rgba(16,22,29,.06)",
                   marginBottom: 24,
                 }}
               >

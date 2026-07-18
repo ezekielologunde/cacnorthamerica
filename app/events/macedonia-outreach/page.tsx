@@ -89,12 +89,12 @@ export default function MacedoniaPage() {
         }}
       >
         <div aria-hidden style={{ position: "absolute", top: 0, right: 0, width: 560, height: 560, background: "radial-gradient(circle,rgba(64,145,108,.22),transparent 65%)", pointerEvents: "none" }} />
-        <div aria-hidden style={{ position: "absolute", bottom: -80, left: -60, width: 380, height: 380, background: "radial-gradient(circle,rgba(255,247,239,.05),transparent 65%)", pointerEvents: "none" }} />
+        <div aria-hidden style={{ position: "absolute", bottom: -80, left: -60, width: 380, height: 380, background: "radial-gradient(circle,rgba(244,246,248,.05),transparent 65%)", pointerEvents: "none" }} />
 
         <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: "clamp(48px,6vw,80px)", alignItems: "center" }}>
           <div>
             <Reveal>
-              <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "rgba(255,247,239,.6)" }}>
+              <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "rgba(244,246,248,.6)" }}>
                 Annual Mission · CACNA
               </span>
             </Reveal>
@@ -104,7 +104,7 @@ export default function MacedoniaPage() {
               <RevealText immediate delay={0.12} style={{ color: "var(--gold)" }}>Cannot Go.</RevealText>
             </h1>
             <Reveal delay={300}>
-              <p style={{ fontSize: "clamp(16px,1.8vw,19px)", color: "rgba(255,247,239,.78)", lineHeight: 1.7, maxWidth: 500, margin: "0 0 36px", textWrap: "pretty" }}>
+              <p style={{ fontSize: "clamp(16px,1.8vw,19px)", color: "rgba(244,246,248,.78)", lineHeight: 1.7, maxWidth: 500, margin: "0 0 36px", textWrap: "pretty" }}>
                 An annual mission to forgotten rural ministers in hard-to-reach and unreachable places — carrying the full gospel, one pastor at a time.
               </p>
             </Reveal>
@@ -147,10 +147,10 @@ export default function MacedoniaPage() {
         <div style={{ maxWidth: 720, margin: "0 auto", textAlign: "center" }}>
           <Reveal>
             <blockquote cite="https://www.biblegateway.com/passage/?search=Acts+16%3A9&version=NIV" style={{ margin: 0 }}>
-              <p style={{ fontFamily: "var(--font-display)", fontSize: "clamp(20px,2.8vw,30px)", fontWeight: 700, fontStyle: "italic", color: "rgba(255,247,239,.9)", lineHeight: 1.5, letterSpacing: "-.3px", margin: "0 0 14px" }}>
+              <p style={{ fontFamily: "var(--font-display)", fontSize: "clamp(20px,2.8vw,30px)", fontWeight: 700, fontStyle: "italic", color: "rgba(244,246,248,.9)", lineHeight: 1.5, letterSpacing: "-.3px", margin: "0 0 14px" }}>
                 "Come over to Macedonia and help us."
               </p>
-              <footer style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "rgba(255,247,239,.4)" }}>
+              <footer style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "rgba(244,246,248,.4)" }}>
                 Acts 16:9 — The Macedonian Call
               </footer>
             </blockquote>
@@ -196,7 +196,7 @@ export default function MacedoniaPage() {
           <div style={{ display: "grid", gap: 16 }}>
             {PILLARS.map(({ icon: Icon, label, desc }, i) => (
               <Reveal key={label} delay={200 + i * 80}>
-                <div style={{ display: "flex", gap: 18, background: "var(--paper)", borderRadius: 20, padding: "22px 24px", border: "1px solid var(--line)", boxShadow: "0 8px 22px rgba(27,19,14,.05)" }}>
+                <div style={{ display: "flex", gap: 18, background: "var(--paper)", borderRadius: 20, padding: "22px 24px", border: "1px solid var(--line)", boxShadow: "0 8px 22px rgba(16,22,29,.05)" }}>
                   <span style={{ flexShrink: 0, width: 46, height: 46, borderRadius: 13, background: `linear-gradient(140deg,${G},${GL})`, display: "grid", placeItems: "center", boxShadow: "0 6px 16px rgba(27,67,50,.28)" }} aria-hidden>
                     <Icon size={20} color="#fff" />
                   </span>
@@ -223,7 +223,7 @@ export default function MacedoniaPage() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: 20 }}>
             {WAYS.map(({ num, label, desc, cta, href }, i) => (
               <Reveal key={num} delay={i * 90}>
-                <div style={{ height: "100%", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 24, padding: "32px 28px", boxShadow: "0 12px 32px rgba(27,19,14,.06)", display: "flex", flexDirection: "column" }}>
+                <div style={{ height: "100%", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 24, padding: "32px 28px", boxShadow: "0 12px 32px rgba(16,22,29,.06)", display: "flex", flexDirection: "column" }}>
                   <div aria-hidden style={{ fontFamily: "var(--font-display)", fontSize: 44, fontWeight: 800, color: "var(--line)", lineHeight: 1, marginBottom: 18, userSelect: "none" }}>{num}</div>
                   <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 24, letterSpacing: "-.5px", color: "var(--ink)", margin: "0 0 12px" }}>{label}</h3>
                   <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.72, flex: 1, margin: "0 0 24px" }}>{desc}</p>
@@ -251,7 +251,7 @@ export default function MacedoniaPage() {
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,4vw,50px)", letterSpacing: "-1px", color: "#fff", margin: "0 0 18px", lineHeight: 0.97, textWrap: "balance" }}>
               Follow the journey live
             </h2>
-            <p style={{ fontSize: "clamp(15px,1.7vw,18px)", color: "rgba(255,247,239,.74)", lineHeight: 1.7, margin: "0 0 36px", textWrap: "pretty" }}>
+            <p style={{ fontSize: "clamp(15px,1.7vw,18px)", color: "rgba(244,246,248,.74)", lineHeight: 1.7, margin: "0 0 36px", textWrap: "pretty" }}>
               Field updates, testimonies, and moments from the outreach are shared live on Instagram. Follow{" "}
               <strong style={{ color: "#fff" }}>@macedonia.outreach</strong> to travel with the team — even from home.
             </p>

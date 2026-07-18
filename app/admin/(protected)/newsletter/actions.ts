@@ -21,16 +21,16 @@ function buildBroadcastHtml(subject: string, body: string): string {
 <html>
 <body style="margin:0;padding:0;background:#f0ede8;font-family:Georgia,serif">
   <div style="max-width:600px;margin:40px auto;background:#fff;border-radius:16px;overflow:hidden">
-    <div style="background:#1B130E;padding:28px 32px">
-      <div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#E8A33D;margin-bottom:6px">CACNA</div>
+    <div style="background:#10161D;padding:28px 32px">
+      <div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#C9A227;margin-bottom:6px">CACNA</div>
       <div style="font-size:22px;font-weight:700;color:#fff">${subject}</div>
     </div>
     <div style="padding:28px 32px">
-      <div style="font-size:15px;color:#1B130E;line-height:1.8">${bodyHtml}</div>
+      <div style="font-size:15px;color:#10161D;line-height:1.8">${bodyHtml}</div>
     </div>
     <div style="padding:20px 32px;border-top:1px solid #ede9e4;font-size:12px;color:#999">
       You're receiving this because you subscribed at
-      <a href="https://www.cacnorthamerica.com" style="color:#D6293A">cacnorthamerica.com</a>.
+      <a href="https://www.cacnorthamerica.com" style="color:#C81E3A">cacnorthamerica.com</a>.
     </div>
   </div>
 </body>

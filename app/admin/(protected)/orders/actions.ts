@@ -27,19 +27,19 @@ function shippingHtml(opts: {
   const trackingBlock = trackingNumber
     ? `<div style="background:#EEF4FF;border-radius:12px;padding:24px;margin-bottom:28px;text-align:center">
         <p style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#1d4ed8;margin:0 0 8px">Tracking Number</p>
-        <p style="font-size:22px;font-weight:800;color:#1B130E;margin:0;letter-spacing:0.5px">${trackingNumber}</p>
+        <p style="font-size:22px;font-weight:800;color:#10161D;margin:0;letter-spacing:0.5px">${trackingNumber}</p>
       </div>`
     : `<div style="background:#F9F8F6;border-radius:12px;padding:18px 24px;margin-bottom:28px">
-        <p style="font-size:14px;color:#1B130E;margin:0">No tracking number was provided for this shipment. Your order ships within <strong>5–7 business days</strong>.</p>
+        <p style="font-size:14px;color:#10161D;margin:0">No tracking number was provided for this shipment. Your order ships within <strong>5–7 business days</strong>.</p>
       </div>`;
 
   const itemRows = lineItems
     .map(
       (li) =>
         `<tr>
-          <td style="padding:10px 0;font-size:14px;color:#1B130E;border-bottom:1px solid rgba(27,19,14,.07)">${li.description}</td>
-          <td style="padding:10px 0;font-size:14px;color:#1B130E;text-align:center;border-bottom:1px solid rgba(27,19,14,.07)">${li.quantity}</td>
-          <td style="padding:10px 0;font-size:14px;color:#1B130E;text-align:right;font-weight:600;border-bottom:1px solid rgba(27,19,14,.07)">${formatCents(li.amount_total, currency)}</td>
+          <td style="padding:10px 0;font-size:14px;color:#10161D;border-bottom:1px solid rgba(16,22,29,.07)">${li.description}</td>
+          <td style="padding:10px 0;font-size:14px;color:#10161D;text-align:center;border-bottom:1px solid rgba(16,22,29,.07)">${li.quantity}</td>
+          <td style="padding:10px 0;font-size:14px;color:#10161D;text-align:right;font-weight:600;border-bottom:1px solid rgba(16,22,29,.07)">${formatCents(li.amount_total, currency)}</td>
         </tr>`,
     )
     .join("");
@@ -47,14 +47,14 @@ function shippingHtml(opts: {
   return `<!DOCTYPE html>
 <html>
 <body style="margin:0;padding:0;background:#F9F8F6;font-family:Georgia,serif">
-  <div style="max-width:600px;margin:40px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(27,19,14,.10)">
-    <div style="background:#1B130E;padding:36px 40px;text-align:center">
-      <p style="margin:0 0 10px;font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,247,239,.45)">CAC SALVATION CENTER</p>
+  <div style="max-width:600px;margin:40px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(16,22,29,.10)">
+    <div style="background:#10161D;padding:36px 40px;text-align:center">
+      <p style="margin:0 0 10px;font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(244,246,248,.45)">CAC SALVATION CENTER</p>
       <h1 style="margin:0;font-size:30px;font-weight:800;color:#fff;letter-spacing:-0.5px;line-height:1.2">Your order is on the way 📦</h1>
     </div>
     <div style="padding:40px">
-      <p style="font-size:17px;color:#1B130E;line-height:1.75;margin:0 0 18px">${greeting}</p>
-      <p style="font-size:16px;color:#1B130E;line-height:1.75;margin:0 0 28px">
+      <p style="font-size:17px;color:#10161D;line-height:1.75;margin:0 0 18px">${greeting}</p>
+      <p style="font-size:16px;color:#10161D;line-height:1.75;margin:0 0 28px">
         Great news — your order has been shipped! ${trackingNumber ? "You can track your package using the number below." : ""}
       </p>
 
@@ -65,16 +65,16 @@ function shippingHtml(opts: {
           ? `<table style="width:100%;border-collapse:collapse;margin-bottom:28px">
           <thead>
             <tr>
-              <th style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(27,19,14,.4);text-align:left;padding-bottom:8px">Item</th>
-              <th style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(27,19,14,.4);text-align:center;padding-bottom:8px">Qty</th>
-              <th style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(27,19,14,.4);text-align:right;padding-bottom:8px">Total</th>
+              <th style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(16,22,29,.4);text-align:left;padding-bottom:8px">Item</th>
+              <th style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(16,22,29,.4);text-align:center;padding-bottom:8px">Qty</th>
+              <th style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(16,22,29,.4);text-align:right;padding-bottom:8px">Total</th>
             </tr>
           </thead>
           <tbody>${itemRows}</tbody>
           <tfoot>
             <tr>
-              <td colspan="2" style="padding:14px 0 0;font-size:14px;font-weight:700;color:#1B130E">Order Total</td>
-              <td style="padding:14px 0 0;font-size:16px;font-weight:800;color:#1B130E;text-align:right">${formatCents(amountTotal, currency)}</td>
+              <td colspan="2" style="padding:14px 0 0;font-size:14px;font-weight:700;color:#10161D">Order Total</td>
+              <td style="padding:14px 0 0;font-size:16px;font-weight:800;color:#10161D;text-align:right">${formatCents(amountTotal, currency)}</td>
             </tr>
           </tfoot>
         </table>`
@@ -82,16 +82,16 @@ function shippingHtml(opts: {
       }
 
       <div style="background:#F9F8F6;border-radius:12px;padding:20px 24px;margin-bottom:32px">
-        <p style="font-size:14px;color:#1B130E;line-height:1.75;margin:0">
+        <p style="font-size:14px;color:#10161D;line-height:1.75;margin:0">
           📦 <strong>Ships within 5–7 business days</strong><br>
           Questions about your order? Reach us on WhatsApp or email
-          <a href="mailto:info@cacnorthamerica.com" style="color:#D6293A;text-decoration:none">info@cacnorthamerica.com</a>.
+          <a href="mailto:info@cacnorthamerica.com" style="color:#C81E3A;text-decoration:none">info@cacnorthamerica.com</a>.
         </p>
       </div>
 
-      <hr style="border:none;border-top:1px solid rgba(27,19,14,.08);margin:0 0 24px">
-      <p style="font-size:12px;color:rgba(27,19,14,.4);line-height:1.7;margin:0;text-align:center">
-        <a href="https://www.cacnorthamerica.com" style="color:#D6293A;text-decoration:none">cacnorthamerica.com</a>
+      <hr style="border:none;border-top:1px solid rgba(16,22,29,.08);margin:0 0 24px">
+      <p style="font-size:12px;color:rgba(16,22,29,.4);line-height:1.7;margin:0;text-align:center">
+        <a href="https://www.cacnorthamerica.com" style="color:#C81E3A;text-decoration:none">cacnorthamerica.com</a>
       </p>
     </div>
   </div>
@@ -194,8 +194,8 @@ export async function resendDownloadLink(
       if (!url) return null;
       return `
         <div style="background:#F9F8F6;border-radius:12px;padding:18px 22px;margin-bottom:12px">
-          <div style="font-size:14px;font-weight:700;color:#1B130E;margin-bottom:8px">${li.description}</div>
-          <a href="${url}" style="display:inline-block;background:#1B130E;color:#fff;font-size:13px;font-weight:700;text-decoration:none;padding:9px 18px;border-radius:8px">
+          <div style="font-size:14px;font-weight:700;color:#10161D;margin-bottom:8px">${li.description}</div>
+          <a href="${url}" style="display:inline-block;background:#10161D;color:#fff;font-size:13px;font-weight:700;text-decoration:none;padding:9px 18px;border-radius:8px">
             Download file →
           </a>
         </div>`;
@@ -212,13 +212,13 @@ export async function resendDownloadLink(
   const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#f0ede8;font-family:Georgia,serif">
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0ede8;padding:40px 16px"><tr><td align="center">
-<table width="100%" style="max-width:580px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(27,19,14,.1)">
-<tr><td style="background:#1B130E;padding:28px 32px">
-  <div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#E8A33D;margin-bottom:6px">CACNA</div>
+<table width="100%" style="max-width:580px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(16,22,29,.1)">
+<tr><td style="background:#10161D;padding:28px 32px">
+  <div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#C9A227;margin-bottom:6px">CACNA</div>
   <div style="font-size:26px;font-weight:700;color:#fff;line-height:1.2">Your download is ready 🎵</div>
 </td></tr>
 <tr><td style="padding:28px 32px">
-  <p style="margin:0 0 8px;font-size:16px;color:#1B130E;line-height:1.7">${greeting}</p>
+  <p style="margin:0 0 8px;font-size:16px;color:#10161D;line-height:1.7">${greeting}</p>
   <p style="margin:0 0 24px;font-size:15px;color:#5f5e5a;line-height:1.7">Here is your download link from CACNA.</p>
   ${downloadRows}
   <div style="margin-top:24px;background:#f9f8f6;border-radius:10px;padding:16px 20px">
@@ -228,7 +228,7 @@ export async function resendDownloadLink(
   </div>
 </td></tr>
 <tr><td style="padding:16px 32px;border-top:1px solid #ede9e4">
-  <p style="margin:0;font-size:12px;color:#aaa"><a href="https://cacnorthamerica.com" style="color:#D6293A;text-decoration:none;font-weight:700">cacnorthamerica.com</a> &nbsp;·&nbsp; Blue Ridge Summit, Pennsylvania</p>
+  <p style="margin:0;font-size:12px;color:#aaa"><a href="https://cacnorthamerica.com" style="color:#C81E3A;text-decoration:none;font-weight:700">cacnorthamerica.com</a> &nbsp;·&nbsp; Blue Ridge Summit, Pennsylvania</p>
 </td></tr>
 </table></td></tr></table></body></html>`;
 

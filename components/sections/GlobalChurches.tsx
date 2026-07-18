@@ -43,7 +43,7 @@ function ZoneCard({ z }: { z: Zone }) {
       style={{
         display: 'flex', flexDirection: 'column', height: '100%',
         background: 'var(--paper)', borderRadius: 18, padding: '20px 20px 18px',
-        boxShadow: '0 8px 22px rgba(27,19,14,.05)', border: '1px solid var(--line)',
+        boxShadow: '0 8px 22px rgba(16,22,29,.05)', border: '1px solid var(--line)',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--red)', fontSize: 12, fontWeight: 800, marginBottom: 9 }}>
@@ -66,7 +66,7 @@ function NetworkMap() {
           position: 'relative', width: '100%', aspectRatio: '16 / 10',
           borderRadius: 28, overflow: 'hidden',
           background: 'linear-gradient(160deg, var(--ink) 0%, var(--red-deep) 130%)',
-          boxShadow: '0 30px 70px rgba(122,20,32,.35)',
+          boxShadow: '0 30px 70px rgba(122,17,40,.35)',
         }}
       >
         {/* Dot-grid texture */}
@@ -74,7 +74,7 @@ function NetworkMap() {
           aria-hidden
           style={{
             position: 'absolute', inset: 0, opacity: 0.5,
-            backgroundImage: 'radial-gradient(rgba(255,247,239,.14) 1px, transparent 1.5px)',
+            backgroundImage: 'radial-gradient(rgba(244,246,248,.14) 1px, transparent 1.5px)',
             backgroundSize: '26px 26px',
           }}
         />
@@ -82,7 +82,7 @@ function NetworkMap() {
           aria-hidden
           style={{
             position: 'absolute', top: '-20%', left: '55%', width: '60%', aspectRatio: '1',
-            background: 'radial-gradient(circle, rgba(232,163,61,.16), transparent 65%)',
+            background: 'radial-gradient(circle, rgba(201,162,39,.16), transparent 65%)',
             pointerEvents: 'none',
           }}
         />
@@ -94,7 +94,7 @@ function NetworkMap() {
               key={z.zone}
               x1={HUB.x} y1={HUB.y * 0.625}
               x2={z.x} y2={z.y * 0.625}
-              stroke={active === z.zone ? 'var(--gold)' : 'rgba(255,247,239,.18)'}
+              stroke={active === z.zone ? 'var(--gold)' : 'rgba(244,246,248,.18)'}
               strokeWidth={active === z.zone ? 0.35 : 0.2}
               initial={reduce ? { pathLength: 1, opacity: 1 } : { pathLength: 0, opacity: 0 }}
               whileInView={{ pathLength: 1, opacity: 1 }}
@@ -123,9 +123,9 @@ function NetworkMap() {
               position: 'absolute', left: `${z.x}%`, top: `${z.y}%`,
               transform: 'translate(-50%,-50%)',
               width: 14, height: 14, borderRadius: '50%',
-              background: 'var(--gold)', border: '2px solid rgba(255,247,239,.9)',
+              background: 'var(--gold)', border: '2px solid rgba(244,246,248,.9)',
               cursor: 'pointer', padding: 0,
-              boxShadow: active === z.zone ? '0 0 0 8px rgba(232,163,61,.25)' : '0 0 0 0 rgba(232,163,61,0)',
+              boxShadow: active === z.zone ? '0 0 0 8px rgba(201,162,39,.25)' : '0 0 0 0 rgba(201,162,39,0)',
               transition: 'box-shadow .25s ease',
               zIndex: active === z.zone ? 3 : 2,
             }}
@@ -148,7 +148,7 @@ function NetworkMap() {
         ))}
 
         {/* Caption */}
-        <div style={{ position: 'absolute', left: 20, bottom: 18, color: 'rgba(255,247,239,.55)', fontSize: 12, fontWeight: 600, letterSpacing: '.3px' }}>
+        <div style={{ position: 'absolute', left: 20, bottom: 18, color: 'rgba(244,246,248,.55)', fontSize: 12, fontWeight: 600, letterSpacing: '.3px' }}>
           16 DCCs/Zones · hover a pin
         </div>
       </div>

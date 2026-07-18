@@ -29,10 +29,10 @@ const CATEGORY_ICONS: Record<string, typeof ShoppingBag> = {
 };
 
 const CATEGORY_ACCENTS: Record<string, string> = {
-  apparel: "linear-gradient(135deg,#1B130E,#3A2518)",
-  bibles:  "linear-gradient(135deg,#7A1420,#D6293A)",
-  music:   "linear-gradient(135deg,#E8A33D,#C87E20)",
-  prints:  "linear-gradient(135deg,#D6293A,#7A1420)",
+  apparel: "linear-gradient(135deg,#10161D,#3A2518)",
+  bibles:  "linear-gradient(135deg,#7A1128,#C81E3A)",
+  music:   "linear-gradient(135deg,#C9A227,#C87E20)",
+  prints:  "linear-gradient(135deg,#C81E3A,#7A1128)",
   other:   "linear-gradient(135deg,#2C1F14,#4A2C18)",
 };
 
@@ -109,7 +109,7 @@ export function StoreProducts({ products }: { products: Product[] }) {
               border: "1px solid var(--line)",
             }}
           >
-            <ShoppingBag size={40} color="rgba(27,19,14,.18)" strokeWidth={1.5} aria-hidden />
+            <ShoppingBag size={40} color="rgba(16,22,29,.18)" strokeWidth={1.5} aria-hidden />
             <p style={{ fontSize: 18, fontWeight: 700, color: "var(--ink)", margin: "20px 0 8px" }}>Coming soon</p>
             <p style={{ fontSize: 14, color: "var(--ink-soft)", margin: 0 }}>
               Products will be listed here. Check back soon, or{" "}
@@ -141,7 +141,7 @@ export function StoreProducts({ products }: { products: Product[] }) {
                     overflow: "hidden",
                     display: "flex",
                     flexDirection: "column",
-                    boxShadow: "0 8px 28px rgba(27,19,14,.07)",
+                    boxShadow: "0 8px 28px rgba(16,22,29,.07)",
                     height: "100%",
                   }}
                 >
@@ -227,7 +227,7 @@ export function StoreProducts({ products }: { products: Product[] }) {
                             display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
                             background: "var(--ink)", color: "#fff", fontWeight: 700, fontSize: 14,
                             padding: "12px 20px", borderRadius: 999, textDecoration: "none",
-                            boxShadow: "0 8px 20px rgba(27,19,14,.18)",
+                            boxShadow: "0 8px 20px rgba(16,22,29,.18)",
                           }}
                         >
                           <ExternalLink size={14} strokeWidth={2.2} aria-hidden />
@@ -241,7 +241,7 @@ export function StoreProducts({ products }: { products: Product[] }) {
                             display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
                             background: "var(--ink)", color: "#fff", fontWeight: 700, fontSize: 14,
                             padding: "12px 20px", borderRadius: 999, textDecoration: "none",
-                            boxShadow: "0 8px 20px rgba(27,19,14,.18)",
+                            boxShadow: "0 8px 20px rgba(16,22,29,.18)",
                           }}
                         >
                           <Mail size={14} strokeWidth={2.2} aria-hidden />

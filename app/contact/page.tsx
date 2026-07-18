@@ -75,7 +75,7 @@ export default function ContactPage() {
 
       {/* Hero */}
       <section style={{ background: "var(--cream)", padding: "140px clamp(20px,5vw,64px) 60px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", bottom: -80, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,#1D5FBF,#D6293A 70%)", opacity: .1, filter: "blur(6px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", bottom: -80, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,#1E3A8A,#C81E3A 70%)", opacity: .1, filter: "blur(6px)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 720, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Contact Us</span>
@@ -97,7 +97,7 @@ export default function ContactPage() {
       {/* Contact Form */}
       <section style={{ background: "var(--cream-2)", padding: "60px clamp(20px,5vw,64px) 100px" }}>
         <Reveal>
-          <div style={{ maxWidth: 820, margin: "0 auto", background: "var(--paper)", borderRadius: 24, border: "1px solid var(--line)", padding: "clamp(28px,4vw,52px)", boxShadow: "0 16px 48px rgba(27,19,14,.06)" }}>
+          <div style={{ maxWidth: 820, margin: "0 auto", background: "var(--paper)", borderRadius: 24, border: "1px solid var(--line)", padding: "clamp(28px,4vw,52px)", boxShadow: "0 16px 48px rgba(16,22,29,.06)" }}>
             {status === "success" ? (
               <div style={{ textAlign: "center", padding: "40px 0" }}>
                 <div style={{ fontSize: 48, marginBottom: 16 }}>🙏</div>
@@ -151,7 +151,7 @@ export default function ContactPage() {
                 </div>
 
                 {isMembershipSubject && (
-                  <div style={{ background: "rgba(214,41,58,.06)", border: "1px solid rgba(214,41,58,.2)", borderRadius: 12, padding: "14px 18px", marginBottom: 16, display: "flex", alignItems: "flex-start", gap: 12 }}>
+                  <div style={{ background: "rgba(200,30,58,.06)", border: "1px solid rgba(200,30,58,.2)", borderRadius: 12, padding: "14px 18px", marginBottom: 16, display: "flex", alignItems: "flex-start", gap: 12 }}>
                     <span style={{ fontSize: 18, flexShrink: 0, marginTop: 1 }}>💡</span>
                     <p style={{ margin: 0, fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.6 }}>
                       For a faster welcome, fill out our{" "}
@@ -173,7 +173,7 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   disabled={status === "loading"}
-                  style={{ padding: "14px 36px", borderRadius: 999, background: status === "loading" ? "var(--line)" : "linear-gradient(100deg,#1D5FBF,#D6293A)", color: "#fff", fontWeight: 700, fontSize: 15, border: "none", cursor: status === "loading" ? "not-allowed" : "pointer", transition: "opacity .15s", letterSpacing: ".3px" }}
+                  style={{ padding: "14px 36px", borderRadius: 999, background: status === "loading" ? "var(--line)" : "linear-gradient(100deg,#1E3A8A,#C81E3A)", color: "#fff", fontWeight: 700, fontSize: 15, border: "none", cursor: status === "loading" ? "not-allowed" : "pointer", transition: "opacity .15s", letterSpacing: ".3px" }}
                 >
                   {status === "loading" ? "Sending…" : "Send Message"}
                 </button>
@@ -197,7 +197,7 @@ export default function ContactPage() {
               { icon: Clock, title: "Annual Convention", lines: ["Six days in July", "CAC Village, PA"], href: null },
             ].map((card) => (
               <Reveal key={card.title}>
-                <div style={{ background: "var(--paper)", borderRadius: 20, padding: "28px 24px", border: "1px solid var(--line)", boxShadow: "0 8px 22px rgba(27,19,14,.05)" }}>
+                <div style={{ background: "var(--paper)", borderRadius: 20, padding: "28px 24px", border: "1px solid var(--line)", boxShadow: "0 8px 22px rgba(16,22,29,.05)" }}>
                   <IconBadge icon={card.icon} style={{ marginBottom: 14 }} />
                   <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 8 }}>{card.title}</div>
                   {card.href ? (

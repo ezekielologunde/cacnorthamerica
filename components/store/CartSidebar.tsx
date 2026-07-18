@@ -73,7 +73,7 @@ export function CartSidebar() {
           role="presentation"
           onClick={closeCart}
           style={{
-            position: "fixed", inset: 0, background: "rgba(27,19,14,.55)",
+            position: "fixed", inset: 0, background: "rgba(16,22,29,.55)",
             zIndex: 998, backdropFilter: "blur(2px)",
           }}
         />
@@ -90,7 +90,7 @@ export function CartSidebar() {
           display: "flex", flexDirection: "column",
           transform: open ? "translateX(0)" : "translateX(100%)",
           transition: "transform .3s cubic-bezier(.4,0,.2,1)",
-          boxShadow: "-8px 0 40px rgba(27,19,14,.18)",
+          boxShadow: "-8px 0 40px rgba(16,22,29,.18)",
         }}
       >
         {/* Header */}
@@ -228,7 +228,7 @@ export function CartSidebar() {
               </span>
             </div>
             {error && (
-              <div style={{ background: "#FFF0F0", border: "1px solid #D6293A", borderRadius: 10, padding: "10px 14px", fontSize: 13, color: "#7A1420", marginBottom: 14 }}>
+              <div style={{ background: "#FFF0F0", border: "1px solid #C81E3A", borderRadius: 10, padding: "10px 14px", fontSize: 13, color: "#7A1128", marginBottom: 14 }}>
                 {error}
               </div>
             )}
@@ -241,7 +241,7 @@ export function CartSidebar() {
                 color: "#fff", fontWeight: 800, fontSize: 16,
                 padding: "16px 24px", borderRadius: 999, border: "none",
                 cursor: loading ? "not-allowed" : "pointer",
-                boxShadow: "0 10px 28px rgba(214,41,58,.32)",
+                boxShadow: "0 10px 28px rgba(200,30,58,.32)",
                 transition: "background .2s",
               }}
             >

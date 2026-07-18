@@ -9,14 +9,14 @@ export function PastorWelcome() {
       <div className="r2c" style={{ maxWidth: 1200, margin: "0 auto", gap: "clamp(48px,5vw,80px)" }}>
         {/* Pastor portrait with parallax */}
         <Reveal from="left" style={{ position: "relative" }}>
-          <div style={{ width: "100%", height: "clamp(360px,44vw,560px)", borderRadius: 26, overflow: "hidden", boxShadow: "0 28px 60px rgba(27,19,14,.18)", position: "relative" }}>
+          <div style={{ width: "100%", height: "clamp(360px,44vw,560px)", borderRadius: 26, overflow: "hidden", boxShadow: "0 28px 60px rgba(16,22,29,.18)", position: "relative" }}>
             <Parallax distance={36} style={{ position: "absolute", left: 0, right: 0, top: "-9%", height: "118%" }}>
               <div style={{ position: "relative", width: "100%", height: "100%" }}>
                 <Image src="https://cacnorthamerica.com/wp-content/uploads/2024/03/Pastor-Dr.-T.A.O-Agbeja-1-240x300.jpg" alt="Pastor Dr. T.O. Agbeja" fill style={{ objectFit: "cover", objectPosition: "center 28%" }} sizes="(max-width:900px) 100vw, 45vw" unoptimized />
               </div>
             </Parallax>
           </div>
-          <div style={{ position: "absolute", bottom: -22, left: -18, background: "var(--ink)", color: "var(--cream)", padding: "16px 22px", borderRadius: 16, boxShadow: "0 18px 36px rgba(27,19,14,.28)" }}>
+          <div style={{ position: "absolute", bottom: -22, left: -18, background: "var(--ink)", color: "var(--cream)", padding: "16px 22px", borderRadius: 16, boxShadow: "0 18px 36px rgba(16,22,29,.28)" }}>
             <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 17, lineHeight: 1.2 }}>Pastor Dr. T.O. Agbeja</div>
             <div style={{ fontSize: 12.5, color: "var(--gold)", fontWeight: 700, letterSpacing: ".5px", marginTop: 4 }}>Regional Superintendent, CACNA</div>
           </div>

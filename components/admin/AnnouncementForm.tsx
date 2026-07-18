@@ -53,7 +53,7 @@ export default function AnnouncementForm({
   const [body, setBody] = useState(announcement?.body ?? "");
   const [ctaText, setCtaText] = useState(announcement?.cta_text ?? "");
   const [ctaUrl, setCtaUrl] = useState(announcement?.cta_url ?? "");
-  const [bgColor, setBgColor] = useState(announcement?.bg_color ?? "#D6293A");
+  const [bgColor, setBgColor] = useState(announcement?.bg_color ?? "#C81E3A");
   const [textColor, setTextColor] = useState(announcement?.text_color ?? "#ffffff");
   const [placement, setPlacement] = useState(announcement?.placement ?? "homepage");
   const [active, setActive] = useState(announcement?.active ?? true);
@@ -101,8 +101,8 @@ export default function AnnouncementForm({
     <div style={{ maxWidth: 720 }}>
       <style>{`
         .adm-inp { transition: border-color 0.15s, box-shadow 0.15s; }
-        .adm-inp:focus-visible { border-color: var(--red); box-shadow: 0 0 0 3px rgba(214,41,58,0.12); }
-        .adm-inp:hover:not(:focus-visible) { border-color: rgba(27,19,14,0.24); }
+        .adm-inp:focus-visible { border-color: var(--red); box-shadow: 0 0 0 3px rgba(200,30,58,0.12); }
+        .adm-inp:hover:not(:focus-visible) { border-color: rgba(16,22,29,0.24); }
       `}</style>
       <form onSubmit={handleSubmit}>
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>

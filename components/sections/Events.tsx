@@ -6,8 +6,8 @@ const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', '
 
 // Reuse the original three-tone rhythm, indexed by card position.
 const dateBg = [
-  'linear-gradient(150deg,#D6293A,#7A1420)',
-  'linear-gradient(150deg,#1D5FBF,#D6293A)',
+  'linear-gradient(150deg,#C81E3A,#7A1128)',
+  'linear-gradient(150deg,#1E3A8A,#C81E3A)',
   'var(--ink)',
 ];
 
@@ -36,7 +36,7 @@ export function Events() {
         ) : (
           <div className="r2" style={{ gap: 22 }}>
             {upcoming.map((ev, i) => (
-              <Reveal key={ev.id} delay={i * 120} style={{ display: 'flex', gap: 20, alignItems: 'flex-start', background: 'var(--paper)', borderRadius: 24, padding: 28, boxShadow: '0 10px 26px rgba(27,19,14,.06)' }}>
+              <Reveal key={ev.id} delay={i * 120} style={{ display: 'flex', gap: 20, alignItems: 'flex-start', background: 'var(--paper)', borderRadius: 24, padding: 28, boxShadow: '0 10px 26px rgba(16,22,29,.06)' }}>
                 <div style={{
                   flexShrink: 0, width: 80, height: 80, borderRadius: 16,
                   background: dateBg[i % dateBg.length],
