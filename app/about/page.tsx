@@ -16,11 +16,10 @@ const values = [
 type Home = { tag: string; name: string; place: string; href: string; cta: string; external?: boolean };
 
 const homes: Home[] = [
-  { tag: "Home base", name: "Salvation Center", place: "Baltimore DCC · Randallstown, Maryland", href: "/visit", cta: "Plan a visit" },
-  { tag: "Parent assembly", name: "CAC Salvation Centre, Ilorin", place: "Kwara State, Nigeria · established 1997", href: "/ilorin", cta: "Our roots" },
-  { tag: "Online assembly", name: "Salvation City", place: "Our online home, gathered on Zoom", href: "/salvationcity", cta: "Join online" },
-  { tag: "Sister assembly", name: "CAC Kingdom Embassy", place: "Pastored by Enoch Ilufoye", href: "https://cackingdomembassy.org", cta: "Visit site", external: true },
-  { tag: "Sister assembly", name: "CAC Palace of Peace", place: "A sister assembly of the CAC family", href: "https://cacpalaceofpeace.org", cta: "Visit site", external: true },
+  { tag: "Explore", name: "Our Leadership", place: "Regional officers and 16 zonal superintendents", href: "/leadership", cta: "Meet the team" },
+  { tag: "Explore", name: "Our Ministries", place: "Departments serving every CACNA zone", href: "/ministries", cta: "See ministries" },
+  { tag: "Explore", name: "Annual Convention", place: "CAC Village, Blue Ridge Summit, PA", href: "/events", cta: "Upcoming events" },
+  { tag: "Explore", name: "Find a Church", place: "Member churches across the U.S. and Canada", href: "/visit", cta: "Locate a zone" },
 ];
 
 const homeCardStyle: CSSProperties = {
@@ -44,8 +43,8 @@ function HomeCard({ h }: { h: Home }) {
 }
 
 export const metadata = {
-  title: "About Us — CAC Salvation Center | Randallstown, MD",
-  description: "Spirit-filled Christ Apostolic Church in Randallstown, MD — founded on prayer, the Word, and authentic community. Meet our pastors and discover our story.",
+  title: "About Us — Christ Apostolic Church North America (CACNA)",
+  description: "CACNA unites Christ Apostolic Church member churches across the United States and Canada under 16 DCCs/Zones — one family, many homes, one Gospel.",
   alternates: { canonical: "/about" },
 };
 
@@ -72,7 +71,7 @@ export default function AboutPage() {
           </Reveal>
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "var(--ink-soft)", lineHeight: 1.65, maxWidth: 640, margin: "0 auto 36px" }}>
-              Christ Apostolic Church Salvation Center exists to preach the whole Gospel — in a clear and undiluted manner — and to build God&apos;s ambassadors here on earth.
+              Christ Apostolic Church North America unites CAC member churches across the United States and Canada to preach the whole Gospel — in a clear and undiluted manner — and to build God&apos;s ambassadors here on earth.
             </p>
           </Reveal>
           <Reveal delay={220}>
@@ -95,10 +94,10 @@ export default function AboutPage() {
           </Reveal>
           <Reveal delay={100}>
             <p style={{ fontSize: 17.5, color: "var(--ink-soft)", lineHeight: 1.8, margin: "0 0 20px" }}>
-              Walls don’t make a church — people do. The day you said <em style={{ fontStyle: "italic", color: "var(--ink)" }}>yes</em> to Jesus, you were grafted into a great family of believers. That family has a name and a face here in Maryland.
+              Walls don’t make a church — people do. The day you said <em style={{ fontStyle: "italic", color: "var(--ink)" }}>yes</em> to Jesus, you were grafted into a great family of believers. That family has a name and a face in every CACNA zone, from coast to coast.
             </p>
             <p style={{ fontSize: 17.5, color: "var(--ink-soft)", lineHeight: 1.8, margin: 0 }}>
-              Whether it’s your first Sunday or your hundredth, our prayer is the same: that you’d find a home with us — a people who know you, and a place to grow in Christ alongside the family.
+              Whether it’s your first gathering or your hundredth, our prayer is the same: that you’d find a home with us — a people who know you, and a place to grow in Christ alongside the family.
             </p>
           </Reveal>
           <Reveal delay={180}>
@@ -136,10 +135,10 @@ export default function AboutPage() {
               Our Story
             </h2>
             <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.75, marginBottom: 20 }}>
-              Founded in Baltimore in 2002, CAC Salvation Center grew from the vision of its parent assembly — C.A.C Salvation Centre, Ilorin, Nigeria — established on July 6, 1997, under Pastor Dr. H.O. Ilufoye.
+              As Christ Apostolic Church member churches took root across the United States and Canada, CACNA was formed to unite them under one regional body — organized today into 16 DCCs (District Church Councils) and Zones, each led by a Zonal Superintendent.
             </p>
             <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.75 }}>
-              Part of the Christ Apostolic Church — one of Africa&apos;s largest Pentecostal denominations — our mission is raising generations of believers liberated through the light of God&apos;s Word and prayer, in Maryland and beyond.
+              Part of the Christ Apostolic Church — one of Africa&apos;s largest Pentecostal denominations — our mission is raising generations of believers liberated through the light of God&apos;s Word and prayer, across North America and beyond.
             </p>
           </Reveal>
         </div>
@@ -174,28 +173,28 @@ export default function AboutPage() {
           <Reveal style={{ textAlign: "center", marginBottom: 48 }}>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Heritage</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(36px,5vw,64px)", letterSpacing: "-1.5px", color: "var(--ink)", margin: "14px 0 0", lineHeight: .95 }}>
-              From Ilorin to Maryland.
+              One movement, 16 zones.
             </h2>
           </Reveal>
           <div className="r2" style={{ gap: 44, alignItems: "center" }}>
             <Reveal>
-              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 12 }}>Established July 6, 1997</div>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 12 }}>Christ Apostolic Church across North America</div>
               <p style={{ fontSize: 17, color: "var(--ink-soft)", lineHeight: 1.75, margin: "0 0 18px" }}>
-                Our parent assembly, <strong style={{ color: "var(--ink)" }}>CAC Salvation Centre, Ilorin</strong>, was raised in Kwara State, Nigeria, under Pastor Dr. H.O. Ilufoye — with a clear mandate to preach the whole Gospel and build God’s ambassadors here on earth.
+                As CAC member churches were planted across the United States and Canada, CACNA emerged to give this growing family a shared structure — <strong style={{ color: "var(--ink)" }}>16 DCCs (District Church Councils) and Zones</strong>, each shepherded by a Zonal Superintendent, all under one regional leadership.
               </p>
               <p style={{ fontSize: 17, color: "var(--ink-soft)", lineHeight: 1.75, margin: 0 }}>
-                Five years later, in 2002, the vision crossed oceans. The Baltimore-Maryland DCC was planted in the United States, and the family has continued to multiply through sister assemblies on two continents.
+                Every July, the family gathers as one at the Annual Convention — CAC Village, Blue Ridge Summit, Pennsylvania — for six days of worship, teaching, and fellowship, onsite and online.
               </p>
-              <Link href="/ilorin" style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: 24, color: "var(--red)", fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
-                Read the full story →
+              <Link href="/leadership" style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: 24, color: "var(--red)", fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
+                Meet our leadership →
               </Link>
             </Reveal>
             <Reveal delay={120}>
               <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 24, padding: "30px 28px", boxShadow: "0 14px 32px rgba(27,19,14,.06)" }}>
                 {[
-                  { year: "1997", text: "CAC Salvation Centre planted in Ilorin, Nigeria." },
-                  { year: "2002", text: "Baltimore-Maryland DCC established in the United States." },
-                  { year: "Today", text: "Sister assemblies — Kingdom Embassy, Palace of Peace, Salvation City — and growing." },
+                  { year: "16", text: "DCCs (District Church Councils) and Zones across the U.S. and Canada." },
+                  { year: "1", text: "Regional leadership uniting every member church under one mandate." },
+                  { year: "July", text: "The whole family gathers each year at the CACNA Annual Convention." },
                 ].map((t, i) => (
                   <div key={t.year} style={{ paddingTop: i ? 18 : 0, paddingBottom: i < 2 ? 18 : 0, borderBottom: i < 2 ? "1px solid var(--line)" : "none", display: "flex", alignItems: "baseline", gap: 18 }}>
                     <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--red)", letterSpacing: "-.5px", minWidth: 70 }}>{t.year}</div>
@@ -237,7 +236,7 @@ export default function AboutPage() {
               The Thirteen Tenets of Faith.
             </h2>
             <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.7, maxWidth: 640, margin: "20px auto 0" }}>
-              The doctrinal foundation of the Christ Apostolic Church — what every Salvation Center pulpit preaches and what we live by.
+              The doctrinal foundation of the Christ Apostolic Church — what every CACNA pulpit preaches and what we live by.
             </p>
           </Reveal>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
@@ -274,27 +273,27 @@ export default function AboutPage() {
           <Reveal style={{ textAlign: "center", marginBottom: 60 }}>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Leadership</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(36px,5vw,64px)", letterSpacing: "-1.5px", color: "var(--ink)", margin: "14px 0 0", lineHeight: .95 }}>
-              Meet Our Pastors
+              Meet Our President
             </h2>
           </Reveal>
           <div className="r2" style={{ gap: 22, alignItems: "stretch" }}>
             <Reveal style={{ background: "var(--ink)", color: "var(--cream)", borderRadius: 26, overflow: "hidden", display: "flex", flexDirection: "column" }}>
               <div style={{ height: 340, position: "relative" }}>
-                <Image src="/images/pastor-couple.jpg" alt="Pastor Dr. H.O. Ilufoye and Evang. Mrs Victoria Ilufoye" fill style={{ objectFit: "cover", objectPosition: "center 28%" }} />
+                <Image src="https://cacnorthamerica.com/wp-content/uploads/2024/03/Pastor-Dr.-T.A.O-Agbeja-1-240x300.jpg" alt="Pastor Dr. T.O. Agbeja" fill style={{ objectFit: "cover", objectPosition: "center 28%" }} unoptimized />
               </div>
               <div style={{ padding: 28 }}>
-                <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 26, lineHeight: 1.1 }}>Pastor Dr. Hezekiah O. Ilufoye<span style={{ display: "block", fontSize: 17, fontWeight: 700, color: "rgba(255,247,239,.85)", marginTop: 5 }}>&amp; Evang. Mrs Victoria Ilufoye</span></div>
-                <div style={{ color: "var(--gold)", fontWeight: 700, fontSize: 13, letterSpacing: "1.5px", textTransform: "uppercase", marginTop: 8 }}>Baltimore DCC Superintendent · First Lady</div>
-                <p style={{ fontSize: 14.5, lineHeight: 1.65, opacity: .82, margin: "16px 0 0" }}>Together they lead the Salvation Center family — building God’s ambassadors and welcoming every soul home.</p>
+                <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 26, lineHeight: 1.1 }}>Pastor Dr. T.O. Agbeja</div>
+                <div style={{ color: "var(--gold)", fontWeight: 700, fontSize: 13, letterSpacing: "1.5px", textTransform: "uppercase", marginTop: 8 }}>Regional Superintendent, CACNA</div>
+                <p style={{ fontSize: 14.5, lineHeight: 1.65, opacity: .82, margin: "16px 0 0" }}>Leading the CACNA family — building God’s ambassadors and welcoming every soul home.</p>
               </div>
             </Reveal>
             <Reveal delay={120} style={{ background: "linear-gradient(155deg, var(--red), var(--red-deep))", color: "var(--cream)", borderRadius: 26, padding: "clamp(32px,4vw,48px) clamp(28px,3.5vw,40px)", display: "flex", flexDirection: "column", justifyContent: "center", boxShadow: "0 18px 36px rgba(214,40,40,.26)" }}>
-              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "rgba(255,247,239,.72)", marginBottom: 16 }}>The Pastoral Team</div>
+              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "rgba(255,247,239,.72)", marginBottom: 16 }}>The Regional Team</div>
               <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,3.6vw,40px)", letterSpacing: "-.8px", margin: "0 0 18px", lineHeight: 1 }}>
-                Five pastors.<br />One family.<br />One Gospel.
+                16 zones.<br />One family.<br />One Gospel.
               </h3>
               <p style={{ fontSize: 15.5, lineHeight: 1.7, opacity: .92, margin: "0 0 26px" }}>
-                Meet Pastor Felix Osunkiyesi (Curate), Pastor Alfred Aremo, Pastor Oludapo Eludoyin, and Pastor Enoch Ilufoye — the team shepherding the Salvation Center and its sister assemblies.
+                Alongside CACNA&apos;s national officers, 16 Zonal Superintendents shepherd member churches across the United States and Canada — one regional leadership, one mandate.
               </p>
               <Link href="/leadership" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, alignSelf: "flex-start", background: "var(--cream)", color: "var(--ink)", fontWeight: 700, fontSize: 15, padding: "14px 24px", borderRadius: 999, textDecoration: "none" }}>
                 Meet the full team →
@@ -307,8 +306,8 @@ export default function AboutPage() {
       {/* CTA */}
       <section style={{ background: "var(--ink)", padding: "80px clamp(20px,5vw,64px)", textAlign: "center" }}>
         <Reveal>
-          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(36px,5vw,64px)", letterSpacing: "-1.5px", color: "var(--cream)", margin: "0 0 16px", lineHeight: .95 }}>Ready to visit?</h2>
-          <p style={{ fontSize: 17, color: "rgba(255,247,239,.6)", margin: "0 0 36px" }}>Join us this Sunday at 10:30 AM — onsite or online.</p>
+          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(36px,5vw,64px)", letterSpacing: "-1.5px", color: "var(--cream)", margin: "0 0 16px", lineHeight: .95 }}>Ready to connect?</h2>
+          <p style={{ fontSize: 17, color: "rgba(255,247,239,.6)", margin: "0 0 36px" }}>Find a CACNA member church near you — onsite or online.</p>
           <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
             <Link href="/visit" style={{ background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(214,40,40,.4)" }}>Plan a Visit →</Link>
             <Link href="/online" style={{ background: "rgba(255,247,239,.1)", color: "var(--cream)", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(255,247,239,.2)" }}>Watch Online</Link>
