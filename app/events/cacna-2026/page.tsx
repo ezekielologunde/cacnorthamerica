@@ -4,9 +4,10 @@ import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import Link from "next/link";
 import { MapPin, CalendarDays, Car, Package, Clock, Users, Heart, ArrowLeft, Phone, Ticket, Sparkles } from "lucide-react";
-import { specialEvents, googleCalUrl, icsDataUri, isEventPast, CACNA_REG_URL } from "@/lib/events";
+import { googleCalUrl, icsDataUri, isEventPast } from "@/lib/events";
 import { CalendarPlus, Download } from "lucide-react";
 import { SITE, SITE_URL, breadcrumbJsonLd } from "@/lib/site";
+import { conventionYears, conventionChurchEvent, sessionsFor } from "@/lib/conventions";
 
 export const revalidate = 3600;
 
@@ -17,19 +18,13 @@ export const metadata = {
   alternates: { canonical: "/events/cacna-2026" },
 };
 
-const ev = specialEvents.find((e) => e.id === "cacna-convention-2026")!;
-const CACNA_REG = CACNA_REG_URL;
+const cy2026 = conventionYears.find((cy) => cy.year === 2026)!;
+const ev = conventionChurchEvent(cy2026);
+const CACNA_REG = cy2026.registrationUrl!;
 
 const THEME = "The Bible: God’s Message to Man";
 
-const sessions = [
-  { day: "Mon · Jul 13", label: "Registration & Revival Night", desc: "The convention opens as families arrive and register, followed by an evening Revival Night of worship and the Word." },
-  { day: "Tue · Jul 14", label: "Morning & Evening Sessions", desc: "A full day of teaching and worship under the convention theme, morning and evening." },
-  { day: "Wed · Jul 15", label: "Morning & Evening Sessions", desc: "Continued teaching sessions on the convention theme, with the Business Group Fellowship meeting alongside." },
-  { day: "Thu · Jul 16", label: "Sunday School, Business Group & Good Women Day", desc: "Sunday School General Session in the morning, the Business Group General Session and Good Women Convention by day, and a Praise Night to close the evening." },
-  { day: "Fri · Jul 17", label: "Theme Sessions & Revival Night", desc: "Morning and afternoon sessions on the convention theme, closing with a Revival Night of worship." },
-  { day: "Sat · Jul 18", label: "Holy Communion & Departure", desc: "The convention closes with a Holy Communion service — some years followed by a Graduation Program — before the family departs, refreshed and rooted." },
-];
+const sessions = sessionsFor(cy2026);
 
 const fees = [
   { tier: "Adults", age: "Age 30 & above", free: false, rows: [

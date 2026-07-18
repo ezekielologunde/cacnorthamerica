@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { Search } from 'lucide-react';
 import { haptic } from '@/lib/haptics';
 import { SearchModal } from '@/components/ui/SearchModal';
-import { CACNA_REG_URL, specialEvents, isEventPast } from '@/lib/events';
+import { currentOrNextConvention, isConventionPast } from '@/lib/conventions';
 
 interface NavItem {
   label: string;
@@ -16,13 +16,21 @@ interface NavItem {
 
 const isExternalHref = (href: string) => href.startsWith('http');
 
+// Whichever convention is current/next — once this year's dates pass, the
+// nav's "Register" CTA automatically points at the next confirmed year.
+const nextConvention = currentOrNextConvention();
+const conventionCtaLabel = nextConvention.registrationUrl
+  ? `Register — CACNA ${nextConvention.year}`
+  : `CACNA ${nextConvention.year} — Save the Date`;
+const conventionCtaHref = nextConvention.registrationUrl ?? nextConvention.href;
+
 const navItems: NavItem[] = [
   {
     label: 'Events & Convention',
-    href: '/events/cacna-2026',
+    href: nextConvention.href,
     dropdown: [
-      { href: CACNA_REG_URL, label: 'Register — CACNA 2026', desc: 'Secure your spot before rates rise', external: true },
-      { href: '/events/cacna-2026', label: 'Convention Details', desc: 'Theme, schedule, venue & travel' },
+      { href: conventionCtaHref, label: conventionCtaLabel, desc: nextConvention.registrationUrl ? 'Secure your spot before rates rise' : 'Dates are confirmed — full details soon', external: !!nextConvention.registrationUrl },
+      { href: nextConvention.href, label: 'Convention Details', desc: 'Theme, schedule, venue & travel' },
       { href: '/events', label: 'Upcoming Events', desc: 'Special gatherings across CACNA' },
       { href: '/calendar', label: 'Full Calendar', desc: 'CACNA\'s annual rhythm' },
     ],
@@ -84,8 +92,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
   // the nav until the event itself has passed, then fall back to the general
   // Events page instead of an outdated "Register" prompt.
   useEffect(() => {
-    const cacnaEv = specialEvents.find((e) => e.id === "cacna-convention-2026");
-    setConventionOpen(cacnaEv ? !isEventPast(cacnaEv) : false);
+    setConventionOpen(!isConventionPast(nextConvention));
   }, []);
 
   useEffect(() => {
@@ -257,16 +264,27 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
               <Search size={16} strokeWidth={2} />
             </button>
             {conventionOpen && (
-              <a
-                href={CACNA_REG_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => haptic('medium')}
-                className="btn-sheen press"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: 'var(--gold)', color: 'var(--ink)', fontWeight: 800, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '0 8px 22px rgba(253,200,65,.4)' }}
-              >
-                Register — CACNA 2026 →
-              </a>
+              nextConvention.registrationUrl ? (
+                <a
+                  href={conventionCtaHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => haptic('medium')}
+                  className="btn-sheen press"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: 'var(--gold)', color: 'var(--ink)', fontWeight: 800, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '0 8px 22px rgba(253,200,65,.4)' }}
+                >
+                  {conventionCtaLabel} →
+                </a>
+              ) : (
+                <Link
+                  href={conventionCtaHref}
+                  onClick={() => haptic('medium')}
+                  className="btn-sheen press"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: 'var(--gold)', color: 'var(--ink)', fontWeight: 800, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '0 8px 22px rgba(253,200,65,.4)' }}
+                >
+                  {conventionCtaLabel} →
+                </Link>
+              )
             )}
             <Link
               href="/online"
@@ -377,15 +395,25 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 32 }}>
             {conventionOpen && (
-              <a
-                href={CACNA_REG_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => { haptic('medium'); setOpen(false); }}
-                className="press"
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'var(--gold)', color: 'var(--ink)', fontWeight: 800, fontSize: 17, padding: '18px 24px', borderRadius: 999, textDecoration: 'none', boxShadow: '0 14px 30px rgba(253,200,65,.4)' }}>
-                Register — CACNA 2026 →
-              </a>
+              nextConvention.registrationUrl ? (
+                <a
+                  href={conventionCtaHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => { haptic('medium'); setOpen(false); }}
+                  className="press"
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'var(--gold)', color: 'var(--ink)', fontWeight: 800, fontSize: 17, padding: '18px 24px', borderRadius: 999, textDecoration: 'none', boxShadow: '0 14px 30px rgba(253,200,65,.4)' }}>
+                  {conventionCtaLabel} →
+                </a>
+              ) : (
+                <Link
+                  href={conventionCtaHref}
+                  onClick={() => { haptic('medium'); setOpen(false); }}
+                  className="press"
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'var(--gold)', color: 'var(--ink)', fontWeight: 800, fontSize: 17, padding: '18px 24px', borderRadius: 999, textDecoration: 'none', boxShadow: '0 14px 30px rgba(253,200,65,.4)' }}>
+                  {conventionCtaLabel} →
+                </Link>
+              )
             )}
             <Link
               href="/online"

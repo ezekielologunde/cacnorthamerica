@@ -1,4 +1,5 @@
 import { SITE } from "@/lib/site";
+import { currentOrNextConvention, conventionChurchEvent } from "@/lib/conventions";
 
 const LOCATION = `${SITE.address.street}, ${SITE.address.city}, ${SITE.address.region} ${SITE.address.postalCode}`;
 const TZ = "America/New_York";
@@ -55,14 +56,9 @@ export function splitByDate(events: ChurchEvent[]): { upcoming: ChurchEvent[]; p
 }
 
 export const specialEvents: ChurchEvent[] = [
-  {
-    id: "cacna-convention-2026",
-    title: "CACNA 2026 Annual Convention",
-    desc: "Christ Apostolic Church North America Annual Convention — theme “The Bible: God’s Message to Man.” Six days of worship, teaching, and family at CAC Village, 14051 Stahley Rd, Blue Ridge Summit, PA.",
-    dateLabel: "July 13–18, 2026", timeLabel: "All week", month: "JUL", day: "13",
-    startLocal: "20260713T180000", endLocal: "20260718T220000",
-    href: "/events/cacna-2026", navLabel: "CACNA 2026",
-  },
+  // Once this year's convention passes, this slot automatically picks up the
+  // next confirmed year's dates (and theme, once known) — see lib/conventions.ts.
+  conventionChurchEvent(currentOrNextConvention()),
   {
     id: "holy-land-pilgrimage-2026",
     title: "Holy Land Pilgrimage 2026",
@@ -74,11 +70,6 @@ export const specialEvents: ChurchEvent[] = [
 ];
 
 export const CACNA_LOCATION = "CAC Village, Blue Ridge Summit, PA";
-
-/** Single source of truth for the live registration link — reused by the
- *  convention page, the nav, and the site-wide announcement bar so every
- *  "Register" CTA points at the same place. */
-export const CACNA_REG_URL = "https://cacnaconvention.org/2026-cacna-national-convention-registration-credit-debit-card/";
 
 export interface AnnualMoment {
   id: string;

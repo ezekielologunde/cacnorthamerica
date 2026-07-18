@@ -7,6 +7,7 @@ import Link from "next/link";
 import { CalendarPlus, Download } from "lucide-react";
 import { specialEvents, annualMoments, googleCalUrl, icsDataUri, splitByDate, type ChurchEvent } from "@/lib/events";
 import { SITE, SITE_URL } from "@/lib/site";
+import { conventionYears, currentOrNextConvention, dateRangeLabel, CONVENTION_VENUE_SHORT } from "@/lib/conventions";
 
 export const revalidate = 3600;
 
@@ -19,7 +20,7 @@ function toIso(s: string): string {
 }
 
 function evPlace(id: string) {
-  if (id === "cacna-convention-2026")
+  if (id.startsWith("cacna-convention-"))
     return { "@type": "Place", name: "CAC Village", address: { "@type": "PostalAddress", streetAddress: "14051 Stahley Rd", addressLocality: "Blue Ridge Summit", addressRegion: "PA", postalCode: "17214", addressCountry: "US" } };
   if (id === "holy-land-pilgrimage-2026")
     return { "@type": "Place", name: "Israel & Egypt (departing JFK)", address: { "@type": "PostalAddress", addressCountry: "IL" } };
@@ -100,6 +101,11 @@ export default async function EventsPage() {
   const dynamicEvents = (dbRows ?? []).map(dbEventToChurchEvent);
   const allSpecialEvents = [...specialEvents, ...dynamicEvents];
   const { upcoming, past } = splitByDate(allSpecialEvents);
+
+  // The soonest convention already has its own full card above (via
+  // specialEvents) — list the rest as a simple "save the date" table.
+  const activeYear = currentOrNextConvention().year;
+  const futureConventions = conventionYears.filter((cy) => cy.year !== activeYear);
 
   const eventsJsonLd = upcoming.length > 0 ? {
     "@context": "https://schema.org",
@@ -215,6 +221,32 @@ export default async function EventsPage() {
                       )}
                     </div>
                   </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Future Convention dates — confirmed venue/dates, details TBA */}
+      {futureConventions.length > 0 && (
+        <section style={{ background: "var(--paper)", padding: "clamp(48px,6vw,72px) clamp(20px,5vw,64px)" }}>
+          <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+            <Reveal style={{ marginBottom: 32 }}>
+              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--flame)" }}>Looking further ahead</span>
+              <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.6vw,44px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 0" }}>Future Convention dates</h2>
+              <p style={{ fontSize: 15.5, color: "var(--ink-soft)", lineHeight: 1.7, maxWidth: 600, margin: "14px 0 0" }}>
+                The venue never changes — every CACNA Convention meets at {CONVENTION_VENUE_SHORT}. Themes, registration, and full schedules are announced closer to each date.
+              </p>
+            </Reveal>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 14 }}>
+              {futureConventions.map((cy, i) => (
+                <Reveal key={cy.year} delay={i * 70}>
+                  <Link href={cy.href} className="card-lift" style={{ display: "block", background: "var(--cream-2)", border: "1px solid var(--line)", borderRadius: 18, padding: "22px 22px", textDecoration: "none" }}>
+                    <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 28, color: "var(--ink)", letterSpacing: "-.5px" }}>{cy.year}</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: "var(--red)", margin: "6px 0 4px" }}>{dateRangeLabel(cy)}</div>
+                    <div style={{ fontSize: 13, color: "var(--ink-soft)" }}>{CONVENTION_VENUE_SHORT}</div>
+                  </Link>
                 </Reveal>
               ))}
             </div>

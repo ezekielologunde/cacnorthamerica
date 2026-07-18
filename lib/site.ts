@@ -1,4 +1,5 @@
 import { googleReviews, REVIEW_AVERAGE, REVIEW_COUNT } from "@/lib/reviews";
+import { conventionYears } from "@/lib/conventions";
 
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.cacnorthamerica.com";
 
@@ -37,7 +38,7 @@ export const ROUTES: { path: string; priority: number }[] = [
   { path: "/bible-plan", priority: 0.7 },
   { path: "/salvation", priority: 0.8 },
   { path: "/events", priority: 0.7 },
-  { path: "/events/cacna-2026", priority: 0.75 },
+  ...conventionYears.map((cy) => ({ path: cy.href, priority: cy.year === 2026 ? 0.75 : 0.5 })),
   { path: "/events/pilgrimage-2026", priority: 0.7 },
   { path: "/events/macedonia-outreach", priority: 0.7 },
   { path: "/calendar", priority: 0.8 },
