@@ -2,7 +2,14 @@ import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { IconBadge } from "@/components/ui/IconBadge";
-import { Phone, Mail } from "lucide-react";
+import { Phone, Mail, Landmark } from "lucide-react";
+
+const CENTENARY_ACCOUNTS = [
+  { currency: "Naira", account: "2046703336" },
+  { currency: "USD", account: "2046963520" },
+  { currency: "GBP", account: "2046963509" },
+  { currency: "EUR", account: "2046963516" },
+];
 
 export default function GivingPage() {
   return (
@@ -35,6 +42,36 @@ export default function GivingPage() {
               <figcaption style={{ marginTop: 12, fontSize: 12, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)" }}>2 Corinthians 9:9</figcaption>
             </figure>
           </Reveal>
+        </div>
+      </section>
+
+      {/* CAC Centenary Building Project */}
+      <section style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(56px,7vw,90px)" }}>
+        <div style={{ maxWidth: 760, margin: "0 auto" }}>
+          <Reveal style={{ textAlign: "center", marginBottom: 32 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Featured Campaign</span>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3vw,40px)", letterSpacing: "-1px", color: "var(--ink)", margin: "10px 0 0" }}>
+              CAC Centenary Building Project
+            </h2>
+            <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.7, margin: "14px auto 0", maxWidth: 600 }}>
+              Conceived in 2018 to commemorate the Church&apos;s 100th anniversary, this project helps solve accommodation challenges on the prayer camp at Ikeji-Arakeji, Nigeria. CACNA members are warmly encouraged to give toward it.
+            </p>
+          </Reveal>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 16 }}>
+            {CENTENARY_ACCOUNTS.map((a, i) => (
+              <Reveal key={a.currency} delay={i * 70}>
+                <div style={{ background: "var(--paper)", borderRadius: 20, padding: "22px 20px", border: "1px solid var(--line)", boxShadow: "0 8px 22px rgba(18,20,30,.05)", height: "100%", textAlign: "center" }}>
+                  <IconBadge icon={Landmark} style={{ marginBottom: 14, marginLeft: "auto", marginRight: "auto" }} />
+                  <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 6 }}>
+                    First Bank — {a.currency}
+                  </div>
+                  <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 19, color: "var(--ink)", letterSpacing: "0.5px" }}>
+                    {a.account}
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 
