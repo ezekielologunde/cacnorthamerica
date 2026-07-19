@@ -5,8 +5,9 @@ import { Reveal } from "@/components/ui/Reveal";
 import { POSTS, type BlogPost, badgeTextColor } from "@/lib/blog";
 import { specialEvents } from "@/lib/events";
 import { bibleReadingPlan } from "@/lib/biblePlan";
+import { getApprovedCacWorldNews, type CacWorldNewsItem } from "@/lib/cacWorldNews";
 import Link from "next/link";
-import { Clock, Calendar, ShoppingBag, BookOpen, ArrowRight } from "lucide-react";
+import { Clock, Calendar, ShoppingBag, BookOpen, ArrowRight, Globe2 } from "lucide-react";
 
 export const revalidate = 3600;
 
@@ -149,6 +150,57 @@ function FeaturedCard({ post }: { post: typeof POSTS[number] }) {
   );
 }
 
+function CacWorldCard({ item }: { item: CacWorldNewsItem }) {
+  const date = item.publishedAt
+    ? new Date(item.publishedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+    : null;
+  return (
+    <article className="card-lift" style={{
+      background: "var(--paper)", border: "1px solid var(--line)",
+      borderRadius: 22, overflow: "hidden", display: "flex",
+      flexDirection: "column", height: "100%",
+    }}>
+      <div style={{ height: 140, background: "var(--ink)", position: "relative", overflow: "hidden" }}>
+        {item.imageUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={item.imageUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        ) : (
+          <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 70% 30%,rgba(253,200,65,.25),transparent 65%)" }} />
+        )}
+        <div style={{ position: "absolute", top: 14, left: 16 }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 9.5, fontWeight: 900, letterSpacing: "2px", textTransform: "uppercase", color: "#fff", background: "rgba(0,0,0,.5)", borderRadius: 999, padding: "5px 12px" }}>
+            <Globe2 size={11} strokeWidth={2.5} aria-hidden /> CAC World
+          </span>
+        </div>
+      </div>
+      <div style={{ padding: "20px 22px 22px", display: "flex", flexDirection: "column", flex: 1 }}>
+        <h3 style={{
+          fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18,
+          letterSpacing: "-.3px", color: "var(--ink)", margin: "0 0 10px", lineHeight: 1.2,
+        }}>
+          {item.title}
+        </h3>
+        {item.excerpt && (
+          <p style={{ fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.68, margin: "0 0 18px", flex: 1 }}>
+            {item.excerpt}…
+          </p>
+        )}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8, borderTop: "1px solid var(--line)", paddingTop: 14, marginTop: "auto" }}>
+          {date && (
+            <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: "var(--ink-soft)", fontWeight: 600 }}>
+              <Calendar size={12} strokeWidth={2.5} aria-hidden /> {date}
+            </span>
+          )}
+          <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer"
+            style={{ fontSize: 13, fontWeight: 700, color: "var(--red)", textDecoration: "none" }}>
+            Read on CAC World News →
+          </a>
+        </div>
+      </div>
+    </article>
+  );
+}
+
 function ScriptureWidget() {
   const week = bibleReadingPlan[1];
   return (
@@ -262,6 +314,7 @@ export default async function BlogPage() {
     .eq("published", true)
     .order("published_at", { ascending: false });
 
+  const cacWorldNews = await getApprovedCacWorldNews(6);
   const dynamicPosts = (dbRows ?? []).map(dbPostToBlogPost);
   const [featured, ...rest] = POSTS;
   const allArticles = [...rest, ...dynamicPosts];
@@ -337,6 +390,30 @@ export default async function BlogPage() {
               {heraldArticles.map((p, i) => (
                 <Reveal key={p.slug} delay={(i % 6) * 70}>
                   <ArticleCard post={p} />
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* From CAC World News */}
+      {cacWorldNews.length > 0 && (
+        <section style={{ background: "var(--cream)", padding: "clamp(40px,5vw,72px) clamp(20px,5vw,64px) clamp(20px,3vw,32px)" }}>
+          <div style={{ maxWidth: 1140, margin: "0 auto" }}>
+            <Reveal style={{ marginBottom: 28 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 14, borderBottom: "2px solid var(--ink)", paddingBottom: 12 }}>
+                <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 13, letterSpacing: "3px", textTransform: "uppercase", color: "var(--ink)" }}>
+                  From CAC World
+                </span>
+                <div style={{ flex: 1, height: 1, background: "var(--line)" }} />
+                <span style={{ fontSize: 11.5, fontWeight: 700, color: "var(--ink-soft)" }}>via cacworldnews.com</span>
+              </div>
+            </Reveal>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))", gap: 22 }}>
+              {cacWorldNews.map((item, i) => (
+                <Reveal key={item.id} delay={(i % 6) * 70}>
+                  <CacWorldCard item={item} />
                 </Reveal>
               ))}
             </div>

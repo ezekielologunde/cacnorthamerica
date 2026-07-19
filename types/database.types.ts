@@ -113,6 +113,93 @@ export type Database = {
         }
         Relationships: []
       }
+      cac_world_news: {
+        Row: {
+          excerpt: string | null
+          fetched_at: string
+          id: string
+          image_url: string | null
+          published_at: string | null
+          reviewed_at: string | null
+          source_url: string
+          status: string
+          title: string
+        }
+        Insert: {
+          excerpt?: string | null
+          fetched_at?: string
+          id?: string
+          image_url?: string | null
+          published_at?: string | null
+          reviewed_at?: string | null
+          source_url: string
+          status?: string
+          title: string
+        }
+        Update: {
+          excerpt?: string | null
+          fetched_at?: string
+          id?: string
+          image_url?: string | null
+          published_at?: string | null
+          reviewed_at?: string | null
+          source_url?: string
+          status?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      churches: {
+        Row: {
+          address: string
+          category: string
+          city: string
+          contact_phone: string | null
+          country: string
+          created_at: string
+          id: string
+          is_published: boolean
+          lat: number | null
+          lng: number | null
+          name: string
+          region: string
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          address?: string
+          category?: string
+          city?: string
+          contact_phone?: string | null
+          country?: string
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          lat?: number | null
+          lng?: number | null
+          name: string
+          region?: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          address?: string
+          category?: string
+          city?: string
+          contact_phone?: string | null
+          country?: string
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          lat?: number | null
+          lng?: number | null
+          name?: string
+          region?: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       contact_submissions: {
         Row: {
           archived: boolean
@@ -140,6 +227,51 @@ export type Database = {
           message?: string
           name?: string
           subject?: string | null
+        }
+        Relationships: []
+      }
+      departments: {
+        Row: {
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string
+          description: string
+          id: string
+          image_url: string | null
+          is_published: boolean
+          leader_name: string | null
+          name: string
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string | null
+          is_published?: boolean
+          leader_name?: string | null
+          name: string
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string | null
+          is_published?: boolean
+          leader_name?: string | null
+          name?: string
+          slug?: string
+          sort_order?: number
+          updated_at?: string
         }
         Relationships: []
       }
@@ -214,6 +346,101 @@ export type Database = {
           sort_order?: number
         }
         Relationships: []
+      }
+      leaders: {
+        Row: {
+          bio: string | null
+          category: string
+          created_at: string
+          email: string | null
+          full_name: string
+          id: string
+          is_published: boolean
+          phone: string | null
+          photo_url: string | null
+          sort_order: number
+          tenure_end: string | null
+          tenure_start: string | null
+          title: string
+          updated_at: string
+          zone_name: string | null
+        }
+        Insert: {
+          bio?: string | null
+          category: string
+          created_at?: string
+          email?: string | null
+          full_name: string
+          id?: string
+          is_published?: boolean
+          phone?: string | null
+          photo_url?: string | null
+          sort_order?: number
+          tenure_end?: string | null
+          tenure_start?: string | null
+          title?: string
+          updated_at?: string
+          zone_name?: string | null
+        }
+        Update: {
+          bio?: string | null
+          category?: string
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          id?: string
+          is_published?: boolean
+          phone?: string | null
+          photo_url?: string | null
+          sort_order?: number
+          tenure_end?: string | null
+          tenure_start?: string | null
+          title?: string
+          updated_at?: string
+          zone_name?: string | null
+        }
+        Relationships: []
+      }
+      media: {
+        Row: {
+          album: string
+          alt_text: string
+          caption: string | null
+          created_at: string
+          id: string
+          sort_order: number
+          uploaded_by: string | null
+          url: string
+        }
+        Insert: {
+          album?: string
+          alt_text?: string
+          caption?: string | null
+          created_at?: string
+          id?: string
+          sort_order?: number
+          uploaded_by?: string | null
+          url: string
+        }
+        Update: {
+          album?: string
+          alt_text?: string
+          caption?: string | null
+          created_at?: string
+          id?: string
+          sort_order?: number
+          uploaded_by?: string | null
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       newsletter_subscribers: {
         Row: {
@@ -419,6 +646,188 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string | null
+          id: string
+          is_active: boolean
+          role: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name?: string | null
+          id: string
+          is_active?: boolean
+          role?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          id?: string
+          is_active?: boolean
+          role?: string
+        }
+        Relationships: []
+      }
+      sermons_livestreams: {
+        Row: {
+          created_at: string
+          id: string
+          is_live: boolean
+          is_published: boolean
+          platform: string
+          recording_url: string | null
+          scheduled_at: string | null
+          speaker: string | null
+          stream_url: string
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_live?: boolean
+          is_published?: boolean
+          platform?: string
+          recording_url?: string | null
+          scheduled_at?: string | null
+          speaker?: string | null
+          stream_url: string
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_live?: boolean
+          is_published?: boolean
+          platform?: string
+          recording_url?: string | null
+          scheduled_at?: string | null
+          speaker?: string | null
+          stream_url?: string
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      site_content: {
+        Row: {
+          content: string
+          page_key: string
+          section_key: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          content?: string
+          page_key: string
+          section_key: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          content?: string
+          page_key?: string
+          section_key?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "site_content_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      site_settings: {
+        Row: {
+          address: string
+          church_name: string
+          contact_email: string
+          contact_phone: string
+          facebook_url: string | null
+          id: boolean
+          instagram_url: string | null
+          prayer_line_access_code: string | null
+          prayer_line_number: string | null
+          prayer_line_time: string | null
+          twitter_url: string | null
+          updated_at: string
+          youtube_url: string | null
+        }
+        Insert: {
+          address?: string
+          church_name?: string
+          contact_email?: string
+          contact_phone?: string
+          facebook_url?: string | null
+          id?: boolean
+          instagram_url?: string | null
+          prayer_line_access_code?: string | null
+          prayer_line_number?: string | null
+          prayer_line_time?: string | null
+          twitter_url?: string | null
+          updated_at?: string
+          youtube_url?: string | null
+        }
+        Update: {
+          address?: string
+          church_name?: string
+          contact_email?: string
+          contact_phone?: string
+          facebook_url?: string | null
+          id?: boolean
+          instagram_url?: string | null
+          prayer_line_access_code?: string | null
+          prayer_line_number?: string | null
+          prayer_line_time?: string | null
+          twitter_url?: string | null
+          updated_at?: string
+          youtube_url?: string | null
+        }
+        Relationships: []
+      }
+      tenets: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          is_published: boolean
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       testimonies: {
         Row: {
           approved: boolean
@@ -575,9 +984,3 @@ export type CompositeTypes<
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
-
-export const Constants = {
-  public: {
-    Enums: {},
-  },
-} as const
