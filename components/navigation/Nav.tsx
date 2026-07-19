@@ -43,6 +43,7 @@ const navItems: NavItem[] = [
       { href: '/dccs', label: 'Our DCCs', desc: 'District Church Councils & Superintendents' },
       { href: '/ministries', label: 'Ministries', desc: 'Find your place to serve' },
       { href: '/bible-institute', label: 'Bible Institute', desc: 'Ministerial training arm of CACNA' },
+      { href: '/global', label: 'Our Global Family', desc: 'CAC Worldwide & CAC Anosike Region (Europe)' },
     ],
   },
   {

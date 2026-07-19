@@ -1,9 +1,15 @@
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { getLeaders, type Leader } from "@/lib/leaders";
+
+function initials(name: string) {
+  return name.replace(/^(Pastor|Prophet|Evangelist|Mrs\.?|Mr\.?|Dr\.?)\s+/i, "")
+    .split(/\s+/).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
+}
 
 export const revalidate = 3600;
 
@@ -67,17 +73,33 @@ export default async function PastLeadersPage() {
                 <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                   {people.map((p, i) => (
                     <Reveal key={p.id} delay={i * 60}>
-                      <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 18, padding: "22px 24px" }}>
-                        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "4px 12px", marginBottom: p.bio ? 10 : 0 }}>
-                          <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "var(--ink)", margin: 0 }}>{p.full_name}</h3>
-                          <span style={{ fontSize: 13.5, color: "var(--red)", fontWeight: 700 }}>{p.title}</span>
-                          {p.tenure_start && (
-                            <span style={{ fontSize: 13, color: "var(--ink-soft)" }}>
-                              {p.tenure_start}–{p.tenure_end ?? "present"}
-                            </span>
-                          )}
+                      <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 18, padding: "22px 24px", display: "flex", gap: 18, alignItems: "flex-start" }}>
+                        {p.photo_url ? (
+                          <div style={{ position: "relative", width: 56, height: 56, borderRadius: 14, overflow: "hidden", flexShrink: 0, boxShadow: "0 8px 18px rgba(18,20,30,.18)" }}>
+                            <Image src={p.photo_url} alt={p.full_name} fill style={{ objectFit: "cover", objectPosition: "center top" }} sizes="56px" unoptimized />
+                          </div>
+                        ) : (
+                          <div aria-hidden style={{
+                            width: 56, height: 56, borderRadius: 14, flexShrink: 0,
+                            background: "linear-gradient(135deg,var(--red),var(--red-deep))",
+                            display: "flex", alignItems: "center", justifyContent: "center",
+                            color: "#fff", fontWeight: 800, fontSize: 16,
+                          }}>
+                            {initials(p.full_name)}
+                          </div>
+                        )}
+                        <div>
+                          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "4px 12px", marginBottom: p.bio ? 10 : 0 }}>
+                            <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "var(--ink)", margin: 0 }}>{p.full_name}</h3>
+                            <span style={{ fontSize: 13.5, color: "var(--red)", fontWeight: 700 }}>{p.title}</span>
+                            {p.tenure_start && (
+                              <span style={{ fontSize: 13, color: "var(--ink-soft)" }}>
+                                {p.tenure_start}–{p.tenure_end ?? "present"}
+                              </span>
+                            )}
+                          </div>
+                          {p.bio && <p style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.7, margin: 0 }}>{p.bio}</p>}
                         </div>
-                        {p.bio && <p style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.7, margin: 0 }}>{p.bio}</p>}
                       </div>
                     </Reveal>
                   ))}
