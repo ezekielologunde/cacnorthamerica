@@ -7,6 +7,13 @@ import { RevealText } from "@/components/ui/RevealText";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { useCountdown } from "@/lib/useCountdown";
 import { haptic } from "@/lib/haptics";
+import { currentOrNextConvention } from "@/lib/conventions";
+
+const nextConvention = currentOrNextConvention();
+const heroCtaLabel = nextConvention.registrationUrl
+  ? `Register — CACNA ${nextConvention.year}`
+  : `CACNA ${nextConvention.year} — Save the Date`;
+const heroCtaHref = nextConvention.registrationUrl ?? nextConvention.href;
 
 const HERO_T = {
   en: { badge: "CACNA", line1: "One Fold.", line2: "One Shepherd." },
@@ -182,7 +189,7 @@ export function Hero() {
             backdropFilter: "blur(8px)",
           }}>
             <span style={{ background: "var(--red)", color: "#fff", fontSize: 11, fontWeight: 800, padding: "3px 9px", borderRadius: 999, letterSpacing: ".5px" }}>{t.badge}</span>
-            16 Zones · United States &amp; Canada
+            16 Zones, U.S. &amp; Canada · A Region of Christ Apostolic Church Worldwide
           </span>
         </Reveal>
 
@@ -250,13 +257,26 @@ export function Hero() {
         <Reveal delay={520}>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 34, justifyContent: "center" }}>
             <Magnetic strength={0.4}>
+              <a href={heroCtaHref} target={nextConvention.registrationUrl ? "_blank" : undefined} rel={nextConvention.registrationUrl ? "noopener noreferrer" : undefined} className="btn-sheen" style={{
+                display: "inline-flex", alignItems: "center", gap: 10,
+                background: "var(--gold)", color: "var(--ink)",
+                fontWeight: 800, fontSize: 16,
+                padding: "17px 30px", borderRadius: 999,
+                textDecoration: "none",
+                boxShadow: "0 14px 34px rgba(253,200,65,.5)",
+              }}>
+                {heroCtaLabel} →
+              </a>
+            </Magnetic>
+            <Magnetic strength={0.4}>
               <Link href="/online" className="btn-sheen" style={{
                 display: "inline-flex", alignItems: "center", gap: 10,
-                background: "var(--red)", color: "#fff",
+                background: "rgba(255,255,255,.12)", color: "#fff",
                 fontWeight: 700, fontSize: 16,
                 padding: "17px 30px", borderRadius: 999,
                 textDecoration: "none",
-                boxShadow: "0 14px 34px rgba(200,30,58,.45)",
+                border: "1.5px solid rgba(255,255,255,.35)",
+                backdropFilter: "blur(8px)",
               }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" aria-hidden><path d="M8 5v14l11-7z" /></svg>
                 Join Us Online

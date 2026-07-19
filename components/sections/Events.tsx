@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Reveal } from '@/components/ui/Reveal';
 import { specialEvents, splitByDate, type ChurchEvent } from '@/lib/events';
+import { currentOrNextConvention } from '@/lib/conventions';
 
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
@@ -18,6 +19,7 @@ export function Events() {
   // Computed per render so ISR (revalidate=60 on the homepage) drops past
   // events and surfaces new ones automatically — single source of truth.
   const upcoming = splitByDate(specialEvents).upcoming.slice(0, 3);
+  const cy = currentOrNextConvention();
 
   return (
     <section style={{ padding: 'clamp(70px,9vw,120px) clamp(20px,5vw,64px)' }}>
@@ -49,11 +51,18 @@ export function Events() {
                 <div style={{ minWidth: 0 }}>
                   <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(17px,4vw,24px)', letterSpacing: '-.4px', lineHeight: 1.2 }}>{ev.title}</div>
                   <div style={{ fontSize: 14, color: 'var(--ink-soft)', marginTop: 6, lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{ev.desc}</div>
-                  {ev.href && (
-                    <Link href={ev.href} className="press" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 10, fontSize: 13.5, fontWeight: 700, color: 'var(--red)', textDecoration: 'none' }}>
-                      Full details <span aria-hidden style={{ fontSize: 15 }}>→</span>
-                    </Link>
-                  )}
+                  <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px 16px', marginTop: 10 }}>
+                    {ev.id.startsWith('cacna-convention-') && cy.registrationUrl && (
+                      <a href={cy.registrationUrl} target="_blank" rel="noopener noreferrer" className="press" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 800, color: 'var(--ink)', background: 'var(--gold)', padding: '7px 16px', borderRadius: 999, textDecoration: 'none' }}>
+                        Register Now →
+                      </a>
+                    )}
+                    {ev.href && (
+                      <Link href={ev.href} className="press" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 700, color: 'var(--red)', textDecoration: 'none' }}>
+                        Full details <span aria-hidden style={{ fontSize: 15 }}>→</span>
+                      </Link>
+                    )}
+                  </div>
                 </div>
               </Reveal>
             ))}

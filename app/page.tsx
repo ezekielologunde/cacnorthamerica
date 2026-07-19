@@ -5,6 +5,7 @@ export const revalidate = 60;
 import dynamic from "next/dynamic";
 import { Nav } from "@/components/navigation/Nav";
 import { Hero } from "@/components/sections/Hero";
+import { ConventionSpotlight } from "@/components/sections/ConventionSpotlight";
 import { createServiceClient } from "@/lib/supabase/server";
 
 // Below-fold sections split into separate JS chunks — browser parses them
@@ -97,6 +98,7 @@ export default async function Home() {
         </div>
       ))}
       <Hero />
+      <ConventionSpotlight />
       <Watchword />
       <Testimonials />
       <PastorWelcome />

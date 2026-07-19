@@ -25,14 +25,14 @@ export function PastorWelcome() {
         {/* Mission quote */}
         <div>
           <Reveal>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>A word from our President</span>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>A word from our Regional Superintendent</span>
           </Reveal>
           <Reveal delay={80}>
             <div aria-hidden style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 96, lineHeight: 0.55, color: "var(--gold)", margin: "20px 0 0" }}>&ldquo;</div>
           </Reveal>
           <Reveal delay={120}>
             <p style={{ fontSize: "clamp(18px,1.9vw,24px)", lineHeight: 1.6, color: "var(--ink)", margin: "0 0 18px", textWrap: "pretty", fontWeight: 500 }}>
-              We are given the mandate to preach the whole Gospel in a clear and undiluted manner. We stand as part of the vast body of Christ across North America — fulfilling the Great Commission, building every believer to be God&apos;s Ambassadors here on earth, and preparing them for Christ&apos;s Kingdom to come.
+              We are given the mandate to preach the whole Gospel in a clear and undiluted manner. As a region of Christ Apostolic Church Worldwide, headquartered in Nigeria, we stand as part of the vast body of Christ across North America — fulfilling the Great Commission, building every believer to be God&apos;s Ambassadors here on earth, and preparing them for Christ&apos;s Kingdom to come.
             </p>
           </Reveal>
           <Reveal delay={160}>

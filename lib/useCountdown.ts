@@ -1,10 +1,17 @@
 "use client";
 import { useState, useEffect } from "react";
+import { currentOrNextConvention } from "@/lib/conventions";
 
 // CACNA is a regional body, not a single congregation with weekly service
 // times — the hero countdown targets the next major CACNA-wide event
 // instead (the Annual Convention) rather than a recurring Sunday service.
-const NEXT_EVENT = { label: "2026 CACNA Annual Convention", target: new Date(2026, 6, 13, 9, 0, 0) };
+// Pulled from lib/conventions.ts so this rolls to the next confirmed year
+// automatically once the current one passes, instead of going stale.
+const cy = currentOrNextConvention();
+const NEXT_EVENT = {
+  label: `${cy.year} CACNA Annual Convention`,
+  target: new Date(`${cy.startIso}T09:00:00-04:00`),
+};
 
 export interface Countdown {
   label: string;
