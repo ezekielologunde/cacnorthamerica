@@ -52,6 +52,7 @@ const navItems: NavItem[] = [
       { href: '/online', label: 'Watch Online', desc: 'Live & on-demand services' },
       { href: '/media', label: 'Media Archive', desc: 'Past sermons & conventions since 2022' },
       { href: '/devotional', label: 'Devotional', desc: 'Daily Word' },
+      { href: '/watchwords', label: 'Watchwords', desc: 'Every annual Watchword since 1989' },
       { href: '/bible-plan', label: 'Bible Reading Plan', desc: 'A chapter a day, as one family' },
       { href: '/prayer', label: 'Prayer', desc: 'Submit a prayer request' },
       { href: '/salvation', label: 'Salvation', desc: 'Accept Christ today' },

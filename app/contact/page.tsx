@@ -191,28 +191,31 @@ export default function ContactPage() {
           </Reveal>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 18 }}>
             {[
-              { icon: MapPin, title: "Address", lines: ["14051 Stahley Road", "Blue Ridge Summit, PA 17214"], href: "https://maps.google.com/?q=14051+Stahley+Road+Blue+Ridge+Summit+PA+17214" },
-              { icon: Phone, title: "Phone", lines: ["(305) 469-0346"], href: "tel:+13054690346" },
-              { icon: Mail, title: "Email", lines: ["info@cacnorthamerica.com"], href: "mailto:info@cacnorthamerica.com" },
-              { icon: Clock, title: "Annual Convention", lines: ["Six days in July", "CAC Village, PA"], href: null },
+              { icon: MapPin, title: "Address", lines: [{ text: "14051 Stahley Road", href: "https://maps.google.com/?q=14051+Stahley+Road+Blue+Ridge+Summit+PA+17214" }, { text: "Blue Ridge Summit, PA 17214", href: "https://maps.google.com/?q=14051+Stahley+Road+Blue+Ridge+Summit+PA+17214" }] },
+              { icon: Phone, title: "Phone", lines: [{ text: "(305) 469-0346", href: "tel:+13054690346" }] },
+              { icon: Mail, title: "Email", lines: [{ text: "info@cacnorthamerica.com", href: "mailto:info@cacnorthamerica.com" }, { text: "cacna@hotmail.com", href: "mailto:cacna@hotmail.com" }] },
+              { icon: Clock, title: "Annual Convention", lines: [{ text: "Six days in July", href: undefined }, { text: "CAC Village, PA", href: undefined }] },
             ].map((card) => (
               <Reveal key={card.title}>
                 <div style={{ background: "var(--paper)", borderRadius: 20, padding: "28px 24px", border: "1px solid var(--line)", boxShadow: "0 8px 22px rgba(18,20,30,.05)" }}>
                   <IconBadge icon={card.icon} style={{ marginBottom: 14 }} />
                   <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 8 }}>{card.title}</div>
-                  {card.href ? (
-                    <a href={card.href} style={{ fontSize: 15, fontWeight: 700, color: "var(--ink)", textDecoration: "none", lineHeight: 1.65 }}>
-                      {card.lines.map((l, i) => <span key={i} style={{ display: "block" }}>{l}</span>)}
-                    </a>
-                  ) : (
-                    <div style={{ fontSize: 15, fontWeight: 700, color: "var(--ink)", lineHeight: 1.65 }}>
-                      {card.lines.map((l, i) => <span key={i} style={{ display: "block" }}>{l}</span>)}
-                    </div>
-                  )}
+                  <div style={{ fontSize: 15, fontWeight: 700, color: "var(--ink)", lineHeight: 1.65 }}>
+                    {card.lines.map((l, i) => l.href ? (
+                      <a key={i} href={l.href} style={{ display: "block", color: "var(--ink)", textDecoration: "none" }}>{l.text}</a>
+                    ) : (
+                      <span key={i} style={{ display: "block" }}>{l.text}</span>
+                    ))}
+                  </div>
                 </div>
               </Reveal>
             ))}
           </div>
+          <Reveal delay={120}>
+            <p style={{ textAlign: "center", fontSize: 14, color: "var(--ink-soft)", marginTop: 32 }}>
+              General correspondence is handled through the CACNA Regional Secretariat, Pastor Joseph Olawale Latunde, Regional Secretary.
+            </p>
+          </Reveal>
         </div>
       </section>
 

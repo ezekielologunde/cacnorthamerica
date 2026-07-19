@@ -22,10 +22,12 @@ export const CURRENT_WATCHWORD: WatchwordYear = {
   href: "/blog/cacna-2026-chairmans-address",
 };
 
-/** 2025 is deliberately absent — no Watchword for that year has been
- *  confirmed (only its Convention theme, "Balancing the Call," which is a
- *  different thing and isn't substituted here). Sorted newest first. */
+/** Sorted newest first. 2025 (Psalm 119:22, NKJV) was confirmed directly
+ *  from the live cacnorthamerica.com Contact page footer, which displays
+ *  each year's Watchword — distinct from the 1989–2024 CED "Watchword to
+ *  Date" list above, but the same real annual tradition. */
 export const PAST_WATCHWORDS: WatchwordYear[] = [
+  { year: 2025, verseRef: "Psalm 119:22 (NKJV)", verseText: "Remove from me reproach and contempt, for I have kept Your testimonies." },
   { year: 2024, verseRef: "Psalm 119:116", verseText: "Uphold me according to Your word, that I may live; and do not let me be ashamed of my hope." },
   { year: 2023, verseRef: "Psalm 119:105", verseText: "Your word is a lamp to my feet and a light to my path." },
   { year: 2022, verseRef: "2 Chronicles 15:7", verseText: "But you, be strong and do not let your hands be weak, for your work shall be rewarded!" },
