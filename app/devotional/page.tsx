@@ -85,7 +85,7 @@ export default function DevotionalPage() {
           </Reveal>
           <Reveal delay={320}>
             <p style={{ fontStyle: "italic", fontSize: "clamp(15px,1.6vw,18px)", color: "rgba(245,246,250,.7)", margin: "22px 0 0", lineHeight: 1.6 }}>
-              “La mi li ojú mi kí èmi lè ma wo ohun ìyanu wonni lati inu òfin re.”
+              “Là mí li ojú, kí èmi kí ó lè máa wò ohun ìyanu wọ̀nnì láti inú òfin rẹ.”
             </p>
           </Reveal>
           <Reveal delay={360}>
