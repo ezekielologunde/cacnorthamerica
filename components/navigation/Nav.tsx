@@ -42,6 +42,7 @@ const navItems: NavItem[] = [
       { href: '/about', label: 'About CACNA', desc: 'A region of Christ Apostolic Church Worldwide' },
       { href: '/leadership', label: 'Leadership', desc: 'Meet our regional officers' },
       { href: '/zones', label: 'Our Zones', desc: 'Find your DCC/Zonal superintendent' },
+      { href: '/dccs', label: 'Our DCCs', desc: 'District Church Councils & Superintendents' },
       { href: '/ministries', label: 'Ministries', desc: 'Find your place to serve' },
       { href: '/bible-institute', label: 'Bible Institute', desc: 'Ministerial training arm of CACNA' },
     ],
