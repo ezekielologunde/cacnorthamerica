@@ -18,7 +18,7 @@ export const metadata = {
 // without inventing anything for the rest (they fall back to title only).
 const BIOS: Record<string, string> = {
   "Pastor Dr. T.O. Agbeja": "Pastor Dr. Timothy Omolayo Agbeja leads Christ Apostolic Church North America as Regional Superintendent, carrying the mandate to preach the whole Gospel in a clear and undiluted manner across every CACNA member church. He also serves as Superintendent of C.A.C. WADCC, guiding the regional Coordinating Council that oversees CACNA's 16 DCCs and Zones across the United States and Canada.",
-  "Pastor David Adenodi, Ph.D.": "Chairman of the CACNA Convention and member of the CACNA Coordinating Council. Also serves as Provost of the CACNA Bible Institute and Superintendent of the V.O.C-USA DCC.",
+  "Pastor David Adenodi, Ph.D.": "Chairman of the CACNA Convention since 2000 — a role he is completing at the 2026 Convention — and member of the CACNA Coordinating Council. Also serves as Provost of the CACNA Bible Institute and Superintendent of the V.O.C-USA DCC.",
   "Pastor Joseph Olawale Latunde": "Regional Secretary of CACNA and member of the CACNA Coordinating Council. Also serves as Registrar of the CACNA Bible Institute and Superintendent of the Texas DCC.",
   "Pastor Timothy Adelani Latunde": "Regional Treasurer of CACNA and member of the CACNA Coordinating Council, also serving as Superintendent of the Manhattan NY DCC.",
   "Pastor John Oluwatimilehin, Ph.D.": "Chairman of the CAC Village Management Council and member of the CACNA Coordinating Council.",
