@@ -117,7 +117,7 @@ export default async function EventsPage() {
       endDate: toIso(ev.endLocal),
       eventStatus: "https://schema.org/EventScheduled",
       eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-      image: `${SITE_URL}/images/congregation.jpg`,
+      image: `${SITE_URL}/images/logo.png`,
       url: ev.href ? `${SITE_URL}${ev.href}` : `${SITE_URL}/events`,
       location: evPlace(ev.id),
       organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },

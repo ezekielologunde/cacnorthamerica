@@ -71,7 +71,7 @@ export default function PilgrimagePage() {
     endDate: "2026-11-12T23:00:00+02:00",
     eventStatus: "https://schema.org/EventScheduled",
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-    image: `${SITE_URL}/images/congregation.jpg`,
+    image: `${SITE_URL}/images/pilgrimage-2026-flyer.jpg`,
     url: `${SITE_URL}/events/pilgrimage-2026`,
     location: { "@type": "Place", name: "Israel & Egypt (departing JFK)", address: { "@type": "PostalAddress", addressCountry: "IL" } },
     organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },

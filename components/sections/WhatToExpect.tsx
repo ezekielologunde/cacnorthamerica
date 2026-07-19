@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Reveal } from "@/components/ui/Reveal";
 import { annualMoments } from "@/lib/events";
 import { currentOrNextConvention } from "@/lib/conventions";
@@ -35,12 +34,6 @@ export function WhatToExpect() {
                   border: dark ? "none" : "1px solid var(--line)",
                   height: "100%", display: "flex", flexDirection: "column",
                 }}>
-                  {isConvention && (
-                    <>
-                      <Image src="/images/stage.jpg" alt="" aria-hidden fill style={{ objectFit: "cover", opacity: 0.3 }} sizes="(max-width: 900px) 100vw, 400px" />
-                      <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(18,20,30,.55),var(--ink) 85%)" }} />
-                    </>
-                  )}
                   <div style={{ position: "relative", display: "flex", flexDirection: "column", height: "100%" }}>
                     <div style={{
                       display: "inline-flex", alignItems: "center", gap: 8, marginBottom: 24, alignSelf: "flex-start",

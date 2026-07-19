@@ -63,7 +63,7 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
     endDate: `${cy.endIso}T22:00:00-04:00`,
     eventStatus: "https://schema.org/EventScheduled",
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-    image: `${SITE_URL}/images/congregation.jpg`,
+    image: `${SITE_URL}/images/logo.png`,
     url: `${SITE_URL}${ev.href}`,
     location: { "@type": "Place", name: "CAC Village", address: { "@type": "PostalAddress", streetAddress: "14051 Stahley Rd", addressLocality: "Blue Ridge Summit", addressRegion: "PA", postalCode: "17214", addressCountry: "US" } },
     organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },

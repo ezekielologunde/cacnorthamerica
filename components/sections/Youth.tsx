@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { Reveal } from '@/components/ui/Reveal';
 import { IconBadge } from '@/components/ui/IconBadge';
 import { BookOpen, Target } from 'lucide-react';
@@ -21,8 +20,6 @@ export function Youth() {
               href="/devotional"
               style={{ textDecoration: 'none', color: '#fff', background: 'var(--ink)', borderRadius: 24, padding: 34, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 280, position: 'relative', overflow: 'hidden' }}
             >
-              <Image src="/images/choir.jpg" alt="" aria-hidden fill style={{ objectFit: 'cover', opacity: 0.35 }} sizes="(max-width: 900px) 100vw, 400px" />
-              <div aria-hidden style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg,rgba(18,20,30,.35),var(--ink) 88%)' }} />
               <div style={{ position: 'absolute', top: -50, right: -50, width: 200, height: 200, borderRadius: '50%', background: 'radial-gradient(circle,var(--gold),transparent 68%)', opacity: .4 }} />
               <div style={{ position: 'relative' }}>
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(253,200,65,.18)', color: 'var(--gold)', fontWeight: 800, fontSize: 12, padding: '7px 13px', borderRadius: 999 }}>DAILY DEVOTIONAL</span>

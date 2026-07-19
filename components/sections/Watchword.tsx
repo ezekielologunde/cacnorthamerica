@@ -1,18 +1,9 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Reveal } from "@/components/ui/Reveal";
 
 export function Watchword() {
   return (
     <section style={{ position: "relative", background: "var(--cream-2)", padding: "clamp(48px,6vw,80px) clamp(20px,5vw,64px)", borderTop: "1px solid var(--line)", borderBottom: "1px solid var(--line)", overflow: "hidden" }}>
-      <Image
-        src="/images/worship.jpg"
-        alt=""
-        aria-hidden
-        fill
-        style={{ objectFit: "cover", opacity: 0.08 }}
-        sizes="100vw"
-      />
       <Reveal style={{ position: "relative", maxWidth: 820, margin: "0 auto", textAlign: "center" }}>
         <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Our 2026 Watchword</span>
         <p style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.6vw,46px)", letterSpacing: "-0.02em", color: "var(--ink)", margin: "16px auto 0", lineHeight: 1.18, maxWidth: 760, textWrap: "balance" }}>

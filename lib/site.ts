@@ -69,7 +69,7 @@ export function churchJsonLd() {
         alternateName: SITE.shortName,
         url: SITE_URL,
         logo: `${SITE_URL}/images/logo.png`,
-        image: `${SITE_URL}/images/congregation.jpg`,
+        image: `${SITE_URL}/images/logo.png`,
         description: SITE.description,
         telephone: SITE.telephone,
         email: SITE.email,
