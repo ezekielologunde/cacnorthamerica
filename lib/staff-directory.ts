@@ -1,10 +1,3 @@
-export interface StaffContact {
-  label: string;
-  email: string;
-}
-
-/** Mailboxes for routing admin messages. Update here as real CACNA
- *  department mailboxes are provisioned. */
-export const STAFF_DIRECTORY: StaffContact[] = [
-  { label: "General Info", email: "info@cacnorthamerica.com" },
-];
+/** Mailbox admin messages forward to. Only one real department mailbox
+ *  exists today — revisit as a routed directory if more are provisioned. */
+export const STAFF_EMAIL = "info@cacnorthamerica.com";

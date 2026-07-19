@@ -11,7 +11,6 @@ import { createServiceClient } from "@/lib/supabase/server";
 // Below-fold sections split into separate JS chunks — browser parses them
 // incrementally instead of one blocking task, cutting TBT significantly.
 const Watchword     = dynamic(() => import("@/components/sections/Watchword").then(m => ({ default: m.Watchword })));
-const Testimonials  = dynamic(() => import("@/components/sections/Testimonials").then(m => ({ default: m.Testimonials })));
 const PastorWelcome = dynamic(() => import("@/components/sections/PastorWelcome").then(m => ({ default: m.PastorWelcome })));
 const WhatToExpect  = dynamic(() => import("@/components/sections/WhatToExpect").then(m => ({ default: m.WhatToExpect })));
 const Impact        = dynamic(() => import("@/components/sections/Impact").then(m => ({ default: m.Impact })));
@@ -100,7 +99,6 @@ export default async function Home() {
       <Hero />
       <ConventionSpotlight />
       <Watchword />
-      <Testimonials />
       <PastorWelcome />
       <WhatToExpect />
       <Impact />
