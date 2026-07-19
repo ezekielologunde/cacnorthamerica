@@ -52,6 +52,24 @@ const ORDER_OF_SERVICE = [
   "Closing Prayer and Benediction",
 ];
 
+const ORDINATION_ORDER_OF_SERVICE = [
+  "Praise and Worship",
+  "Opening Hymn #79 — “Praise, My Soul the King of Heaven”",
+  "Prayer",
+  "Lesson",
+  "Introductions",
+  "Welcome Address",
+  "Choir Ministration",
+  "Pastors Ordination",
+  "Choir Ministration",
+  "Message by the President",
+  "Ordination Thanksgiving",
+  "Special Prayer",
+  "Closing Hymn #581 — “Lord, Dismiss Us with Thy Blessing”",
+  "Watchword",
+  "Benediction",
+];
+
 const CONVENTION_GIVING = [
   { icon: Landmark, label: "Chase Bank", value: "Ac# 823936908" },
   { icon: Send, label: "Zelle", value: "cacnaconvention@gmail.com" },
@@ -272,6 +290,29 @@ export default function CACNA2026Page() {
           </Reveal>
           <ol style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
             {ORDER_OF_SERVICE.map((item, i) => (
+              <Reveal key={i} delay={i * 30}>
+                <li style={{ display: "flex", gap: 14, alignItems: "flex-start", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 14, padding: "14px 18px" }}>
+                  <span style={{ flexShrink: 0, fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 14, color: "var(--red)", minWidth: 22 }}>{i + 1}</span>
+                  <span style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.6 }}>{item}</span>
+                </li>
+              </Reveal>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* Ordination Order of Service */}
+      <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+        <div style={{ maxWidth: 700, margin: "0 auto" }}>
+          <Reveal style={{ marginBottom: 32 }}>
+            <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 12 }}>
+              <ListOrdered size={16} strokeWidth={2.5} style={{ verticalAlign: "middle", marginRight: 8, color: "var(--flame)" }} aria-hidden />
+              Friday, July 17 — Ordination Order of Service
+            </div>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.5vw,42px)", letterSpacing: "-.6px", color: "var(--ink)", margin: 0 }}>Pastors Ordination Service.</h2>
+          </Reveal>
+          <ol style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
+            {ORDINATION_ORDER_OF_SERVICE.map((item, i) => (
               <Reveal key={i} delay={i * 30}>
                 <li style={{ display: "flex", gap: 14, alignItems: "flex-start", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 14, padding: "14px 18px" }}>
                   <span style={{ flexShrink: 0, fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 14, color: "var(--red)", minWidth: 22 }}>{i + 1}</span>

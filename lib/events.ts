@@ -24,6 +24,8 @@ export interface ChurchEvent {
   navLabel?: string;
   /** Overrides the default physical address in calendar invites (e.g. a virtual/Zoom event). */
   location?: string;
+  /** Optional decorative photo for event cards — local /public path or external URL. */
+  image?: string;
 }
 
 /**

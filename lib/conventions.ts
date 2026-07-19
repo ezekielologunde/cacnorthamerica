@@ -85,6 +85,59 @@ export function currentOrNextConvention(): ConventionYear {
   return conventionYears.find((cy) => !isConventionPast(cy)) ?? conventionYears[conventionYears.length - 1];
 }
 
+export type ConventionState = "upcoming" | "live" | "concluded-recent" | "concluded";
+
+/** How long (days) after a convention ends it's still treated as the site's
+ *  headline story — a recap window before it fades into plain archive. */
+const CONCLUDED_RECENT_DAYS = 21;
+
+/** True once the convention's start date has begun (midnight ET on startIso).
+ *  Mirrors isConventionPast's DST approximation. */
+function hasConventionStarted(cy: ConventionYear): boolean {
+  const [y, m, d] = cy.startIso.split("-").map(Number);
+  const offset = m >= 3 && m <= 10 ? 4 : 5;
+  return Date.now() > Date.UTC(y, m - 1, d, 0 + offset, 0);
+}
+
+/** Single source of truth for "what should the site be featuring about this
+ *  convention year right now" — upcoming (hasn't started), live (underway),
+ *  concluded-recent (ended, still within the recap window), or concluded
+ *  (fully archived). */
+export function getConventionState(cy: ConventionYear): ConventionState {
+  if (!hasConventionStarted(cy)) return "upcoming";
+  if (!isConventionPast(cy)) return "live";
+  const [y, m, d] = cy.endIso.split("-").map(Number);
+  const offset = m >= 3 && m <= 10 ? 4 : 5;
+  const endedAt = Date.UTC(y, m - 1, d, 22 + offset, 0);
+  const daysSince = (Date.now() - endedAt) / 86400000;
+  return daysSince <= CONCLUDED_RECENT_DAYS ? "concluded-recent" : "concluded";
+}
+
+/** Which day of the convention "today" is (1-indexed), or null when not live.
+ *  Powers the Hero's "Day X of 6" live-state indicator. */
+export function conventionDayNumber(cy: ConventionYear): number | null {
+  if (getConventionState(cy) !== "live") return null;
+  const [y, m, d] = cy.startIso.split("-").map(Number);
+  const startUtc = Date.UTC(y, m - 1, d);
+  const daysElapsed = Math.floor((Date.now() - startUtc) / 86400000);
+  return Math.min(RECURRING_SESSION_PATTERN.length, Math.max(1, daysElapsed + 1));
+}
+
+/** The convention year most relevant to feature RIGHT NOW. Unlike
+ *  currentOrNextConvention() (which rolls to next year the instant the
+ *  current one is past), this holds onto a just-concluded convention through
+ *  its recap window so the site can acknowledge it instead of silently
+ *  flipping to "Save the Date" for next year. Falls through to
+ *  currentOrNextConvention() once the recap window elapses. */
+export function conventionToFeature(): { cy: ConventionYear; state: ConventionState } {
+  const prior = [...conventionYears].reverse().find((cy) => isConventionPast(cy));
+  if (prior && getConventionState(prior) === "concluded-recent") {
+    return { cy: prior, state: "concluded-recent" };
+  }
+  const cy = currentOrNextConvention();
+  return { cy, state: getConventionState(cy) };
+}
+
 /** Shape-compatible with lib/events.ts's ChurchEvent — kept structural (no
  *  import of that type) so this module never depends on lib/events.ts. */
 export interface ConventionChurchEvent {

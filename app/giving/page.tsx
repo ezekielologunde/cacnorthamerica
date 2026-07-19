@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
@@ -61,6 +62,11 @@ export default function GivingPage() {
             <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.7, margin: "14px auto 0", maxWidth: 600 }}>
               Conceived in 2018 to commemorate the Church&apos;s 100th anniversary, this project helps solve accommodation challenges on the prayer camp at Ikeji-Arakeji, Nigeria. CACNA members are warmly encouraged to give toward it.
             </p>
+          </Reveal>
+          <Reveal style={{ marginBottom: 28 }}>
+            <div style={{ position: "relative", height: 260, borderRadius: 22, overflow: "hidden", boxShadow: "0 14px 36px rgba(18,20,30,.1)" }}>
+              <Image src="/images/building-render.jpg" alt="Rendering of the CAC Centenary Building Project" fill style={{ objectFit: "cover" }} sizes="(max-width: 760px) 100vw, 760px" />
+            </div>
           </Reveal>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 16 }}>
             {CENTENARY_ACCOUNTS.map((a, i) => (

@@ -199,6 +199,24 @@ export const POSTS: BlogPost[] = [
       "\"In these days of moral relativism, doctrinal pluralism, monolatrism, emotionalism, materialism, and egoism,\" he closed, \"the church must return to the Divine Word as the supreme rule of life and godliness. 'The grass withers and the flowers fall, but the word of our God stands forever' (Isaiah 40:8). Let us therefore read it, believe it, obey it, teach it, and build our daily lives upon it.\"",
     ],
   },
+  {
+    slug: "cacna-2026-closing-appreciation",
+    title: "As we conclude — the Convention Chairman's Appreciation.",
+    excerpt:
+      "Pastor David Olusegun Adenodi, Ph.D., Chairman of the Convention & Conference Planning Committee, closes CACNA 2026 with thanks to every speaker, volunteer, and family who made \"The Bible: God's Message to Man\" possible.",
+    date: "July 18, 2026",
+    dateIso: "2026-07-18",
+    category: "Ministry Update",
+    categoryColor: "#2D42C9",
+    accent: "linear-gradient(135deg,#2D42C9,#FDC841)",
+    readTime: "3 min read",
+    body: [
+      "\"Calvary greetings in the name of our Lord and Savior Jesus,\" Pastor David Olusegun Adenodi, Ph.D., Chairman of the CACNA Convention & Conference Planning Committee, wrote as the 2026 convention drew to a close. \"As we conclude this spiritually enriching convention themed 'The Bible: God's Message to Man,' I stand before you with a heart full of gratitude.\"",
+      "On behalf of the Convention Committee, he extended thanks to CACNA's leaders and to the convention's distinguished speakers and ministers, \"for delivering messages that have challenged and uplifted us. Your insights have equipped us to lead with wisdom and humility.\"",
+      "He also thanked the organizing committee, volunteers, and support staff whose work kept the week running smoothly. \"Your behind-the-scenes efforts have not gone unnoticed,\" he said, and to every attendee: \"thank you for your active participation and enthusiasm. Your presence has made this convention a truly communal and transformative experience.\"",
+      "\"As we depart, let us carry forward the lessons learned and continue to build on the foundation laid during this convention,\" he closed. \"May we all strive to exemplify the leadership qualities that glorify God and serve our communities. Thank you, and may God bless you all abundantly.\"",
+    ],
+  },
 ];
 
 export function getPost(slug: string): BlogPost | undefined {

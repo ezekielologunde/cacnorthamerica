@@ -16,6 +16,7 @@ const WhatToExpect  = dynamic(() => import("@/components/sections/WhatToExpect")
 const Impact        = dynamic(() => import("@/components/sections/Impact").then(m => ({ default: m.Impact })));
 const GrowResources = dynamic(() => import("@/components/sections/Youth").then(m => ({ default: m.Youth })));
 const Events        = dynamic(() => import("@/components/sections/Events").then(m => ({ default: m.Events })));
+const LatestNews    = dynamic(() => import("@/components/sections/LatestNews").then(m => ({ default: m.LatestNews })));
 const GlobalChurches = dynamic(() => import("@/components/sections/GlobalChurches").then(m => ({ default: m.GlobalChurches })));
 const PlanVisit     = dynamic(() => import("@/components/sections/PlanVisit").then(m => ({ default: m.PlanVisit })));
 const InstagramFeed = dynamic(() => import("@/components/sections/InstagramFeed").then(m => ({ default: m.InstagramFeed })));
@@ -104,6 +105,7 @@ export default async function Home() {
       <Impact />
       <GrowResources />
       <Events />
+      <LatestNews />
       <GlobalChurches />
       <PlanVisit />
       <InstagramFeed />

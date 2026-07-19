@@ -7,13 +7,9 @@ import { RevealText } from "@/components/ui/RevealText";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { useCountdown } from "@/lib/useCountdown";
 import { haptic } from "@/lib/haptics";
-import { currentOrNextConvention } from "@/lib/conventions";
+import { getHeroContent } from "@/lib/heroContent";
 
-const nextConvention = currentOrNextConvention();
-const heroCtaLabel = nextConvention.registrationUrl
-  ? `Register — CACNA ${nextConvention.year}`
-  : `CACNA ${nextConvention.year} — Save the Date`;
-const heroCtaHref = nextConvention.registrationUrl ?? nextConvention.href;
+const hero = getHeroContent();
 
 const HERO_T = {
   en: { badge: "CACNA", line1: "One Fold.", line2: "One Shepherd." },
@@ -231,6 +227,38 @@ export function Hero() {
           </div>
         </Reveal>
 
+        <Reveal delay={360}>
+          <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 10, marginTop: 22 }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+              <span style={{
+                background: hero.mode === "live" ? "#EB6342" : "var(--gold)",
+                color: hero.mode === "live" ? "#fff" : "var(--ink)",
+                fontSize: 11, fontWeight: 800, padding: "4px 12px", borderRadius: 999,
+                letterSpacing: ".5px", textTransform: "uppercase",
+              }}>
+                {hero.badge}
+              </span>
+              {hero.eyebrow && (
+                <span style={{ color: "rgba(255,255,255,.7)", fontSize: 13, fontWeight: 700 }}>{hero.eyebrow}</span>
+              )}
+              {hero.dateLabel && !hero.eyebrow && (
+                <span style={{ color: "rgba(255,255,255,.6)", fontSize: 13, fontWeight: 600 }}>{hero.dateLabel}</span>
+              )}
+            </div>
+            <p style={{
+              fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "clamp(17px,2vw,22px)",
+              color: "#fff", margin: 0, maxWidth: 560, textAlign: "center", lineHeight: 1.3,
+            }}>
+              {hero.title}{hero.theme ? ` — “${hero.theme}”` : ""}
+            </p>
+            {hero.subtitle && (
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,.7)", margin: 0, maxWidth: 480, textAlign: "center", lineHeight: 1.55 }}>
+                {hero.subtitle}
+              </p>
+            )}
+          </div>
+        </Reveal>
+
         <Reveal delay={420}>
           <p style={{
             fontSize: "clamp(16px,1.5vw,19px)", lineHeight: 1.65,
@@ -257,7 +285,7 @@ export function Hero() {
         <Reveal delay={520}>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 34, justifyContent: "center" }}>
             <Magnetic strength={0.4}>
-              <a href={heroCtaHref} target={nextConvention.registrationUrl ? "_blank" : undefined} rel={nextConvention.registrationUrl ? "noopener noreferrer" : undefined} className="btn-sheen" style={{
+              <a href={hero.ctaHref} target={hero.ctaExternal ? "_blank" : undefined} rel={hero.ctaExternal ? "noopener noreferrer" : undefined} className="btn-sheen" style={{
                 display: "inline-flex", alignItems: "center", gap: 10,
                 background: "var(--gold)", color: "var(--ink)",
                 fontWeight: 800, fontSize: 16,
@@ -265,7 +293,7 @@ export function Hero() {
                 textDecoration: "none",
                 boxShadow: "0 14px 34px rgba(253,200,65,.5)",
               }}>
-                {heroCtaLabel} →
+                {hero.ctaLabel} →
               </a>
             </Magnetic>
             <Magnetic strength={0.4}>
@@ -282,37 +310,42 @@ export function Hero() {
                 Join Us Online
               </Link>
             </Magnetic>
-            <Magnetic strength={0.4}>
-              <Link href="/visit" style={{
-                display: "inline-flex", alignItems: "center", gap: 8,
-                background: "rgba(255,255,255,.12)", color: "#fff",
-                fontWeight: 700, fontSize: 16,
-                padding: "17px 28px", borderRadius: 999,
-                textDecoration: "none",
-                border: "1.5px solid rgba(255,255,255,.35)",
-                backdropFilter: "blur(8px)",
-              }}>
-                Find a Church
-              </Link>
-            </Magnetic>
           </div>
         </Reveal>
 
-        <Reveal delay={600}>
-          <div style={{
-            display: "inline-flex", alignItems: "center", gap: 14,
-            marginTop: 38,
-            background: "rgba(255,255,255,.08)",
-            border: "1px solid rgba(255,255,255,.14)",
-            color: "#fff",
-            padding: "14px 22px", borderRadius: 18,
-            backdropFilter: "blur(12px)",
-          }}>
-            <span style={{ width: 9, height: 9, borderRadius: "50%", background: "#EB6342", animation: "pulse-red 1.8s infinite", display: "inline-block", flexShrink: 0 }} />
-            <span style={{ fontSize: 13, fontWeight: 600, opacity: .75 }}>Next: {nextLabel} in</span>
-            <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, letterSpacing: "-.4px", color: "#FFD9A8" }}>{countdown}</span>
-          </div>
-        </Reveal>
+        {hero.mode === "upcoming" && (
+          <Reveal delay={600}>
+            <div style={{
+              display: "inline-flex", alignItems: "center", gap: 14,
+              marginTop: 38,
+              background: "rgba(255,255,255,.08)",
+              border: "1px solid rgba(255,255,255,.14)",
+              color: "#fff",
+              padding: "14px 22px", borderRadius: 18,
+              backdropFilter: "blur(12px)",
+            }}>
+              <span style={{ width: 9, height: 9, borderRadius: "50%", background: "#EB6342", animation: "pulse-red 1.8s infinite", display: "inline-block", flexShrink: 0 }} />
+              <span style={{ fontSize: 13, fontWeight: 600, opacity: .75 }}>Next: {nextLabel} in</span>
+              <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, letterSpacing: "-.4px", color: "#FFD9A8" }}>{countdown}</span>
+            </div>
+          </Reveal>
+        )}
+        {hero.mode === "live" && (
+          <Reveal delay={600}>
+            <div style={{
+              display: "inline-flex", alignItems: "center", gap: 14,
+              marginTop: 38,
+              background: "rgba(255,255,255,.08)",
+              border: "1px solid rgba(255,255,255,.14)",
+              color: "#fff",
+              padding: "14px 22px", borderRadius: 18,
+              backdropFilter: "blur(12px)",
+            }}>
+              <span style={{ width: 9, height: 9, borderRadius: "50%", background: "#EB6342", animation: "pulse-red 1.8s infinite", display: "inline-block", flexShrink: 0 }} />
+              <span style={{ fontSize: 13, fontWeight: 600, opacity: .75 }}>{hero.dateLabel} · CAC Village</span>
+            </div>
+          </Reveal>
+        )}
       </motion.div>
 
       {/* Scroll cue */}

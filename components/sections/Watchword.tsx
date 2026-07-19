@@ -1,17 +1,26 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Reveal } from "@/components/ui/Reveal";
 
 export function Watchword() {
   return (
-    <section style={{ background: "var(--cream-2)", padding: "clamp(48px,6vw,80px) clamp(20px,5vw,64px)", borderTop: "1px solid var(--line)", borderBottom: "1px solid var(--line)" }}>
-      <Reveal style={{ maxWidth: 820, margin: "0 auto", textAlign: "center" }}>
+    <section style={{ position: "relative", background: "var(--cream-2)", padding: "clamp(48px,6vw,80px) clamp(20px,5vw,64px)", borderTop: "1px solid var(--line)", borderBottom: "1px solid var(--line)", overflow: "hidden" }}>
+      <Image
+        src="/images/worship.jpg"
+        alt=""
+        aria-hidden
+        fill
+        style={{ objectFit: "cover", opacity: 0.08 }}
+        sizes="100vw"
+      />
+      <Reveal style={{ position: "relative", maxWidth: 820, margin: "0 auto", textAlign: "center" }}>
         <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Our 2026 Watchword</span>
         <p style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.6vw,46px)", letterSpacing: "-0.02em", color: "var(--ink)", margin: "16px auto 0", lineHeight: 1.18, maxWidth: 760, textWrap: "balance" }}>
-          “Remove from me reproach and contempt; for I have kept Thy testimonies.”
+          “Open my eyes, that I may see wondrous things from Your law.”
         </p>
         <div style={{ marginTop: 20, display: "inline-flex", alignItems: "center", gap: 12, fontSize: 12.5, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)" }}>
           <span style={{ width: 26, height: 1, background: "var(--line)" }} aria-hidden />
-          Psalm 119:22 · NKJV
+          Psalm 119:18 · NKJV
           <span style={{ width: 26, height: 1, background: "var(--line)" }} aria-hidden />
         </div>
         <div style={{ marginTop: 22 }}>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Reveal } from "@/components/ui/Reveal";
 import { annualMoments } from "@/lib/events";
 import { currentOrNextConvention } from "@/lib/conventions";
@@ -27,46 +28,55 @@ export function WhatToExpect() {
             return (
               <Reveal key={m.id} delay={i * 100}>
                 <div style={{
+                  position: "relative", overflow: "hidden",
                   borderRadius: 24, padding: "36px 32px",
                   background: dark ? "var(--ink)" : "var(--paper)",
                   boxShadow: dark ? "0 24px 50px rgba(18,20,30,.28)" : "0 10px 26px rgba(18,20,30,.06)",
                   border: dark ? "none" : "1px solid var(--line)",
                   height: "100%", display: "flex", flexDirection: "column",
                 }}>
-                  <div style={{
-                    display: "inline-flex", alignItems: "center", gap: 8, marginBottom: 24, alignSelf: "flex-start",
-                    background: dark ? "rgba(245,246,250,.1)" : "var(--cream-2)",
-                    padding: "6px 14px", borderRadius: 999,
-                  }}>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: dark ? "var(--gold)" : "var(--red)", letterSpacing: "1px", textTransform: "uppercase" }}>{m.when}</span>
-                  </div>
-                  <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 26, color: dark ? "var(--cream)" : "var(--ink)", letterSpacing: "-.4px", margin: "0 0 14px" }}>
-                    {m.title}
-                  </h3>
-                  <p style={{ fontSize: 15, color: dark ? "rgba(245,246,250,.65)" : "var(--ink-soft)", lineHeight: 1.65, margin: 0, flex: 1 }}>
-                    {m.desc}
-                  </p>
                   {isConvention && (
-                    cy.registrationUrl ? (
-                      <a
-                        href={cy.registrationUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="press"
-                        style={{ marginTop: 24, display: "inline-flex", alignItems: "center", gap: 8, alignSelf: "flex-start", background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 14, padding: "11px 20px", borderRadius: 999, textDecoration: "none" }}
-                      >
-                        Register Now →
-                      </a>
-                    ) : (
-                      <Link
-                        href={cy.href}
-                        className="press"
-                        style={{ marginTop: 24, display: "inline-flex", alignItems: "center", gap: 8, alignSelf: "flex-start", background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 14, padding: "11px 20px", borderRadius: 999, textDecoration: "none" }}
-                      >
-                        Save the Date →
-                      </Link>
-                    )
+                    <>
+                      <Image src="/images/stage.jpg" alt="" aria-hidden fill style={{ objectFit: "cover", opacity: 0.3 }} sizes="(max-width: 900px) 100vw, 400px" />
+                      <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(18,20,30,.55),var(--ink) 85%)" }} />
+                    </>
                   )}
+                  <div style={{ position: "relative", display: "flex", flexDirection: "column", height: "100%" }}>
+                    <div style={{
+                      display: "inline-flex", alignItems: "center", gap: 8, marginBottom: 24, alignSelf: "flex-start",
+                      background: dark ? "rgba(245,246,250,.1)" : "var(--cream-2)",
+                      padding: "6px 14px", borderRadius: 999,
+                    }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: dark ? "var(--gold)" : "var(--red)", letterSpacing: "1px", textTransform: "uppercase" }}>{m.when}</span>
+                    </div>
+                    <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 26, color: dark ? "var(--cream)" : "var(--ink)", letterSpacing: "-.4px", margin: "0 0 14px" }}>
+                      {m.title}
+                    </h3>
+                    <p style={{ fontSize: 15, color: dark ? "rgba(245,246,250,.65)" : "var(--ink-soft)", lineHeight: 1.65, margin: 0, flex: 1 }}>
+                      {m.desc}
+                    </p>
+                    {isConvention && (
+                      cy.registrationUrl ? (
+                        <a
+                          href={cy.registrationUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="press"
+                          style={{ marginTop: 24, display: "inline-flex", alignItems: "center", gap: 8, alignSelf: "flex-start", background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 14, padding: "11px 20px", borderRadius: 999, textDecoration: "none" }}
+                        >
+                          Register Now →
+                        </a>
+                      ) : (
+                        <Link
+                          href={cy.href}
+                          className="press"
+                          style={{ marginTop: 24, display: "inline-flex", alignItems: "center", gap: 8, alignSelf: "flex-start", background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 14, padding: "11px 20px", borderRadius: 999, textDecoration: "none" }}
+                        >
+                          Save the Date →
+                        </Link>
+                      )
+                    )}
+                  </div>
                 </div>
               </Reveal>
             );
