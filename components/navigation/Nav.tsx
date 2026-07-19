@@ -41,6 +41,7 @@ const navItems: NavItem[] = [
     dropdown: [
       { href: '/about', label: 'About CACNA', desc: 'A region of Christ Apostolic Church Worldwide' },
       { href: '/leadership', label: 'Leadership', desc: 'Meet our regional officers' },
+      { href: '/zones', label: 'Our Zones', desc: 'Find your DCC/Zonal superintendent' },
       { href: '/ministries', label: 'Ministries', desc: 'Find your place to serve' },
     ],
   },
