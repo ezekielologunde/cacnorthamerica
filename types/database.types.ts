@@ -352,6 +352,48 @@ export type Database = {
         }
         Relationships: []
       }
+      convention_schedule_sessions: {
+        Row: {
+          created_at: string
+          day_date: string
+          ends_at: string | null
+          id: string
+          minister_name: string | null
+          minister_title: string | null
+          sort_order: number
+          starts_at: string
+          title: string
+          track: string | null
+          year: number
+        }
+        Insert: {
+          created_at?: string
+          day_date: string
+          ends_at?: string | null
+          id?: string
+          minister_name?: string | null
+          minister_title?: string | null
+          sort_order?: number
+          starts_at: string
+          title: string
+          track?: string | null
+          year: number
+        }
+        Update: {
+          created_at?: string
+          day_date?: string
+          ends_at?: string | null
+          id?: string
+          minister_name?: string | null
+          minister_title?: string | null
+          sort_order?: number
+          starts_at?: string
+          title?: string
+          track?: string | null
+          year?: number
+        }
+        Relationships: []
+      }
       departments: {
         Row: {
           contact_email: string | null
@@ -995,7 +1037,7 @@ export type Database = {
 
 type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
 
-type DefaultSchema = DatabaseWithoutInternals["public"]
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
@@ -1109,3 +1151,9 @@ export type CompositeTypes<
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
+
+export const Constants = {
+  public: {
+    Enums: {},
+  },
+} as const
