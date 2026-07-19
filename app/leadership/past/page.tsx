@@ -17,10 +17,12 @@ const SECTIONS: { category: Leader["category"]; label: string }[] = [
   { category: "past_president", label: "Past Presidents" },
   { category: "past_superintendent", label: "Past General Superintendents" },
   { category: "past_evangelist", label: "Past General Evangelists" },
+  { category: "past_secretary", label: "Past General Secretaries" },
+  { category: "past_treasurer", label: "Past General Treasurers" },
 ];
 
 export default async function PastLeadersPage() {
-  const leaders = await getLeaders(["past_president", "past_superintendent", "past_evangelist"]);
+  const leaders = await getLeaders(["past_president", "past_superintendent", "past_evangelist", "past_secretary", "past_treasurer"]);
 
   return (
     <main>
@@ -69,6 +71,11 @@ export default async function PastLeadersPage() {
                         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "4px 12px", marginBottom: p.bio ? 10 : 0 }}>
                           <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "var(--ink)", margin: 0 }}>{p.full_name}</h3>
                           <span style={{ fontSize: 13.5, color: "var(--red)", fontWeight: 700 }}>{p.title}</span>
+                          {p.tenure_start && (
+                            <span style={{ fontSize: 13, color: "var(--ink-soft)" }}>
+                              {p.tenure_start}–{p.tenure_end ?? "present"}
+                            </span>
+                          )}
                         </div>
                         {p.bio && <p style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.7, margin: 0 }}>{p.bio}</p>}
                       </div>

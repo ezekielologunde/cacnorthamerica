@@ -173,7 +173,7 @@ export default function AboutPage() {
           <Reveal style={{ textAlign: "center", marginBottom: 48 }}>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Heritage</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(36px,5vw,64px)", letterSpacing: "-1.5px", color: "var(--ink)", margin: "14px 0 0", lineHeight: .95 }}>
-              One movement, 16 zones.
+              One movement, 24 zones &amp; DCCs.
             </h2>
           </Reveal>
           <div className="r2" style={{ gap: 44, alignItems: "center" }}>
@@ -338,7 +338,7 @@ export default function AboutPage() {
             <Reveal delay={120} style={{ background: "linear-gradient(155deg, var(--red), var(--red-deep))", color: "var(--cream)", borderRadius: 26, padding: "clamp(32px,4vw,48px) clamp(28px,3.5vw,40px)", display: "flex", flexDirection: "column", justifyContent: "center", boxShadow: "0 18px 36px rgba(200,30,58,.26)" }}>
               <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "rgba(245,246,250,.72)", marginBottom: 16 }}>The Regional Team</div>
               <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,3.6vw,40px)", letterSpacing: "-.8px", margin: "0 0 18px", lineHeight: 1 }}>
-                16 zones.<br />One family.<br />One Gospel.
+                24 zones &amp; DCCs.<br />One family.<br />One Gospel.
               </h3>
               <p style={{ fontSize: 15.5, lineHeight: 1.7, opacity: .92, margin: "0 0 26px" }}>
                 Alongside CACNA&apos;s national officers, 16 Zonal Superintendents shepherd member churches across the United States and Canada — one regional leadership, one mandate.

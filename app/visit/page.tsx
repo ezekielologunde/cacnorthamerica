@@ -138,7 +138,7 @@ export default function VisitPage() {
         <div className="r3" style={{ maxWidth: 1100, margin: "0 auto", gap: 18 }}>
           {[
             { icon: MapPin, title: "CAC Village (Convention)", value: "14051 Stahley Road\nBlue Ridge Summit, PA 17214", link: "https://maps.google.com/?q=14051+Stahley+Road+Blue+Ridge+Summit+PA+17214" },
-            { icon: Clock,  title: "16 Zones", value: "Member churches across\nthe U.S. and Canada", link: null },
+            { icon: Clock,  title: "24 Zones & DCCs", value: "Member churches across\nthe U.S. and Canada", link: null },
             { icon: Phone,  title: "Phone", value: "(305) 469-0346", link: "tel:+13054690346" },
           ].map((card, i) => (
             <Reveal key={card.title} delay={i * 80}>

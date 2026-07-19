@@ -1,7 +1,7 @@
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
-import { Landmark } from "lucide-react";
+import { Landmark, Phone, Mail } from "lucide-react";
 import { getLeaders } from "@/lib/leaders";
 
 export const revalidate = 3600;
@@ -57,8 +57,22 @@ export default async function DCCsPage() {
                     </div>
                     <div>
                       <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, letterSpacing: "-.3px", color: "var(--ink)", margin: "0 0 3px", lineHeight: 1.2 }}>{d.full_name}</h3>
-                      <div style={{ fontSize: 13, color: "var(--ink-soft)" }}>DCC Superintendent</div>
+                      <div style={{ fontSize: 13, color: "var(--ink-soft)" }}>{d.title}</div>
                     </div>
+                    {(d.phone || d.email) && (
+                      <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: "auto", paddingTop: 10, borderTop: "1px solid var(--line)" }}>
+                        {d.phone && (
+                          <a href={`tel:${d.phone.replace(/[^\d+]/g, "")}`} style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 14, fontWeight: 600, color: "var(--ink)", textDecoration: "none" }}>
+                            <Phone size={14} strokeWidth={2} color="var(--ink-soft)" aria-hidden /> {d.phone}
+                          </a>
+                        )}
+                        {d.email && (
+                          <a href={`mailto:${d.email}`} style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 14, fontWeight: 600, color: "var(--ink)", textDecoration: "none", wordBreak: "break-all" }}>
+                            <Mail size={14} strokeWidth={2} color="var(--ink-soft)" aria-hidden /> {d.email}
+                          </a>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </Reveal>
               ))}

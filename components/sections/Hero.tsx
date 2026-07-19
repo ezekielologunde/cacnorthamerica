@@ -185,7 +185,7 @@ export function Hero() {
             backdropFilter: "blur(8px)",
           }}>
             <span style={{ background: "var(--red)", color: "#fff", fontSize: 11, fontWeight: 800, padding: "3px 9px", borderRadius: 999, letterSpacing: ".5px" }}>{t.badge}</span>
-            16 Zones, U.S. &amp; Canada · A Region of Christ Apostolic Church Worldwide
+            24 Zones &amp; DCCs, U.S. &amp; Canada · A Region of Christ Apostolic Church Worldwide
           </span>
         </Reveal>
 
