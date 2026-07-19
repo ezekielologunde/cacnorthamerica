@@ -73,14 +73,24 @@ export default function DevotionalPage() {
           </Reveal>
           <Reveal delay={90}>
             <p style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4.2vw,52px)", letterSpacing: "-0.02em", color: "#fff", margin: "18px 0 0", lineHeight: 1.12, textWrap: "balance" }}>
-              “Remove from me reproach and contempt; for I have kept Thy testimonies.”
+              “Open my eyes, that I may see wondrous things from Your law.”
             </p>
           </Reveal>
           <Reveal delay={240}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 12, marginTop: 26, fontSize: 12.5, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)" }}>
               <span style={{ width: 28, height: 1, background: "rgba(253,200,65,.55)" }} aria-hidden />
-              Psalm 119:22 · NKJV
+              Psalm 119:18
               <span style={{ width: 28, height: 1, background: "rgba(253,200,65,.55)" }} aria-hidden />
+            </div>
+          </Reveal>
+          <Reveal delay={320}>
+            <p style={{ fontStyle: "italic", fontSize: "clamp(15px,1.6vw,18px)", color: "rgba(245,246,250,.7)", margin: "22px 0 0", lineHeight: 1.6 }}>
+              “La mi li ojú mi kí èmi lè ma wo ohun ìyanu wonni lati inu òfin re.”
+            </p>
+          </Reveal>
+          <Reveal delay={360}>
+            <div style={{ fontSize: 11.5, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "rgba(253,200,65,.75)", marginTop: 10 }}>
+              Orin Dafidi 119:18 · Yorùbá
             </div>
           </Reveal>
         </div>

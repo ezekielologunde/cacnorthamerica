@@ -3,11 +3,11 @@ import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import Link from "next/link";
-import { MapPin, CalendarDays, Car, Package, Clock, Users, Heart, ArrowLeft, Phone, Ticket, Sparkles } from "lucide-react";
+import { MapPin, CalendarDays, Car, Package, Clock, Users, Heart, ArrowLeft, Phone, Ticket, Sparkles, Landmark, Send, Wallet, ListOrdered } from "lucide-react";
 import { googleCalUrl, icsDataUri, isEventPast } from "@/lib/events";
 import { CalendarPlus, Download } from "lucide-react";
 import { SITE, SITE_URL, breadcrumbJsonLd } from "@/lib/site";
-import { conventionYears, conventionChurchEvent, sessionsFor } from "@/lib/conventions";
+import { conventionYears, conventionChurchEvent } from "@/lib/conventions";
 
 export const revalidate = 3600;
 
@@ -24,7 +24,39 @@ const CACNA_REG = cy2026.registrationUrl!;
 
 const THEME = "The Bible: God’s Message to Man";
 
-const sessions = sessionsFor(cy2026);
+// The real, published 2026 schedule (from the convention program book) —
+// specific to this year's speaker assignments, unlike the generic recurring
+// pattern used for future years that haven't been announced yet.
+const sessions = [
+  { day: "Mon · Jul 13", label: "Daily Opening: Praise, Worship & Prayer", desc: "Registration opens for the week, followed by the Daily General Opening Session of praise, worship, and prayer, and Ministers' Session 1 — “Transformative Power of the Word” with Pastor T.A.O. Agbeja, Regional Superintendent, Latunde Region." },
+  { day: "Tue · Jul 14", label: "Ministers' Sessions & Registration", desc: "Registration continues alongside Ministers' Session 2 — “Divine Guide for Our Living” with Pastor Simeon Oladokun, Regional Superintendent, Anosike Region." },
+  { day: "Wed · Jul 15", label: "Theme Sessions, Break-Outs & Picnic", desc: "Ministers' Session 3 — “The Perfect Encourager in Time of Trials and Challenges” with Rt. Rev. Prof. Dapo F. Asaju, Bishop of Ijesha Diocese — and Ministers' Session 4 with Pastor S.O. Oladele, President. Break-out sessions for CACMWF, CACMA, CACNAGWA, Youth/Young Adult, and Children, an afternoon picnic with sports and games, and a Revival Night with Prophet H. Oladeji, General Evangelist." },
+  { day: "Thu · Jul 16", label: "Sunday School, Business Group & Prayer Night", desc: "Sunday School General Session for all, the Business Group General Session, more break-out sessions, a Ministers' Prayer Night, and a Revival Night with Prophet H. Oladeji." },
+  { day: "Fri · Jul 17", label: "Convention Program, Ordination & Impartation Night", desc: "The main Convention Program (10am–2pm), an Ordination Service, and an Impartation Night with Prophet H. Oladeji, General Evangelist." },
+  { day: "Sat · Jul 18", label: "Holy Communion & Closing Service", desc: "The convention closes with Holy Communion and a Closing Service led by Pastor S.O. Oladele, President, CAC Nigeria and Overseas." },
+];
+
+const ORDER_OF_SERVICE = [
+  "Praise and Worship",
+  "Opening Hymn: CACGHB. 92 — “O Magnify the Lord with Me”",
+  "Prayer",
+  "Lesson",
+  "Introductions",
+  "Choir Ministration",
+  "Message by the President",
+  "Award Presentation",
+  "Convention Thanksgiving",
+  "Special Prayer",
+  "Closing Hymn: Various #6 — “O Thou Who Love Us, We Shall Serve for Ever”",
+  "Watchword",
+  "Closing Prayer and Benediction",
+];
+
+const CONVENTION_GIVING = [
+  { icon: Landmark, label: "Chase Bank", value: "Ac# 823936908" },
+  { icon: Send, label: "Zelle", value: "cacnaconvention@gmail.com" },
+  { icon: Wallet, label: "CashApp", value: "$cacnaconvention" },
+];
 
 const fees = [
   { tier: "Adults", age: "Age 30 & above", free: false, rows: [
@@ -228,6 +260,29 @@ export default function CACNA2026Page() {
         </div>
       </section>
 
+      {/* Order of Service */}
+      <section style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+        <div style={{ maxWidth: 700, margin: "0 auto" }}>
+          <Reveal style={{ marginBottom: 32 }}>
+            <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 12 }}>
+              <ListOrdered size={16} strokeWidth={2.5} style={{ verticalAlign: "middle", marginRight: 8, color: "var(--flame)" }} aria-hidden />
+              Convention Order of Service
+            </div>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.5vw,42px)", letterSpacing: "-.6px", color: "var(--ink)", margin: 0 }}>What to expect in the room.</h2>
+          </Reveal>
+          <ol style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
+            {ORDER_OF_SERVICE.map((item, i) => (
+              <Reveal key={i} delay={i * 30}>
+                <li style={{ display: "flex", gap: 14, alignItems: "flex-start", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 14, padding: "14px 18px" }}>
+                  <span style={{ flexShrink: 0, fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 14, color: "var(--red)", minWidth: 22 }}>{i + 1}</span>
+                  <span style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.6 }}>{item}</span>
+                </li>
+              </Reveal>
+            ))}
+          </ol>
+        </div>
+      </section>
+
       {/* What to pack + Logistics */}
       <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 960, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,420px),1fr))", gap: "clamp(36px,5vw,60px)" }}>
@@ -336,6 +391,38 @@ export default function CACNA2026Page() {
               <strong style={{ color: "var(--ink)" }}>Book your hotel early.</strong> For further information, contact the Chairman or Secretary above.
             </p>
           </Reveal>
+        </div>
+      </section>
+
+      {/* Give at the Convention */}
+      <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+        <div style={{ maxWidth: 700, margin: "0 auto" }}>
+          <Reveal style={{ textAlign: "center", marginBottom: 32 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Give at the Convention</span>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3vw,40px)", letterSpacing: "-1px", color: "var(--ink)", margin: "10px 0 0" }}>
+              Offerings & Donations
+            </h2>
+            <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.7, margin: "14px auto 0", maxWidth: 560 }}>
+              Make checks payable to CACNA Convention, or give directly using any of the options below.
+            </p>
+          </Reveal>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 16 }}>
+            {CONVENTION_GIVING.map((a, i) => (
+              <Reveal key={a.label} delay={i * 70}>
+                <div style={{ background: "var(--paper)", borderRadius: 20, padding: "22px 20px", border: "1px solid var(--line)", boxShadow: "0 8px 22px rgba(18,20,30,.05)", height: "100%", textAlign: "center" }}>
+                  <div style={{ display: "grid", placeItems: "center", width: 44, height: 44, margin: "0 auto 14px", borderRadius: 12, background: "linear-gradient(135deg,var(--flame),var(--red))" }}>
+                    <a.icon size={20} color="#fff" strokeWidth={2} aria-hidden />
+                  </div>
+                  <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 6 }}>
+                    {a.label}
+                  </div>
+                  <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 16, color: "var(--ink)" }}>
+                    {a.value}
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 
