@@ -384,6 +384,27 @@ export const POSTS: BlogPost[] = [
       "He closed with a quote from leadership author John Maxwell, on how a leader's own style and character shape the outcome of the people and institution they lead — a caution that hypocrisy in leadership doesn't just wound the leader, but the whole body they're called to serve.",
     ],
   },
+  {
+    slug: "from-burnout-to-balance-agbeja",
+    title: "From burnout to balance — why intentional rest matters in leadership.",
+    excerpt:
+      "Pastor T.A.O. Agbeja, Ph.D., Regional Superintendent of CACNA (Latunde Region), on emotional intelligence, self-reflection, and Jesus's invitation to rest (Matthew 11:28-29) — a companion address to the 2025 convention's \"Balancing the Call\" theme.",
+    date: "July 2025",
+    dateIso: "2025-07-02",
+    category: "Reflection",
+    categoryColor: "#7A1128",
+    accent: "linear-gradient(135deg,#7A1128,#EB6342)",
+    readTime: "5 min read",
+    body: [
+      "\"When we embrace intentional rest and prioritize wellbeing, we are fostering a culture of self-care within our leadership and our teams,\" writes Pastor T.A.O. Agbeja, Ph.D., Regional Superintendent of CACNA (Latunde Region), in a reflection delivered under the 2025 convention's \"Balancing the Call: Burnout, Rest, and the Health of a Leader's Soul\" theme (Matthew 11:28-29). \"It's during these quieter times that leaders can engage in self-reflection and seek feedback from others, both of which are crucial components of emotional intelligence.\"",
+      "\"In a world that seems to constantly prioritize busyness and productivity, finding time to recharge can be counterintuitive,\" he continues, recalling a panel discussion he facilitated where \"two wise and experienced leaders shared how emotional intelligence skills shaped their leadership journey\" — and how deeply a focus on wellbeing connected to those same skills.",
+      "\"A leader who is committed to wellbeing and seeks time for rest creates space for their team to solve problems, to innovate and to look within themselves for answers,\" he writes. \"After all, a successful leader is someone who helps others be successful. Encouraging employees to be resourceful when facing challenges builds confidence, resilience and collaboration. It also relieves the burden on the leader of needing to have all of the answers.\"",
+      "On self-reflection: \"Strong leaders seek feedback and take a considered approach on using what they hear from others about how they approach their work.\" Approaching leadership growth with transparency, he says, \"will not only improve your ability to lead but will also encourage your team members to do the same, fostering a culture of open communication, trust and idea-sharing\" — pointing to Moses, who needed his father-in-law Jethro's counsel to delegate and avoid the \"do-it-all\" syndrome (Exodus 18:17-18). \"This goes to confirm that burnout can affect the most spiritual leaders, and our choices and lifestyle in ministry play a critical role on our overall physical well-being.\"",
+      "**Invitation to rest.** \"Have you ever had a difficult time resting? Are you overburdened to the point of hurting yourself, unknowingly? Attending to yourself is not selfish, but actually required for a successful and sustainable ministry.\" Jesus's invitation, he says, is timely: \"'Come to Me, all you who labor and are heavy laden, and I will give you rest. Take My yoke upon you and learn from Me, for I am gentle and lowly in heart, and you will find rest for your souls'\" (Matthew 11:28-29).",
+      "\"Don't become so busy 'working for God' that you ignore the essential component of 'walking with God' and consequently experience a burnout,\" he warns. \"Rest is not weakness; it is God's provision for sustained strength.\" Seeking rest, he says, isn't a suggestion but a command — the Lord Himself modeled it with the sabbath. Practically: \"Say 'no' when needed; avoid overcommitment. Go for regular medical check-ups... Eat a healthy balanced diet, and exercise regularly as your schedule permits.\"",
+      "\"Looking at the ministry of Jesus, He went on several personal retreats intentionally amidst His busy ministry schedule,\" Pastor Agbeja closes. \"Don't push yourself too hard without taking a break. Remember that if you fail to take a rest now, you may be laid to rest forcefully. The journey of a soul towards health and vitality is all about balance, and you will not fail in this area in Jesus's name.\"",
+    ],
+  },
 ];
 
 export function getPost(slug: string): BlogPost | undefined {
