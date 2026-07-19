@@ -192,7 +192,7 @@ function RelatedCard({ post }: { post: BlogPost }) {
       }}
     >
       {post.image ? (
-        <div style={{ height: 120, flexShrink: 0 }}>
+        <div style={{ height: 200, flexShrink: 0 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={post.image.url} alt={post.image.alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
         </div>
@@ -665,7 +665,7 @@ export default async function BlogSlugPage({
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))",
+              gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,360px),1fr))",
               gap: 22,
             }}
           >

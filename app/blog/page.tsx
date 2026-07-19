@@ -70,7 +70,7 @@ function ArticleCard({ post, archival }: { post: typeof POSTS[number]; archival?
       flexDirection: "column", height: "100%",
     }}>
       {post.image ? (
-        <div style={{ height: 180, position: "relative", flexShrink: 0 }}>
+        <div style={{ height: 240, position: "relative", flexShrink: 0 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={post.image.url} alt={post.image.alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: archival ? 0.85 : 1 }} />
         </div>
@@ -119,7 +119,7 @@ function FeaturedCard({ post }: { post: typeof POSTS[number] }) {
       borderRadius: 28, overflow: "hidden",
       boxShadow: "0 16px 50px rgba(18,20,30,.10)",
     }}>
-      <div style={{ height: 220, background: post.image ? "var(--ink)" : post.accent, position: "relative" }}>
+      <div style={{ height: 320, background: post.image ? "var(--ink)" : post.accent, position: "relative" }}>
         {post.image ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={post.image.url} alt={post.image.alt} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
@@ -454,7 +454,7 @@ export default async function BlogPage() {
                 <div style={{ flex: 1, height: 1, background: "var(--line)" }} />
               </div>
             </Reveal>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))", gap: 22 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,360px),1fr))", gap: 22 }}>
               {conventionCoverage.map((p, i) => (
                 <Reveal key={p.slug} delay={(i % 6) * 70}>
                   <ArticleCard post={p} />
@@ -478,7 +478,7 @@ export default async function BlogPage() {
                 <span style={{ fontSize: 11.5, fontWeight: 700, color: "var(--ink-soft)" }}>{archiveArticles.length} entries</span>
               </div>
             </Reveal>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))", gap: 22 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,360px),1fr))", gap: 22 }}>
               {archiveArticles.map((p, i) => (
                 <Reveal key={p.slug} delay={(i % 6) * 70}>
                   <ArticleCard post={p} archival />
@@ -502,7 +502,7 @@ export default async function BlogPage() {
                 <span style={{ fontSize: 11.5, fontWeight: 700, color: "var(--ink-soft)" }}>via cacworldnews.com</span>
               </div>
             </Reveal>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))", gap: 22 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,360px),1fr))", gap: 22 }}>
               {cacWorldNews.map((item, i) => (
                 <Reveal key={item.id} delay={(i % 6) * 70}>
                   <CacWorldCard item={item} />
@@ -526,7 +526,7 @@ export default async function BlogPage() {
                 <span style={{ fontSize: 11.5, fontWeight: 700, color: "var(--ink-soft)" }}>{devotionalArticles.length} entries</span>
               </div>
             </Reveal>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))", gap: 22 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,360px),1fr))", gap: 22 }}>
               {devotionalArticles.map((p, i) => (
                 <Reveal key={p.slug} delay={(i % 9) * 55}>
                   <ArticleCard post={p} />
