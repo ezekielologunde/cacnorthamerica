@@ -43,6 +43,7 @@ const navItems: NavItem[] = [
       { href: '/leadership', label: 'Leadership', desc: 'Meet our regional officers' },
       { href: '/zones', label: 'Our Zones', desc: 'Find your DCC/Zonal superintendent' },
       { href: '/ministries', label: 'Ministries', desc: 'Find your place to serve' },
+      { href: '/bible-institute', label: 'Bible Institute', desc: 'Ministerial training arm of CACNA' },
     ],
   },
   {

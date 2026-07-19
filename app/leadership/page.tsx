@@ -21,7 +21,8 @@ const BIOS: Record<string, string> = {
   "Pastor David Adenodi, Ph.D.": "Chairman of the CACNA Convention and member of the CACNA Coordinating Council. Also serves as Provost of the CACNA Bible Institute and Superintendent of the V.O.C-USA DCC.",
   "Pastor Joseph Olawale Latunde": "Regional Secretary of CACNA and member of the CACNA Coordinating Council. Also serves as Registrar of the CACNA Bible Institute and Superintendent of the Texas DCC.",
   "Pastor Timothy Adelani Latunde": "Regional Treasurer of CACNA and member of the CACNA Coordinating Council, also serving as Superintendent of the Manhattan NY DCC.",
-  "Pastor John Oluwatimilehin, Ph.D.": "Chairman of the CAC Village Management Council and member of the CACNA Coordinating Council, also serving as Superintendent of the Bethel DCC.",
+  "Pastor John Oluwatimilehin, Ph.D.": "Chairman of the CAC Village Management Council and member of the CACNA Coordinating Council.",
+  "Pastor Richard B. Olowomeye, Ph.D.": "Superintendent of the CAC Bethel DCC and member of the CACNA Coordinating Council.",
 };
 
 function initials(name: string) {
@@ -183,6 +184,40 @@ export default async function LeadershipPage() {
           </div>
         </section>
       )}
+
+      {/* Bible Institute teaser */}
+      <section style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) 90px" }}>
+        <Reveal>
+          <div style={{
+            maxWidth: 1080, margin: "0 auto",
+            background: "linear-gradient(135deg,#12141E,#2D42C9)",
+            borderRadius: 28, padding: "clamp(32px,4.5vw,52px)",
+            display: "flex", flexWrap: "wrap", alignItems: "center",
+            justifyContent: "space-between", gap: 24,
+            boxShadow: "0 24px 60px rgba(18,20,30,.25)",
+            position: "relative", overflow: "hidden",
+          }}>
+            <div aria-hidden style={{ position: "absolute", top: -80, right: -60, width: 320, height: 280, background: "radial-gradient(circle,rgba(253,200,65,.25),transparent 65%)", pointerEvents: "none" }} />
+            <div style={{ flex: "1 1 420px", position: "relative", zIndex: 2 }}>
+              <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 10 }}>
+                Training the next generation
+              </div>
+              <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3vw,38px)", letterSpacing: "-.7px", color: "#fff", margin: "0 0 10px", lineHeight: 1.05 }}>
+                The CACNA Bible Institute.
+              </h2>
+              <p style={{ fontSize: 15.5, color: "rgba(245,246,250,.78)", margin: 0, lineHeight: 1.65, maxWidth: 520 }}>
+                CACNA's ministerial training arm, led by a Chancellor, Provost, Dean, Registrar, and Lecturer drawn from our regional leadership.
+              </p>
+            </div>
+            <Link href="/bible-institute" className="press" style={{
+              position: "relative", zIndex: 2, flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 9,
+              background: "#fff", color: "var(--ink)", fontWeight: 800, fontSize: 15, padding: "14px 28px", borderRadius: 999, textDecoration: "none",
+            }}>
+              Visit the Bible Institute →
+            </Link>
+          </div>
+        </Reveal>
+      </section>
 
       {/* CTA */}
       <section style={{ background: "var(--paper)", padding: "80px clamp(20px,5vw,64px)", textAlign: "center" }}>

@@ -32,6 +32,7 @@ export const ROUTES: { path: string; priority: number }[] = [
   { path: "/leadership/past", priority: 0.5 },
   { path: "/zones", priority: 0.7 },
   { path: "/ministries", priority: 0.7 },
+  { path: "/bible-institute", priority: 0.6 },
   { path: "/online", priority: 0.9 },
   { path: "/media", priority: 0.7 },
   { path: "/giving", priority: 0.8 },

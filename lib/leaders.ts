@@ -6,7 +6,8 @@ export type LeaderCategory =
   | "zonal_superintendent"
   | "past_president"
   | "past_superintendent"
-  | "past_evangelist";
+  | "past_evangelist"
+  | "bible_institute";
 
 export interface Leader {
   id: string;
