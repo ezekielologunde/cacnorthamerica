@@ -207,6 +207,53 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Our Global Roots */}
+      <section style={{ background: "var(--paper)", padding: "100px clamp(20px,5vw,64px)" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <Reveal style={{ textAlign: "center", marginBottom: 48 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Our Global Roots</span>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(32px,4.5vw,56px)", letterSpacing: "-1.2px", color: "var(--ink)", margin: "14px 0 0", lineHeight: .98 }}>
+              A movement born in 1918.
+            </h2>
+          </Reveal>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 16, marginBottom: 44 }}>
+            {[
+              { name: "Late Pastor David O. Odubanjo", title: "First General Superintendent" },
+              { name: "Late Oba I. B. Akinyele", title: "First President" },
+              { name: "Late Apostle Joseph Babalola", title: "First General Evangelist" },
+            ].map((f, i) => (
+              <Reveal key={f.name} delay={i * 70}>
+                <div style={{ textAlign: "center", background: "var(--cream)", border: "1px solid var(--line)", borderRadius: 18, padding: "24px 18px" }}>
+                  <div aria-hidden style={{
+                    width: 64, height: 64, margin: "0 auto 14px", borderRadius: "50%",
+                    background: "linear-gradient(135deg,#7A1128,#C81E3A)",
+                    display: "grid", placeItems: "center",
+                    color: "#fff", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22,
+                  }}>{f.name.split(" ").filter((w) => /^[A-Z]/.test(w)).map((w) => w[0]).slice(-2).join("")}</div>
+                  <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 15, color: "var(--ink)", lineHeight: 1.3, marginBottom: 4 }}>{f.name}</div>
+                  <div style={{ fontSize: 12, color: "var(--ink-soft)" }}>{f.title}</div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+
+          <Reveal delay={120}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+              <p style={{ fontSize: 16.5, color: "var(--ink-soft)", lineHeight: 1.8, margin: 0 }}>
+                Christ Apostolic Church is a distinctly indigenous Pentecostal church, with roots tracing back to 1918 — a gathering of forefathers including Oba/Pastor Isaac Babalola Akinyele, Pastor David Ogunleye Odubanjo, Joseph Sadare, and Miss Sophia Odunlami. From 1918 to 1928, the founders called their group Faith Tabernacle, later known as the Precious Stone or Diamond Society, establishing 12 units across Nigeria.
+              </p>
+              <p style={{ fontSize: 16.5, color: "var(--ink-soft)", lineHeight: 1.8, margin: 0 }}>
+                Evangelist (later Apostle) Joseph Ayodele Babalola joined the group in October 1928, and his ministry led to the Great Revival of 1930 at Oke Ooye, Ilesa — a turning point that spread the church across Nigeria. Over time, the group took the name &ldquo;Apostolic Church,&rdquo; then &ldquo;Nigerian Apostolic Church&rdquo; (1939), then &ldquo;United Apostolic Church&rdquo; (1942), before God revealed the name it carries today: <strong style={{ color: "var(--ink)" }}>Christ Apostolic Church</strong>, registered on May 4, 1943.
+              </p>
+              <p style={{ fontSize: 16.5, color: "var(--ink-soft)", lineHeight: 1.8, margin: 0 }}>
+                In the decades since, the Church has planted Bible and pastoral training colleges, a theological seminary, and grammar schools across Nigeria, and today operates <strong style={{ color: "var(--ink)" }}>Joseph Ayo Babalola University (JABU)</strong> in Ikeji-Arakeji, Osun State. Over a little more than six decades, Christ Apostolic Church has grown from a small band of persecuted believers into a denomination with many millions of adherents across the world — CACNA is proud to carry this same heritage across the United States and Canada.
+              </p>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
       {/* One family, many homes */}
       <section style={{ background: "var(--ink)", padding: "60px clamp(20px,5vw,64px)", position: "relative", overflow: "hidden" }}>
         <div aria-hidden style={{ position: "absolute", top: -80, left: "50%", transform: "translateX(-50%)", width: 600, height: 320, background: "radial-gradient(circle,rgba(253,200,65,.14),transparent 65%)", pointerEvents: "none" }} />
