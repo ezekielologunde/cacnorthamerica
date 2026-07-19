@@ -6,11 +6,17 @@ const nextConfig: NextConfig = {
 
   images: {
     formats: ["image/avif", "image/webp"],
+    // Vercel's Image Optimization quota is exhausted on this account's plan
+    // (confirmed via a 402 OPTIMIZED_IMAGE_REQUEST_PAYMENT_REQUIRED once the
+    // stale image cache was purged — every /_next/image request was silently
+    // failing behind a cached response until then). Serve raw files instead
+    // of failing to render, same fix already applied on the sibling
+    // Convention project for the identical reason.
+    unoptimized: true,
     // Next.js 15+ defaults this to "attachment", which makes browsers treat
     // every /_next/image response as a file download instead of an inline
-    // image — breaking every optimized <Image>. Safe to force "inline" here
-    // since this site never serves user-uploaded images through the
-    // optimizer, only our own trusted local/remote assets.
+    // image. Harmless with unoptimized:true (this path isn't hit), but keeps
+    // behavior correct if unoptimized is ever turned back off.
     contentDispositionType: "inline",
     remotePatterns: [
       { protocol: "https", hostname: "img.youtube.com" },
