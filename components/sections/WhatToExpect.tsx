@@ -70,7 +70,7 @@ export function WhatToExpect() {
                           className="press"
                           style={{ marginTop: 24, display: "inline-flex", alignItems: "center", gap: 8, alignSelf: "flex-start", background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 14, padding: "11px 20px", borderRadius: 999, textDecoration: "none" }}
                         >
-                          Register Now →
+                          {`Convention ${cy.year}`} →
                         </a>
                       ) : (
                         <Link

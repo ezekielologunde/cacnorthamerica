@@ -114,7 +114,7 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
               <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
                 {cy.registrationUrl ? (
                   <a href={cy.registrationUrl} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(253,200,65,.4)" }}>
-                    Register Now →
+                    {`Convention ${cy.year}`} →
                   </a>
                 ) : (
                   <span style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(253,200,65,.14)", border: "1px solid rgba(253,200,65,.3)", color: "var(--gold)", fontWeight: 700, fontSize: 15, padding: "16px 26px", borderRadius: 999 }}>

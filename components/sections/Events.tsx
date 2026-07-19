@@ -54,7 +54,7 @@ export function Events() {
                   <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px 16px', marginTop: 10 }}>
                     {ev.id.startsWith('cacna-convention-') && cy.registrationUrl && (
                       <a href={cy.registrationUrl} target="_blank" rel="noopener noreferrer" className="press" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 800, color: 'var(--ink)', background: 'var(--gold)', padding: '7px 16px', borderRadius: 999, textDecoration: 'none' }}>
-                        Register Now →
+                        {`Convention ${cy.year}`} →
                       </a>
                     )}
                     {ev.href && (

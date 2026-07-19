@@ -37,7 +37,7 @@ export function ConventionAdWidget() {
             background: "#fff", color: "var(--ink)", fontWeight: 800,
             fontSize: 13, padding: "10px 20px", borderRadius: 999, textDecoration: "none",
           }}>
-            Register Now <ArrowRight size={13} strokeWidth={2.5} aria-hidden />
+            {`Convention ${cy.year}`} <ArrowRight size={13} strokeWidth={2.5} aria-hidden />
           </a>
         ) : (
           <Link href={cy.href} className="press" style={{
