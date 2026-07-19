@@ -4,6 +4,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import Image from "next/image";
 import Link from "next/link";
 import { getSermons, getLiveStream, formatSermonDate } from "@/lib/sermons";
+import { PRAYER_LINE } from "@/lib/prayerLine";
 import { Video } from "lucide-react";
 
 const YOUTUBE_URL = "https://youtube.com/@cacnorthamericalatunderegi1330";
@@ -14,7 +15,12 @@ const platforms = [
 ];
 
 const schedule = [
-  { day: "Daily", name: "Morning Prayer Line", time: "5:00 AM ET", type: "(857) 216-6700 · Code: 531312" },
+  {
+    day: "Daily",
+    name: PRAYER_LINE.name,
+    time: PRAYER_LINE.times.map((t) => `${t.label} ${t.zone}`).join(" / "),
+    type: `${PRAYER_LINE.dialIn} · Code: ${PRAYER_LINE.code}`,
+  },
   { day: "July", name: "CACNA Annual Convention", time: "CAC Village, PA", type: "Streamed on YouTube & Zoom" },
 ];
 

@@ -4,11 +4,14 @@ import { PrayerForm } from "@/components/sections/PrayerForm";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import Link from "next/link";
+import { PRAYER_LINE } from "@/lib/prayerLine";
+
+const DIAL_TEL = `tel:+1${PRAYER_LINE.dialIn.replace(/\s/g, "")}`;
 
 export const metadata = {
   title: "Prayer Requests — Christ Apostolic Church North America (CACNA)",
   description:
-    "Share a prayer request with the CACNA family. Confidential, personal, and covered in prayer. Join our daily 5 AM prayer line.",
+    `Share a prayer request with the CACNA family. Confidential, personal, and covered in prayer. Join "${PRAYER_LINE.name}," CACNAGWA's daily morning prayer line.`,
   alternates: { canonical: "/prayer" },
 };
 
@@ -57,17 +60,27 @@ export default function PrayerPage() {
       <section style={{ background: "linear-gradient(135deg,var(--red-deep),var(--red))", padding: "clamp(56px,7vw,84px) clamp(20px,5vw,64px)", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: "-15%", background: "radial-gradient(circle at 75% 50%,rgba(45,66,201,.32),transparent 60%)", pointerEvents: "none", animation: "gradient-drift 14s ease-in-out infinite" }} />
         <Reveal style={{ maxWidth: 720, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
-          <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "rgba(255,255,255,.7)" }}>Daily Prayer Line</span>
+          <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "rgba(255,255,255,.7)" }}>{PRAYER_LINE.org}</span>
           <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,52px)", letterSpacing: "-1px", color: "#fff", margin: "14px 0 18px", lineHeight: 0.98 }}>
-            Pray with us every morning at 5:00 AM ET
+            {PRAYER_LINE.name}
           </h2>
-          <p style={{ fontSize: 16, color: "rgba(255,255,255,.8)", lineHeight: 1.7, maxWidth: 480, margin: "0 auto 30px" }}>
-            Start your day in the presence of God. Dial in from anywhere — five minutes or fifty.
+          <p style={{ fontSize: 16, color: "rgba(255,255,255,.8)", lineHeight: 1.7, maxWidth: 480, margin: "0 auto 12px" }}>
+            {PRAYER_LINE.tagline}. Dial in from anywhere at{" "}
+            {PRAYER_LINE.times.map((t, i) => (
+              <span key={t.zone}>
+                {i > 0 && (i === PRAYER_LINE.times.length - 1 ? " or " : ", ")}
+                {t.label} {t.zone}
+              </span>
+            ))}
+            .
           </p>
-          <a href="tel:+18572166700" className="btn-sheen press-lg" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "#fff", color: "var(--red)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none" }}>
-            (857) 216-6700
+          <p style={{ fontSize: 16, color: "rgba(255,255,255,.8)", lineHeight: 1.7, maxWidth: 480, margin: "0 auto 30px" }}>
+            Start your day in the presence of God.
+          </p>
+          <a href={DIAL_TEL} className="btn-sheen press-lg" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "#fff", color: "var(--red)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none" }}>
+            {PRAYER_LINE.dialIn}
           </a>
-          <div style={{ fontSize: 14, color: "rgba(255,255,255,.75)", marginTop: 16 }}>Access code: <strong style={{ color: "#fff" }}>531312</strong></div>
+          <div style={{ fontSize: 14, color: "rgba(255,255,255,.75)", marginTop: 16 }}>Access code: <strong style={{ color: "#fff" }}>{PRAYER_LINE.code}</strong></div>
         </Reveal>
       </section>
 
