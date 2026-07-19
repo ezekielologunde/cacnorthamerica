@@ -22,6 +22,8 @@ export interface ChurchEvent {
   href?: string;
   /** Short label for the nav dropdown (falls back to title). */
   navLabel?: string;
+  /** Overrides the default physical address in calendar invites (e.g. a virtual/Zoom event). */
+  location?: string;
 }
 
 /**
@@ -59,6 +61,15 @@ export const specialEvents: ChurchEvent[] = [
   // Once this year's convention passes, this slot automatically picks up the
   // next confirmed year's dates (and theme, once known) — see lib/conventions.ts.
   conventionChurchEvent(currentOrNextConvention()),
+  {
+    id: "ministers-retreat-2027",
+    title: "2027 Ministers Retreat",
+    desc: "A time of refreshing, renewal & equipping for CACNA's ministers, held on Zoom — spiritual refreshment, unity & fellowship, empowerment, and prayer & intercession.",
+    dateLabel: "March 22–26, 2027", timeLabel: "On Zoom", month: "MAR", day: "22",
+    startLocal: "20270322T090000", endLocal: "20270326T170000",
+    location: "Zoom — link provided upon registration",
+    href: "/events/ministers-retreat-2027", navLabel: "Ministers Retreat",
+  },
   {
     id: "holy-land-pilgrimage-2026",
     title: "Holy Land Pilgrimage 2026",
@@ -100,7 +111,7 @@ export function googleCalUrl(ev: ChurchEvent): string {
     text: ev.title,
     dates: `${ev.startLocal}/${ev.endLocal}`,
     details: ev.desc,
-    location: LOCATION,
+    location: ev.location ?? LOCATION,
     ctz: TZ,
   });
   let url = `https://calendar.google.com/calendar/render?${params.toString()}`;
@@ -125,7 +136,7 @@ export function icsDataUri(ev: ChurchEvent): string {
     ...(rule ? [rule] : []),
     `SUMMARY:${ev.title}`,
     `DESCRIPTION:${ev.desc}`,
-    `LOCATION:${LOCATION}`,
+    `LOCATION:${ev.location ?? LOCATION}`,
     "END:VEVENT",
     "END:VCALENDAR",
   ];
