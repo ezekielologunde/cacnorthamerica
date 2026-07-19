@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react';
 import { usePathname } from 'next/navigation';
-import { Search } from 'lucide-react';
+import { Search, CalendarDays } from 'lucide-react';
 import { haptic } from '@/lib/haptics';
 import { SearchModal } from '@/components/ui/SearchModal';
 import { currentOrNextConvention, isConventionPast } from '@/lib/conventions';
@@ -20,8 +20,8 @@ const isExternalHref = (href: string) => href.startsWith('http');
 // nav's "Register" CTA automatically points at the next confirmed year.
 const nextConvention = currentOrNextConvention();
 const conventionCtaLabel = nextConvention.registrationUrl
-  ? `Register — CACNA ${nextConvention.year}`
-  : `CACNA ${nextConvention.year} — Save the Date`;
+  ? `Register — Convention ${nextConvention.year}`
+  : `Convention ${nextConvention.year} — Save the Date`;
 const conventionCtaHref = nextConvention.registrationUrl ?? nextConvention.href;
 
 const navItems: NavItem[] = [
@@ -260,8 +260,9 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                   rel="noopener noreferrer"
                   onClick={() => haptic('medium')}
                   className="btn-sheen press"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: 'var(--gold)', color: 'var(--ink)', fontWeight: 800, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '0 8px 22px rgba(253,200,65,.4)' }}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: 'linear-gradient(135deg,#7A1128,#FDC841)', color: '#fff', fontWeight: 800, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '0 8px 22px rgba(122,17,40,.45)' }}
                 >
+                  <CalendarDays size={14} strokeWidth={2.5} aria-hidden />
                   {conventionCtaLabel} →
                 </a>
               ) : (
@@ -269,8 +270,9 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                   href={conventionCtaHref}
                   onClick={() => haptic('medium')}
                   className="btn-sheen press"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: 'var(--gold)', color: 'var(--ink)', fontWeight: 800, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '0 8px 22px rgba(253,200,65,.4)' }}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: 'linear-gradient(135deg,#7A1128,#FDC841)', color: '#fff', fontWeight: 800, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '0 8px 22px rgba(122,17,40,.45)' }}
                 >
+                  <CalendarDays size={14} strokeWidth={2.5} aria-hidden />
                   {conventionCtaLabel} →
                 </Link>
               )
@@ -382,7 +384,8 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                   rel="noopener noreferrer"
                   onClick={() => { haptic('medium'); setOpen(false); }}
                   className="press"
-                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'var(--gold)', color: 'var(--ink)', fontWeight: 800, fontSize: 17, padding: '18px 24px', borderRadius: 999, textDecoration: 'none', boxShadow: '0 14px 30px rgba(253,200,65,.4)' }}>
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'linear-gradient(135deg,#7A1128,#FDC841)', color: '#fff', fontWeight: 800, fontSize: 17, padding: '18px 24px', borderRadius: 999, textDecoration: 'none', boxShadow: '0 14px 30px rgba(122,17,40,.45)' }}>
+                  <CalendarDays size={17} strokeWidth={2.5} aria-hidden />
                   {conventionCtaLabel} →
                 </a>
               ) : (
@@ -390,7 +393,8 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                   href={conventionCtaHref}
                   onClick={() => { haptic('medium'); setOpen(false); }}
                   className="press"
-                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'var(--gold)', color: 'var(--ink)', fontWeight: 800, fontSize: 17, padding: '18px 24px', borderRadius: 999, textDecoration: 'none', boxShadow: '0 14px 30px rgba(253,200,65,.4)' }}>
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'linear-gradient(135deg,#7A1128,#FDC841)', color: '#fff', fontWeight: 800, fontSize: 17, padding: '18px 24px', borderRadius: 999, textDecoration: 'none', boxShadow: '0 14px 30px rgba(122,17,40,.45)' }}>
+                  <CalendarDays size={17} strokeWidth={2.5} aria-hidden />
                   {conventionCtaLabel} →
                 </Link>
               )
