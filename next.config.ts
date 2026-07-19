@@ -6,10 +6,17 @@ const nextConfig: NextConfig = {
 
   images: {
     formats: ["image/avif", "image/webp"],
+    // Next.js 15+ defaults this to "attachment", which makes browsers treat
+    // every /_next/image response as a file download instead of an inline
+    // image — breaking every optimized <Image>. Safe to force "inline" here
+    // since this site never serves user-uploaded images through the
+    // optimizer, only our own trusted local/remote assets.
+    contentDispositionType: "inline",
     remotePatterns: [
       { protocol: "https", hostname: "img.youtube.com" },
       { protocol: "https", hostname: "res.cloudinary.com" },
       { protocol: "https", hostname: "*.cdninstagram.com" },
+      { protocol: "https", hostname: "cacnorthamerica.com" },
     ],
   },
 
@@ -22,7 +29,7 @@ const nextConfig: NextConfig = {
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://pagead2.googlesyndication.com https://www.google-analytics.com https://unpkg.com",
       "style-src 'self' 'unsafe-inline' https://unpkg.com",
-      "img-src 'self' data: blob: https://img.youtube.com https://res.cloudinary.com https://*.cdninstagram.com https://www.googletagmanager.com https://www.google-analytics.com https://pagead2.googlesyndication.com https://unpkg.com https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com",
+      "img-src 'self' data: blob: https://img.youtube.com https://res.cloudinary.com https://*.cdninstagram.com https://cacnorthamerica.com https://www.googletagmanager.com https://www.google-analytics.com https://pagead2.googlesyndication.com https://unpkg.com https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com",
       "font-src 'self' https://unpkg.com",
       "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://analytics.google.com https://www.google.com https://vitals.vercel-insights.com https://*.tile.openstreetmap.org",
       "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://maps.google.com https://www.google.com",
