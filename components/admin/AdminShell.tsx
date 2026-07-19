@@ -145,7 +145,7 @@ export default function AdminShell({
               />
             </div>
             <div>
-              <p style={{ fontSize: 13, fontWeight: 700, color: "rgba(255,255,255,0.9)", margin: 0, lineHeight: 1 }}>CAC Salvation</p>
+              <p style={{ fontSize: 13, fontWeight: 700, color: "rgba(255,255,255,0.9)", margin: 0, lineHeight: 1 }}>CACNA</p>
               <p style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", margin: "2px 0 0", letterSpacing: "0.06em", textTransform: "uppercase" }}>Admin</p>
             </div>
           </div>

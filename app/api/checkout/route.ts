@@ -118,7 +118,7 @@ export async function POST(req: Request) {
         },
       },
       metadata: {
-        source: "cac-salvation-center-store",
+        source: "cacna-store",
         has_digital: hasDigital ? "true" : "false",
       },
     });

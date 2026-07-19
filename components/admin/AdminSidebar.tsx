@@ -112,7 +112,7 @@ export default function AdminSidebar({ email }: { email: string }) {
           </div>
           <div>
             <p style={{ fontSize: 13, fontWeight: 700, color: "rgba(255,255,255,0.9)", margin: 0, letterSpacing: "-0.01em" }}>
-              CAC Salvation
+              CACNA
             </p>
             <p style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", margin: "1px 0 0", letterSpacing: "0.06em", textTransform: "uppercase" }}>
               Admin Panel

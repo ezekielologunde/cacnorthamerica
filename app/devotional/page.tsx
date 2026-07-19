@@ -11,32 +11,11 @@ export const metadata = {
   alternates: { canonical: "/devotional" },
 };
 
-const devotionals = [
-  {
-    title: "More than a greeting",
-    ref: "Romans 1:16",
-    body: "“Welcome home” isn't just something we say — it's the heart of the Gospel. God runs toward us. Whatever you carried in today, His welcome is bigger. Receive it, and let it become the way you welcome others.",
-  },
-  {
-    title: "Start the day in His presence",
-    ref: "Mark 1:35",
-    body: "Before the noise, Jesus found a quiet place to pray. Mornings set the tone. Five minutes with God before the world gets loud will steady everything that follows. Join the 5 AM prayer line and begin there.",
-  },
-  {
-    title: "The undiluted Word",
-    ref: "2 Timothy 4:2",
-    body: "We're called to preach the whole Gospel, clearly and without compromise. The same Word that comforts also corrects — and both are love. Let Scripture read you today, not just the other way around.",
-  },
-];
-
-const confession: { kind: "verse" | "say"; ref?: string; text: string }[] = [
-  { kind: "verse", ref: "Psalm 23:1–3", text: "The LORD is my shepherd; I shall not want. He makes me lie down in green pastures. He leads me beside still waters. He restores my soul. He leads me in paths of righteousness for His name’s sake." },
-  { kind: "say", text: "As I go through the day, I’m covered by the blood of Jesus Christ, and I stand on the promise of the Word of God in —" },
-  { kind: "verse", ref: "Isaiah 41:10", text: "Fear thou not; for I am with thee: be not dismayed; for I am thy God: I will strengthen thee; yea, I will help thee; yea, I will uphold thee with the right hand of my righteousness." },
-  { kind: "verse", ref: "Isaiah 41:11", text: "Behold, all they that were incensed against thee shall be ashamed and confounded: they shall be as nothing; and they that strive with thee shall perish." },
-  { kind: "verse", ref: "Isaiah 41:12", text: "Thou shalt seek them, and shalt not find them, even them that contended with thee: they that war against thee shall be as nothing, and as a thing of nought." },
-  { kind: "say", text: "Surely goodness and mercy shall follow me all the days of my life, and I shall dwell in the house of the LORD forever." },
-];
+// The three "Reflections" and the "2026 Daily Confession" that used to sit
+// here were generic devotional text inherited from the cac-salvation-center
+// template with no way to verify they're actually CACNA's own words or
+// practice — replaced with an honest "coming soon" placeholder below rather
+// than presenting unverified content as CACNA's official voice.
 
 const children = [
   {
@@ -112,23 +91,16 @@ export default function DevotionalPage() {
         <VerseOfDay />
       </section>
 
-      {/* Written devotionals */}
+      {/* Written devotionals — real CACNA-written reflections coming soon */}
       <section style={{ background: "var(--cream)", padding: "clamp(40px,6vw,80px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-          <Reveal style={{ marginBottom: 40 }}>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,52px)", letterSpacing: "-1px", color: "var(--ink)", margin: 0 }}>Reflections</h2>
+        <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
+          <Reveal>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,52px)", letterSpacing: "-1px", color: "var(--ink)", margin: "0 0 16px" }}>Reflections</h2>
+            <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.7 }}>
+              Written devotionals from CACNA&apos;s own pastors and ministers are coming soon. In the meantime, this year&apos;s Watchword above carries the theme, and the{" "}
+              <a href="/blog" style={{ color: "var(--red)", fontWeight: 700, textDecoration: "none" }}>blog</a> has reflections from the family.
+            </p>
           </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: 20 }}>
-            {devotionals.map((d, i) => (
-              <Reveal key={d.title} delay={i * 90}>
-                <article className="card-lift" style={{ height: "100%", background: "var(--paper)", borderRadius: 22, padding: "30px 28px", border: "1px solid var(--line)", boxShadow: "0 12px 30px rgba(18,20,30,.07)", display: "flex", flexDirection: "column" }}>
-                  <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 12 }}>{d.ref}</div>
-                  <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, letterSpacing: "-.4px", color: "var(--ink)", margin: "0 0 12px" }}>{d.title}</h3>
-                  <p style={{ fontSize: 15.5, color: "var(--ink-soft)", lineHeight: 1.75, margin: 0 }}>{d.body}</p>
-                </article>
-              </Reveal>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -173,31 +145,15 @@ export default function DevotionalPage() {
         </div>
       </section>
 
-      {/* 2026 Daily Confession */}
+      {/* Daily Confession — coming soon, pending a verified CACNA-specific text */}
       <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 820, margin: "0 auto" }}>
-          <Reveal style={{ textAlign: "center", marginBottom: 36 }}>
-            <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Confess it daily · 2026</span>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,52px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 0" }}>Our Daily Confession</h2>
-            <p style={{ fontSize: 15.5, color: "var(--ink-soft)", lineHeight: 1.7, margin: "12px auto 0", maxWidth: 540 }}>
-              The declaration the CACNA family speaks over each day this year. Say it aloud, and walk in it.
+        <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
+          <Reveal>
+            <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Coming soon</span>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,52px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 16px" }}>Our Daily Confession</h2>
+            <p style={{ fontSize: 15.5, color: "var(--ink-soft)", lineHeight: 1.7 }}>
+              CACNA&apos;s own daily confession will be published here once confirmed with our regional leadership.
             </p>
-          </Reveal>
-          <Reveal delay={120}>
-            <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 24, padding: "clamp(28px,4vw,46px)", boxShadow: "0 16px 40px rgba(18,20,30,.08)" }}>
-              {confession.map((seg, i) =>
-                seg.kind === "verse" ? (
-                  <div key={i} style={{ marginBottom: i === confession.length - 1 ? 0 : 26 }}>
-                    <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 8 }}>{seg.ref}</div>
-                    <p style={{ fontSize: "clamp(16px,1.9vw,19px)", color: "var(--ink)", lineHeight: 1.75, margin: 0 }}>{seg.text}</p>
-                  </div>
-                ) : (
-                  <p key={i} style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "clamp(18px,2.2vw,24px)", color: "var(--red-deep)", lineHeight: 1.5, letterSpacing: "-.3px", margin: i === confession.length - 1 ? 0 : "0 0 26px" }}>
-                    {seg.text}
-                  </p>
-                )
-              )}
-            </div>
           </Reveal>
         </div>
       </section>

@@ -49,7 +49,7 @@ function shippingHtml(opts: {
 <body style="margin:0;padding:0;background:#F9F8F6;font-family:Georgia,serif">
   <div style="max-width:600px;margin:40px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(18,20,30,.10)">
     <div style="background:#12141E;padding:36px 40px;text-align:center">
-      <p style="margin:0 0 10px;font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,246,250,.45)">CAC SALVATION CENTER</p>
+      <p style="margin:0 0 10px;font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,246,250,.45)">CACNA</p>
       <h1 style="margin:0;font-size:30px;font-weight:800;color:#fff;letter-spacing:-0.5px;line-height:1.2">Your order is on the way 📦</h1>
     </div>
     <div style="padding:40px">
