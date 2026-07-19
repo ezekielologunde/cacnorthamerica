@@ -288,25 +288,26 @@ export default function AboutPage() {
           </Reveal>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
             {[
-              { n: "01", t: "The Holy Scriptures", d: "The Bible is the inspired, infallible Word of God." },
-              { n: "02", t: "The Trinity", d: "One God in three Persons — Father, Son, and Holy Spirit." },
-              { n: "03", t: "The Person of Christ", d: "The deity, virgin birth, sinless life, atoning death, bodily resurrection, and ascension of Jesus Christ." },
-              { n: "04", t: "The Fall of Man", d: "All have sinned and fall short of the glory of God." },
-              { n: "05", t: "Salvation by Grace", d: "Through faith in the finished work of Christ — not by works." },
-              { n: "06", t: "Repentance & Restitution", d: "A turning from sin that bears fruit in changed lives." },
-              { n: "07", t: "Water Baptism", d: "By immersion, in the Name of the Father, Son, and Holy Spirit." },
-              { n: "08", t: "The Lord’s Supper", d: "Bread and the cup, in remembrance of Him until He comes." },
-              { n: "09", t: "Sanctification", d: "A progressive work of the Holy Spirit, setting us apart unto God." },
-              { n: "10", t: "Baptism of the Holy Ghost", d: "With the evidence of speaking in other tongues, as the Spirit gives utterance." },
-              { n: "11", t: "Divine Healing", d: "Through the atoning work of Christ — for the body as well as the soul." },
-              { n: "12", t: "Tithes & Offerings", d: "Honoring God with the firstfruits and supporting His work." },
-              { n: "13", t: "The Second Coming", d: "The bodily return of Christ, the resurrection, and the eternal state." },
+              { n: "01", t: "The Unity of the Godhead", d: "The unity of the Godhead and the trinity of the persons therein — Father, Son, and Holy Spirit.", s: "Matthew 28:19, 2 Corinthians 13:14, 1 John 5:7" },
+              { n: "02", t: "The Fall of Man", d: "The utter depravity of human nature, the necessity for repentance and regeneration, and the eternal doom of the finally impenitent.", s: "Romans 3:23, Ephesians 2, Acts 20:21, 2 Corinthians 5:17, Revelation 20:11-15, John 3:16-17" },
+              { n: "03", t: "The Person of Christ", d: "The virgin birth, sinless life, atoning death, triumphant resurrection, ascension and abiding intercession of our Lord Jesus Christ; His second coming and millennial reign upon earth.", s: "Matthew 1:18-25, Hebrews 2:9, 1 Peter 2:21-24, Acts 2:29-32" },
+              { n: "04", t: "Justification & Sanctification", d: "Justification and sanctification of the believer through the finished work of Christ.", s: "Romans 3:21-24, 2 Corinthians 3:17-18, Ephesians 4:23-24" },
+              { n: "05", t: "Baptism of the Holy Spirit", d: "The baptism of the Holy Spirit for believers, with signs following.", s: "Matthew 3:11, Mark 16:17, Acts 1:8, Acts 2, Acts 10:44-48" },
+              { n: "06", t: "The Nine Gifts of the Spirit", d: "The nine gifts of the Holy Spirit for the edification, exhortation and comfort of the Church, which is the Body of Christ.", s: "1 Corinthians 12:4-28, 1 Corinthians 13:9-12, Galatians 5:22-23" },
+              { n: "07", t: "The Sacraments", d: "The sacraments of baptism by immersion and of the Lord's Supper.", s: "Matthew 3:16-17, Matthew 28:19, 1 Corinthians 11:23-26, Romans 6:3-14" },
+              { n: "08", t: "The Authority of the Bible", d: "The divine inspiration and authority of the Holy Bible.", s: "John 1:1-4, 2 Timothy 3:16-17, 2 Peter 1:20-21" },
+              { n: "09", t: "Church Government", d: "Church government by apostles, prophets, evangelists, pastors, church teachers and elders/deacons.", s: "Ephesians 4:11-13, 1 Timothy 3:1-13, Titus 1:5-11" },
+              { n: "10", t: "Falling from Grace", d: "The possibility of falling from Grace.", s: "1 Corinthians 10:12, 1 Timothy 1:19, Hebrews 3:12, Hebrews 6:4-6" },
+              { n: "11", t: "Tithes & Offerings", d: "The obligatory nature of tithes and offerings.", s: "Genesis 14:18-20, 28:20-21, Malachi 3:10-12" },
+              { n: "12", t: "Divine Healing", d: "Divine healing through obedience to the command of our Lord Jesus Christ, and faith in His name and the merit of His blood, for all sickness, disease and infirmities.", s: "James 5:14-18, 2 Kings 1:2-4" },
+              { n: "13", t: "Jehovah Jireh", d: "Faith in God, the Jehovah Jireh, to supply all financial needs without going into indebtedness.", s: "Genesis 22:12-14, Philippians 4:19" },
             ].map((t, i) => (
               <Reveal key={t.n} delay={(i % 3) * 60}>
                 <div style={{ height: "100%", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 18, padding: "22px 22px 24px", boxShadow: "0 6px 18px rgba(18,20,30,.04)" }}>
                   <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 13, color: "var(--red)", letterSpacing: "1.5px", marginBottom: 8 }}>{t.n}</div>
                   <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, letterSpacing: "-.3px", color: "var(--ink)", margin: "0 0 8px", lineHeight: 1.2 }}>{t.t}</h3>
-                  <p style={{ fontSize: 13.5, color: "var(--ink-soft)", lineHeight: 1.6, margin: 0 }}>{t.d}</p>
+                  <p style={{ fontSize: 13.5, color: "var(--ink-soft)", lineHeight: 1.6, margin: "0 0 10px" }}>{t.d}</p>
+                  <p style={{ fontSize: 11.5, fontStyle: "italic", color: "var(--red)", lineHeight: 1.5, margin: 0 }}>{t.s}</p>
                 </div>
               </Reveal>
             ))}
