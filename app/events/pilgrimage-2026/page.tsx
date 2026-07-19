@@ -2,6 +2,7 @@ import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
+import Image from "next/image";
 import Link from "next/link";
 import { MapPin, Flame, Waves, Landmark, Eye, ArrowLeft, CalendarPlus, Download, Phone, Mail, CreditCard } from "lucide-react";
 import { specialEvents, googleCalUrl, icsDataUri, isEventPast } from "@/lib/events";
@@ -90,68 +91,87 @@ export default function PilgrimagePage() {
 
       {/* Hero */}
       <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) clamp(80px,10vw,120px)", position: "relative", overflow: "hidden" }}>
+        <style>{`
+          .pilgrimage-hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: clamp(32px,5vw,60px); align-items: center; }
+          @media (max-width: 900px) { .pilgrimage-hero-grid { grid-template-columns: 1fr; } }
+        `}</style>
         <div aria-hidden style={{ position: "absolute", top: -100, right: -80, width: 640, height: 520, background: "radial-gradient(circle,rgba(253,200,65,.3),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 20s ease-in-out infinite" }} />
         <div aria-hidden style={{ position: "absolute", bottom: -60, left: -60, width: 480, height: 380, background: "radial-gradient(circle,rgba(200,30,58,.12),transparent 65%)", pointerEvents: "none" }} />
 
-        <div style={{ maxWidth: 960, margin: "0 auto", position: "relative", zIndex: 2 }}>
-          <Reveal>
-            <Link href="/events" style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 700, color: "rgba(245,246,250,.6)", textDecoration: "none", marginBottom: 32 }}>
-              <ArrowLeft size={14} strokeWidth={2.5} aria-hidden /> All events
-            </Link>
-          </Reveal>
+        <div className="pilgrimage-hero-grid" style={{ maxWidth: 1140, margin: "0 auto", position: "relative", zIndex: 2 }}>
+          <div>
+            <Reveal>
+              <Link href="/events" style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 700, color: "rgba(245,246,250,.6)", textDecoration: "none", marginBottom: 32 }}>
+                <ArrowLeft size={14} strokeWidth={2.5} aria-hidden /> All events
+              </Link>
+            </Reveal>
 
-          <Reveal>
-            <div style={{ fontSize: 13, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 14 }}>
-              Christ Apostolic Church North America · Latunde Region Pilgrimage
-            </div>
-          </Reveal>
-
-          <Reveal>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 12, marginBottom: 28 }}>
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: 80, height: 80, borderRadius: 20, background: "linear-gradient(150deg,#FDC841,#B8860B)", boxShadow: "0 20px 44px rgba(253,200,65,.4)" }}>
-                <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 12, color: "#fff", letterSpacing: 1 }}>NOV</span>
-                <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 24, color: "#fff", lineHeight: 1 }}>2</span>
+            <Reveal>
+              <div style={{ fontSize: 13, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 14 }}>
+                Christ Apostolic Church North America · Latunde Region Pilgrimage
               </div>
-              <div>
-                <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 44, color: "#fff", lineHeight: 1 }}>–12, 2026</div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: "var(--gold)", letterSpacing: 1 }}>ISRAEL & EGYPT · DEPARTING JFK</div>
+            </Reveal>
+
+            <Reveal>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 12, marginBottom: 28 }}>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: 80, height: 80, borderRadius: 20, background: "linear-gradient(150deg,#FDC841,#B8860B)", boxShadow: "0 20px 44px rgba(253,200,65,.4)" }}>
+                  <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 12, color: "#fff", letterSpacing: 1 }}>NOV</span>
+                  <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 24, color: "#fff", lineHeight: 1 }}>2</span>
+                </div>
+                <div>
+                  <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 44, color: "#fff", lineHeight: 1 }}>–12, 2026</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "var(--gold)", letterSpacing: 1 }}>ISRAEL & EGYPT · DEPARTING JFK</div>
+                </div>
               </div>
+            </Reveal>
+
+            <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(40px,6.5vw,90px)", letterSpacing: "-0.035em", color: "#fff", margin: "0 0 24px", lineHeight: 0.92, textWrap: "balance" }}>
+              <RevealText immediate>Holy Land</RevealText>
+              <br />
+              <RevealText immediate delay={0.12} style={{ color: "var(--red)" }}>
+                Pilgrimage 2026
+              </RevealText>
+            </h1>
+
+            <Reveal delay={200}>
+              <p style={{ fontSize: "clamp(16px,1.9vw,20px)", color: "rgba(245,246,250,.72)", lineHeight: 1.72, maxWidth: 600, margin: "0 0 44px", textWrap: "pretty" }}>
+                Walk where Jesus walked. Stand where Moses stood. Ten days in the land of Scripture — Israel and Egypt — with your CAC family.
+              </p>
+            </Reveal>
+
+            {!isPast && (
+            <Reveal delay={280}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
+                <a href="mailto:info@cacnapilgrimage.org?subject=Holy Land Pilgrimage 2026 — Registration" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(253,200,65,.4)" }}>
+                  Register — $500 Deposit →
+                </a>
+                {ev && (
+                  <>
+                    <a href={googleCalUrl(ev)} target="_blank" rel="noopener noreferrer" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(245,246,250,.09)", color: "var(--cream)", fontWeight: 700, fontSize: 15, padding: "16px 28px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(245,246,250,.2)" }}>
+                      <CalendarPlus size={17} strokeWidth={2} aria-hidden /> Add to Calendar
+                    </a>
+                    <a href={icsDataUri(ev)} download="holy-land-pilgrimage-2026.ics" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(245,246,250,.06)", color: "rgba(245,246,250,.7)", fontWeight: 700, fontSize: 14, padding: "16px 22px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(245,246,250,.14)" }}>
+                      <Download size={16} strokeWidth={2} aria-hidden /> Apple / Outlook
+                    </a>
+                  </>
+                )}
+              </div>
+            </Reveal>
+            )}
+          </div>
+
+          <Reveal delay={160}>
+            <div style={{ position: "relative", borderRadius: 24, overflow: "hidden", boxShadow: "0 30px 70px rgba(0,0,0,.45)", border: "1px solid rgba(245,246,250,.12)" }}>
+              <Image
+                src="/images/pilgrimage-2026-flyer.jpg"
+                alt="Christ Apostolic Church North America Latunde Region Pilgrimage — 2026 Special Pilgrimage to Israel and Egypt, November 2nd–12th, 2026"
+                width={1600}
+                height={1035}
+                style={{ width: "100%", height: "auto", display: "block" }}
+                priority
+              />
             </div>
           </Reveal>
-
-          <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(40px,6.5vw,90px)", letterSpacing: "-0.035em", color: "#fff", margin: "0 0 24px", lineHeight: 0.92, textWrap: "balance" }}>
-            <RevealText immediate>Holy Land</RevealText>
-            <br />
-            <RevealText immediate delay={0.12} style={{ color: "var(--red)" }}>
-              Pilgrimage 2026
-            </RevealText>
-          </h1>
-
-          <Reveal delay={200}>
-            <p style={{ fontSize: "clamp(16px,1.9vw,20px)", color: "rgba(245,246,250,.72)", lineHeight: 1.72, maxWidth: 600, margin: "0 0 44px", textWrap: "pretty" }}>
-              Walk where Jesus walked. Stand where Moses stood. Ten days in the land of Scripture — Israel and Egypt — with your CAC family.
-            </p>
-          </Reveal>
-
-          {!isPast && (
-          <Reveal delay={280}>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
-              <a href="mailto:info@cacnapilgrimage.org?subject=Holy Land Pilgrimage 2026 — Registration" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(253,200,65,.4)" }}>
-                Register — $500 Deposit →
-              </a>
-              {ev && (
-                <>
-                  <a href={googleCalUrl(ev)} target="_blank" rel="noopener noreferrer" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(245,246,250,.09)", color: "var(--cream)", fontWeight: 700, fontSize: 15, padding: "16px 28px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(245,246,250,.2)" }}>
-                    <CalendarPlus size={17} strokeWidth={2} aria-hidden /> Add to Calendar
-                  </a>
-                  <a href={icsDataUri(ev)} download="holy-land-pilgrimage-2026.ics" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(245,246,250,.06)", color: "rgba(245,246,250,.7)", fontWeight: 700, fontSize: 14, padding: "16px 22px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(245,246,250,.14)" }}>
-                    <Download size={16} strokeWidth={2} aria-hidden /> Apple / Outlook
-                  </a>
-                </>
-              )}
-            </div>
-          </Reveal>
-          )}
         </div>
       </section>
 
