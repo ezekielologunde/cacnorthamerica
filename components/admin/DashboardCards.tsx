@@ -5,8 +5,6 @@ import Link from "next/link";
 const STAT_CARDS = [
   { key: "posts",              label: "Blog Posts",          color: "#2563eb", bg: "#eff6ff", href: "/admin/blog",        icon: "M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" },
   { key: "events",             label: "Events",              color: "#16a34a", bg: "#f0fdf4", href: "/admin/events",       icon: "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" },
-  { key: "pendingTestimonies", label: "Testimonies Pending", color: "#d97706", bg: "#fffbeb", href: "/admin/testimonies", icon: "M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" },
-  { key: "prayers",            label: "Prayer Requests",     color: "#dc2626", bg: "#fef2f2", href: "/admin/prayer",       icon: "M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" },
   { key: "contacts",           label: "Contact Messages",    color: "#7c3aed", bg: "#f5f3ff", href: "/admin/contact",      icon: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" },
   { key: "products",      label: "Products Live",       color: "#0891b2", bg: "#ecfeff", href: "/admin/store",         icon: "M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" },
   { key: "gallery",       label: "Gallery Images",       color: "#7c3aed", bg: "#f5f3ff", href: "/admin/gallery",       icon: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" },
@@ -17,13 +15,12 @@ const STAT_CARDS = [
 const QUICK_ACTIONS = [
   { href: "/admin/blog/new",          label: "Write a Blog Post",  icon: "M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" },
   { href: "/admin/events/new",        label: "Add an Event",       icon: "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" },
-  { href: "/admin/testimonies",       label: "Review Testimonies", icon: "M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" },
   { href: "/admin/store/new",         label: "Add Product",        icon: "M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" },
   { href: "/admin/gallery",           label: "Upload to Gallery",  icon: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" },
   { href: "/admin/announcements/new", label: "New Announcement",   icon: "M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" },
 ];
 
-type Stats = { posts: number; events: number; pendingTestimonies: number; prayers: number; contacts: number; products: number; gallery: number; announcements: number; orders: number };
+type Stats = { posts: number; events: number; contacts: number; products: number; gallery: number; announcements: number; orders: number };
 
 export default function DashboardCards({ stats }: { stats: Stats }) {
   return (
@@ -53,7 +50,7 @@ export default function DashboardCards({ stats }: { stats: Stats }) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(165px, 1fr))", gap: 14, marginBottom: 44 }}>
         {STAT_CARDS.map(({ key, label, color, bg, href, icon }) => {
           const count = stats[key as keyof Stats];
-          const hasAlert = (key === "pendingTestimonies" || key === "prayers" || key === "contacts") && count > 0;
+          const hasAlert = key === "contacts" && count > 0;
           return (
             <Link
               key={key}

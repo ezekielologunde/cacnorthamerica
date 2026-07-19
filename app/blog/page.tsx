@@ -4,13 +4,12 @@ import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { POSTS, type BlogPost, badgeTextColor } from "@/lib/blog";
 import { specialEvents } from "@/lib/events";
-import { bibleReadingPlan } from "@/lib/biblePlan";
 import { getApprovedCacWorldNews, type CacWorldNewsItem } from "@/lib/cacWorldNews";
 import { GIVING_CAMPAIGNS, type GivingCampaign } from "@/lib/giving";
 import { currentOrNextConvention, dateRangeLabel, hasExternalRegistrationUrl } from "@/lib/conventions";
 import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
 import Link from "next/link";
-import { Clock, Calendar, ShoppingBag, BookOpen, ArrowRight, Globe2, Landmark } from "lucide-react";
+import { Clock, Calendar, ShoppingBag, ArrowRight, Globe2, Landmark } from "lucide-react";
 
 export const revalidate = 3600;
 
@@ -255,41 +254,6 @@ function GivingAdWidget({ campaign }: { campaign: GivingCampaign }) {
   );
 }
 
-function ScriptureWidget() {
-  const week = bibleReadingPlan[1];
-  return (
-    <aside style={{
-      background: "var(--ink)", borderRadius: 20, padding: "24px 26px",
-      marginBottom: 24, position: "relative", overflow: "hidden",
-    }}>
-      <div aria-hidden style={{ position: "absolute", top: -40, right: -40, width: 180, height: 140, background: "radial-gradient(circle,rgba(253,200,65,.25),transparent 70%)", pointerEvents: "none" }} />
-      <div style={{ position: "relative", zIndex: 2 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 14 }}>
-          <BookOpen size={12} strokeWidth={2.5} color="var(--gold)" aria-hidden />
-          <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "var(--gold)" }}>
-            This Week&apos;s Reading
-          </span>
-        </div>
-        <div style={{ fontSize: 12.5, fontWeight: 700, color: "rgba(245,246,250,.55)", marginBottom: 10 }}>Week 2 — {week.theme}</div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          {[
-            ["Sun", week.sun], ["Mon", week.mon], ["Tue", week.tue],
-            ["Wed", week.wed], ["Thu", week.thu],
-          ].map(([day, reading]) => (
-            <div key={day} style={{ display: "flex", gap: 10, fontSize: 13 }}>
-              <span style={{ minWidth: 30, fontWeight: 800, color: "var(--gold)", fontSize: 11 }}>{day}</span>
-              <span style={{ color: "rgba(245,246,250,.75)", lineHeight: 1.45 }}>{reading}</span>
-            </div>
-          ))}
-        </div>
-        <Link href="/bible-plan" style={{ display: "inline-block", marginTop: 16, fontSize: 12, fontWeight: 700, color: "var(--gold)", textDecoration: "none" }}>
-          Full reading plan →
-        </Link>
-      </div>
-    </aside>
-  );
-}
-
 function UpcomingEventWidget() {
   const ev = specialEvents.find(e => e.href) ?? specialEvents[0];
   return (
@@ -424,9 +388,6 @@ export default async function BlogPage() {
           </div>
           <div>
             <Reveal delay={80}>
-              <ScriptureWidget />
-            </Reveal>
-            <Reveal delay={120}>
               <UpcomingEventWidget />
             </Reveal>
             <Reveal delay={160}>

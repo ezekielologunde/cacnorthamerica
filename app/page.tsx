@@ -14,7 +14,6 @@ const Watchword     = dynamic(() => import("@/components/sections/Watchword").th
 const PastorWelcome = dynamic(() => import("@/components/sections/PastorWelcome").then(m => ({ default: m.PastorWelcome })));
 const WhatToExpect  = dynamic(() => import("@/components/sections/WhatToExpect").then(m => ({ default: m.WhatToExpect })));
 const Impact        = dynamic(() => import("@/components/sections/Impact").then(m => ({ default: m.Impact })));
-const GrowResources = dynamic(() => import("@/components/sections/Youth").then(m => ({ default: m.Youth })));
 const Events        = dynamic(() => import("@/components/sections/Events").then(m => ({ default: m.Events })));
 const LatestNews    = dynamic(() => import("@/components/sections/LatestNews").then(m => ({ default: m.LatestNews })));
 const GlobalChurches = dynamic(() => import("@/components/sections/GlobalChurches").then(m => ({ default: m.GlobalChurches })));
@@ -103,7 +102,6 @@ export default async function Home() {
       <PastorWelcome />
       <WhatToExpect />
       <Impact />
-      <GrowResources />
       <Events />
       <LatestNews />
       <GlobalChurches />

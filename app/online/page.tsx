@@ -227,21 +227,6 @@ export default async function OnlinePage() {
         </div>
       </section>
 
-      {/* Salvation CTA */}
-      <section style={{ padding: "80px clamp(20px,5vw,64px)", background: "linear-gradient(135deg,#C81E3A,#7A1128)" }}>
-        <Reveal style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
-          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4.5vw,60px)", letterSpacing: "-1.2px", color: "#fff", margin: "0 0 16px", lineHeight: .96 }}>
-            Ready to give your life to Christ?
-          </h2>
-          <p style={{ fontSize: 17, color: "rgba(255,255,255,.75)", margin: "0 0 36px" }}>
-            We&apos;d love to walk that journey with you. Reach out — no pressure, just genuine welcome.
-          </p>
-          <Link href="/salvation" style={{ display: "inline-block", background: "#fff", color: "var(--red)", fontWeight: 800, fontSize: 16, padding: "17px 36px", borderRadius: 999, textDecoration: "none" }}>
-            Learn About Salvation →
-          </Link>
-        </Reveal>
-      </section>
-
       <FooterExperience />
     </main>
   );

@@ -12,14 +12,10 @@ export const SEARCH_INDEX: SearchItem[] = [
   { title: "Who We Are", desc: "Our mission, history, and the tenets of faith", href: "/about", tag: "Page", keywords: "about mission vision history apostolic faith tenets belief" },
   { title: "Leadership", desc: "Meet our Regional Superintendent and Coordinating Council", href: "/leadership", tag: "Page", keywords: "leadership team pastor agbeja adenodi latunde adelani oluwatimilehin coordinating council" },
   { title: "Ministries", desc: "Administration, Christian Education, Evangelism, Youth, Missions, Music, and more", href: "/ministries", tag: "Page", keywords: "ministry department administration evangelism youth missions music welfare good women cacma" },
-  { title: "Testimonies", desc: "Stories of healing, salvation, and God's faithfulness", href: "/testimonies", tag: "Page", keywords: "testimonies healing miracles stories faith answered prayer" },
   { title: "Gallery", desc: "Photos from across CACNA's member churches and the Annual Convention", href: "/gallery", tag: "Page", keywords: "photos gallery pictures events fellowship moments" },
   // Grow
   { title: "Watch Online", desc: "The Annual Convention live, and message replays on YouTube", href: "/online", tag: "Page", keywords: "watch live stream youtube sermon online convention" },
-  { title: "Devotional", desc: "Verse of the day and written devotionals", href: "/devotional", tag: "Page", keywords: "devotional daily word reflection morning bible" },
-  { title: "Bible Reading Plan", desc: "A structured weekly Bible reading plan", href: "/bible-plan", tag: "Page", keywords: "bible reading plan scripture weekly study" },
-  { title: "Prayer", desc: "Submit a prayer request. Daily 5 AM prayer line: (857) 216-6700", href: "/prayer", tag: "Page", keywords: "prayer request intercession prayer line 5am urgent personal" },
-  { title: "Salvation", desc: "Accept Jesus Christ as Lord and Saviour today", href: "/salvation", tag: "Page", keywords: "salvation born again accept christ jesus gospel sinner forgiveness eternal life" },
+  { title: "Watchwords", desc: "Every annual Watchword since 1989", href: "/watchwords", tag: "Page", keywords: "watchword scripture annual theme archive" },
   // Visit
   { title: "Find a Church", desc: "Find a CACNA member church near you across the U.S. and Canada", href: "/visit", tag: "Page", keywords: "visit directions find a church zone superintendent member church" },
   // Events & Calendar

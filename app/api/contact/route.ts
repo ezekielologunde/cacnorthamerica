@@ -6,7 +6,7 @@ import { rateLimit } from "@/lib/rateLimit";
 const FROM = "CACNA <noreply@cacnorthamerica.com>";
 const TO   = "info@cacnorthamerica.com";
 
-const ALLOWED_FORM_PREFIXES = ["Prayer request", "Testimony", "Contact —", "Contact Form"];
+const ALLOWED_FORM_PREFIXES = ["Contact —", "Contact Form"];
 const MAX_FIELD_LENGTH = 10_000;
 const MAX_FIELDS = 20;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -34,19 +34,7 @@ function buildHtml(rows: [string, string][]): string {
 async function saveToSupabase(formName: string, fields: Record<string, string>): Promise<void> {
   const supabase = await createServiceClient();
 
-  if (formName === "Prayer request") {
-    await supabase.from("prayer_requests").insert({
-      name: fields.name === "(anonymous)" ? null : (fields.name || null),
-      email: fields.email === "(not provided)" ? null : (fields.email || null),
-      request: fields.prayerRequest ?? "",
-      urgent: fields.requestPastorCall?.startsWith("Yes") ?? false,
-    });
-  } else if (formName === "Testimony") {
-    await supabase.from("testimonies").insert({
-      name: fields.name === "(anonymous)" ? "Anonymous" : (fields.name || "Anonymous"),
-      content: fields.testimony ?? "",
-    });
-  } else if (formName.startsWith("Contact —") || formName.startsWith("Contact Form")) {
+  if (formName.startsWith("Contact —") || formName.startsWith("Contact Form")) {
     await supabase.from("contact_submissions").insert({
       name: fields["Name"] || fields.name || "Unknown",
       email: fields["Email"] || fields.email || "",

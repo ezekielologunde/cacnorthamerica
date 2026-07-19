@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Heart } from 'lucide-react';
 import { specialEvents, splitByDate, type ChurchEvent } from '@/lib/events';
 
 type BannerAnn = { id: string; title: string; cta_text: string | null; cta_url: string | null; bg_color: string; text_color: string };
@@ -13,7 +12,6 @@ export function SiteOverlays({ bannerAnn }: { bannerAnn?: BannerAnn | null }) {
   const [barEvents, setBarEvents] = useState<ChurchEvent[]>([]);
   const [barIndex, setBarIndex] = useState(0);
   const [barPaused, setBarPaused] = useState(false);
-  const [slide, setSlide] = useState(false);
   const [dbBar, setDbBar] = useState(false);
 
   useEffect(() => {
@@ -38,14 +36,6 @@ export function SiteOverlays({ bannerAnn }: { bannerAnn?: BannerAnn | null }) {
         setBar(true);
         document.documentElement.style.setProperty('--bar-h', '44px');
       }
-    }
-
-    // 2. Prayer slide-in — once per session, 45 s delay
-    if (!sessionStorage.getItem('prayer-prompt-seen')) {
-      timers.push(setTimeout(() => {
-        sessionStorage.setItem('prayer-prompt-seen', '1');
-        setSlide(true);
-      }, 45000));
     }
 
     return () => timers.forEach(clearTimeout);
@@ -149,51 +139,6 @@ export function SiteOverlays({ bannerAnn }: { bannerAnn?: BannerAnn | null }) {
           >
             ×
           </button>
-        </div>
-      )}
-
-      {/* ── 2. Prayer request slide-in ───────────────────────────── */}
-      {slide && (
-        <div
-          role="complementary"
-          aria-label="Prayer request"
-          style={{
-            position: 'fixed', bottom: 24, right: 24, zIndex: 850,
-            background: '#fff', borderRadius: 18, maxWidth: 280,
-            border: '1px solid rgba(18,20,30,.1)',
-            boxShadow: '0 16px 48px rgba(0,0,0,.18)',
-            padding: '20px 20px 18px',
-          }}
-        >
-          <button
-            onClick={() => setSlide(false)}
-            aria-label="Close prayer prompt"
-            style={{ position: 'absolute', top: 12, right: 12, background: 'none', border: 'none', cursor: 'pointer', color: '#888780', fontSize: 16, lineHeight: 1 }}
-          >
-            ×
-          </button>
-          <div style={{ width: 38, height: 38, background: '#FCEBEB', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
-            <Heart size={18} strokeWidth={2} color="#C81E3A" aria-hidden />
-          </div>
-          <div style={{ fontWeight: 800, fontSize: 15, color: '#12141E', marginBottom: 6 }}>Need prayer?</div>
-          <p style={{ fontSize: 13, color: '#5f5e5a', lineHeight: 1.6, marginBottom: 14 }}>
-            Share your request and our pastors will pray with you this week.
-          </p>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <Link
-              href="/prayer"
-              onClick={() => setSlide(false)}
-              style={{ flex: 1, textAlign: 'center', background: '#C81E3A', color: '#fff', fontWeight: 700, fontSize: 13, padding: '9px 14px', borderRadius: 20, textDecoration: 'none' }}
-            >
-              Send request
-            </Link>
-            <button
-              onClick={() => setSlide(false)}
-              style={{ background: '#f4f3f1', color: '#12141E', fontWeight: 600, fontSize: 13, border: 'none', padding: '9px 14px', borderRadius: 20, cursor: 'pointer' }}
-            >
-              Not now
-            </button>
-          </div>
         </div>
       )}
     </>

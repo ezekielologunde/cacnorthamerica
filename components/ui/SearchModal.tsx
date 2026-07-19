@@ -14,7 +14,7 @@ const TAG_COLOR: Record<string, string> = {
   Store: 'var(--red)',
 };
 
-const HINTS = ['Prayer', 'Giving', 'Events', 'CACNA', 'Salvation', 'Store'];
+const HINTS = ['Convention', 'Giving', 'Events', 'CACNA', 'Zones', 'Store'];
 
 function runSearch(q: string): SearchItem[] {
   if (!q.trim()) return [];

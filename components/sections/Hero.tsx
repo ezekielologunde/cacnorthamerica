@@ -24,7 +24,7 @@ const BG_WORDS = [
   { w: "GLORY",     l: 41, delay: 2.5, dur: 20, sz: 26, o: 0.04  },
   { w: "WORSHIP",   l: 87, delay: 1.5, dur: 30, sz: 22, o: 0.05  },
   { w: "AMEN",      l: 11, delay: 3,   dur: 16, sz: 44, o: 0.055 },
-  { w: "SALVATION", l: 53, delay: 1.2, dur: 32, sz: 18, o: 0.04  },
+  { w: "FAMILY",    l: 53, delay: 1.2, dur: 32, sz: 18, o: 0.04  },
 ] as const;
 
 function AnimLetters({ children, delay = 0 }: { children: string; delay?: number }) {

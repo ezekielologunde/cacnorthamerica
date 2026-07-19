@@ -10,10 +10,7 @@ const WEEKLY = new Set([
   "/events",
   "/events/cacna-2026",
   "/calendar",
-  "/devotional",
-  "/bible-plan",
   "/blog",
-  "/testimonies",
 ]);
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

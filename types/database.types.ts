@@ -717,36 +717,6 @@ export type Database = {
         }
         Relationships: []
       }
-      prayer_requests: {
-        Row: {
-          archived: boolean
-          created_at: string
-          email: string | null
-          id: string
-          name: string | null
-          request: string
-          urgent: boolean
-        }
-        Insert: {
-          archived?: boolean
-          created_at?: string
-          email?: string | null
-          id?: string
-          name?: string | null
-          request: string
-          urgent?: boolean
-        }
-        Update: {
-          archived?: boolean
-          created_at?: string
-          email?: string | null
-          id?: string
-          name?: string | null
-          request?: string
-          urgent?: boolean
-        }
-        Relationships: []
-      }
       products: {
         Row: {
           badge: string | null
@@ -992,30 +962,6 @@ export type Database = {
           sort_order?: number
           title?: string
           updated_at?: string
-        }
-        Relationships: []
-      }
-      testimonies: {
-        Row: {
-          approved: boolean
-          content: string
-          created_at: string
-          id: string
-          name: string
-        }
-        Insert: {
-          approved?: boolean
-          content: string
-          created_at?: string
-          id?: string
-          name: string
-        }
-        Update: {
-          approved?: boolean
-          content?: string
-          created_at?: string
-          id?: string
-          name?: string
         }
         Relationships: []
       }

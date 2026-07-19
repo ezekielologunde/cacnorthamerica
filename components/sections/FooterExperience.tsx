@@ -20,11 +20,7 @@ const quickLinks = [
   ['/ministries', 'Ministries'],
   // Watch & Grow
   ['/online', 'Watch Online'],
-  ['/devotional', 'Devotional'],
-  ['/bible-plan', 'Bible Reading Plan'],
-  ['/prayer', 'Prayer'],
-  ['/salvation', 'Salvation'],
-  ['/testimonies', 'Testimonies'],
+  ['/watchwords', 'Watchwords'],
   // Events
   ['/events', 'Events'],
   ['/calendar', 'Calendar'],
