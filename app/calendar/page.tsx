@@ -1,9 +1,13 @@
+import { createClient } from "@supabase/supabase-js";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
+import { MonthCalendar } from "@/components/calendar/MonthCalendar";
 import Link from "next/link";
 import { CalendarPlus, Download } from "lucide-react";
 import { specialEvents, annualMoments, googleCalUrl, icsDataUri, splitByDate, type ChurchEvent } from "@/lib/events";
+
+export const revalidate = 3600;
 
 export const metadata = {
   title: "Calendar — Christ Apostolic Church North America (CACNA)",
@@ -11,6 +15,34 @@ export const metadata = {
     "CACNA's annual rhythm and special events — the Annual Convention, Ministers Retreat, Sunday School Rally, and more. Save any of them to Google, Apple, or Outlook.",
   alternates: { canonical: "/calendar" },
 };
+
+const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+
+type DbEventRow = {
+  id: string; title: string; description: string | null;
+  event_date: string; end_date: string | null;
+  location: string | null; event_url: string | null;
+};
+
+function dbEventToChurchEvent(e: DbEventRow): ChurchEvent {
+  const start = new Date(e.event_date);
+  const end = e.end_date ? new Date(e.end_date) : start;
+  const pad = (n: number) => n.toString().padStart(2, "0");
+  const toLocal = (dt: Date) =>
+    `${dt.getUTCFullYear()}${pad(dt.getUTCMonth() + 1)}${pad(dt.getUTCDate())}T${pad(dt.getUTCHours())}${pad(dt.getUTCMinutes())}00`;
+  return {
+    id: e.id,
+    title: e.title,
+    desc: e.description ?? "",
+    dateLabel: start.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }),
+    timeLabel: start.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "America/New_York" }) + " ET",
+    month: MONTHS[start.getUTCMonth()],
+    day: pad(start.getUTCDate()),
+    startLocal: toLocal(start),
+    endLocal: toLocal(end),
+    href: e.event_url ?? undefined,
+  };
+}
 
 function AddToCalendar({ ev, dark = false }: { ev: ChurchEvent; dark?: boolean }) {
   const ghost = dark
@@ -28,7 +60,18 @@ function AddToCalendar({ ev, dark = false }: { ev: ChurchEvent; dark?: boolean }
   );
 }
 
-export default function CalendarPage() {
+export default async function CalendarPage() {
+  const { data: dbRows } = await createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+    .from("events")
+    .select("id, title, description, event_date, end_date, location, event_url")
+    .eq("published", true)
+    .order("event_date");
+
+  const dynamicEvents = (dbRows ?? []).map(dbEventToChurchEvent);
+  const allEvents = [...specialEvents, ...dynamicEvents];
   const { upcoming: upcomingSpecial } = splitByDate(specialEvents);
   return (
     <main>
@@ -51,6 +94,15 @@ export default function CalendarPage() {
             <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "rgba(245,246,250,.72)", lineHeight: 1.7, maxWidth: 580, margin: "0 auto" }}>
               CACNA's annual rhythm and special gatherings — save any of them to your phone in one tap.
             </p>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Month calendar */}
+      <section style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(56px,7vw,90px)" }}>
+        <div style={{ maxWidth: 760, margin: "0 auto" }}>
+          <Reveal>
+            <MonthCalendar events={allEvents} />
           </Reveal>
         </div>
       </section>
