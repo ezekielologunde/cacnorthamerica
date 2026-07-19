@@ -1,5 +1,5 @@
-import { Nav } from "@/components/navigation/Nav";
-import { FooterExperience } from "@/components/sections/FooterExperience";
+import { ConventionNav } from "@/components/convention/ConventionNav";
+import { ConventionFooter } from "@/components/convention/ConventionFooter";
 import { Reveal } from "@/components/ui/Reveal";
 import { ConventionPageHero } from "@/components/convention/ConventionPageHero";
 import { childrenConvention, childrenTeachers, childrenSchedule } from "@/lib/convention/programs";
@@ -13,7 +13,7 @@ export const metadata = {
 export default function ChildrenPage() {
   return (
     <main>
-      <Nav heroDark />
+      <ConventionNav />
       <ConventionPageHero
         eyebrow="Sub-Conference"
         title="Children's Convention"
@@ -71,7 +71,7 @@ export default function ChildrenPage() {
           </Reveal>
         </div>
       </section>
-      <FooterExperience />
+      <ConventionFooter />
     </main>
   );
 }

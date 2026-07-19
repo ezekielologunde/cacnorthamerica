@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { Nav } from "@/components/navigation/Nav";
-import { FooterExperience } from "@/components/sections/FooterExperience";
+import { ConventionNav } from "@/components/convention/ConventionNav";
+import { ConventionFooter } from "@/components/convention/ConventionFooter";
 import { Reveal } from "@/components/ui/Reveal";
 import { ConventionPageHero } from "@/components/convention/ConventionPageHero";
 import { mainGalleryPhotos, childrenGalleryPhotos } from "@/lib/convention/gallery";
@@ -26,7 +26,7 @@ function PhotoGrid({ photos }: { photos: string[] }) {
 export default function ConventionGalleryPage() {
   return (
     <main>
-      <Nav heroDark />
+      <ConventionNav />
       <ConventionPageHero
         eyebrow="Gallery"
         title="Convention Gallery"
@@ -44,7 +44,7 @@ export default function ConventionGalleryPage() {
           </Reveal>
         </div>
       </section>
-      <FooterExperience />
+      <ConventionFooter />
     </main>
   );
 }

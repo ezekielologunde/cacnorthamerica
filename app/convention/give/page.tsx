@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Nav } from "@/components/navigation/Nav";
-import { FooterExperience } from "@/components/sections/FooterExperience";
+import { ConventionNav } from "@/components/convention/ConventionNav";
+import { ConventionFooter } from "@/components/convention/ConventionFooter";
 import { Reveal } from "@/components/ui/Reveal";
 import { ConventionPageHero } from "@/components/convention/ConventionPageHero";
 
@@ -13,7 +13,7 @@ export const metadata = {
 export default function ConventionGivePage() {
   return (
     <main>
-      <Nav heroDark />
+      <ConventionNav />
       <ConventionPageHero eyebrow="Give" title="Support the Convention" />
       <section style={{ background: "var(--cream)", padding: "clamp(50px,6vw,80px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}>
@@ -36,7 +36,7 @@ export default function ConventionGivePage() {
           </Reveal>
         </div>
       </section>
-      <FooterExperience />
+      <ConventionFooter />
     </main>
   );
 }

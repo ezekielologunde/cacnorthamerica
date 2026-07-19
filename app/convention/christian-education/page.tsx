@@ -1,5 +1,5 @@
-import { Nav } from "@/components/navigation/Nav";
-import { FooterExperience } from "@/components/sections/FooterExperience";
+import { ConventionNav } from "@/components/convention/ConventionNav";
+import { ConventionFooter } from "@/components/convention/ConventionFooter";
 import { Reveal } from "@/components/ui/Reveal";
 import { ConventionPageHero } from "@/components/convention/ConventionPageHero";
 import { AgendaTable } from "@/components/convention/AgendaTable";
@@ -14,7 +14,7 @@ export const metadata = {
 export default function ChristianEducationPage() {
   return (
     <main>
-      <Nav heroDark />
+      <ConventionNav />
       <ConventionPageHero
         eyebrow="Sub-Conference"
         title={christianEducation.title}
@@ -32,7 +32,7 @@ export default function ChristianEducationPage() {
           </Reveal>
         </div>
       </section>
-      <FooterExperience />
+      <ConventionFooter />
     </main>
   );
 }

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Nav } from "@/components/navigation/Nav";
-import { FooterExperience } from "@/components/sections/FooterExperience";
+import { ConventionNav } from "@/components/convention/ConventionNav";
+import { ConventionFooter } from "@/components/convention/ConventionFooter";
 import { Reveal } from "@/components/ui/Reveal";
 import { ConventionPageHero } from "@/components/convention/ConventionPageHero";
 import { ExecutiveGrid } from "@/components/convention/ExecutiveGrid";
@@ -16,7 +16,7 @@ export const metadata = {
 export default function ConventionAboutPage() {
   return (
     <main>
-      <Nav heroDark />
+      <ConventionNav />
       <ConventionPageHero eyebrow="About" title="About the Convention" />
 
       <section style={{ background: "var(--cream)", padding: "clamp(50px,6vw,80px) clamp(20px,5vw,64px)" }}>
@@ -95,7 +95,7 @@ export default function ConventionAboutPage() {
         </div>
       </section>
 
-      <FooterExperience />
+      <ConventionFooter />
     </main>
   );
 }

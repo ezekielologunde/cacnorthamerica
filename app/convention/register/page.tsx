@@ -1,5 +1,5 @@
-import { Nav } from "@/components/navigation/Nav";
-import { FooterExperience } from "@/components/sections/FooterExperience";
+import { ConventionNav } from "@/components/convention/ConventionNav";
+import { ConventionFooter } from "@/components/convention/ConventionFooter";
 import { Reveal } from "@/components/ui/Reveal";
 import { RegisterFlow } from "@/components/convention/RegisterFlow";
 import { createServiceClient } from "@/lib/supabase/server";
@@ -30,7 +30,7 @@ export default async function ConventionRegisterPage() {
 
   return (
     <main>
-      <Nav heroDark />
+      <ConventionNav />
 
       {/* Hero */}
       <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 80px", position: "relative", overflow: "hidden" }}>
@@ -111,7 +111,7 @@ export default async function ConventionRegisterPage() {
         </div>
       </section>
 
-      <FooterExperience />
+      <ConventionFooter />
     </main>
   );
 }

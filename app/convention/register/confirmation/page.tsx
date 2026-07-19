@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Nav } from "@/components/navigation/Nav";
-import { FooterExperience } from "@/components/sections/FooterExperience";
+import { ConventionNav } from "@/components/convention/ConventionNav";
+import { ConventionFooter } from "@/components/convention/ConventionFooter";
 import { Reveal } from "@/components/ui/Reveal";
 import { createServiceClient } from "@/lib/supabase/server";
 
@@ -43,7 +43,7 @@ export default async function RegisterConfirmationPage({
 
   return (
     <main>
-      <Nav />
+      <ConventionNav />
       <section style={{ background: "var(--cream)", padding: "150px clamp(20px,5vw,64px) clamp(70px,9vw,110px)" }}>
         <div style={{ maxWidth: 560, margin: "0 auto", textAlign: "center" }}>
           <Reveal from="scale">
@@ -100,7 +100,7 @@ export default async function RegisterConfirmationPage({
           </Reveal>
         </div>
       </section>
-      <FooterExperience />
+      <ConventionFooter />
     </main>
   );
 }

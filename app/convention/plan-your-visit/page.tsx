@@ -1,5 +1,5 @@
-import { Nav } from "@/components/navigation/Nav";
-import { FooterExperience } from "@/components/sections/FooterExperience";
+import { ConventionNav } from "@/components/convention/ConventionNav";
+import { ConventionFooter } from "@/components/convention/ConventionFooter";
 import { Reveal } from "@/components/ui/Reveal";
 import { ConventionPageHero } from "@/components/convention/ConventionPageHero";
 import {
@@ -16,7 +16,7 @@ export const metadata = {
 export default function PlanYourVisitPage() {
   return (
     <main>
-      <Nav heroDark />
+      <ConventionNav />
       <ConventionPageHero
         eyebrow="Plan Your Visit"
         title="Getting to CAC Village"
@@ -92,7 +92,7 @@ export default function PlanYourVisitPage() {
         </div>
       </section>
 
-      <FooterExperience />
+      <ConventionFooter />
     </main>
   );
 }

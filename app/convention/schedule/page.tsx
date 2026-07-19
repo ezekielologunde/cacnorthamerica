@@ -1,5 +1,5 @@
-import { Nav } from "@/components/navigation/Nav";
-import { FooterExperience } from "@/components/sections/FooterExperience";
+import { ConventionNav } from "@/components/convention/ConventionNav";
+import { ConventionFooter } from "@/components/convention/ConventionFooter";
 import { Reveal } from "@/components/ui/Reveal";
 import { ConventionPageHero } from "@/components/convention/ConventionPageHero";
 import { createServiceClient } from "@/lib/supabase/server";
@@ -50,7 +50,7 @@ export default async function ConventionSchedulePage() {
 
   return (
     <main>
-      <Nav heroDark />
+      <ConventionNav />
       <ConventionPageHero
         eyebrow="Schedule"
         title="Convention Schedule"
@@ -117,7 +117,7 @@ export default async function ConventionSchedulePage() {
         </div>
       </section>
 
-      <FooterExperience />
+      <ConventionFooter />
     </main>
   );
 }
