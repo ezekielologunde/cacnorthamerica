@@ -2,6 +2,7 @@ import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
+import Image from "next/image";
 import Link from "next/link";
 import { MapPin, CalendarDays, Car, Package, Clock, Users, Heart, ArrowLeft, Phone, Ticket, Sparkles, Landmark, Send, Wallet, ListOrdered } from "lucide-react";
 import { googleCalUrl, icsDataUri, isEventPast } from "@/lib/events";
@@ -30,8 +31,8 @@ const THEME = "The Bible: God’s Message to Man";
 const sessions = [
   { day: "Mon · Jul 13", label: "Daily Opening: Praise, Worship & Prayer", desc: "Registration opens for the week, followed by the Daily General Opening Session of praise, worship, and prayer, and Ministers' Session 1 — “Transformative Power of the Word” with Pastor T.A.O. Agbeja, Regional Superintendent, Latunde Region." },
   { day: "Tue · Jul 14", label: "Ministers' Sessions & Registration", desc: "Registration continues alongside Ministers' Session 2 — “The Divine Word as a Guide for Our Daily Living” with Pastor Simeon Oladokun, Ph.D., D.Th., Regional Superintendent, CAC Anosike (Europe) Region." },
-  { day: "Wed · Jul 15", label: "Theme Sessions, Break-Outs & Picnic", desc: "Ministers' Session 3 — “The Bible as an Encourager in Times of Trials, Tribulations and Challenges” with Rt. Rev. Prof. Dapo F. Asaju, Bishop of Ilesa Anglican Diocese — and Ministers' Session 4 with Pastor S.O. Oladele, President. Break-out sessions for CACMWF, CACMA, CACNAGWA, Youth/Young Adult, and Children, an afternoon picnic with sports and games, and a Revival Night with Prophet H. Oladeji, General Evangelist." },
-  { day: "Thu · Jul 16", label: "Sunday School, Business Group & Prayer Night", desc: "Sunday School General Session for all, the Business Group General Session, more break-out sessions, a Ministers' Prayer Night, and a Revival Night with Prophet H. Oladeji." },
+  { day: "Wed · Jul 15", label: "Theme Sessions & Break-Outs", desc: "Ministers' Session 3 — “The Bible as an Encourager in Times of Trials, Tribulations and Challenges” with Rt. Rev. Prof. Dapo F. Asaju, Bishop of Ilesa Anglican Diocese — and Ministers' Session 4 with Pastor S.O. Oladele, President. Break-out sessions for CACMWF, CACMA, CACNAGWA, Youth/Young Adult, and Children, plus a Revival Night with Prophet H. Oladeji, General Evangelist." },
+  { day: "Thu · Jul 16", label: "Picnic, Sunday School & Business Group", desc: "An afternoon picnic with games and sports, the Sunday School General Session, the Business Group General Session, more break-out sessions, a Ministers' Prayer Night, and a Revival Night with Prophet H. Oladeji." },
   { day: "Fri · Jul 17", label: "Convention Program, Ordination & Impartation Night", desc: "The main Convention Program (10am–2pm), an Ordination Service, and an Impartation Night with Prophet H. Oladeji, General Evangelist." },
   { day: "Sat · Jul 18", label: "Holy Communion & Closing Service", desc: "The convention closes with Holy Communion and a Closing Service led by Pastor S.O. Oladele, President, CAC Nigeria and Overseas." },
 ];
@@ -124,7 +125,7 @@ export default function CACNA2026Page() {
     endDate: "2026-07-18T22:00:00-04:00",
     eventStatus: "https://schema.org/EventScheduled",
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-    image: `${SITE_URL}/images/congregation.jpg`,
+    image: `${SITE_URL}/images/cacna-2026-flyer.jpg`,
     url: `${SITE_URL}/events/cacna-2026`,
     location: { "@type": "Place", name: "CAC Village", address: { "@type": "PostalAddress", streetAddress: "14051 Stahley Rd", addressLocality: "Blue Ridge Summit", addressRegion: "PA", postalCode: "17214", addressCountry: "US" } },
     organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },
@@ -144,10 +145,15 @@ export default function CACNA2026Page() {
 
       {/* Hero */}
       <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) clamp(80px,10vw,120px)", position: "relative", overflow: "hidden" }}>
+        <style>{`
+          .cacna2026-hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: clamp(32px,5vw,60px); align-items: center; }
+          @media (max-width: 900px) { .cacna2026-hero-grid { grid-template-columns: 1fr; } }
+        `}</style>
         <div aria-hidden style={{ position: "absolute", top: -140, right: -120, width: 760, height: 600, background: "radial-gradient(circle,rgba(253,200,65,.25),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 18s ease-in-out infinite" }} />
         <div aria-hidden style={{ position: "absolute", bottom: -80, left: -80, width: 500, height: 400, background: "radial-gradient(circle,rgba(200,30,58,.15),transparent 65%)", pointerEvents: "none" }} />
 
-        <div style={{ maxWidth: 960, margin: "0 auto", position: "relative", zIndex: 2 }}>
+        <div className="cacna2026-hero-grid" style={{ maxWidth: 1140, margin: "0 auto", position: "relative", zIndex: 2 }}>
+          <div>
           <Reveal>
             <Link href="/events" style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 700, color: "rgba(245,246,250,.6)", textDecoration: "none", marginBottom: 32 }}>
               <ArrowLeft size={14} strokeWidth={2.5} aria-hidden /> All events
@@ -205,6 +211,20 @@ export default function CACNA2026Page() {
             </div>
           </Reveal>
           )}
+          </div>
+
+          <Reveal delay={160}>
+            <div style={{ position: "relative", borderRadius: 24, overflow: "hidden", boxShadow: "0 30px 70px rgba(0,0,0,.45)", border: "1px solid rgba(245,246,250,.12)" }}>
+              <Image
+                src="/images/cacna-2026-flyer.jpg"
+                alt="CACNA 2026 Annual Convention flyer — theme The Bible: God's Message to Man, July 13-18, 2026, CAC Village, Blue Ridge Summit, PA"
+                width={1127}
+                height={1600}
+                style={{ width: "100%", height: "auto", display: "block" }}
+                priority
+              />
+            </div>
+          </Reveal>
         </div>
       </section>
 
