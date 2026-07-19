@@ -31,7 +31,7 @@ export default function GivingPage() {
           </Reveal>
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(16px,1.8vw,19px)", color: "var(--ink-soft)", lineHeight: 1.65, maxWidth: 580, margin: "0 auto" }}>
-              Every gift fuels CACNA&apos;s ministries, the Annual Convention, and missions like Macedonia Outreach. You are partnering with the kingdom every time you give.
+              Every gift fuels CACNA&apos;s ministries and the Annual Convention. You are partnering with the kingdom every time you give.
             </p>
           </Reveal>
           <Reveal delay={220}>

@@ -93,7 +93,6 @@ export const annualMoments: AnnualMoment[] = [
   { id: "cacna-convention", title: "CACNA Annual Convention", when: "July — CAC Village, PA", desc: "Six days of worship, teaching, and family across every CACNA member church — our flagship gathering, onsite and online." },
   { id: "ministers-retreat", title: "Ministers Retreat", when: "Annually — Regional", desc: "A season of prayer, teaching, and fellowship for CACNA's ministers across the United States and Canada." },
   { id: "sunday-school-rally", title: "Sunday School Rally", when: "Annually — Regional", desc: "Celebrating and equipping Sunday School departments across every CACNA zone." },
-  { id: "macedonia-outreach", title: "Macedonia Outreach", when: "Annually", desc: "An annual mission to forgotten rural ministers in hard-to-reach and unreachable places — carrying the gospel where most cannot go. Follow the journey: @macedonia.outreach on Instagram." },
   { id: "good-women-marathon", title: "Good Women Marathon Fasting & Prayers", when: "February/March — Latunde Region, Annually", desc: "A 7-day annual fasting and prayer marathon for CACNA's Good Women — now in its 14th year, streamed live each evening." },
 ];
 

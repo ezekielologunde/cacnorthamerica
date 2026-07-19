@@ -44,7 +44,6 @@ export const ROUTES: { path: string; priority: number }[] = [
   ...conventionYears.map((cy) => ({ path: cy.href, priority: cy.year === 2026 ? 0.75 : 0.5 })),
   { path: "/events/pilgrimage-2026", priority: 0.7 },
   { path: "/events/ministers-retreat-2027", priority: 0.6 },
-  { path: "/events/macedonia-outreach", priority: 0.7 },
   { path: "/calendar", priority: 0.8 },
   { path: "/testimonies", priority: 0.7 },
   { path: "/blog", priority: 0.6 },

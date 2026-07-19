@@ -25,7 +25,6 @@ export const SEARCH_INDEX: SearchItem[] = [
   // Events & Calendar
   { title: "Calendar", desc: "CACNA's annual rhythm and special gatherings", href: "/calendar", tag: "Page", keywords: "calendar schedule annual convention ministers retreat sunday school rally" },
   { title: "Events", desc: "Upcoming special events and gatherings", href: "/events", tag: "Event", keywords: "events special gatherings upcoming" },
-  { title: "Macedonia Outreach", desc: "Annual mission to forgotten rural ministers in hard-to-reach places", href: "/events/macedonia-outreach", tag: "Event", keywords: "macedonia outreach mission rural unreachable forgotten ministers evangelism remote nigeria" },
   { title: "Holy Land Pilgrimage 2026", desc: "Nov 2–12 — CACNA Latunde Region Pilgrimage to Israel & Egypt — $500 deposit", href: "/events/pilgrimage-2026", tag: "Event", keywords: "holy land pilgrimage 2026 israel egypt jfk cacna november travel" },
   { title: "CACNA 2026", desc: "Annual Convention July 13–18, CAC Village, Blue Ridge Summit PA", href: "/events/cacna-2026", tag: "Event", keywords: "cacna 2026 annual convention july blue ridge summit pennsylvania north america" },
   // Give
