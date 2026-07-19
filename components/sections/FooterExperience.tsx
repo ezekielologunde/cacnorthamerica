@@ -33,13 +33,6 @@ const quickLinks = [
   ['/gallery', 'Gallery'],
   ['/store', 'Store'],
   ['/contact', 'Contact'],
-  // Convention
-  ['/convention/register', 'Convention: Register'],
-  ['/convention/schedule', 'Convention: Schedule'],
-  ['/convention/plan-your-visit', 'Convention: Plan Your Visit'],
-  ['/convention/gallery', 'Convention: Gallery'],
-  ['/convention/archive', 'Convention: Archive'],
-  ['/convention/about', 'Convention: About'],
 ] as const;
 
 export function FooterExperience() {
