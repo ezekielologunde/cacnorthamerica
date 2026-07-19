@@ -275,15 +275,6 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                 </Link>
               )
             )}
-            <Link
-              href="/online"
-              onClick={() => haptic('medium')}
-              className="press"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: dark ? 'rgba(245,246,250,.1)' : 'var(--cream-2)', color: barInk, fontWeight: 700, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', border: `1px solid ${lightBar ? 'rgba(245,246,250,.18)' : 'var(--line)'}` }}
-            >
-              <span style={{ width: 7, height: 7, borderRadius: '50%', background: lightBar ? 'rgba(245,246,250,.5)' : 'var(--ink-soft)', display: 'inline-block' }} />
-              Watch Online
-            </Link>
           </div>
         </div>
 
@@ -404,17 +395,6 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                 </Link>
               )
             )}
-            <Link
-              href="/online"
-              onClick={() => { haptic('medium'); setOpen(false); }}
-              className="press"
-              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, background: 'transparent', color: ink, fontWeight: 700, fontSize: 17, padding: '18px 24px', borderRadius: 999, textDecoration: 'none', border: `1.5px solid ${dark ? 'rgba(245,246,250,.3)' : 'var(--ink)'}` }}>
-              <span style={{ width: 9, height: 9, borderRadius: '50%', background: dark ? 'rgba(245,246,250,.5)' : 'var(--ink-soft)', display: 'inline-block' }} />
-              Watch Online
-            </Link>
-            <Link href="/visit" onClick={() => setOpen(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 15, padding: '14px 24px', borderRadius: 999, textDecoration: 'none', color: dark ? 'rgba(245,246,250,.7)' : 'var(--ink-soft)' }}>
-              Find a Church
-            </Link>
             <p style={{ fontSize: 12.5, color: dark ? 'rgba(245,246,250,.4)' : 'var(--ink-soft)', textAlign: 'center', margin: '8px 0 0' }}>
               16 Zones · United States &amp; Canada · A region of Christ Apostolic Church Worldwide
             </p>
