@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Reveal } from "@/components/ui/Reveal";
 import { annualMoments } from "@/lib/events";
-import { currentOrNextConvention } from "@/lib/conventions";
+import { currentOrNextConvention, hasExternalRegistrationUrl } from "@/lib/conventions";
 
 export function WhatToExpect() {
   const cy = currentOrNextConvention();
@@ -62,7 +62,7 @@ export function WhatToExpect() {
                       {m.desc}
                     </p>
                     {isConvention && (
-                      cy.registrationUrl ? (
+                      hasExternalRegistrationUrl(cy) ? (
                         <a
                           href={cy.registrationUrl}
                           target="_blank"
@@ -74,11 +74,11 @@ export function WhatToExpect() {
                         </a>
                       ) : (
                         <Link
-                          href={cy.href}
+                          href={cy.registrationUrl ?? cy.href}
                           className="press"
                           style={{ marginTop: 24, display: "inline-flex", alignItems: "center", gap: 8, alignSelf: "flex-start", background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 14, padding: "11px 20px", borderRadius: 999, textDecoration: "none" }}
                         >
-                          Save the Date →
+                          {cy.registrationUrl ? `Convention ${cy.year}` : "Save the Date"} →
                         </Link>
                       )
                     )}

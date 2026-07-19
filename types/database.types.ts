@@ -236,6 +236,122 @@ export type Database = {
         }
         Relationships: []
       }
+      convention_pricing_tiers: {
+        Row: {
+          category: string
+          created_at: string
+          ends_on: string
+          id: string
+          price_cents: number
+          sort_order: number
+          starts_on: string
+          year: number
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          ends_on: string
+          id?: string
+          price_cents: number
+          sort_order?: number
+          starts_on: string
+          year: number
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          ends_on?: string
+          id?: string
+          price_cents?: number
+          sort_order?: number
+          starts_on?: string
+          year?: number
+        }
+        Relationships: []
+      }
+      convention_registrants: {
+        Row: {
+          category: string
+          created_at: string
+          full_name: string
+          id: string
+          price_cents: number
+          registration_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          full_name: string
+          id?: string
+          price_cents: number
+          registration_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          full_name?: string
+          id?: string
+          price_cents?: number
+          registration_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "convention_registrants_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "convention_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      convention_registrations: {
+        Row: {
+          church_name: string | null
+          contact_email: string
+          contact_name: string
+          contact_phone: string | null
+          created_at: string
+          id: string
+          registration_type: string
+          status: string
+          stripe_checkout_session_id: string | null
+          stripe_payment_intent_id: string | null
+          total_amount_cents: number
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          church_name?: string | null
+          contact_email: string
+          contact_name: string
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          registration_type: string
+          status?: string
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
+          total_amount_cents: number
+          updated_at?: string
+          year: number
+        }
+        Update: {
+          church_name?: string | null
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          registration_type?: string
+          status?: string
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
+          total_amount_cents?: number
+          updated_at?: string
+          year?: number
+        }
+        Relationships: []
+      }
       departments: {
         Row: {
           contact_email: string | null
@@ -879,7 +995,7 @@ export type Database = {
 
 type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
 
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+type DefaultSchema = DatabaseWithoutInternals["public"]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends

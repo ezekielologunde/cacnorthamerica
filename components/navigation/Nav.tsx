@@ -27,7 +27,7 @@ const navItems: NavItem[] = [
     label: 'Events & Convention',
     href: nextConvention.href,
     dropdown: [
-      { href: conventionCtaHref, label: conventionCtaLabel, desc: nextConvention.registrationUrl ? 'Secure your spot before rates rise' : 'Dates are confirmed — full details soon', external: !!nextConvention.registrationUrl },
+      { href: conventionCtaHref, label: conventionCtaLabel, desc: nextConvention.registrationUrl ? 'Secure your spot before rates rise' : 'Dates are confirmed — full details soon', external: isExternalHref(conventionCtaHref) },
       { href: nextConvention.href, label: 'Convention Details', desc: 'Theme, schedule, venue & travel' },
       { href: '/events', label: 'Upcoming Events', desc: 'Special gatherings across CACNA' },
       { href: '/calendar', label: 'Full Calendar', desc: 'CACNA\'s annual rhythm' },
@@ -252,7 +252,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
               <Search size={16} strokeWidth={2} />
             </button>
             {conventionOpen && (
-              nextConvention.registrationUrl ? (
+              isExternalHref(conventionCtaHref) ? (
                 <a
                   href={conventionCtaHref}
                   target="_blank"
@@ -376,7 +376,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 32 }}>
             {conventionOpen && (
-              nextConvention.registrationUrl ? (
+              isExternalHref(conventionCtaHref) ? (
                 <a
                   href={conventionCtaHref}
                   target="_blank"

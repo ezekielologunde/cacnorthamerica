@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, Sparkles } from "lucide-react";
-import { currentOrNextConvention, dateRangeLabel, CONVENTION_VENUE_SHORT } from "@/lib/conventions";
+import { currentOrNextConvention, dateRangeLabel, CONVENTION_VENUE_SHORT, hasExternalRegistrationUrl } from "@/lib/conventions";
 
 /** Cross-promotes CACNA's own Annual Convention using this site's own real
  *  convention data (lib/conventions.ts) — never a live fetch to the separate
@@ -32,13 +32,23 @@ export function ConventionAdWidget() {
           {dateRangeLabel(cy)} · {CONVENTION_VENUE_SHORT}
         </p>
         {hasReg ? (
-          <a href={cy.registrationUrl} target="_blank" rel="noopener noreferrer" className="press" style={{
-            display: "inline-flex", alignItems: "center", gap: 7,
-            background: "#fff", color: "var(--ink)", fontWeight: 800,
-            fontSize: 13, padding: "10px 20px", borderRadius: 999, textDecoration: "none",
-          }}>
-            {`Convention ${cy.year}`} <ArrowRight size={13} strokeWidth={2.5} aria-hidden />
-          </a>
+          hasExternalRegistrationUrl(cy) ? (
+            <a href={cy.registrationUrl} target="_blank" rel="noopener noreferrer" className="press" style={{
+              display: "inline-flex", alignItems: "center", gap: 7,
+              background: "#fff", color: "var(--ink)", fontWeight: 800,
+              fontSize: 13, padding: "10px 20px", borderRadius: 999, textDecoration: "none",
+            }}>
+              {`Convention ${cy.year}`} <ArrowRight size={13} strokeWidth={2.5} aria-hidden />
+            </a>
+          ) : (
+            <Link href={cy.registrationUrl!} className="press" style={{
+              display: "inline-flex", alignItems: "center", gap: 7,
+              background: "#fff", color: "var(--ink)", fontWeight: 800,
+              fontSize: 13, padding: "10px 20px", borderRadius: 999, textDecoration: "none",
+            }}>
+              {`Convention ${cy.year}`} <ArrowRight size={13} strokeWidth={2.5} aria-hidden />
+            </Link>
+          )
         ) : (
           <Link href={cy.href} className="press" style={{
             display: "inline-flex", alignItems: "center", gap: 7,

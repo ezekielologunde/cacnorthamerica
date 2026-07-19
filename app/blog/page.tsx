@@ -7,7 +7,7 @@ import { specialEvents } from "@/lib/events";
 import { bibleReadingPlan } from "@/lib/biblePlan";
 import { getApprovedCacWorldNews, type CacWorldNewsItem } from "@/lib/cacWorldNews";
 import { GIVING_CAMPAIGNS, type GivingCampaign } from "@/lib/giving";
-import { currentOrNextConvention, dateRangeLabel } from "@/lib/conventions";
+import { currentOrNextConvention, dateRangeLabel, hasExternalRegistrationUrl } from "@/lib/conventions";
 import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
 import Link from "next/link";
 import { Clock, Calendar, ShoppingBag, BookOpen, ArrowRight, Globe2, Landmark } from "lucide-react";
@@ -562,10 +562,17 @@ export default async function BlogPage() {
               </p>
             </div>
             {cy.registrationUrl ? (
-              <a href={cy.registrationUrl} target="_blank" rel="noopener noreferrer" className="btn-sheen press"
-                style={{ position: "relative", zIndex: 2, flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 9, background: "#fff", color: "var(--red)", fontWeight: 800, fontSize: 15, padding: "14px 28px", borderRadius: 999, textDecoration: "none" }}>
-                {`Convention ${cy.year}`} →
-              </a>
+              hasExternalRegistrationUrl(cy) ? (
+                <a href={cy.registrationUrl} target="_blank" rel="noopener noreferrer" className="btn-sheen press"
+                  style={{ position: "relative", zIndex: 2, flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 9, background: "#fff", color: "var(--red)", fontWeight: 800, fontSize: 15, padding: "14px 28px", borderRadius: 999, textDecoration: "none" }}>
+                  {`Convention ${cy.year}`} →
+                </a>
+              ) : (
+                <Link href={cy.registrationUrl} className="btn-sheen press"
+                  style={{ position: "relative", zIndex: 2, flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 9, background: "#fff", color: "var(--red)", fontWeight: 800, fontSize: 15, padding: "14px 28px", borderRadius: 999, textDecoration: "none" }}>
+                  {`Convention ${cy.year}`} →
+                </Link>
+              )
             ) : (
               <Link href={cy.href} className="btn-sheen press"
                 style={{ position: "relative", zIndex: 2, flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 9, background: "#fff", color: "var(--red)", fontWeight: 800, fontSize: 15, padding: "14px 28px", borderRadius: 999, textDecoration: "none" }}>

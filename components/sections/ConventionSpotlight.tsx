@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { CalendarDays, MapPin, Sparkles } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
-import { currentOrNextConvention, dateRangeLabel, CONVENTION_VENUE_SHORT } from "@/lib/conventions";
+import { currentOrNextConvention, dateRangeLabel, CONVENTION_VENUE_SHORT, hasExternalRegistrationUrl } from "@/lib/conventions";
 
 // The single highest-priority CTA on the site — CACNA's Annual Convention
 // registration. This section auto-rotates to whichever year is current/next
@@ -50,9 +50,15 @@ export function ConventionSpotlight() {
 
             <div style={{ display: "flex", flexDirection: "column", gap: 12, minWidth: 220 }}>
               {hasReg ? (
-                <a href={cy.registrationUrl} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 17, padding: "18px 34px", borderRadius: 999, textDecoration: "none", boxShadow: "0 18px 40px rgba(253,200,65,.4)", whiteSpace: "nowrap" }}>
-                  {`Convention ${cy.year}`} →
-                </a>
+                hasExternalRegistrationUrl(cy) ? (
+                  <a href={cy.registrationUrl} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 17, padding: "18px 34px", borderRadius: 999, textDecoration: "none", boxShadow: "0 18px 40px rgba(253,200,65,.4)", whiteSpace: "nowrap" }}>
+                    {`Convention ${cy.year}`} →
+                  </a>
+                ) : (
+                  <Link href={cy.registrationUrl!} className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 17, padding: "18px 34px", borderRadius: 999, textDecoration: "none", boxShadow: "0 18px 40px rgba(253,200,65,.4)", whiteSpace: "nowrap" }}>
+                    {`Convention ${cy.year}`} →
+                  </Link>
+                )
               ) : (
                 <Link href={cy.href} className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 17, padding: "18px 34px", borderRadius: 999, textDecoration: "none", boxShadow: "0 18px 40px rgba(253,200,65,.4)", whiteSpace: "nowrap" }}>
                   Save the Date →

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Reveal } from '@/components/ui/Reveal';
 import { specialEvents, splitByDate, type ChurchEvent } from '@/lib/events';
-import { currentOrNextConvention } from '@/lib/conventions';
+import { currentOrNextConvention, hasExternalRegistrationUrl } from '@/lib/conventions';
 
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
@@ -53,9 +53,15 @@ export function Events() {
                   <div style={{ fontSize: 14, color: 'var(--ink-soft)', marginTop: 6, lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{ev.desc}</div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px 16px', marginTop: 10 }}>
                     {ev.id.startsWith('cacna-convention-') && cy.registrationUrl && (
-                      <a href={cy.registrationUrl} target="_blank" rel="noopener noreferrer" className="press" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 800, color: 'var(--ink)', background: 'var(--gold)', padding: '7px 16px', borderRadius: 999, textDecoration: 'none' }}>
-                        {`Convention ${cy.year}`} →
-                      </a>
+                      hasExternalRegistrationUrl(cy) ? (
+                        <a href={cy.registrationUrl} target="_blank" rel="noopener noreferrer" className="press" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 800, color: 'var(--ink)', background: 'var(--gold)', padding: '7px 16px', borderRadius: 999, textDecoration: 'none' }}>
+                          {`Convention ${cy.year}`} →
+                        </a>
+                      ) : (
+                        <Link href={cy.registrationUrl} className="press" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 800, color: 'var(--ink)', background: 'var(--gold)', padding: '7px 16px', borderRadius: 999, textDecoration: 'none' }}>
+                          {`Convention ${cy.year}`} →
+                        </Link>
+                      )
                     )}
                     {ev.href && (
                       <Link href={ev.href} className="press" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 700, color: 'var(--red)', textDecoration: 'none' }}>
