@@ -10,6 +10,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { POSTS, getPost, badgeTextColor } from "@/lib/blog";
 import type { BlogPost } from "@/lib/blog";
 import { SITE_URL } from "@/lib/site";
+import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
 
 function makePublicClient() {
   return createClient(
@@ -21,6 +22,7 @@ function makePublicClient() {
 function dbRowToPost(row: {
   title: string; slug: string; excerpt: string | null; body: string;
   published_at: string | null; created_at: string;
+  image_url?: string | null; image_alt?: string | null;
 }): BlogPost {
   const date = new Date(row.published_at ?? row.created_at);
   const words = row.body.split(/\s+/).length;
@@ -34,6 +36,7 @@ function dbRowToPost(row: {
     categoryColor: "#C81E3A",
     accent: "#C81E3A",
     readTime: `${Math.max(1, Math.round(words / 200))} min read`,
+    image: row.image_url ? { url: row.image_url, alt: row.image_alt ?? row.title } : undefined,
     body: row.body.split(/\n\n+/),
   };
 }
@@ -58,7 +61,7 @@ async function resolvePost(slug: string): Promise<BlogPost | null> {
   try {
     const { data } = await makePublicClient()
       .from("blog_posts")
-      .select("title, slug, excerpt, body, published_at, created_at")
+      .select("title, slug, excerpt, body, published_at, created_at, image_url, image_alt")
       .eq("slug", slug)
       .eq("published", true)
       .single();
@@ -188,13 +191,20 @@ function RelatedCard({ post }: { post: BlogPost }) {
         boxShadow: "0 8px 24px rgba(18,20,30,.07)",
       }}
     >
-      <div
-        style={{
-          height: 8,
-          background: post.accent,
-          flexShrink: 0,
-        }}
-      />
+      {post.image ? (
+        <div style={{ height: 120, flexShrink: 0 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={post.image.url} alt={post.image.alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+        </div>
+      ) : (
+        <div
+          style={{
+            height: 8,
+            background: post.accent,
+            flexShrink: 0,
+          }}
+        />
+      )}
       <div style={{ padding: "24px 26px 26px", flex: 1, display: "flex", flexDirection: "column" }}>
         <div
           style={{
@@ -317,7 +327,7 @@ export default async function BlogSlugPage({
   try {
     const { data } = await makePublicClient()
       .from("blog_posts")
-      .select("title, slug, excerpt, body, published_at, created_at")
+      .select("title, slug, excerpt, body, published_at, created_at, image_url, image_alt")
       .eq("published", true)
       .neq("slug", slug)
       .order("published_at", { ascending: false })
@@ -499,6 +509,14 @@ export default async function BlogSlugPage({
         </div>
       </section>
 
+      {/* Hero photo */}
+      {post.image && (
+        <div style={{ position: "relative", height: "clamp(220px,32vw,360px)", background: "var(--ink)" }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={post.image.url} alt={post.image.alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+        </div>
+      )}
+
       {/* Body */}
       <section
         style={{
@@ -576,6 +594,8 @@ export default async function BlogSlugPage({
                   Share on WhatsApp
                 </a>
               </div>
+
+              <ConventionAdWidget />
 
               {/* More from the family */}
               <div

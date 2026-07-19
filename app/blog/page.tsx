@@ -6,6 +6,9 @@ import { POSTS, type BlogPost, badgeTextColor } from "@/lib/blog";
 import { specialEvents } from "@/lib/events";
 import { bibleReadingPlan } from "@/lib/biblePlan";
 import { getApprovedCacWorldNews, type CacWorldNewsItem } from "@/lib/cacWorldNews";
+import { GIVING_CAMPAIGNS, type GivingCampaign } from "@/lib/giving";
+import { currentOrNextConvention, dateRangeLabel } from "@/lib/conventions";
+import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
 import Link from "next/link";
 import { Clock, Calendar, ShoppingBag, BookOpen, ArrowRight, Globe2, Landmark } from "lucide-react";
 
@@ -14,6 +17,7 @@ export const revalidate = 3600;
 type DbBlogRow = {
   id: string; title: string; slug: string; excerpt: string | null;
   body: string; published_at: string | null; created_at: string;
+  image_url: string | null; image_alt: string | null;
 };
 
 function dbPostToBlogPost(p: DbBlogRow): BlogPost {
@@ -30,6 +34,7 @@ function dbPostToBlogPost(p: DbBlogRow): BlogPost {
     accent: "#C81E3A",
     readTime: `${Math.max(1, Math.round(words / 200))} min read`,
     featured: true,
+    image: p.image_url ? { url: p.image_url, alt: p.image_alt ?? p.title } : undefined,
     body: p.body.split(/\n\n+/),
   };
 }
@@ -64,7 +69,14 @@ function ArticleCard({ post, archival }: { post: typeof POSTS[number]; archival?
       borderRadius: 22, overflow: "hidden", display: "flex",
       flexDirection: "column", height: "100%",
     }}>
-      <div style={{ height: 6, background: archival ? "var(--line)" : post.accent, flexShrink: 0 }} />
+      {post.image ? (
+        <div style={{ height: 180, position: "relative", flexShrink: 0 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={post.image.url} alt={post.image.alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: archival ? 0.85 : 1 }} />
+        </div>
+      ) : (
+        <div style={{ height: 6, background: archival ? "var(--line)" : post.accent, flexShrink: 0 }} />
+      )}
       <div style={{ padding: "22px 24px 24px", display: "flex", flexDirection: "column", flex: 1 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
           <CategoryBadge label={post.category} color={post.categoryColor} />
@@ -107,8 +119,14 @@ function FeaturedCard({ post }: { post: typeof POSTS[number] }) {
       borderRadius: 28, overflow: "hidden",
       boxShadow: "0 16px 50px rgba(18,20,30,.10)",
     }}>
-      <div style={{ height: 220, background: post.accent, position: "relative" }}>
-        <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 70% 30%,rgba(255,255,255,.2),transparent 65%)" }} />
+      <div style={{ height: 220, background: post.image ? "var(--ink)" : post.accent, position: "relative" }}>
+        {post.image ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={post.image.url} alt={post.image.alt} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+        ) : (
+          <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 70% 30%,rgba(255,255,255,.2),transparent 65%)" }} />
+        )}
+        {post.image && <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(18,20,30,0),rgba(18,20,30,.5) 100%)" }} />}
         <div style={{ position: "absolute", top: 22, left: 24 }}>
           <span style={{ display: "inline-block", fontSize: 9.5, fontWeight: 900, letterSpacing: "2.5px", textTransform: "uppercase", color: "#fff", background: "rgba(0,0,0,.35)", borderRadius: 999, padding: "5px 12px" }}>
             Latest · {post.readTime}
@@ -204,7 +222,7 @@ function CacWorldCard({ item }: { item: CacWorldNewsItem }) {
   );
 }
 
-function GivingAdWidget() {
+function GivingAdWidget({ campaign }: { campaign: GivingCampaign }) {
   return (
     <aside style={{
       background: "linear-gradient(140deg,#12141E,#2D42C9)",
@@ -216,14 +234,14 @@ function GivingAdWidget() {
         <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 12 }}>
           <Landmark size={12} strokeWidth={2.5} color="var(--gold)" aria-hidden />
           <span style={{ fontSize: 9.5, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "rgba(245,246,250,.7)" }}>
-            Featured Campaign
+            {campaign.eyebrow}
           </span>
         </div>
         <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "#fff", lineHeight: 1.1, marginBottom: 10 }}>
-          Centenary Building Project
+          {campaign.title}
         </div>
         <p style={{ fontSize: 13, color: "rgba(245,246,250,.78)", lineHeight: 1.6, marginBottom: 18 }}>
-          Marking 100 years of Christ Apostolic Church — help fund accommodation at the Ikeji-Arakeji prayer camp.
+          {campaign.adBlurb}
         </p>
         <Link href="/giving" className="press" style={{
           display: "inline-flex", alignItems: "center", gap: 7,
@@ -346,7 +364,7 @@ export default async function BlogPage() {
   );
   const { data: dbRows } = await supabase
     .from("blog_posts")
-    .select("id, title, slug, excerpt, body, published_at, created_at")
+    .select("id, title, slug, excerpt, body, published_at, created_at, image_url, image_alt")
     .eq("published", true)
     .order("published_at", { ascending: false });
 
@@ -359,7 +377,13 @@ export default async function BlogPage() {
   const conventionCoverage = heraldArticles.filter((p) => p.featured);
   const archiveArticles = heraldArticles.filter((p) => !p.featured);
   const devotionalArticles = allArticles.filter((p) => p.category === "Devotional").sort(byDateDesc);
-  const dateStr = new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+  const now = new Date();
+  const dateStr = now.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+  // Deterministic per-calendar-day rotation — same campaign for every visitor
+  // on a given day, changes daily, no client-side layout shift.
+  const dayOfYear = Math.floor((Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) - Date.UTC(now.getUTCFullYear(), 0, 0)) / 86400000);
+  const givingCampaign = GIVING_CAMPAIGNS[dayOfYear % GIVING_CAMPAIGNS.length];
+  const cy = currentOrNextConvention();
 
   return (
     <main>
@@ -406,9 +430,12 @@ export default async function BlogPage() {
               <UpcomingEventWidget />
             </Reveal>
             <Reveal delay={160}>
-              <GivingAdWidget />
+              <ConventionAdWidget />
             </Reveal>
             <Reveal delay={200}>
+              <GivingAdWidget campaign={givingCampaign} />
+            </Reveal>
+            <Reveal delay={240}>
               <StoreAdWidget />
             </Reveal>
           </div>
@@ -525,19 +552,26 @@ export default async function BlogPage() {
             <div aria-hidden style={{ position: "absolute", top: -80, right: -60, width: 320, height: 280, background: "radial-gradient(circle,rgba(253,200,65,.3),transparent 65%)", pointerEvents: "none" }} />
             <div style={{ flex: "1 1 320px", position: "relative", zIndex: 2 }}>
               <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "rgba(245,246,250,.8)", marginBottom: 10 }}>
-                Registration open
+                {cy.registrationUrl ? "Registration open" : "Save the date"}
               </div>
               <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,36px)", letterSpacing: "-.6px", color: "#fff", margin: "0 0 8px", lineHeight: 1.05 }}>
-                Register for CACNA 2026
+                {cy.registrationUrl ? `Register for CACNA ${cy.year}` : `CACNA ${cy.year} National Convention`}
               </h2>
               <p style={{ fontSize: 15, color: "rgba(245,246,250,.82)", margin: 0, lineHeight: 1.6 }}>
-                July 13–18 at CAC Village, Blue Ridge Summit, PA.
+                {dateRangeLabel(cy)} at CAC Village, Blue Ridge Summit, PA.
               </p>
             </div>
-            <a href="https://cacnaconvention.org/2026-cacna-national-convention-registration-credit-debit-card/" target="_blank" rel="noopener noreferrer" className="btn-sheen press"
-              style={{ position: "relative", zIndex: 2, flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 9, background: "#fff", color: "var(--red)", fontWeight: 800, fontSize: 15, padding: "14px 28px", borderRadius: 999, textDecoration: "none" }}>
-              Register Now →
-            </a>
+            {cy.registrationUrl ? (
+              <a href={cy.registrationUrl} target="_blank" rel="noopener noreferrer" className="btn-sheen press"
+                style={{ position: "relative", zIndex: 2, flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 9, background: "#fff", color: "var(--red)", fontWeight: 800, fontSize: 15, padding: "14px 28px", borderRadius: 999, textDecoration: "none" }}>
+                Register Now →
+              </a>
+            ) : (
+              <Link href={cy.href} className="btn-sheen press"
+                style={{ position: "relative", zIndex: 2, flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 9, background: "#fff", color: "var(--red)", fontWeight: 800, fontSize: 15, padding: "14px 28px", borderRadius: 999, textDecoration: "none" }}>
+                Event Details →
+              </Link>
+            )}
           </div>
         </Reveal>
       </section>

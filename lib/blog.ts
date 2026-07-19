@@ -19,6 +19,8 @@ export interface BlogPost {
   readTime: string;
   featured?: boolean;
   href?: string;
+  /** Real photo only — omit entirely rather than fabricate a stock image. */
+  image?: { url: string; alt: string };
   body: string[];
 }
 

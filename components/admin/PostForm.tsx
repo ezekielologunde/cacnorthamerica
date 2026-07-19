@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { createPost, updatePost, deletePost } from "@/app/admin/(protected)/blog/actions";
 
 type Post = {
@@ -10,6 +10,8 @@ type Post = {
   excerpt: string | null;
   body: string;
   published: boolean;
+  image_url: string | null;
+  image_alt: string | null;
 };
 
 function slugify(text: string) {
@@ -46,9 +48,60 @@ export default function PostForm({ post }: { post?: Post }) {
   const [excerpt, setExcerpt] = useState(post?.excerpt ?? "");
   const [body, setBody] = useState(post?.body ?? "");
   const [published, setPublished] = useState(post?.published ?? false);
+  const [imageUrl, setImageUrl] = useState(post?.image_url ?? "");
+  const [imageAlt, setImageAlt] = useState(post?.image_alt ?? "");
+  const [uploading, setUploading] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    const id = "cloudinary-widget-script";
+    if (document.getElementById(id)) return;
+    const s = document.createElement("script");
+    s.id = id;
+    s.src = "https://upload-widget.cloudinary.com/global/all.js";
+    document.head.appendChild(s);
+  }, []);
+
+  function openUploadWidget() {
+    const cloud = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ?? "dkmn2rtbc";
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const cld = (window as any).cloudinary;
+    if (!cld) { alert("Upload widget is still loading — try again in a moment."); return; }
+    setUploading(true);
+    const widget = cld.createUploadWidget(
+      {
+        cloudName: cloud,
+        uploadSignature: async (
+          callback: (data: Record<string, string>) => void,
+          paramsToSign: Record<string, string | number>,
+        ) => {
+          const res = await fetch("/api/cloudinary/sign", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(paramsToSign),
+          });
+          callback(await res.json());
+        },
+        multiple: false,
+        folder: "blog",
+        sources: ["local", "url", "camera"],
+        cropping: false,
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (_err: unknown, result: any) => {
+        if (result?.event === "close") setUploading(false);
+        if (result?.event === "success") {
+          setImageUrl(result.info.secure_url);
+          setImageAlt((prev) => prev || (result.info.original_filename ?? ""));
+          setSaved(false);
+          setUploading(false);
+        }
+      },
+    );
+    widget.open();
+  }
 
   function handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const val = e.target.value;
@@ -129,6 +182,58 @@ export default function PostForm({ post }: { post?: Post }) {
             className="adm-inp"
             style={{ ...inp, resize: "vertical" }}
           />
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
+          <div>
+            <label style={label}>Cover Photo <span style={muted}>— optional</span></label>
+            <div style={{ display: "flex", gap: 8 }}>
+              <input
+                type="url"
+                name="image_url"
+                value={imageUrl}
+                onChange={(e) => { setImageUrl(e.target.value); setSaved(false); }}
+                placeholder="https://…"
+                className="adm-inp"
+                style={{ ...inp, flex: 1 }}
+              />
+              <button
+                type="button"
+                onClick={openUploadWidget}
+                disabled={uploading}
+                style={{
+                  padding: "10px 14px",
+                  background: "var(--ink)",
+                  color: "white",
+                  border: "none",
+                  borderRadius: 8,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: uploading ? "not-allowed" : "pointer",
+                  fontFamily: "inherit",
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
+                  opacity: uploading ? 0.65 : 1,
+                }}
+              >
+                {uploading ? "…" : "Upload"}
+              </button>
+            </div>
+            {imageUrl && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={imageUrl} alt={imageAlt || "preview"} style={{ marginTop: 8, maxHeight: 80, borderRadius: 6, objectFit: "cover", display: "block" }} />
+            )}
+          </div>
+          <div>
+            <label style={label}>Image Alt Text <span style={muted}>— optional</span></label>
+            <input
+              name="image_alt"
+              value={imageAlt}
+              onChange={(e) => { setImageAlt(e.target.value); setSaved(false); }}
+              className="adm-inp"
+              style={inp}
+            />
+          </div>
         </div>
 
         <div>

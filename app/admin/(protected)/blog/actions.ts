@@ -23,10 +23,12 @@ export async function createPost(formData: FormData) {
   const excerpt = (formData.get("excerpt") as string) || null;
   const body = formData.get("body") as string;
   const published = formData.get("published") === "true";
+  const image_url = (formData.get("image_url") as string) || null;
+  const image_alt = (formData.get("image_alt") as string) || null;
 
   const { data, error } = await supabase
     .from("blog_posts")
-    .insert({ title, slug, excerpt, body, published, published_at: published ? new Date().toISOString() : null })
+    .insert({ title, slug, excerpt, body, published, image_url, image_alt, published_at: published ? new Date().toISOString() : null })
     .select("id")
     .single();
 
@@ -46,6 +48,8 @@ export async function updatePost(id: string, formData: FormData) {
   const excerpt = (formData.get("excerpt") as string) || null;
   const body = formData.get("body") as string;
   const published = formData.get("published") === "true";
+  const image_url = (formData.get("image_url") as string) || null;
+  const image_alt = (formData.get("image_alt") as string) || null;
 
   const { data: existing } = await supabase.from("blog_posts").select("published, published_at").eq("id", id).single();
   const published_at = published
@@ -54,7 +58,7 @@ export async function updatePost(id: string, formData: FormData) {
 
   const { error } = await supabase
     .from("blog_posts")
-    .update({ title, slug, excerpt, body, published, published_at })
+    .update({ title, slug, excerpt, body, published, image_url, image_alt, published_at })
     .eq("id", id);
 
   if (error) {

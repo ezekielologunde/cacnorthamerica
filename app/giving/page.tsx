@@ -3,23 +3,10 @@ import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { IconBadge } from "@/components/ui/IconBadge";
 import { Phone, Mail, Landmark, Send } from "lucide-react";
+import { GIVING_CAMPAIGNS } from "@/lib/giving";
 
-const CENTENARY_ACCOUNTS = [
-  { currency: "Naira", account: "2046703336" },
-  { currency: "USD", account: "2046963520" },
-  { currency: "GBP", account: "2046963509" },
-  { currency: "EUR", account: "2046963516" },
-];
-
-const VILLAGE_PAYOFF_ACCOUNTS = [
-  { icon: Landmark, label: "Chase Bank", value: "Ac# 823986275" },
-  { icon: Send, label: "Zelle", value: "cacna@hotmail.com" },
-];
-
-const HOPE_FOR_ALL_ACCOUNTS = [
-  { icon: Landmark, label: "Bank of America", value: "AC# 4460 4872 3291" },
-  { icon: Send, label: "Zelle", value: "charityfinancial8@gmail.com" },
-];
+const accountIcon = (label: string) => (label.toLowerCase().includes("zelle") ? Send : Landmark);
+const [centenary, villagePayoff, hopeForAll] = GIVING_CAMPAIGNS;
 
 export default function GivingPage() {
   return (
@@ -59,24 +46,24 @@ export default function GivingPage() {
       <section style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(56px,7vw,90px)" }}>
         <div style={{ maxWidth: 760, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 32 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Featured Campaign</span>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>{centenary.eyebrow}</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3vw,40px)", letterSpacing: "-1px", color: "var(--ink)", margin: "10px 0 0" }}>
-              CAC Centenary Building Project
+              {centenary.title}
             </h2>
             <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.7, margin: "14px auto 0", maxWidth: 600 }}>
-              Conceived in 2018 to commemorate the Church&apos;s 100th anniversary, this project helps solve accommodation challenges on the prayer camp at Ikeji-Arakeji, Nigeria. CACNA members are warmly encouraged to give toward it.
+              {centenary.description}
             </p>
           </Reveal>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 16 }}>
-            {CENTENARY_ACCOUNTS.map((a, i) => (
-              <Reveal key={a.currency} delay={i * 70}>
+            {centenary.accounts.map((a, i) => (
+              <Reveal key={a.label} delay={i * 70}>
                 <div style={{ background: "var(--paper)", borderRadius: 20, padding: "22px 20px", border: "1px solid var(--line)", boxShadow: "0 8px 22px rgba(18,20,30,.05)", height: "100%", textAlign: "center" }}>
-                  <IconBadge icon={Landmark} style={{ marginBottom: 14, marginLeft: "auto", marginRight: "auto" }} />
+                  <IconBadge icon={accountIcon(a.label)} style={{ marginBottom: 14, marginLeft: "auto", marginRight: "auto" }} />
                   <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 6 }}>
-                    First Bank — {a.currency}
+                    {a.label}
                   </div>
                   <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 19, color: "var(--ink)", letterSpacing: "0.5px" }}>
-                    {a.account}
+                    {a.value}
                   </div>
                 </div>
               </Reveal>
@@ -89,19 +76,19 @@ export default function GivingPage() {
       <section style={{ background: "var(--cream-2)", padding: "0 clamp(20px,5vw,64px) clamp(56px,7vw,90px)" }}>
         <div style={{ maxWidth: 620, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 32 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>CAC Village</span>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>{villagePayoff.eyebrow}</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3vw,40px)", letterSpacing: "-1px", color: "var(--ink)", margin: "10px 0 0" }}>
-              CAC Village Pay Off
+              {villagePayoff.title}
             </h2>
             <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.7, margin: "14px auto 0", maxWidth: 540 }}>
-              Help pay down the mortgage on CAC Village, Blue Ridge Summit, PA — the home of our Annual Convention. Kindly send your donations to the CAC Village account below.
+              {villagePayoff.description}
             </p>
           </Reveal>
           <div className="r2" style={{ gap: 16 }}>
-            {VILLAGE_PAYOFF_ACCOUNTS.map((a, i) => (
+            {villagePayoff.accounts.map((a, i) => (
               <Reveal key={a.label} delay={i * 70}>
                 <div style={{ background: "var(--paper)", borderRadius: 20, padding: "22px 20px", border: "1px solid var(--line)", boxShadow: "0 8px 22px rgba(18,20,30,.05)", height: "100%", textAlign: "center" }}>
-                  <IconBadge icon={a.icon} style={{ marginBottom: 14, marginLeft: "auto", marginRight: "auto" }} />
+                  <IconBadge icon={accountIcon(a.label)} style={{ marginBottom: 14, marginLeft: "auto", marginRight: "auto" }} />
                   <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 6 }}>
                     {a.label}
                   </div>
@@ -119,19 +106,19 @@ export default function GivingPage() {
       <section style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(56px,7vw,90px)" }}>
         <div style={{ maxWidth: 620, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 32 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Hope For All Initiative</span>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>{hopeForAll.eyebrow}</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3vw,40px)", letterSpacing: "-1px", color: "var(--ink)", margin: "10px 0 0" }}>
-              Creating a brighter tomorrow.
+              {hopeForAll.title}
             </h2>
             <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.7, margin: "14px auto 0", maxWidth: 540 }}>
-              Support Hope For All — CACNA Latunde Region&apos;s welfare and evangelism initiative, caring for the needy, supporting evangelism and church planting, and organizing a retirement program for ministers.
+              {hopeForAll.description}
             </p>
           </Reveal>
           <div className="r2" style={{ gap: 16 }}>
-            {HOPE_FOR_ALL_ACCOUNTS.map((a, i) => (
+            {hopeForAll.accounts.map((a, i) => (
               <Reveal key={a.label} delay={i * 70}>
                 <div style={{ background: "var(--paper)", borderRadius: 20, padding: "22px 20px", border: "1px solid var(--line)", boxShadow: "0 8px 22px rgba(18,20,30,.05)", height: "100%", textAlign: "center" }}>
-                  <IconBadge icon={a.icon} style={{ marginBottom: 14, marginLeft: "auto", marginRight: "auto" }} />
+                  <IconBadge icon={accountIcon(a.label)} style={{ marginBottom: 14, marginLeft: "auto", marginRight: "auto" }} />
                   <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 6 }}>
                     {a.label}
                   </div>

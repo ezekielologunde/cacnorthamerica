@@ -3,14 +3,14 @@ import Link from "next/link";
 import { createServiceClient } from "@/lib/supabase/server";
 import PostForm from "@/components/admin/PostForm";
 
-type PostRow = { id: string; title: string; slug: string; excerpt: string | null; body: string; published: boolean };
+type PostRow = { id: string; title: string; slug: string; excerpt: string | null; body: string; published: boolean; image_url: string | null; image_alt: string | null };
 
 export default async function EditPostPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const supabase = createServiceClient();
   const result = await supabase
     .from("blog_posts")
-    .select("id, title, slug, excerpt, body, published")
+    .select("id, title, slug, excerpt, body, published, image_url, image_alt")
     .eq("id", id)
     .single();
 
@@ -40,7 +40,7 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
         </div>
       </div>
       <div style={{ background: "white", borderRadius: 12, padding: "32px 36px", boxShadow: "0 1px 4px rgba(0,0,0,0.08)" }}>
-        <PostForm post={{ id: post.id, title: post.title, slug: post.slug, excerpt: post.excerpt, body: post.body, published: post.published }} />
+        <PostForm post={{ id: post.id, title: post.title, slug: post.slug, excerpt: post.excerpt, body: post.body, published: post.published, image_url: post.image_url, image_alt: post.image_alt }} />
       </div>
     </div>
   );
