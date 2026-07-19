@@ -22,28 +22,33 @@ export function WatchwordArchive({ dark = false }: { dark?: boolean }) {
           color: link, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 8,
         }}
       >
-        Previous years&apos; Watchwords
+        Watchwords since 1989
         <span aria-hidden style={{ display: "inline-block", transition: "transform .25s", transform: open ? "rotate(180deg)" : "none" }}>▾</span>
       </button>
 
       {open && (
-        <div style={{ marginTop: 18, display: "flex", flexDirection: "column", gap: 12, maxWidth: 460, marginLeft: "auto", marginRight: "auto", textAlign: "left" }}>
-          {PAST_WATCHWORDS.map((w) => (
-            <div key={w.year} style={{ borderTop: `1px solid ${line}`, paddingTop: 12 }}>
-              <div style={{ fontSize: 11.5, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: link }}>{w.year}</div>
-              <div style={{ fontSize: 15, fontWeight: 700, color: dark ? "#fff" : "var(--ink)", margin: "4px 0 0" }}>
-                &ldquo;{w.theme}&rdquo;
+        <div style={{
+          marginTop: 18, maxWidth: 520, marginLeft: "auto", marginRight: "auto", textAlign: "left",
+          maxHeight: 420, overflowY: "auto", paddingRight: 6,
+        }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            {PAST_WATCHWORDS.map((w) => (
+              <div key={w.year} style={{ borderTop: `1px solid ${line}`, paddingTop: 12 }}>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
+                  <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: "1px", color: link, flexShrink: 0 }}>{w.year}</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: soft }}>{w.verseRef}</span>
+                </div>
+                <p style={{ fontSize: 14.5, fontStyle: "italic", color: dark ? "rgba(255,255,255,.88)" : "var(--ink)", margin: "5px 0 0", lineHeight: 1.55 }}>
+                  &ldquo;{w.verseText}&rdquo;
+                </p>
+                {w.href && (
+                  <Link href={w.href} style={{ fontSize: 13, fontWeight: 700, color: link, textDecoration: "none", display: "inline-block", marginTop: 6 }}>
+                    Read more →
+                  </Link>
+                )}
               </div>
-              {w.verseRef && (
-                <div style={{ fontSize: 13, color: soft, marginTop: 3 }}>{w.verseRef}</div>
-              )}
-              {w.href && (
-                <Link href={w.href} style={{ fontSize: 13, fontWeight: 700, color: link, textDecoration: "none", display: "inline-block", marginTop: 6 }}>
-                  Read more →
-                </Link>
-              )}
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
     </div>
