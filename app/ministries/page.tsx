@@ -104,6 +104,28 @@ export default function MinistriesPage() {
         </div>
       </section>
 
+      {/* Christian Education history */}
+      <section style={{ background: "var(--paper)", padding: "clamp(56px,7vw,96px) clamp(20px,5vw,64px)" }}>
+        <div style={{ maxWidth: 780, margin: "0 auto" }}>
+          <Reveal style={{ marginBottom: 32, textAlign: "center" }}>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Christian Education</span>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,44px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 0", lineHeight: 1 }}>
+              A department rooted in Sunday School.
+            </h2>
+          </Reveal>
+          <Reveal delay={100}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+              <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.8, margin: 0 }}>
+                Christ Apostolic Church&apos;s Christian Education Department grew out of the Sunday School movement — a founding vision laid on the Bible and on learning in Christian fellowship, in furtherance of Sunday School activities and how the church at large treats Sunday School lessons.
+              </p>
+              <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.8, margin: 0 }}>
+                The Annual Sunday School Rally was started in April 1978, continuing since then with the Holy Spirit-inspired additions and modifications that furthered Sunday School work across the Church. In 1982, the General Christian Education Committee (GCEC) was inaugurated to oversee the affairs of Christian Education in the church, including Sunday School&apos;s development. The Church later established its own Printing Press in 1987, at the Odubanjo Memorial Hall in Lagos, seeing the need to handle the production of its Sunday School materials and other publications by itself.
+              </p>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
       {/* CTA */}
       <section style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)", textAlign: "center" }}>
         <Reveal>
