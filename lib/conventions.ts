@@ -29,7 +29,7 @@ export const conventionYears: ConventionYear[] = [
     registrationUrl: "https://cacnaconvention.org/2026-cacna-national-convention-registration-credit-debit-card/",
     href: "/events/cacna-2026",
   },
-  { year: 2027, startIso: "2027-07-12", endIso: "2027-07-17", href: "/events/cacna-2027" },
+  { year: 2027, startIso: "2027-07-12", endIso: "2027-07-17", registrationUrl: "https://cacnaconvention.org/", href: "/events/cacna-2027" },
   { year: 2028, startIso: "2028-07-10", endIso: "2028-07-15", href: "/events/cacna-2028" },
   { year: 2029, startIso: "2029-07-09", endIso: "2029-07-14", href: "/events/cacna-2029" },
   { year: 2030, startIso: "2030-07-15", endIso: "2030-07-20", href: "/events/cacna-2030" },

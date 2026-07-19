@@ -1,6 +1,7 @@
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { VerseOfDay } from "@/components/sections/VerseOfDay";
+import { WatchwordArchive } from "@/components/sections/WatchwordArchive";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 
@@ -93,6 +94,7 @@ export default function DevotionalPage() {
               Orin Dafidi 119:18 · Yorùbá
             </div>
           </Reveal>
+          <WatchwordArchive dark />
         </div>
       </section>
 

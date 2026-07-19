@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Reveal } from "@/components/ui/Reveal";
+import { WatchwordArchive } from "@/components/sections/WatchwordArchive";
 
 export function Watchword() {
   return (
@@ -22,6 +23,7 @@ export function Watchword() {
             Read the daily devotional <span aria-hidden style={{ fontSize: 16 }}>→</span>
           </Link>
         </div>
+        <WatchwordArchive />
       </Reveal>
     </section>
   );
