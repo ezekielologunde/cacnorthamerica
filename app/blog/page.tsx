@@ -289,7 +289,7 @@ export default async function BlogPage() {
               fontFamily: "var(--font-display)", fontWeight: 800,
               fontSize: "clamp(56px,9vw,130px)", letterSpacing: "-0.025em",
               color: "#fff", margin: "0 0 8px", lineHeight: 0.92, textAlign: "center",
-            }}>CACNA Herald</h1>
+            }}>CACNA News</h1>
           </Reveal>
           <Reveal delay={140}>
             <p style={{ textAlign: "center", fontSize: 13, fontWeight: 700, letterSpacing: "5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 0 }}>
@@ -321,14 +321,14 @@ export default async function BlogPage() {
         </div>
       </section>
 
-      {/* The Herald — news, events & reflections */}
+      {/* News — news, events & reflections */}
       {heraldArticles.length > 0 && (
         <section style={{ background: "var(--cream-2)", padding: "clamp(40px,5vw,72px) clamp(20px,5vw,64px) clamp(20px,3vw,32px)" }}>
           <div style={{ maxWidth: 1140, margin: "0 auto" }}>
             <Reveal style={{ marginBottom: 28 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 14, borderBottom: "2px solid var(--ink)", paddingBottom: 12 }}>
                 <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 13, letterSpacing: "3px", textTransform: "uppercase", color: "var(--ink)" }}>
-                  The Herald
+                  News
                 </span>
                 <div style={{ flex: 1, height: 1, background: "var(--line)" }} />
               </div>
