@@ -12,7 +12,7 @@ export function PastorWelcome() {
           <div style={{ width: "100%", height: "clamp(360px,44vw,560px)", borderRadius: 26, overflow: "hidden", boxShadow: "0 28px 60px rgba(18,20,30,.18)", position: "relative" }}>
             <Parallax distance={36} style={{ position: "absolute", left: 0, right: 0, top: "-9%", height: "118%" }}>
               <div style={{ position: "relative", width: "100%", height: "100%" }}>
-                <Image src="https://cacnorthamerica.com/wp-content/uploads/2024/03/Pastor-Dr.-T.A.O-Agbeja-1-240x300.jpg" alt="Pastor Dr. T.O. Agbeja" fill style={{ objectFit: "cover", objectPosition: "center 28%" }} sizes="(max-width:900px) 100vw, 45vw" unoptimized />
+                <Image src="/images/pastor-agbeja-portrait.jpg" alt="Pastor Dr. T.O. Agbeja" fill style={{ objectFit: "cover", objectPosition: "center 28%" }} sizes="(max-width:900px) 100vw, 45vw" />
               </div>
             </Parallax>
           </div>

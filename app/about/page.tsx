@@ -327,7 +327,7 @@ export default function AboutPage() {
           <div className="r2" style={{ gap: 22, alignItems: "stretch" }}>
             <Reveal style={{ background: "var(--ink)", color: "var(--cream)", borderRadius: 26, overflow: "hidden", display: "flex", flexDirection: "column" }}>
               <div style={{ height: 340, position: "relative" }}>
-                <Image src="https://cacnorthamerica.com/wp-content/uploads/2024/03/Pastor-Dr.-T.A.O-Agbeja-1-240x300.jpg" alt="Pastor Dr. T.O. Agbeja" fill style={{ objectFit: "cover", objectPosition: "center 28%" }} unoptimized />
+                <Image src="/images/pastor-agbeja-portrait.jpg" alt="Pastor Dr. T.O. Agbeja" fill style={{ objectFit: "cover", objectPosition: "center 28%" }} />
               </div>
               <div style={{ padding: 28 }}>
                 <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 26, lineHeight: 1.1 }}>Pastor Dr. T.O. Agbeja</div>

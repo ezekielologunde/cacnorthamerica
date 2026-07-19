@@ -105,7 +105,7 @@ export function Hero() {
         padding: "140px clamp(20px,5vw,64px) 80px",
         overflow: "hidden",
         background: "#0d0a08",
-        backgroundImage: "url(https://cacnorthamerica.com/wp-content/uploads/2024/01/DSC_8969-1030x688.jpg)",
+        backgroundImage: "url(/images/cac-congregation-worship.jpg)",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
@@ -115,7 +115,7 @@ export function Hero() {
         aria-hidden
         style={{
           position: "absolute", inset: "-10%", zIndex: 0, overflow: "hidden",
-          backgroundImage: "url(https://cacnorthamerica.com/wp-content/uploads/2024/01/DSC_8969-1030x688.jpg)",
+          backgroundImage: "url(/images/cac-congregation-worship.jpg)",
           backgroundSize: "cover",
           backgroundPosition: "center",
           scale: reduce ? 1 : videoScale,

@@ -7,9 +7,13 @@ import { InstagramIcon } from "@/components/ui/SocialIcons";
 const IG_URL = "https://instagram.com/cacnorthamericalatunderegion";
 const HANDLE = "@cacnorthamericalatunderegion";
 
-// No real CACNA Instagram photos are available locally yet — the live
-// feed (Behold-backed /api/instagram) is the source of truth once configured.
-const FALLBACK: Post[] = [];
+// Static fallback while the live feed (Behold-backed /api/instagram) is
+// unconfigured — real CACNA gathering photos, not actual Instagram posts,
+// so each tile links out to the profile itself rather than a fake permalink.
+const FALLBACK: Post[] = [
+  { id: "fallback-1", image: "/images/cac-clergy-ceremony.jpg", permalink: IG_URL, caption: "Clergy at a past CACNA ordination service" },
+  { id: "fallback-2", image: "/images/cac-graduation-group.jpg", permalink: IG_URL, caption: "Graduates gathered outside CAC Village" },
+];
 
 interface Post { id: string; image: string; permalink: string; caption: string; }
 
@@ -44,6 +48,11 @@ export function InstagramFeed() {
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(34px,5vw,64px)", letterSpacing: "-1.5px", margin: "12px 0 0", lineHeight: 0.95, color: "var(--ink)" }}>
               On Instagram
             </h2>
+            {!live && (
+              <p style={{ fontSize: 14, color: "var(--ink-soft)", margin: "10px 0 0", maxWidth: 420 }}>
+                A few moments from past CACNA gatherings — follow along on Instagram for the real-time feed.
+              </p>
+            )}
           </div>
           <a href={IG_URL} target="_blank" rel="noopener noreferrer" className="btn-sheen press"
             style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "linear-gradient(120deg,#2D42C9,#C81E3A,#7A1128)", color: "#fff", fontWeight: 700, fontSize: 15, padding: "13px 24px", borderRadius: 999, textDecoration: "none", boxShadow: "0 12px 28px rgba(200,30,58,.32)" }}>

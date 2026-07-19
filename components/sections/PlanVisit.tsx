@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { Reveal } from '@/components/ui/Reveal';
 import { MapPin, Phone, Mail } from 'lucide-react';
@@ -47,6 +48,19 @@ export function PlanVisit() {
               referrerPolicy="no-referrer-when-downgrade"
               style={{ width: '100%', height: '100%', border: 0, display: 'block' }}
             />
+            <div style={{
+              position: 'absolute', bottom: 18, left: 18,
+              width: 132, height: 96, borderRadius: 14, overflow: 'hidden',
+              border: '3px solid var(--ink)', boxShadow: '0 14px 30px rgba(0,0,0,.45)',
+            }}>
+              <Image
+                src="/images/cac-gathering-crowd.jpg"
+                alt="A gathering of the CACNA family"
+                fill
+                style={{ objectFit: 'cover' }}
+                sizes="132px"
+              />
+            </div>
           </div>
         </Reveal>
       </div>

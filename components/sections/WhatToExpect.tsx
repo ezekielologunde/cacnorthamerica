@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Reveal } from "@/components/ui/Reveal";
 import { annualMoments } from "@/lib/events";
@@ -34,6 +35,18 @@ export function WhatToExpect() {
                   border: dark ? "none" : "1px solid var(--line)",
                   height: "100%", display: "flex", flexDirection: "column",
                 }}>
+                  {isConvention && (
+                    <>
+                      <Image
+                        src="/images/cac-youth-convention.jpg"
+                        alt="CACNA youth at a past Annual Convention"
+                        fill
+                        style={{ objectFit: "cover", opacity: 0.28 }}
+                        sizes="(max-width:900px) 100vw, 33vw"
+                      />
+                      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(18,20,30,.35),var(--ink) 85%)" }} />
+                    </>
+                  )}
                   <div style={{ position: "relative", display: "flex", flexDirection: "column", height: "100%" }}>
                     <div style={{
                       display: "inline-flex", alignItems: "center", gap: 8, marginBottom: 24, alignSelf: "flex-start",
