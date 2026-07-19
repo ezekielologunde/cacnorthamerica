@@ -11,6 +11,7 @@ import { POSTS, getPost, badgeTextColor } from "@/lib/blog";
 import type { BlogPost } from "@/lib/blog";
 import { SITE_URL } from "@/lib/site";
 import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
+import { ImageLightbox } from "@/components/blog/ImageLightbox";
 
 function makePublicClient() {
   return createClient(
@@ -509,11 +510,10 @@ export default async function BlogSlugPage({
         </div>
       </section>
 
-      {/* Hero photo */}
+      {/* Hero photo — click to view full-size */}
       {post.image && (
         <div style={{ position: "relative", height: "clamp(220px,32vw,360px)", background: "var(--ink)" }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={post.image.url} alt={post.image.alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+          <ImageLightbox src={post.image.url} alt={post.image.alt} />
         </div>
       )}
 
