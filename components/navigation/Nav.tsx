@@ -19,9 +19,7 @@ const isExternalHref = (href: string) => href.startsWith('http');
 // Whichever convention is current/next — once this year's dates pass, the
 // nav's "Register" CTA automatically points at the next confirmed year.
 const nextConvention = currentOrNextConvention();
-const conventionCtaLabel = nextConvention.registrationUrl
-  ? `Register — Convention ${nextConvention.year}`
-  : `Convention ${nextConvention.year} — Save the Date`;
+const conventionCtaLabel = `Convention ${nextConvention.year}`;
 const conventionCtaHref = nextConvention.registrationUrl ?? nextConvention.href;
 
 const navItems: NavItem[] = [
