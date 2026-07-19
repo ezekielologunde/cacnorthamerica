@@ -90,6 +90,26 @@ export const POSTS: BlogPost[] = [
       "\"We are gathered here not just for an annual funfare, but to encounter God,\" Pastor Oladele closed. \"He has promised to be present where two or three of us are gathered in His Name. Make the best use of every moment of this program.\"",
     ],
   },
+  {
+    slug: "cacna-2026-welcome-address",
+    title: "A warm welcome to CACNA 2026.",
+    excerpt:
+      "Regional Superintendent Pastor Dr. T.A.O. Agbeja opened this year's convention with gratitude, an update on CAC Village, and a welcome to visiting church leaders from across the CAC family.",
+    date: "July 13, 2026",
+    dateIso: "2026-07-13",
+    category: "Ministry Update",
+    categoryColor: "#EB6342",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
+    readTime: "5 min read",
+    body: [
+      "As CACNA gathered at CAC Village for the 2026 Annual Convention (July 13–18), Regional Superintendent Pastor Dr. T.A.O. Agbeja delivered the Welcome Address, opening this year's convention with thanksgiving to God and a warm welcome to the visiting church leaders who traveled to be with us.",
+      "Pastor Agbeja welcomed President Pastor S.O. Oladele and Mrs. Susana Oladele, General Superintendent Pastor E.O. Odejobi, General Evangelist Prophet Hezekiah Oladeji, Mission Director Pastor C.S. Fasuyi, our brethren from CAC Europe led by Anosike Region Superintendent Pastor Simeon Oladokun, and Bishop and Mrs. Asaju of the Ijesha Diocese, Anglican Communion — alongside every DCC/Zonal Superintendent, pastor, evangelist, and member of the Latunde Region family gathered on \"this miracle ground\" for another year.",
+      "He shared an encouraging update on **CAC Village** itself: despite the cost of keeping the camp running, the region has continued paying down the Village mortgage — about **$600,000** off the principal to date — while keeping staff paid and the grounds maintained. The Presidential Villa's living room has also been freshly renovated, with new furniture and waterproof tiles replacing the old carpet.",
+      "He highlighted the region's **\"Hope For All\" Initiatives** — a charity arm caring for the needy, supporting evangelism and church planting, and organizing a retirement program for ministers — as work that continues to bear fruit season after season.",
+      "Pastor Agbeja thanked the Convention Planning Committee, led by Chairman Pastor Dr. David Adenodi and Secretary Pastor Dr. Olugbenga Famojuro, along with every department that made the gathering possible — the Good Women, CACMA, Ministers' Wives, Youth and Young Adults, the Business Group, Christian Education, the Choir, and the IT and Protocol teams among many others. He also singled out the Village's own staff for their year-round care of the camp: Residence Pastor DS Michael Babalola, Village secretary Mrs. Roberta A. Murphy and Mrs. Celeste Silevinac for keeping the grounds beautiful, and the site-supervision and treasury team of Elder (Engineer) Fasakin, Pastor Dr. Richard Olowomeye, and Engineer Osinubi, who make the trip to the Village nearly every weekend.",
+      "He closed by reaffirming this year's theme, **\"The Bible: God's Message to Man,\"** and asked everyone gathered to help keep the camp clean throughout the week — a small but meaningful way, he said, of being good stewards of the ground God has given the region. \"May God bless all our deliberations,\" he prayed, \"and give us journey mercy back to all our destinations.\"",
+    ],
+  },
 ];
 
 export function getPost(slug: string): BlogPost | undefined {
