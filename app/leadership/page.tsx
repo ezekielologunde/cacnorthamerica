@@ -3,7 +3,7 @@ import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import Image from "next/image";
 import Link from "next/link";
-import { getLeaders } from "@/lib/leaders";
+import { getLeaders, getLeaderRoles, type Leader } from "@/lib/leaders";
 
 export const revalidate = 3600;
 
@@ -13,17 +13,18 @@ export const metadata = {
   alternates: { canonical: "/leadership" },
 };
 
-// Fuller bio copy for leaders where we have it — the leaders table doesn't
-// yet store long-form bios for everyone, so this fills in what's known
-// without inventing anything for the rest (they fall back to title only).
-const BIOS: Record<string, string> = {
-  "Pastor Dr. T.O. Agbeja": "Pastor Dr. Timothy Omolayo Agbeja leads Christ Apostolic Church North America as Regional Superintendent, carrying the mandate to preach the whole Gospel in a clear and undiluted manner across every CACNA member church. He also serves as Superintendent of C.A.C. WADCC, guiding the regional Coordinating Council that oversees CACNA's 16 DCCs and Zones across the United States and Canada.",
-  "Pastor David Adenodi, Ph.D.": "Chairman of the CACNA Convention since 2000 — a role he is completing at the 2026 Convention — and member of the CACNA Coordinating Council. Also serves as Provost of the CACNA Bible Institute and Superintendent of the V.O.C-USA DCC.",
-  "Pastor Joseph Olawale Latunde": "Regional Secretary of CACNA and member of the CACNA Coordinating Council. Also serves as Registrar of the CACNA Bible Institute and Superintendent of the Texas DCC.",
-  "Pastor Timothy Adelani Latunde": "Regional Treasurer of CACNA and member of the CACNA Coordinating Council, also serving as Superintendent of the Manhattan NY DCC.",
-  "Pastor John Oluwatimilehin, Ph.D.": "Chairman of the CAC Village Management Council and member of the CACNA Coordinating Council.",
-  "Pastor Richard B. Olowomeye, Ph.D.": "Superintendent of the CAC Bethel DCC and member of the CACNA Coordinating Council.",
-};
+/** Prose `bio` text (migrated from the old hardcoded BIOS map) stays primary.
+ *  Only leaders with no bio text at all fall back to their combined role list
+ *  across every linked person_key row — e.g. Olowomeye's plain "Superintendent,
+ *  CAC Bethel DCC" title would otherwise show nothing if he's ever linked to
+ *  additional rows without prose to go with them. */
+async function combinedBio(leader: Leader): Promise<string | null> {
+  if (leader.bio) return leader.bio;
+  if (!leader.person_key) return null;
+  const roles = await getLeaderRoles(leader.person_key);
+  if (roles.length <= 1) return null;
+  return roles.map((r) => r.title).join(" · ");
+}
 
 function initials(name: string) {
   const parts = name.replace(/^(Pastor|Prophet|Evangelist|Apostle)\s+(Dr\.?\s+)?(\(Mrs\.?\)\s+)?/i, "").trim().split(/\s+/);
@@ -44,6 +45,9 @@ export default async function LeadershipPage() {
 
   const featured = regional[0];
   const team = regional.slice(1);
+  const bios = new Map<string, string | null>(
+    await Promise.all(regional.map(async (l) => [l.id, await combinedBio(l)] as const))
+  );
 
   return (
     <main>
@@ -83,7 +87,7 @@ export default async function LeadershipPage() {
                 <div style={{ padding: "clamp(36px,5vw,60px)", display: "flex", flexDirection: "column", justifyContent: "center", color: "var(--cream)" }}>
                   <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 14 }}>{featured.title}</div>
                   <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3vw,42px)", letterSpacing: "-1px", margin: "0 0 22px", lineHeight: 1.04 }}>{featured.full_name}</h2>
-                  <p style={{ fontSize: 16.5, lineHeight: 1.75, color: "rgba(245,246,250,.78)", margin: 0 }}>{BIOS[featured.full_name] ?? featured.bio}</p>
+                  <p style={{ fontSize: 16.5, lineHeight: 1.75, color: "rgba(245,246,250,.78)", margin: 0 }}>{bios.get(featured.id)}</p>
                 </div>
                 {featured.photo_url && (
                   <div className="ldr-photo" style={{ position: "relative" }}>
@@ -140,8 +144,8 @@ export default async function LeadershipPage() {
                       <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 19, letterSpacing: "-0.4px", color: "var(--ink)", margin: 0, lineHeight: 1.15 }}>{p.full_name}</h3>
                     </div>
                   </div>
-                  {(BIOS[p.full_name] ?? p.bio) && (
-                    <p style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.7, margin: 0 }}>{BIOS[p.full_name] ?? p.bio}</p>
+                  {bios.get(p.id) && (
+                    <p style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.7, margin: 0 }}>{bios.get(p.id)}</p>
                   )}
                 </div>
               </Reveal>

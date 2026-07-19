@@ -356,11 +356,12 @@ export type Database = {
           full_name: string
           id: string
           is_published: boolean
+          person_key: string | null
           phone: string | null
           photo_url: string | null
           sort_order: number
-          tenure_end: string | null
-          tenure_start: string | null
+          tenure_end: number | null
+          tenure_start: number | null
           title: string
           updated_at: string
           zone_name: string | null
@@ -373,11 +374,12 @@ export type Database = {
           full_name: string
           id?: string
           is_published?: boolean
+          person_key?: string | null
           phone?: string | null
           photo_url?: string | null
           sort_order?: number
-          tenure_end?: string | null
-          tenure_start?: string | null
+          tenure_end?: number | null
+          tenure_start?: number | null
           title?: string
           updated_at?: string
           zone_name?: string | null
@@ -390,11 +392,12 @@ export type Database = {
           full_name?: string
           id?: string
           is_published?: boolean
+          person_key?: string | null
           phone?: string | null
           photo_url?: string | null
           sort_order?: number
-          tenure_end?: string | null
-          tenure_start?: string | null
+          tenure_end?: number | null
+          tenure_start?: number | null
           title?: string
           updated_at?: string
           zone_name?: string | null

@@ -15,6 +15,11 @@ const pinSvg = (color: string) => (
 // metro area, not surveyed coordinates. The zones themselves come live from
 // the `leaders` table (same source as /zones) so this never drifts out of
 // sync; only the pin layout is curated here.
+//
+// KNOWN RISK: `zone_name` is free-text on the `leaders` row, not a foreign
+// key — a typo or rename there silently falls through to FALLBACK_POSITIONS
+// below instead of erroring. Not worth a full `zones` table + FK migration
+// yet; revisit if zone data keeps growing or this starts drifting visibly.
 const ZONE_POSITIONS: Record<string, { x: number; y: number }> = {
   'Atlanta': { x: 50, y: 56 },
   'Philadelphia': { x: 83, y: 25 },

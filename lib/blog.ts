@@ -40,6 +40,7 @@ export const POSTS: BlogPost[] = [
     categoryColor: "#FDC841",
     accent: "linear-gradient(135deg,#FDC841,#2D42C9)",
     readTime: "4 min read",
+    featured: true,
     href: "/events/cacna-2026",
     body: [
       "The Christ Apostolic Church North America National Convention returns to CAC Village in Blue Ridge Summit, Pennsylvania from **July 13 to 18, 2026**. This is the gathering where the scattered family of CAC across North America becomes, for one week, a single congregation.",
@@ -60,6 +61,7 @@ export const POSTS: BlogPost[] = [
     categoryColor: "#7A1128",
     accent: "linear-gradient(135deg,#7A1128,#C81E3A)",
     readTime: "4 min read",
+    featured: true,
     body: [
       '_\"We are therefore Christ\'s ambassadors, as though God were making his appeal through us.\"_ — 2 Corinthians 5:20',
       "An ambassador does not speak in their own name. They carry the authority of the one who sent them, the message of the one who sent them, and the reputation of the one who sent them. Their personal opinions are, in the formal moment, irrelevant.",
@@ -79,6 +81,7 @@ export const POSTS: BlogPost[] = [
     categoryColor: "#2D42C9",
     accent: "linear-gradient(135deg,#2D42C9,#12141E)",
     readTime: "6 min read",
+    featured: true,
     body: [
       "Pastor Samuel Olusegun Oladele, President of Christ Apostolic Church, Nigeria and Overseas, delivered the President's Message at this year's CAC Latunde Region (North America) Annual Retreat at the CAC Village in Blue Ridge Summit, Pennsylvania. Below are the highlights of his address to the region.",
       "**Our corporate theme this year is \"The Bible: God's Message to Man.\"** The Bible, Pastor Oladele reminded the gathering, is the means through which God's message to mankind is conveyed — contextually, textually, and verbally inspired by God through the Holy Spirit (2 Timothy 3:16, John 1:1, Hebrews 1:1-4). By reason of its divine authorship, Scripture carries **inerrancy** (entirely free from error), **congruence** (66 books, over 1,500 years, more than 40 authors, yet one consistent picture of God's plan), and **authority** for life and ministry.",
@@ -101,6 +104,7 @@ export const POSTS: BlogPost[] = [
     categoryColor: "#EB6342",
     accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "5 min read",
+    featured: true,
     body: [
       "As CACNA gathered at CAC Village for the 2026 Annual Convention (July 13–18), Regional Superintendent Pastor Dr. T.A.O. Agbeja delivered the Welcome Address, opening this year's convention with thanksgiving to God and a warm welcome to the visiting church leaders who traveled to be with us.",
       "Pastor Agbeja welcomed President Pastor S.O. Oladele and Mrs. Susana Oladele, General Superintendent Pastor E.O. Odejobi, General Evangelist Prophet Hezekiah Oladeji, Mission Director Pastor C.S. Fasuyi, our brethren from CAC Europe led by Anosike Region Superintendent Pastor Simeon Oladokun, and Bishop and Mrs. Asaju of the Ilesa Anglican Diocese — alongside every DCC/Zonal Superintendent, pastor, evangelist, and member of the Latunde Region family gathered on \"this miracle ground\" for another year.",
@@ -121,6 +125,7 @@ export const POSTS: BlogPost[] = [
     categoryColor: "#FDC841",
     accent: "linear-gradient(135deg,#FDC841,#7A1128)",
     readTime: "5 min read",
+    featured: true,
     body: [
       "Pastor David Olusegun Adenodi, Ph.D., Chairman of the CACNA Convention & Conference Planning Committee, delivered the Convention Chairman's Welcome Address at this year's gathering, welcoming President Pastor S.O. Oladele, General Superintendent Pastor E.O. Odejobi, General Evangelist Prophet Hezekiah Oladeji, Regional Superintendent Pastor Dr. T.O. Agbeja, and the entire Christ Apostolic Church North and South America (Latunde Region) family, reaffirming this year's theme, **\"The Bible: God's Message to Man\"** (2 Timothy 3:16-17, Hebrews 4:12, Psalm 119:105).",
       "\"The Bible remains God's infallible, inspired, and eternal message to humanity,\" he said. \"In a generation characterized by confusion, moral decline, false teachings, and spiritual distractions, God is calling His people back to His Word.\" His prayer for the convention was simple: that every participant would experience a fresh encounter with the God of the Bible, and be corrected, instructed, and equipped through it for effective Christian living and service.",
@@ -142,6 +147,7 @@ export const POSTS: BlogPost[] = [
     categoryColor: "#2D42C9",
     accent: "linear-gradient(135deg,#2D42C9,#7A1128)",
     readTime: "6 min read",
+    featured: true,
     body: [
       "Ministers' Session 1 — **\"Transformative Power of the Word\"** — opened this year's convention with Pastor T.A.O. Agbeja teaching from Hebrews 4:12: \"the word of God is quick, and powerful, and sharper than any two-edged sword... a discerner of the thoughts and intents of the heart.\" God's Word, he said, is the only thing able to transform a person on all three levels — spirit, soul, and body. When it takes root in the spirit, it reshapes the way we think (Romans 12:2), and it even reaches the physical body: Proverbs calls it \"health... to all their flesh,\" from a Greek word that also means medicine.",
       "\"Now that you have purified yourselves by obeying the truth so that you have sincere love for each other, love one another deeply, from the heart\" (1 Peter 1:22-25, NIV). From this text, the message turned to a question every believer eventually has to sit with: what does it actually mean to obey the truth?",
@@ -169,6 +175,7 @@ export const POSTS: BlogPost[] = [
     categoryColor: "#EB6342",
     accent: "linear-gradient(135deg,#EB6342,#12141E)",
     readTime: "6 min read",
+    featured: true,
     body: [
       "Rt. Rev. Prof. Dapo F. Asaju, Bishop of Ilesa Anglican Diocese, delivered Ministers' Session 3 — **\"The Bible as an Encourager in Times of Trials, Tribulations and Challenges\"** — a lecture grounded in a simple conviction: \"The Holy Bible is divinely-inspired (2 Timothy 3:16). Its contents are infallible and timeless. The written word is an expression of Jesus Christ the Word personified.\"",
       "Bishop Asaju traced the Bible's uniqueness through several marks: its own claim to be holy and to be God's Word; its fulfilled and still-unfolding prophecies; the answers it holds to life's deepest questions — who God is, the origin of creation and sin, spiritual warfare, life after death, and eternity; and its place as the ground of theology, \"the queen of all sciences,\" from which laws, governments, and constitutions the world over ultimately draw. It is, he said, the manual for holy living — for ethics, parenting, education, civic responsibility, marriage, and family.",
@@ -190,6 +197,7 @@ export const POSTS: BlogPost[] = [
     categoryColor: "#2D42C9",
     accent: "linear-gradient(135deg,#2D42C9,#FDC841)",
     readTime: "6 min read",
+    featured: true,
     body: [
       "Pastor Simeon Oladokun, Ph.D., D.Th., Regional Superintendent of CAC Anosike (Europe) Region, delivered Ministers' Session 2 — **\"The Divine Word as a Guide for Our Daily Living\"** — opening with a simple observation: \"We live in a time of many voices, many values, and many claims to truth. Yet for the believer, the final guide for faith and conduct is not culture, opinion, emotion, or majority approval, but the Divine Word of God.\" Scripture, he said, reveals God's mind, exposes the human heart, corrects error, and trains us to live in holiness (2 Timothy 3:16-17).",
       "The Bible, he taught, is not merely \"the Good Book\" — it's a **guidebook**. Psalm 119:105 calls it \"a lamp to my feet and a light to my path,\" and Hebrews 4:12 says it doesn't just inform us, it directs us. Jesus Himself prayed, \"Sanctify them by Your truth. Your word is truth\" (John 17:17).",
@@ -210,6 +218,7 @@ export const POSTS: BlogPost[] = [
     categoryColor: "#2D42C9",
     accent: "linear-gradient(135deg,#2D42C9,#FDC841)",
     readTime: "3 min read",
+    featured: true,
     body: [
       "\"Calvary greetings in the name of our Lord and Savior Jesus,\" Pastor David Olusegun Adenodi, Ph.D., Chairman of the CACNA Convention & Conference Planning Committee, wrote as the 2026 convention drew to a close. \"As we conclude this spiritually enriching convention themed 'The Bible: God's Message to Man,' I stand before you with a heart full of gratitude.\"",
       "On behalf of the Convention Committee, he extended thanks to CACNA's leaders and to the convention's distinguished speakers and ministers, \"for delivering messages that have challenged and uplifted us. Your insights have equipped us to lead with wisdom and humility.\"",

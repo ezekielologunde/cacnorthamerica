@@ -29,6 +29,7 @@ function dbPostToBlogPost(p: DbBlogRow): BlogPost {
     categoryColor: "#C81E3A",
     accent: "#C81E3A",
     readTime: `${Math.max(1, Math.round(words / 200))} min read`,
+    featured: true,
     body: p.body.split(/\n\n+/),
   };
 }
@@ -54,14 +55,16 @@ function CategoryBadge({ label, color }: { label: string; color: string }) {
   );
 }
 
-function ArticleCard({ post }: { post: typeof POSTS[number] }) {
+function ArticleCard({ post, archival }: { post: typeof POSTS[number]; archival?: boolean }) {
   return (
     <article className="card-lift" style={{
-      background: "var(--paper)", border: "1px solid var(--line)",
+      background: archival ? "var(--cream-2)" : "var(--paper)",
+      border: `1px solid ${archival ? "var(--line)" : "var(--line)"}`,
+      opacity: archival ? 0.88 : 1,
       borderRadius: 22, overflow: "hidden", display: "flex",
       flexDirection: "column", height: "100%",
     }}>
-      <div style={{ height: 6, background: post.accent, flexShrink: 0 }} />
+      <div style={{ height: 6, background: archival ? "var(--line)" : post.accent, flexShrink: 0 }} />
       <div style={{ padding: "22px 24px 24px", display: "flex", flexDirection: "column", flex: 1 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
           <CategoryBadge label={post.category} color={post.categoryColor} />
@@ -80,7 +83,7 @@ function ArticleCard({ post }: { post: typeof POSTS[number] }) {
         </p>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8, borderTop: "1px solid var(--line)", paddingTop: 16, marginTop: "auto" }}>
           <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11.5, color: "var(--ink-soft)", fontWeight: 600 }}>
-            <Calendar size={12} strokeWidth={2.5} aria-hidden /> {post.date}
+            <Calendar size={12} strokeWidth={2.5} aria-hidden /> {archival ? `Archival · ${post.date}` : post.date}
           </span>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <a href={WHATSAPP_SHARE(post.title, post.slug)} target="_blank" rel="noopener noreferrer"
@@ -353,6 +356,8 @@ export default async function BlogPage() {
   const allArticles = [...rest, ...dynamicPosts];
   const byDateDesc = (a: BlogPost, b: BlogPost) => (a.dateIso < b.dateIso ? 1 : a.dateIso > b.dateIso ? -1 : 0);
   const heraldArticles = allArticles.filter((p) => p.category !== "Devotional").sort(byDateDesc);
+  const conventionCoverage = heraldArticles.filter((p) => p.featured);
+  const archiveArticles = heraldArticles.filter((p) => !p.featured);
   const devotionalArticles = allArticles.filter((p) => p.category === "Devotional").sort(byDateDesc);
   const dateStr = new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
 
@@ -410,22 +415,46 @@ export default async function BlogPage() {
         </div>
       </section>
 
-      {/* News — news, events & reflections */}
-      {heraldArticles.length > 0 && (
+      {/* Convention Coverage — current-year featured posts */}
+      {conventionCoverage.length > 0 && (
         <section style={{ background: "var(--cream-2)", padding: "clamp(40px,5vw,72px) clamp(20px,5vw,64px) clamp(20px,3vw,32px)" }}>
           <div style={{ maxWidth: 1140, margin: "0 auto" }}>
             <Reveal style={{ marginBottom: 28 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 14, borderBottom: "2px solid var(--ink)", paddingBottom: 12 }}>
                 <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 13, letterSpacing: "3px", textTransform: "uppercase", color: "var(--ink)" }}>
-                  News
+                  2026 Convention Coverage
                 </span>
                 <div style={{ flex: 1, height: 1, background: "var(--line)" }} />
               </div>
             </Reveal>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))", gap: 22 }}>
-              {heraldArticles.map((p, i) => (
+              {conventionCoverage.map((p, i) => (
                 <Reveal key={p.slug} delay={(i % 6) * 70}>
                   <ArticleCard post={p} />
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* From the Archives — earlier newsletter material, honestly dated */}
+      {archiveArticles.length > 0 && (
+        <section style={{ background: "var(--cream-2)", padding: "clamp(20px,3vw,32px) clamp(20px,5vw,64px) clamp(20px,3vw,32px)" }}>
+          <div style={{ maxWidth: 1140, margin: "0 auto" }}>
+            <Reveal style={{ marginBottom: 28 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 14, borderBottom: "2px solid var(--line)", paddingBottom: 12 }}>
+                <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 13, letterSpacing: "3px", textTransform: "uppercase", color: "var(--ink-soft)" }}>
+                  From the Archives
+                </span>
+                <div style={{ flex: 1, height: 1, background: "var(--line)" }} />
+                <span style={{ fontSize: 11.5, fontWeight: 700, color: "var(--ink-soft)" }}>{archiveArticles.length} entries</span>
+              </div>
+            </Reveal>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))", gap: 22 }}>
+              {archiveArticles.map((p, i) => (
+                <Reveal key={p.slug} delay={(i % 6) * 70}>
+                  <ArticleCard post={p} archival />
                 </Reveal>
               ))}
             </div>
