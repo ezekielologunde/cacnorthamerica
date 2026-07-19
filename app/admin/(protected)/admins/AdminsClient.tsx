@@ -133,7 +133,7 @@ export default function AdminsClient({
                   width: 36,
                   height: 36,
                   borderRadius: "50%",
-                  background: isSelf ? "rgba(45,66,201,0.12)" : "rgba(0,0,0,0.07)",
+                  background: isSelf ? "rgba(200,30,58,0.12)" : "rgba(0,0,0,0.07)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -150,7 +150,7 @@ export default function AdminsClient({
                   <p style={{ margin: "0 0 2px", fontSize: 14, fontWeight: 500, color: "var(--ink)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {admin.email}
                     {isSelf && (
-                      <span style={{ marginLeft: 8, fontSize: 11, background: "rgba(45,66,201,0.1)", color: "var(--red)", padding: "1px 7px", borderRadius: 10, fontWeight: 600 }}>
+                      <span style={{ marginLeft: 8, fontSize: 11, background: "rgba(200,30,58,0.1)", color: "var(--red)", padding: "1px 7px", borderRadius: 10, fontWeight: 600 }}>
                         You
                       </span>
                     )}

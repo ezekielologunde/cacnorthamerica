@@ -116,7 +116,7 @@ export default function VisitPage() {
 
       {/* Hero */}
       <section style={{ background: "var(--cream)", padding: "140px clamp(20px,5vw,64px) 60px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", bottom: -80, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,#F0742F,#2D42C9 70%)", opacity: .1, filter: "blur(6px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", bottom: -80, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,#2D42C9,#C81E3A 70%)", opacity: .1, filter: "blur(6px)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 780, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal><span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Find a Church</span></Reveal>
           <Reveal delay={80}>
@@ -320,7 +320,7 @@ export default function VisitPage() {
                 {submitError && <p role="alert" style={{ fontSize: 14, fontWeight: 600, color: "#ff8a8a", margin: 0 }}>{submitError}</p>}
 
                 <button type="submit" disabled={loading}
-                  style={{ padding: "18px", borderRadius: 999, background: "var(--red)", color: "#fff", fontWeight: 800, fontSize: 16, border: "none", cursor: loading ? "wait" : "pointer", opacity: loading ? 0.6 : 1, boxShadow: "0 14px 30px rgba(45,66,201,.4)" }}>
+                  style={{ padding: "18px", borderRadius: 999, background: "var(--red)", color: "#fff", fontWeight: 800, fontSize: 16, border: "none", cursor: loading ? "wait" : "pointer", opacity: loading ? 0.6 : 1, boxShadow: "0 14px 30px rgba(200,30,58,.4)" }}>
                   {loading ? "Sending…" : "Submit Connect Card →"}
                 </button>
                 <p style={{ fontSize: 12.5, color: "rgba(245,246,250,.35)", textAlign: "center", margin: "-10px 0 0" }}>We&apos;ll only use your details to welcome you. No spam, ever.</p>

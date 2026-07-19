@@ -2,7 +2,7 @@ export type PostCategory = "Event Spotlight" | "Devotional" | "Ministry Update" 
 
 /** Category badges use a range of accent colors (some light/warm, some dark/cool) —
  *  pick readable ink-vs-white text per swatch rather than assuming one text color fits all. */
-const DARK_BADGE_COLORS = new Set(["#EB6342", "#F0742F", "#FDC841"]);
+const DARK_BADGE_COLORS = new Set(["#EB6342", "#2D42C9", "#FDC841"]);
 export function badgeTextColor(hex: string): string {
   return DARK_BADGE_COLORS.has(hex.toUpperCase()) ? "var(--ink)" : "#fff";
 }
@@ -32,7 +32,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…men always ought to pray and not lose heart."_ — Luke 18:1',
@@ -51,7 +51,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"The eternal God is your refuge…"_ — Deuteronomy 33:27',
@@ -70,7 +70,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"All that the Father gives Me will come to Me…"_ — John 6:37',
@@ -89,7 +89,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"In Him also we have obtained an inheritance…"_ — Ephesians 1:11',
@@ -108,7 +108,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "3 min read",
     body: [
       '_"How can a young man cleanse his way? By taking heed according to Your word."_ — Psalm 119:9',
@@ -126,7 +126,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…that I may know Him and the power of His resurrection…"_ — Philippians 3:10',
@@ -145,7 +145,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…behold, the veil of the temple was torn in two, from top to bottom."_ — Matthew 27:51',
@@ -164,7 +164,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…great multitudes followed Him, and He healed them all."_ — Matthew 12:15',
@@ -183,7 +183,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…the effective, fervent prayer of the righteous avails much."_ — James 5:16',
@@ -202,7 +202,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…though He was the Son, yet He learned obedience…"_ — Hebrews 5:8',
@@ -221,7 +221,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…it is Christ who died and rose, who is at the right hand of God the Father…"_ — Romans 8:34',
@@ -240,7 +240,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "3 min read",
     body: [
       '_"So husbands ought to love their own wives as their own bodies; he who loves his wife loves himself."_ — Ephesians 5:28',
@@ -259,7 +259,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…the voice of one crying in the wilderness: Prepare the way of the Lord…"_ — Luke 3:4',
@@ -278,7 +278,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…Let us go up to the mountain of the Lord…"_ — Isaiah 2:3',
@@ -297,7 +297,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…Lo, I am with you always…"_ — Matthew 28:20',
@@ -316,7 +316,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…I know how to abound…"_ — Philippians 4:12',
@@ -335,7 +335,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "3 min read",
     body: [
       '_"This is a faithful saying…"_ — 2 Timothy 2:11',
@@ -354,7 +354,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…His ways are everlasting."_ — Habakkuk 3:6',
@@ -373,7 +373,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"The Lord will guide you continually…"_ — Isaiah 58:11',
@@ -392,7 +392,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…we are more than conquerors through Him…"_ — Romans 8:37',
@@ -411,7 +411,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…so walk in Him."_ — Colossians 2:6',
@@ -430,7 +430,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…your heavenly Father…"_ — Matthew 6:26',
@@ -449,7 +449,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "3 min read",
     body: [
       '_"…be clothed with humility, for God resists the proud but gives grace to the humble."_ — 1 Peter 5:5',
@@ -468,7 +468,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…no condemnation to those who are in Christ Jesus…"_ — Romans 8:1',
@@ -487,7 +487,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…we are His workmanship, created in Christ Jesus for good works…"_ — Ephesians 2:10',
@@ -506,7 +506,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…there is laid up for me the crown of righteousness…"_ — 2 Timothy 4:8',
@@ -525,7 +525,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…who has blessed us with every spiritual blessing…"_ — Ephesians 1:3',
@@ -544,7 +544,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "3 min read",
     body: [
       '_"If anyone wills to do His will, he shall know concerning the doctrine, whether it is from God…"_ — John 7:17',
@@ -563,7 +563,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…Have faith in God."_ — Mark 11:22',
@@ -582,7 +582,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…Lo, I am with you always…"_ — Matthew 28:20',
@@ -601,7 +601,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"He who does not love does not know God…"_ — 1 John 4:8',
@@ -620,7 +620,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…for your sakes He became poor…"_ — 2 Corinthians 8:9',
@@ -639,7 +639,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…who works all things according to the counsel of His will."_ — Ephesians 1:11',
@@ -658,7 +658,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…all things work together for good to those who love God."_ — Romans 8:28',
@@ -677,7 +677,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…whoever desires, let him take the water of life freely."_ — Revelation 22:17',
@@ -696,7 +696,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…Satan hindered us."_ — 1 Thessalonians 2:18',
@@ -715,7 +715,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…the people who know their God shall be strong…"_ — Daniel 11:32',
@@ -734,7 +734,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…all things are possible to him who believes."_ — Mark 9:23',
@@ -753,7 +753,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"And I give them eternal life, and they shall never perish…"_ — John 10:28',
@@ -772,7 +772,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"For the flesh lusts against the Spirit, and the Spirit against the flesh…"_ — Galatians 5:17',
@@ -791,7 +791,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"The Lord has done great things for us, and we are glad."_ — Psalm 126:3',
@@ -810,7 +810,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…who gives us richly all things to enjoy."_ — 1 Timothy 6:17',
@@ -829,7 +829,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"As the Father hath sent Me, even so send I you."_ — John 20:21',
@@ -848,7 +848,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"Let it be known to you, O king, that we do not serve your gods…"_ — Daniel 3:16, 18',
@@ -867,7 +867,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…you are all children of God through faith in Christ Jesus."_ — Galatians 3:26',
@@ -886,7 +886,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"Be still, and know that I am God."_ — Psalm 46:10',
@@ -905,7 +905,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…you are complete in Him…"_ — Colossians 2:10',
@@ -924,7 +924,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…joint heirs with Christ…"_ — Romans 8:17',
@@ -943,7 +943,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…we have fellowship with Him…"_ — 1 John 1:6',
@@ -962,7 +962,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "4 min read",
     body: [
       '_"What will you do in the day of visitation, when devastation comes from afar?"_ — Isaiah 10:3',
@@ -983,7 +983,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"Continue earnestly in prayer…"_ — Colossians 4:2',
@@ -1002,7 +1002,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-07-04",
     category: "Devotional",
     categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#1D2B83)",
+    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "2 min read",
     body: [
       '_"…By Him everyone who believes is justified…"_ — Acts 13:39',
@@ -1021,7 +1021,7 @@ export const POSTS: BlogPost[] = [
     dateIso: "2026-06-10",
     category: "Ministry Update",
     categoryColor: "#FDC841",
-    accent: "linear-gradient(135deg,#FDC841,#F0742F)",
+    accent: "linear-gradient(135deg,#FDC841,#2D42C9)",
     readTime: "4 min read",
     href: "/events/cacna-2026",
     body: [
@@ -1040,8 +1040,8 @@ export const POSTS: BlogPost[] = [
     date: "May 25, 2026",
     dateIso: "2026-05-25",
     category: "Reflection",
-    categoryColor: "#1D2B83",
-    accent: "linear-gradient(135deg,#1D2B83,#2D42C9)",
+    categoryColor: "#7A1128",
+    accent: "linear-gradient(135deg,#7A1128,#C81E3A)",
     readTime: "4 min read",
     body: [
       '_\"We are therefore Christ\'s ambassadors, as though God were making his appeal through us.\"_ — 2 Corinthians 5:20',

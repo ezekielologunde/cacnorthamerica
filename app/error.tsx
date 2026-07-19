@@ -19,7 +19,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
         background: "linear-gradient(140deg,var(--flame),var(--red))",
         display: "flex", alignItems: "center", justifyContent: "center",
         fontSize: 32, marginBottom: 28,
-        boxShadow: "0 12px 32px rgba(45,66,201,.30)",
+        boxShadow: "0 12px 32px rgba(200,30,58,.30)",
       }}>
         ✕
       </div>
@@ -44,7 +44,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
             background: "var(--red)", color: "#fff",
             fontWeight: 700, fontSize: 15, border: "none",
             cursor: "pointer", fontFamily: "var(--font-body)",
-            boxShadow: "0 8px 24px rgba(45,66,201,.35)",
+            boxShadow: "0 8px 24px rgba(200,30,58,.35)",
           }}
         >
           Try again

@@ -13,12 +13,12 @@ export const metadata = {
 };
 
 const tagColor: Record<string, string> = {
-  Family: "linear-gradient(135deg,#FDC841,#F0742F)",
-  Healing: "linear-gradient(135deg,#2D42C9,#1D2B83)",
-  Salvation: "linear-gradient(135deg,#F0742F,#2D42C9)",
-  Ministry: "linear-gradient(135deg,#1D2B83,#12141E)",
-  Restoration: "linear-gradient(135deg,#F0742F,#FDC841)",
-  Testimony: "linear-gradient(135deg,#2D42C9,#F0742F)",
+  Family: "linear-gradient(135deg,#FDC841,#2D42C9)",
+  Healing: "linear-gradient(135deg,#C81E3A,#7A1128)",
+  Salvation: "linear-gradient(135deg,#2D42C9,#C81E3A)",
+  Ministry: "linear-gradient(135deg,#7A1128,#12141E)",
+  Restoration: "linear-gradient(135deg,#2D42C9,#FDC841)",
+  Testimony: "linear-gradient(135deg,#C81E3A,#2D42C9)",
 };
 
 export default async function TestimoniesPage() {
@@ -44,7 +44,7 @@ export default async function TestimoniesPage() {
       {/* Hero */}
       <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 96px", position: "relative", overflow: "hidden" }}>
         <div aria-hidden style={{ position: "absolute", top: -120, right: -80, width: 560, height: 460, background: "radial-gradient(circle,rgba(253,200,65,.22),transparent 65%)", pointerEvents: "none" }} />
-        <div aria-hidden style={{ position: "absolute", bottom: -120, left: -100, width: 480, height: 480, background: "radial-gradient(circle,rgba(45,66,201,.18),transparent 65%)", pointerEvents: "none" }} />
+        <div aria-hidden style={{ position: "absolute", bottom: -120, left: -100, width: 480, height: 480, background: "radial-gradient(circle,rgba(200,30,58,.18),transparent 65%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 880, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Testimonies</span>
@@ -86,7 +86,7 @@ export default async function TestimoniesPage() {
               <Reveal key={i} delay={(i % 3) * 80}>
                 <article style={{ height: "100%", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 24, padding: "28px 28px 26px", display: "flex", flexDirection: "column", boxShadow: "0 12px 30px rgba(18,20,30,.06)" }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 18 }}>
-                    <div style={{ display: "grid", placeItems: "center", width: 42, height: 42, borderRadius: 12, background: tagColor[s.tag] || "var(--ink)", boxShadow: "0 8px 18px rgba(45,66,201,.22)" }}>
+                    <div style={{ display: "grid", placeItems: "center", width: 42, height: 42, borderRadius: 12, background: tagColor[s.tag] || "var(--ink)", boxShadow: "0 8px 18px rgba(200,30,58,.22)" }}>
                       <Quote size={18} strokeWidth={2.5} color="#fff" aria-hidden />
                     </div>
                     <span style={{ fontSize: 10.5, fontWeight: 800, letterSpacing: "1.8px", textTransform: "uppercase", color: "var(--red)" }}>{s.tag}</span>

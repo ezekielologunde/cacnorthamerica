@@ -75,7 +75,7 @@ export default function ContactPage() {
 
       {/* Hero */}
       <section style={{ background: "var(--cream)", padding: "140px clamp(20px,5vw,64px) 60px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", bottom: -80, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,#F0742F,#2D42C9 70%)", opacity: .1, filter: "blur(6px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", bottom: -80, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,#2D42C9,#C81E3A 70%)", opacity: .1, filter: "blur(6px)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 720, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Contact Us</span>
@@ -151,7 +151,7 @@ export default function ContactPage() {
                 </div>
 
                 {isMembershipSubject && (
-                  <div style={{ background: "rgba(45,66,201,.06)", border: "1px solid rgba(45,66,201,.2)", borderRadius: 12, padding: "14px 18px", marginBottom: 16, display: "flex", alignItems: "flex-start", gap: 12 }}>
+                  <div style={{ background: "rgba(200,30,58,.06)", border: "1px solid rgba(200,30,58,.2)", borderRadius: 12, padding: "14px 18px", marginBottom: 16, display: "flex", alignItems: "flex-start", gap: 12 }}>
                     <span style={{ fontSize: 18, flexShrink: 0, marginTop: 1 }}>💡</span>
                     <p style={{ margin: 0, fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.6 }}>
                       For a faster welcome, fill out our{" "}
@@ -173,7 +173,7 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   disabled={status === "loading"}
-                  style={{ padding: "14px 36px", borderRadius: 999, background: status === "loading" ? "var(--line)" : "linear-gradient(100deg,#F0742F,#2D42C9)", color: "#fff", fontWeight: 700, fontSize: 15, border: "none", cursor: status === "loading" ? "not-allowed" : "pointer", transition: "opacity .15s", letterSpacing: ".3px" }}
+                  style={{ padding: "14px 36px", borderRadius: 999, background: status === "loading" ? "var(--line)" : "linear-gradient(100deg,#2D42C9,#C81E3A)", color: "#fff", fontWeight: 700, fontSize: 15, border: "none", cursor: status === "loading" ? "not-allowed" : "pointer", transition: "opacity .15s", letterSpacing: ".3px" }}
                 >
                   {status === "loading" ? "Sending…" : "Send Message"}
                 </button>

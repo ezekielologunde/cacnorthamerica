@@ -43,13 +43,13 @@ const children = [
     affirmation: "I am forgiven",
     ref: "Ephesians 1:6-8",
     text: "So we praise God for the glorious grace he has poured out on us who belong to his dear Son. He is so rich in kindness and grace that he purchased our freedom with the blood of his Son and forgave our sins. He has showered his kindness on us, along with all wisdom and understanding.",
-    accent: "linear-gradient(140deg,#F0742F,#2D42C9)",
+    accent: "linear-gradient(140deg,#2D42C9,#C81E3A)",
   },
   {
     affirmation: "I am reconciled with God",
     ref: "2 Corinthians 5:18-19",
     text: "All this is from God, who reconciled us to himself through Christ and gave us the ministry of reconciliation: that God was reconciling the world to himself in Christ, not counting people's sins against them. And he has committed to us the message of reconciliation.",
-    accent: "linear-gradient(140deg,#FDC841,#F0742F)",
+    accent: "linear-gradient(140deg,#FDC841,#2D42C9)",
   },
 ];
 
@@ -86,7 +86,7 @@ export default function DevotionalPage() {
       </section>
 
       {/* 2026 Watchword */}
-      <section style={{ background: "linear-gradient(135deg,#1D2B83,#2D42C9)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)", position: "relative", overflow: "hidden" }}>
+      <section style={{ background: "linear-gradient(135deg,#7A1128,#C81E3A)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)", position: "relative", overflow: "hidden" }}>
         <div aria-hidden style={{ position: "absolute", top: -120, right: -80, width: 520, height: 420, background: "radial-gradient(circle,rgba(253,200,65,.28),transparent 65%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 860, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>

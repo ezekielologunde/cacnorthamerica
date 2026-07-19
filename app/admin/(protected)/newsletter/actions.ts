@@ -30,7 +30,7 @@ function buildBroadcastHtml(subject: string, body: string): string {
     </div>
     <div style="padding:20px 32px;border-top:1px solid #ede9e4;font-size:12px;color:#999">
       You're receiving this because you subscribed at
-      <a href="https://www.cacnorthamerica.com" style="color:#2D42C9">cacnorthamerica.com</a>.
+      <a href="https://www.cacnorthamerica.com" style="color:#C81E3A">cacnorthamerica.com</a>.
     </div>
   </div>
 </body>

@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  --red: #2D42C9;
-  --red-deep: #1D2B83;
-  --flame: #F0742F;
+  --red: #C81E3A;
+  --red-deep: #7A1128;
+  --flame: #2D42C9;
   --gold: #FDC841;
   --cream: #F5F6FA;
   --cream-2: #ECEFF7;
@@ -245,7 +245,7 @@ html.lenis body { height: auto; }
 .field-input::placeholder { color: var(--ink-soft); opacity: .55; }
 .field-input:focus {
   border-color: var(--red) !important;
-  box-shadow: 0 0 0 4px rgba(45,66,201,.12);
+  box-shadow: 0 0 0 4px rgba(200,30,58,.12);
   background: var(--paper) !important;
 }
 .field-input.on-dark:focus {

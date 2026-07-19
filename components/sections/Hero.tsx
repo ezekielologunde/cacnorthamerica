@@ -256,7 +256,7 @@ export function Hero() {
                 fontWeight: 700, fontSize: 16,
                 padding: "17px 30px", borderRadius: 999,
                 textDecoration: "none",
-                boxShadow: "0 14px 34px rgba(45,66,201,.45)",
+                boxShadow: "0 14px 34px rgba(200,30,58,.45)",
               }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" aria-hidden><path d="M8 5v14l11-7z" /></svg>
                 Join Us Online

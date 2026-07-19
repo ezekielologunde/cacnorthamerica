@@ -30,10 +30,10 @@ function initials(name: string) {
 }
 
 const gradients = [
-  "linear-gradient(135deg,#1D2B83,#2D42C9)",
-  "linear-gradient(135deg,#2D42C9,#F0742F)",
-  "linear-gradient(135deg,#F0742F,#FDC841)",
-  "linear-gradient(135deg,#12141E,#1D2B83)",
+  "linear-gradient(135deg,#7A1128,#C81E3A)",
+  "linear-gradient(135deg,#C81E3A,#2D42C9)",
+  "linear-gradient(135deg,#2D42C9,#FDC841)",
+  "linear-gradient(135deg,#12141E,#7A1128)",
 ];
 
 export default async function LeadershipPage() {
@@ -50,7 +50,7 @@ export default async function LeadershipPage() {
 
       {/* Hero */}
       <section style={{ background: "var(--cream)", padding: "140px clamp(20px,5vw,64px) 72px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -60, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,#F0742F,#2D42C9 70%)", opacity: .1, filter: "blur(6px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: -60, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,#2D42C9,#C81E3A 70%)", opacity: .1, filter: "blur(6px)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 820, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Leadership</span>
@@ -130,7 +130,7 @@ export default async function LeadershipPage() {
                         background: gradients[i % gradients.length],
                         display: "grid", placeItems: "center",
                         color: "#fff", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22,
-                        letterSpacing: "-0.5px", boxShadow: "0 10px 22px rgba(45,66,201,.28)",
+                        letterSpacing: "-0.5px", boxShadow: "0 10px 22px rgba(200,30,58,.28)",
                         flexShrink: 0,
                       }}>{initials(p.full_name)}</div>
                     )}
@@ -190,7 +190,7 @@ export default async function LeadershipPage() {
           <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4.5vw,60px)", letterSpacing: "-1.2px", color: "var(--ink)", margin: "0 0 16px", lineHeight: .96 }}>Explore further.</h2>
           <p style={{ fontSize: 17, color: "var(--ink-soft)", margin: "0 0 36px" }}>Find your zone's superintendent, or read about the leaders who came before.</p>
           <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
-            <Link href="/zones" style={{ background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(45,66,201,.4)" }}>Find Your Zone →</Link>
+            <Link href="/zones" style={{ background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(200,30,58,.4)" }}>Find Your Zone →</Link>
             <Link href="/leadership/past" style={{ background: "var(--cream-2)", color: "var(--ink)", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", border: "1px solid var(--line)" }}>Past Leaders</Link>
             <Link href="/visit" style={{ background: "var(--cream-2)", color: "var(--ink)", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", border: "1px solid var(--line)" }}>Find a Church</Link>
           </div>
