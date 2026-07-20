@@ -10,11 +10,12 @@ import { createServiceClient } from "@/lib/supabase/server";
 
 // Below-fold sections split into separate JS chunks — browser parses them
 // incrementally instead of one blocking task, cutting TBT significantly.
-const Watchword     = dynamic(() => import("@/components/sections/Watchword").then(m => ({ default: m.Watchword })));
 const PastorWelcome = dynamic(() => import("@/components/sections/PastorWelcome").then(m => ({ default: m.PastorWelcome })));
+const Watchword     = dynamic(() => import("@/components/sections/Watchword").then(m => ({ default: m.Watchword })));
+const UpcomingPrograms = dynamic(() => import("@/components/sections/UpcomingPrograms").then(m => ({ default: m.UpcomingPrograms })));
+const LatestNews    = dynamic(() => import("@/components/sections/LatestNews").then(m => ({ default: m.LatestNews })));
 const OurMinistries  = dynamic(() => import("@/components/sections/OurMinistries").then(m => ({ default: m.OurMinistries })));
 const Impact        = dynamic(() => import("@/components/sections/Impact").then(m => ({ default: m.Impact })));
-const LatestNews    = dynamic(() => import("@/components/sections/LatestNews").then(m => ({ default: m.LatestNews })));
 const GlobalChurches = dynamic(() => import("@/components/sections/GlobalChurches").then(m => ({ default: m.GlobalChurches })));
 const PlanVisit     = dynamic(() => import("@/components/sections/PlanVisit").then(m => ({ default: m.PlanVisit })));
 const FooterExperience = dynamic(() => import("@/components/sections/FooterExperience").then(m => ({ default: m.FooterExperience })));
@@ -65,11 +66,12 @@ export default async function Home() {
       <Nav heroDark />
       {announcements && announcements.length > 0 && <HomepageAnnouncements announcements={announcements} />}
       <Hero />
-      <Watchword />
       <PastorWelcome />
+      <Watchword />
+      <UpcomingPrograms />
+      <LatestNews />
       <OurMinistries />
       <Impact />
-      <LatestNews />
       <GlobalChurches />
       <PlanVisit />
       <FooterExperience />

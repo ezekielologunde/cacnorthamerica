@@ -1,9 +1,30 @@
 import Link from "next/link";
 import { Reveal } from "@/components/ui/Reveal";
-import { POSTS, badgeTextColor } from "@/lib/blog";
+import { POSTS, badgeTextColor, type BlogPost, type PostCategory } from "@/lib/blog";
+
+const CATEGORIES: PostCategory[] = ["Event Spotlight", "Ministry Update", "Devotional", "Reflection"];
+
+/** Picks the most recent post from each category first (so the section always
+ *  reads as a mix of everything CACNA covers, not just whichever category
+ *  happened to post most recently), then fills remaining slots by recency. */
+function pickDiverse(posts: BlogPost[], count: number): BlogPost[] {
+  const sorted = [...posts].sort((a, b) => b.dateIso.localeCompare(a.dateIso));
+  const picked: BlogPost[] = [];
+  const seen = new Set<string>();
+
+  for (const cat of CATEGORIES) {
+    const match = sorted.find((p) => p.category === cat && !seen.has(p.slug));
+    if (match) { picked.push(match); seen.add(match.slug); }
+  }
+  for (const p of sorted) {
+    if (picked.length >= count) break;
+    if (!seen.has(p.slug)) { picked.push(p); seen.add(p.slug); }
+  }
+  return picked.slice(0, count);
+}
 
 export function LatestNews() {
-  const posts = [...POSTS].sort((a, b) => b.dateIso.localeCompare(a.dateIso)).slice(0, 3);
+  const posts = pickDiverse(POSTS, 6);
 
   return (
     <section style={{ background: "var(--cream)", padding: "clamp(70px,9vw,120px) clamp(20px,5vw,64px)" }}>
@@ -19,20 +40,38 @@ export function LatestNews() {
         </Reveal>
 
         <div className="r3" style={{ gap: 22 }}>
-          {posts.map((p, i) => (
-            <Reveal key={p.slug} delay={i * 100}>
-              <Link href={p.href ?? `/blog/${p.slug}`} className="card-lift" style={{ textDecoration: "none", color: "inherit", background: "var(--paper)", borderRadius: 24, padding: 30, boxShadow: "0 10px 26px rgba(18,20,30,.06)", display: "flex", flexDirection: "column", height: "100%", gap: 14 }}>
-                <span style={{ alignSelf: "flex-start", background: p.categoryColor, color: badgeTextColor(p.categoryColor), fontWeight: 800, fontSize: 11.5, padding: "6px 14px", borderRadius: 999, letterSpacing: ".3px" }}>
-                  {p.category}
-                </span>
-                <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 21, letterSpacing: "-.3px", lineHeight: 1.2, margin: 0 }}>{p.title}</h3>
-                <p style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.6, margin: 0, flex: 1 }}>{p.excerpt}</p>
-                <div style={{ fontSize: 13, color: "var(--ink-soft)", display: "flex", justifyContent: "space-between" }}>
-                  <span>{p.date}</span><span>{p.readTime}</span>
-                </div>
-              </Link>
-            </Reveal>
-          ))}
+          {posts.map((p, i) => {
+            const isPortrait = p.image?.orientation === "portrait";
+            return (
+              <Reveal key={p.slug} delay={i * 80}>
+                <Link href={p.href ?? `/blog/${p.slug}`} className="card-lift" style={{ textDecoration: "none", color: "inherit", background: "var(--paper)", borderRadius: 24, overflow: "hidden", boxShadow: "0 10px 26px rgba(18,20,30,.06)", display: "flex", flexDirection: "column", height: "100%" }}>
+                  <div style={{
+                    position: "relative", height: 168,
+                    ...(p.image ? {
+                      backgroundImage: `url(${p.image.url})`, backgroundSize: "cover",
+                      backgroundPosition: isPortrait ? "center 20%" : "center",
+                    } : { background: p.accent }),
+                  }}>
+                    <span style={{
+                      position: "absolute", top: 14, left: 14,
+                      background: p.categoryColor, color: badgeTextColor(p.categoryColor),
+                      fontWeight: 800, fontSize: 11.5, padding: "6px 14px", borderRadius: 999, letterSpacing: ".3px",
+                      boxShadow: "0 6px 16px rgba(18,20,30,.2)",
+                    }}>
+                      {p.category}
+                    </span>
+                  </div>
+                  <div style={{ padding: 26, display: "flex", flexDirection: "column", flex: 1, gap: 12 }}>
+                    <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20, letterSpacing: "-.3px", lineHeight: 1.2, margin: 0 }}>{p.title}</h3>
+                    <p style={{ fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.6, margin: 0, flex: 1 }}>{p.excerpt}</p>
+                    <div style={{ fontSize: 12.5, color: "var(--ink-soft)", display: "flex", justifyContent: "space-between" }}>
+                      <span>{p.date}</span><span>{p.readTime}</span>
+                    </div>
+                  </div>
+                </Link>
+              </Reveal>
+            );
+          })}
         </div>
       </div>
     </section>
