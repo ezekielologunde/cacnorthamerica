@@ -1,11 +1,14 @@
 "use client";
 import Link from "next/link";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, type CSSProperties } from "react";
 import { motion, AnimatePresence, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { haptic } from "@/lib/haptics";
+import { conventionToFeature, currentOrNextConvention, dateRangeLabel, CONVENTION_VENUE_SHORT } from "@/lib/conventions";
+import { specialEvents, isEventPast } from "@/lib/events";
+import { POSTS } from "@/lib/blog";
 
 const HERO_T = {
   en: { badge: "CACNA", line1: "One Fold.", line2: "One Shepherd." },
@@ -53,6 +56,74 @@ function AnimLetters({ children, delay = 0 }: { children: string; delay?: number
         </span>
       ))}
     </motion.span>
+  );
+}
+
+/** Compact "what's happening" cards, surfaced directly in the hero instead of
+ *  requiring a scroll — the convention state is adaptive (live/just-concluded
+ *  recap vs. next save-the-date), the others only show while still relevant. */
+function HeroHighlights() {
+  const { cy: featuredCy, state } = conventionToFeature();
+  const nextCy = currentOrNextConvention();
+  const showRecap = state === "live" || state === "concluded-recent";
+
+  const anniversary = specialEvents.find((e) => e.id === "cacna-50th-anniversary-2026");
+  const showAnniversary = anniversary && !isEventPast(anniversary);
+
+  const recapPost = POSTS.find((p) => p.slug === "cacna-2026-closing-appreciation");
+  const latestPost = [...POSTS]
+    .filter((p) => p.slug !== recapPost?.slug)
+    .sort((a, b) => b.dateIso.localeCompare(a.dateIso))[0];
+
+  const cardBase: CSSProperties = {
+    display: "block", borderRadius: 18, padding: "18px 20px",
+    textDecoration: "none", textAlign: "left", height: "100%",
+  };
+
+  return (
+    <div style={{
+      display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))",
+      gap: 12, maxWidth: 900, margin: "0 auto",
+    }}>
+      <Link
+        href={showRecap ? (recapPost ? (recapPost.href ?? `/blog/${recapPost.slug}`) : featuredCy.href) : nextCy.href}
+        className="card-lift"
+        style={{ ...cardBase, background: "linear-gradient(140deg,var(--red),var(--red-deep))", boxShadow: "0 12px 30px rgba(200,30,58,.3)" }}
+      >
+        <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "rgba(255,255,255,.75)" }}>
+          {showRecap ? (state === "live" ? "Live now" : "Just concluded") : "Save the date"}
+        </span>
+        <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 17, color: "#fff", margin: "6px 0 4px", lineHeight: 1.15 }}>
+          {showRecap ? `CACNA ${featuredCy.year} Convention` : `CACNA ${nextCy.year} Convention`}
+        </div>
+        <div style={{ fontSize: 12.5, color: "rgba(255,255,255,.8)" }}>
+          {showRecap ? "Read the closing message →" : `${dateRangeLabel(nextCy)} · ${CONVENTION_VENUE_SHORT}`}
+        </div>
+      </Link>
+
+      {showAnniversary && (
+        <Link href={anniversary.href ?? "/calendar"} className="card-lift" style={{ ...cardBase, background: "#fff", boxShadow: "0 12px 30px rgba(0,0,0,.18)" }}>
+          <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)" }}>50 years strong</span>
+          <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 17, color: "var(--ink)", margin: "6px 0 4px", lineHeight: 1.15 }}>
+            50th Anniversary
+          </div>
+          <div style={{ fontSize: 12.5, color: "var(--ink-soft)" }}>{anniversary.dateLabel} →</div>
+        </Link>
+      )}
+
+      {latestPost && (
+        <Link href={latestPost.href ?? `/blog/${latestPost.slug}`} className="card-lift" style={{ ...cardBase, background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.2)", backdropFilter: "blur(8px)" }}>
+          <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)" }}>Latest news</span>
+          <div style={{
+            fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 15, color: "#fff", margin: "6px 0 4px", lineHeight: 1.25,
+            display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
+          }}>
+            {latestPost.title}
+          </div>
+          <div style={{ fontSize: 12.5, color: "rgba(255,255,255,.7)" }}>Read the post →</div>
+        </Link>
+      )}
+    </div>
   );
 }
 
@@ -184,6 +255,15 @@ export function Hero() {
           </span>
         </Reveal>
 
+        <Reveal delay={60} style={{ marginTop: 18 }}>
+          <p style={{
+            fontSize: "clamp(13px,1.3vw,15px)", fontWeight: 700, letterSpacing: "2px",
+            textTransform: "uppercase", color: "var(--gold)", margin: 0,
+          }}>
+            Welcome to the Christ Apostolic Church North America website
+          </p>
+        </Reveal>
+
         <motion.h1
           animate={reduce ? {} : { y: [0, -10, 0] }}
           transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut", delay: 1.4 }}
@@ -250,7 +330,7 @@ export function Hero() {
         <Reveal delay={520}>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 34, justifyContent: "center" }}>
             <Magnetic strength={0.4}>
-              <a href="#whats-happening" className="btn-sheen" style={{
+              <Link href="/online" className="btn-sheen" style={{
                 display: "inline-flex", alignItems: "center", gap: 10,
                 background: "var(--gold)", color: "var(--ink)",
                 fontWeight: 800, fontSize: 16,
@@ -258,11 +338,12 @@ export function Hero() {
                 textDecoration: "none",
                 boxShadow: "0 14px 34px rgba(253,200,65,.5)",
               }}>
-                See What&apos;s Happening →
-              </a>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--ink)" aria-hidden><path d="M8 5v14l11-7z" /></svg>
+                Join Us Online
+              </Link>
             </Magnetic>
             <Magnetic strength={0.4}>
-              <Link href="/online" className="btn-sheen" style={{
+              <a href="/contact" className="btn-sheen" style={{
                 display: "inline-flex", alignItems: "center", gap: 10,
                 background: "rgba(255,255,255,.12)", color: "#fff",
                 fontWeight: 700, fontSize: 16,
@@ -271,11 +352,14 @@ export function Hero() {
                 border: "1.5px solid rgba(255,255,255,.35)",
                 backdropFilter: "blur(8px)",
               }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" aria-hidden><path d="M8 5v14l11-7z" /></svg>
-                Join Us Online
-              </Link>
+                Plan a Visit
+              </a>
             </Magnetic>
           </div>
+        </Reveal>
+
+        <Reveal delay={620} style={{ marginTop: 44 }}>
+          <HeroHighlights />
         </Reveal>
       </motion.div>
 

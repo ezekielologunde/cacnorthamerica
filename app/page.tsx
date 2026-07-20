@@ -5,7 +5,6 @@ export const revalidate = 60;
 import dynamic from "next/dynamic";
 import { Nav } from "@/components/navigation/Nav";
 import { Hero } from "@/components/sections/Hero";
-import { Spotlight } from "@/components/sections/Spotlight";
 import { HomepageAnnouncements } from "@/components/ui/HomepageAnnouncements";
 import { createServiceClient } from "@/lib/supabase/server";
 
@@ -67,7 +66,6 @@ export default async function Home() {
       <Nav heroDark />
       {announcements && announcements.length > 0 && <HomepageAnnouncements announcements={announcements} />}
       <Hero />
-      <Spotlight />
       <Watchword />
       <PastorWelcome />
       <WhatToExpect />
