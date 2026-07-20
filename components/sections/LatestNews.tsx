@@ -23,8 +23,45 @@ function pickDiverse(posts: BlogPost[], count: number): BlogPost[] {
   return picked.slice(0, count);
 }
 
+function NewsCard({ p, delay, featured }: { p: BlogPost; delay: number; featured?: boolean }) {
+  const isPortrait = p.image?.orientation === "portrait";
+  return (
+    <Reveal delay={delay}>
+      <Link href={p.href ?? `/blog/${p.slug}`} className="card-lift" style={{ textDecoration: "none", color: "inherit", background: "var(--paper)", borderRadius: 24, overflow: "hidden", boxShadow: "0 10px 26px rgba(18,20,30,.06)", display: "flex", flexDirection: "column", height: "100%" }}>
+        <div style={{
+          position: "relative", height: featured ? 280 : 168,
+          ...(p.image ? {
+            backgroundImage: `url(${p.image.url})`, backgroundSize: "cover",
+            backgroundPosition: isPortrait ? "center 20%" : "center",
+          } : { background: p.accent }),
+        }}>
+          <span style={{
+            position: "absolute", top: 14, left: 14,
+            background: p.categoryColor, color: badgeTextColor(p.categoryColor),
+            fontWeight: 800, fontSize: featured ? 12.5 : 11.5, padding: featured ? "7px 16px" : "6px 14px", borderRadius: 999, letterSpacing: ".3px",
+            boxShadow: "0 6px 16px rgba(18,20,30,.2)",
+          }}>
+            {p.category}
+          </span>
+        </div>
+        <div style={{ padding: featured ? 32 : 26, display: "flex", flexDirection: "column", flex: 1, gap: featured ? 14 : 12 }}>
+          <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: featured ? "clamp(22px,2.2vw,28px)" : 20, letterSpacing: "-.3px", lineHeight: 1.2, margin: 0, textWrap: "balance" }}>{p.title}</h3>
+          <p style={{
+            fontSize: featured ? 15.5 : 14, color: "var(--ink-soft)", lineHeight: 1.65, margin: 0, flex: 1,
+            display: "-webkit-box", WebkitLineClamp: featured ? 3 : 2, WebkitBoxOrient: "vertical", overflow: "hidden",
+          }}>{p.excerpt}</p>
+          <div style={{ fontSize: featured ? 13.5 : 12.5, color: "var(--ink-soft)", display: "flex", justifyContent: "space-between" }}>
+            <span>{p.date}</span><span>{p.readTime}</span>
+          </div>
+        </div>
+      </Link>
+    </Reveal>
+  );
+}
+
 export function LatestNews() {
   const posts = pickDiverse(POSTS, 6);
+  const [featured, rest] = [posts.slice(0, 2), posts.slice(2)];
 
   return (
     <section style={{ background: "var(--cream)", padding: "clamp(70px,9vw,120px) clamp(20px,5vw,64px)" }}>
@@ -39,40 +76,17 @@ export function LatestNews() {
           </Link>
         </Reveal>
 
-        <div className="r3" style={{ gap: 22 }}>
-          {posts.map((p, i) => {
-            const isPortrait = p.image?.orientation === "portrait";
-            return (
-              <Reveal key={p.slug} delay={i * 80}>
-                <Link href={p.href ?? `/blog/${p.slug}`} className="card-lift" style={{ textDecoration: "none", color: "inherit", background: "var(--paper)", borderRadius: 24, overflow: "hidden", boxShadow: "0 10px 26px rgba(18,20,30,.06)", display: "flex", flexDirection: "column", height: "100%" }}>
-                  <div style={{
-                    position: "relative", height: 168,
-                    ...(p.image ? {
-                      backgroundImage: `url(${p.image.url})`, backgroundSize: "cover",
-                      backgroundPosition: isPortrait ? "center 20%" : "center",
-                    } : { background: p.accent }),
-                  }}>
-                    <span style={{
-                      position: "absolute", top: 14, left: 14,
-                      background: p.categoryColor, color: badgeTextColor(p.categoryColor),
-                      fontWeight: 800, fontSize: 11.5, padding: "6px 14px", borderRadius: 999, letterSpacing: ".3px",
-                      boxShadow: "0 6px 16px rgba(18,20,30,.2)",
-                    }}>
-                      {p.category}
-                    </span>
-                  </div>
-                  <div style={{ padding: 26, display: "flex", flexDirection: "column", flex: 1, gap: 12 }}>
-                    <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20, letterSpacing: "-.3px", lineHeight: 1.2, margin: 0 }}>{p.title}</h3>
-                    <p style={{ fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.6, margin: 0, flex: 1 }}>{p.excerpt}</p>
-                    <div style={{ fontSize: 12.5, color: "var(--ink-soft)", display: "flex", justifyContent: "space-between" }}>
-                      <span>{p.date}</span><span>{p.readTime}</span>
-                    </div>
-                  </div>
-                </Link>
-              </Reveal>
-            );
-          })}
-        </div>
+        {featured.length > 0 && (
+          <div className="r2" style={{ gap: 22, marginBottom: 22 }}>
+            {featured.map((p, i) => <NewsCard key={p.slug} p={p} delay={i * 80} featured />)}
+          </div>
+        )}
+
+        {rest.length > 0 && (
+          <div className="r3" style={{ gap: 22 }}>
+            {rest.map((p, i) => <NewsCard key={p.slug} p={p} delay={(featured.length + i) * 80} />)}
+          </div>
+        )}
       </div>
     </section>
   );
