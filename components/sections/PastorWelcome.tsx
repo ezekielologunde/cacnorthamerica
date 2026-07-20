@@ -59,7 +59,7 @@ export async function PastorWelcome() {
           </Reveal>
           <Reveal delay={120}>
             <p style={{ fontSize: "clamp(18px,1.9vw,24px)", lineHeight: 1.6, color: "var(--ink)", margin: "22px 0 18px", textWrap: "pretty", fontWeight: 500 }}>
-              Calvary greetings, in the name of our Lord and Savior Jesus Christ, by whose precious blood we are all redeemed. The Lord is calling us to walk in unity with our brethren — for we share the same Father — and to grow in every area of life and ministry in the work He has given us to do for the glory of His name. Let us do all things in the spirit of excellence, that when people see and hear of our works, His name will be praised.
+              Calvary greetings, in the name of our Lord and Savior Jesus Christ, by whose precious blood we are all redeemed. Wherever you call home — the United States, Canada, or South America — you belong to one family, under one Father, gathered as one fold and one Shepherd. The Lord is calling us to walk in unity with our brethren, to grow together in every area of life and ministry, and to do all things in the spirit of excellence, that when people see and hear of our works, His name will be praised.
             </p>
           </Reveal>
           <Reveal delay={160}>
@@ -69,7 +69,7 @@ export async function PastorWelcome() {
             </p>
           </Reveal>
           <Reveal delay={200}>
-            <p style={{ fontSize: 16, color: "var(--ink-soft)", fontStyle: "italic", margin: "0 0 30px" }}>It&apos;s more than a greeting — it&apos;s our lifestyle.</p>
+            <p style={{ fontSize: 16, color: "var(--ink-soft)", fontStyle: "italic", margin: "0 0 30px" }}>You are not a visitor here — you are family. It&apos;s more than a greeting — it&apos;s our lifestyle.</p>
           </Reveal>
           <Reveal delay={240}>
             <Link href="/about" className="press card-lift" style={{ display: "inline-flex", alignItems: "center", gap: 8, fontWeight: 700, fontSize: 15, color: "var(--ink)", textDecoration: "none", padding: "14px 24px", borderRadius: 999, border: "1.5px solid var(--ink)" }}>
