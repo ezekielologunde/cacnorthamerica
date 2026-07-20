@@ -47,7 +47,7 @@ function useSlides(video?: HeroVideo | null): Slide[] {
         kind: "Welcome",
         eyebrow: "Welcome Home",
         title: "One Fold. One Shepherd.",
-        desc: "Real worship and real community across every CACNA member church — preaching the whole Gospel in a clear and undiluted manner, wherever you are.",
+        desc: "CACNA is the North America family of Christ Apostolic Church — part of a global movement born in Nigeria — uniting member churches across the United States, Canada, and South America under one Gospel and one Shepherd.",
         cta: { label: "Join Us Online", href: "/online" },
         bg: { type: "photo", src: "/images/cac-congregation-worship.jpg", alt: "CACNA congregation in worship" },
       },
@@ -311,7 +311,7 @@ export function Hero({ video }: { video?: HeroVideo | null }) {
                 fontSize: "clamp(48px,7vw,96px)", lineHeight: .94, letterSpacing: "-0.03em",
                 margin: "22px 0 0", color: "#fff", textWrap: "balance",
               }}>
-                <span className="sr-only">Christ Apostolic Church North America — uniting CAC member churches across the United States, Canada, and South America. </span>
+                <span className="sr-only">Christ Apostolic Church North America — the regional family of Christ Apostolic Church's global movement, uniting member churches across the United States, Canada, and South America. </span>
                 <RevealText key={`l1-${lang}`} immediate>{t.line1}</RevealText>
                 <br />
                 <RevealText key={`l2-${lang}`} immediate delay={0.12} style={{ color: "var(--red)" }}>{t.line2}</RevealText>

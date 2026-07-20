@@ -8,20 +8,20 @@ export function PlanVisit() {
     <section style={{ background: 'var(--ink)', color: 'var(--cream)', padding: 'clamp(70px,9vw,120px) clamp(20px,5vw,64px)' }}>
       <div className="r2c" style={{ maxWidth: 1240, margin: '0 auto', gap: 56 }}>
         <Reveal>
-          <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: '2.5px', textTransform: 'uppercase', color: 'var(--gold)' }}>Come visit</span>
+          <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: '2.5px', textTransform: 'uppercase', color: 'var(--gold)' }}>Our Regional Home</span>
           <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(36px,5vw,64px)', letterSpacing: '-1.5px', margin: '12px 0 22px', lineHeight: 1 }}>
-            There&apos;s a seat with your name on it — at a church near you.
+            The corporate home of the CACNA family.
           </h2>
           <p style={{ fontSize: 16, lineHeight: 1.7, opacity: .8, maxWidth: 440 }}>
-            CACNA is a family of member churches, not a single building — find the one nearest you across the United States, Canada, and South America, and come as you are.
+            As the North America arm of Christ Apostolic Church&apos;s global family — headquartered in Nigeria — CACNA&apos;s administrative office sits at CAC Village, also home to our Annual Convention. For Sunday worship and pastoral care, connect with a member church in your zone.
           </p>
-          <Link href="/zones" style={{
+          <Link href="/contact" style={{
             display: 'inline-flex', alignItems: 'center', gap: 10,
             marginTop: 30, background: 'var(--red)', color: '#fff',
             fontWeight: 700, fontSize: 16, padding: '16px 28px', borderRadius: 999,
             textDecoration: 'none', boxShadow: '0 14px 30px rgba(200,30,58,.4)',
           }}>
-            Find a Church Near You →
+            Contact the Regional Office →
           </Link>
 
           <div style={{ marginTop: 40, paddingTop: 30, borderTop: '1px solid rgba(255,255,255,.14)' }}>

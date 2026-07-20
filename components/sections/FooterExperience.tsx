@@ -95,7 +95,7 @@ export function FooterExperience() {
               </div>
             </div>
             <p style={{ fontSize: 14, color: 'rgba(245,246,250,.55)', margin: '16px 0 22px', lineHeight: 1.7, maxWidth: 260 }}>
-              Uniting CAC member churches across the United States, Canada, and South America — one family, many homes.
+              The corporate family of Christ Apostolic Church across North America — part of the global CAC movement headquartered in Nigeria. One family, many homes.
             </p>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {socials.map(s => (

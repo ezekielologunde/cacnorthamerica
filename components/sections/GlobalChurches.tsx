@@ -26,7 +26,7 @@ export function GlobalChurches() {
             Find a CAC church near you.
           </h2>
           <p style={{ fontSize: 16.5, color: 'var(--ink-soft)', lineHeight: 1.7, margin: '18px auto 0', maxWidth: 560 }}>
-            Christ Apostolic Church North America is organized into Zones and DCCs (District Church Councils), each shepherded by a Superintendent. Search or browse the full directory to find the one nearest you.
+            CACNA organizes its member churches into Zones and DCCs (District Church Councils), each shepherded by a Superintendent. Search or browse the full directory to find the one nearest you.
           </p>
         </Reveal>
 
