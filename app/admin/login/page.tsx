@@ -23,7 +23,9 @@ export default function AdminLogin() {
   }, [state, router]);
 
   const urlParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
-  const unauthorized = urlParams?.get("error") === "unauthorized";
+  const errorCode = urlParams?.get("error");
+  const unauthorized = errorCode === "unauthorized";
+  const missingServiceKey = errorCode === "missing_service_key";
 
   return (
     <div style={{
@@ -127,9 +129,9 @@ export default function AdminLogin() {
           </motion.p>
         </motion.div>
 
-        {/* Unauthorized banner */}
+        {/* Unauthorized / misconfiguration banner */}
         <AnimatePresence>
-          {unauthorized && (
+          {(unauthorized || missingServiceKey) && (
             <motion.div
               initial={{ opacity: 0, height: 0, marginBottom: 0 }}
               animate={{ opacity: 1, height: "auto", marginBottom: 20 }}
@@ -145,7 +147,9 @@ export default function AdminLogin() {
                 overflow: "hidden",
               }}
             >
-              Access denied. You are not an authorized admin.
+              {missingServiceKey
+                ? "Admin login is misconfigured on this deployment — the server is missing its SUPABASE_SERVICE_ROLE_KEY environment variable. This isn't a problem with your account; add the key in Vercel's project settings and redeploy."
+                : "Access denied. You are not an authorized admin."}
             </motion.div>
           )}
         </AnimatePresence>
