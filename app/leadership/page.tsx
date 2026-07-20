@@ -238,7 +238,7 @@ export default async function LeadershipPage() {
           <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
             <Link href="/zones" style={{ background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(200,30,58,.4)" }}>Find Your Zone →</Link>
             <Link href="/leadership/past" style={{ background: "var(--cream-2)", color: "var(--ink)", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", border: "1px solid var(--line)" }}>Past Leaders</Link>
-            <Link href="/visit" style={{ background: "var(--cream-2)", color: "var(--ink)", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", border: "1px solid var(--line)" }}>Find a Church</Link>
+            <Link href="/contact" style={{ background: "var(--cream-2)", color: "var(--ink)", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", border: "1px solid var(--line)" }}>Find a Church</Link>
           </div>
         </Reveal>
       </section>

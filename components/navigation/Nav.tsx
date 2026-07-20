@@ -55,7 +55,6 @@ const navItems: NavItem[] = [
       { href: '/watchwords', label: 'Watchwords', desc: 'Every annual Watchword since 1989' },
     ],
   },
-  { label: 'Visit', href: '/visit' },
   { label: 'Give', href: '/giving' },
   {
     label: 'Resources',

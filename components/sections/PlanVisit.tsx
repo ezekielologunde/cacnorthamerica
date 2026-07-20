@@ -29,7 +29,7 @@ export function PlanVisit() {
               </div>
             ))}
           </div>
-          <Link href="/visit" style={{
+          <Link href="/contact" style={{
             display: 'inline-flex', alignItems: 'center', gap: 10,
             marginTop: 34, background: 'var(--red)', color: '#fff',
             fontWeight: 700, fontSize: 16, padding: '16px 28px', borderRadius: 999,

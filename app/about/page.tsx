@@ -19,7 +19,7 @@ const homes: Home[] = [
   { tag: "Explore", name: "Our Leadership", place: "Regional officers and 16 zonal superintendents", href: "/leadership", cta: "Meet the team" },
   { tag: "Explore", name: "Our Ministries", place: "Departments serving every CACNA zone", href: "/ministries", cta: "See ministries" },
   { tag: "Explore", name: "Annual Convention", place: "CAC Village, Blue Ridge Summit, PA", href: "/events", cta: "Upcoming events" },
-  { tag: "Explore", name: "Find a Church", place: "Member churches across the U.S., Canada, and South America", href: "/visit", cta: "Locate a zone" },
+  { tag: "Explore", name: "Find a Church", place: "Member churches across the U.S., Canada, and South America", href: "/contact", cta: "Locate a zone" },
 ];
 
 const homeCardStyle: CSSProperties = {
@@ -75,7 +75,7 @@ export default function AboutPage() {
             </p>
           </Reveal>
           <Reveal delay={220}>
-            <Link href="/visit" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(200,30,58,.34)" }}>
+            <Link href="/contact" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(200,30,58,.34)" }}>
               Plan a Visit →
             </Link>
           </Reveal>
@@ -102,7 +102,7 @@ export default function AboutPage() {
           </Reveal>
           <Reveal delay={180}>
             <div style={{ marginTop: 36 }}>
-              <Link href="/visit" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--ink)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "16px 28px", borderRadius: 999, textDecoration: "none", boxShadow: "0 12px 28px rgba(18,20,30,.18)" }}>
+              <Link href="/contact" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--ink)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "16px 28px", borderRadius: 999, textDecoration: "none", boxShadow: "0 12px 28px rgba(18,20,30,.18)" }}>
                 Get plugged in →
               </Link>
             </div>
@@ -357,7 +357,7 @@ export default function AboutPage() {
           <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(36px,5vw,64px)", letterSpacing: "-1.5px", color: "var(--cream)", margin: "0 0 16px", lineHeight: .95 }}>Ready to connect?</h2>
           <p style={{ fontSize: 17, color: "rgba(245,246,250,.6)", margin: "0 0 36px" }}>Find a CACNA member church near you — onsite or online.</p>
           <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
-            <Link href="/visit" style={{ background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(200,30,58,.4)" }}>Plan a Visit →</Link>
+            <Link href="/contact" style={{ background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(200,30,58,.4)" }}>Plan a Visit →</Link>
             <Link href="/online" style={{ background: "rgba(245,246,250,.1)", color: "var(--cream)", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(245,246,250,.2)" }}>Watch Online</Link>
           </div>
         </Reveal>

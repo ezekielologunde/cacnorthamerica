@@ -94,7 +94,7 @@ export async function GlobalChurches() {
         </div>
 
         <Reveal style={{ textAlign: 'center', marginTop: 32, display: 'flex', flexWrap: 'wrap', gap: 14, justifyContent: 'center' }}>
-          <Link href="/visit" className="press" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontWeight: 700, fontSize: 15, color: 'var(--ink)', textDecoration: 'none', padding: '14px 24px', borderRadius: 999, border: '1.5px solid var(--ink)' }}>
+          <Link href="/contact" className="press" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontWeight: 700, fontSize: 15, color: 'var(--ink)', textDecoration: 'none', padding: '14px 24px', borderRadius: 999, border: '1.5px solid var(--ink)' }}>
             Find a Church Near You <span aria-hidden style={{ fontSize: 17 }}>→</span>
           </Link>
           <Link href="/zones" className="press" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontWeight: 700, fontSize: 15, color: 'var(--ink-soft)', textDecoration: 'none', padding: '14px 24px' }}>

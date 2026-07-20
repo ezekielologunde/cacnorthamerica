@@ -28,14 +28,50 @@ const COUNTRIES = [
   "Ghana", "Jamaica", "Trinidad & Tobago", "Other",
 ];
 
+const VISIT_TYPES = [
+  { value: "First-time visitor", label: "First-time visitor" },
+  { value: "Returning visitor",  label: "Returning visitor" },
+  { value: "New member",         label: "Looking for a member church" },
+];
+
+const GROUPS = [
+  "Administration",
+  "Christian Education",
+  "Evangelism, Prayer & Counselling",
+  "Youth & Young Adult",
+  "Missions",
+  "Music",
+  "Welfare & Outreach",
+  "ICT & Technical",
+  "CAC Good Women Association",
+  "CAC Men Association (CACMA)",
+];
+
+const faqs = [
+  { q: "What is CACNA?", a: "Christ Apostolic Church North America is the regional body uniting CAC member churches across the United States, Canada, and South America, organized into 16 DCCs (District Church Councils) / Zones, each led by a Zonal Superintendent." },
+  { q: "Do all CACNA member churches share the same service times?", a: "No — each member church sets its own weekly schedule. Reach out to the Zonal Superintendent nearest you to find service times for a specific church." },
+  { q: "Where is the CACNA Annual Convention held?", a: "At CAC Village, 14051 Stahley Road, Blue Ridge Summit, PA 17214 — six days of worship and teaching every July, onsite and online." },
+  { q: "Can I join a CACNA member church online?", a: "Many member churches stream their services — check with your nearest zone. The Annual Convention itself streams on YouTube and Zoom." },
+];
+
+const BLANK_FIELDS = {
+  name: "", email: "", phone: "", subject: "", country: "", message: "",
+  visitType: "", address: "", city: "", state: "", zip: "",
+};
+
 export default function ContactPage() {
-  const [fields, setFields] = useState({ name: "", email: "", phone: "", subject: "", country: "", message: "" });
+  const [fields, setFields] = useState(BLANK_FIELDS);
+  const [groups, setGroups] = useState<string[]>([]);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errMsg, setErrMsg] = useState("");
 
-  function update(k: keyof typeof fields) {
+  function update(k: keyof typeof BLANK_FIELDS) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
       setFields(f => ({ ...f, [k]: e.target.value }));
+  }
+
+  function toggleGroup(g: string) {
+    setGroups(prev => prev.includes(g) ? prev.filter(x => x !== g) : [...prev, g]);
   }
 
   const isMembershipSubject = MEMBERSHIP_SUBJECTS.has(fields.subject);
@@ -51,7 +87,16 @@ export default function ContactPage() {
     setStatus("loading");
     try {
       await submitLead(
-        { "Name": fields.name, "Email": fields.email, "Phone": fields.phone, "Country": fields.country, "Subject": fields.subject, "Message": fields.message },
+        {
+          "Name": fields.name, "Email": fields.email, "Phone": fields.phone,
+          "Country": fields.country, "Subject": fields.subject, "Message": fields.message,
+          ...(isMembershipSubject ? {
+            "Visit Type": fields.visitType,
+            "Address": fields.address, "City/Town": fields.city,
+            "State/Province": fields.state, "Zip/Post Code": fields.zip,
+            "Groups": groups.join(", "),
+          } : {}),
+        },
         `Contact — ${fields.subject || "General"}`
       );
       setStatus("success");
@@ -79,7 +124,7 @@ export default function ContactPage() {
         <div style={{ position: "absolute", bottom: -80, right: -60, width: 300, height: 300, borderRadius: "50%", background: "radial-gradient(circle,#2D42C9,#C81E3A 70%)", opacity: .1, filter: "blur(6px)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Contact Us</span>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Contact &amp; Visit</span>
           </Reveal>
           <Reveal delay={80}>
             <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(32px,5vw,54px)", letterSpacing: "-1.5px", color: "var(--ink)", margin: "12px 0", lineHeight: .98, textWrap: "balance" }}>
@@ -88,7 +133,7 @@ export default function ContactPage() {
           </Reveal>
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(15px,1.6vw,17px)", color: "var(--ink-soft)", lineHeight: 1.6, maxWidth: 480, margin: "0 auto" }}>
-              Fill in the form below and we&apos;ll be in touch.
+              Fill in the form below — whether it&apos;s a question, a prayer request, or you&apos;re looking for a CACNA member church near you.
             </p>
           </Reveal>
         </div>
@@ -153,14 +198,55 @@ export default function ContactPage() {
                 </div>
 
                 {isMembershipSubject && (
-                  <div style={{ background: "rgba(200,30,58,.06)", border: "1px solid rgba(200,30,58,.2)", borderRadius: 12, padding: "12px 16px", marginBottom: 12, display: "flex", alignItems: "flex-start", gap: 10 }}>
-                    <span style={{ fontSize: 16, flexShrink: 0, marginTop: 1 }}>💡</span>
-                    <p style={{ margin: 0, fontSize: 13.5, color: "var(--ink-soft)", lineHeight: 1.55 }}>
-                      For a faster welcome, fill out our{" "}
-                      <a href="/visit" style={{ color: "var(--red)", fontWeight: 700, textDecoration: "none" }}>Connect Card</a>{" "}
-                      — it captures your full details and ministry interests so we can connect you with the right people straight away.
-                    </p>
-                  </div>
+                  <>
+                    <div style={{ marginBottom: 12 }}>
+                      <p style={{ ...labelStyle, marginBottom: 8 }}>What brings you here?</p>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                        {VISIT_TYPES.map(t => (
+                          <button key={t.value} type="button" onClick={() => setFields(p => ({ ...p, visitType: t.value }))}
+                            style={{ padding: "8px 15px", borderRadius: 999, fontSize: 13, fontWeight: 700, fontFamily: "inherit", cursor: "pointer", border: fields.visitType === t.value ? "none" : "1px solid var(--line)", background: fields.visitType === t.value ? "var(--red)" : "transparent", color: fields.visitType === t.value ? "#fff" : "var(--ink-soft)" }}>
+                            {t.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div style={{ marginBottom: 12 }}>
+                      <label style={labelStyle}>Address <span style={{ fontWeight: 400, opacity: .6 }}>(optional)</span></label>
+                      <input className="field-input" style={inputStyle} type="text" placeholder="123 Main Street" autoComplete="street-address" value={fields.address} onChange={update("address")} />
+                    </div>
+
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(120px,1fr))", gap: 12, marginBottom: 12 }}>
+                      <div>
+                        <label style={labelStyle}>City / Town</label>
+                        <input className="field-input" style={inputStyle} type="text" placeholder="Atlanta" autoComplete="address-level2" value={fields.city} onChange={update("city")} />
+                      </div>
+                      <div>
+                        <label style={labelStyle}>State / Province</label>
+                        <input className="field-input" style={inputStyle} type="text" placeholder="GA" autoComplete="address-level1" value={fields.state} onChange={update("state")} />
+                      </div>
+                      <div>
+                        <label style={labelStyle}>Zip / Post Code</label>
+                        <input className="field-input" style={inputStyle} type="text" placeholder="30301" autoComplete="postal-code" value={fields.zip} onChange={update("zip")} />
+                      </div>
+                    </div>
+
+                    <div style={{ marginBottom: 12 }}>
+                      <p style={{ ...labelStyle, marginBottom: 8 }}>Groups / Ministries interested in <span style={{ fontWeight: 400, opacity: .6 }}>(optional)</span></p>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                        {GROUPS.map(g => {
+                          const active = groups.includes(g);
+                          return (
+                            <button key={g} type="button" onClick={() => toggleGroup(g)}
+                              style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "7px 14px", borderRadius: 999, fontSize: 12.5, fontWeight: 700, fontFamily: "inherit", cursor: "pointer", transition: "all .15s", border: active ? "none" : "1px solid var(--line)", background: active ? "var(--gold)" : "transparent", color: active ? "#12141E" : "var(--ink-soft)" }}>
+                              {active && <span aria-hidden style={{ fontSize: 11 }}>✓</span>}
+                              {g}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </>
                 )}
 
                 <div style={{ marginBottom: 18 }}>
@@ -222,7 +308,69 @@ export default function ContactPage() {
         </div>
       </section>
 
+      {/* Map + Finding Your Zone */}
+      <section style={{ background: "var(--cream-2)", padding: "64px clamp(20px,5vw,64px)" }}>
+        <div className="r2" style={{ maxWidth: 1100, margin: "0 auto", gap: 56 }}>
+          <Reveal>
+            <div style={{ height: 300, borderRadius: 20, overflow: "hidden", border: "1px solid var(--line)", marginBottom: 18, boxShadow: "0 10px 26px rgba(18,20,30,.06)" }}>
+              <iframe title="Map to CAC Village, Blue Ridge Summit, PA" src="https://maps.google.com/maps?q=14051%20Stahley%20Road%20Blue%20Ridge%20Summit%20PA%2017214&z=13&output=embed" loading="lazy" referrerPolicy="no-referrer-when-downgrade" style={{ width: "100%", height: "100%", border: 0, display: "block" }} />
+            </div>
+            <a href="https://maps.google.com/?q=14051+Stahley+Road+Blue+Ridge+Summit+PA+17214" target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 14, fontWeight: 700, color: "var(--red)", textDecoration: "none" }}>
+              <MapPin size={16} strokeWidth={2} aria-hidden /> Get Directions to CAC Village →
+            </a>
+          </Reveal>
+          <Reveal delay={140}>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 30, color: "var(--ink)", margin: "0 0 24px" }}>Finding Your Zone</h2>
+            <ol style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 20 }}>
+              {[
+                { num: "01", title: "Find your nearest zone", body: "CACNA is organized into 16 DCCs/Zones across the U.S., Canada, and South America — see the directory on our homepage." },
+                { num: "02", title: "Reach out to the Superintendent", body: "Each zone has a Zonal Superintendent who can connect you with a member church near you." },
+                { num: "03", title: "Visit a member church", body: "Every member church welcomes visitors — reach out ahead to confirm service times." },
+                { num: "04", title: "Stay connected", body: "Fill out the form above with \"Find a Member Church\" as your subject, and join us each July at the Annual Convention." },
+              ].map(s => (
+                <li key={s.num} style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+                  <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--red)", flexShrink: 0, minWidth: 36, lineHeight: 1, marginTop: 2 }}>{s.num}</span>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: 15.5, color: "var(--ink)", marginBottom: 4 }}>{s.title}</div>
+                    <p style={{ fontSize: 13.5, color: "var(--ink-soft)", lineHeight: 1.65, margin: 0 }}>{s.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section style={{ background: "var(--cream)", padding: "64px clamp(20px,5vw,64px)" }}>
+        <div style={{ maxWidth: 700, margin: "0 auto" }}>
+          <Reveal style={{ textAlign: "center", marginBottom: 40 }}>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,44px)", letterSpacing: "-1px", color: "var(--ink)", margin: 0 }}>FAQ</h2>
+          </Reveal>
+          <FaqList />
+        </div>
+      </section>
+
       <FooterExperience />
     </main>
+  );
+}
+
+function FaqList() {
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  return (
+    <>
+      {faqs.map((faq, i) => (
+        <Reveal key={i} delay={i * 50}>
+          <div style={{ borderBottom: "1px solid var(--line)" }}>
+            <button onClick={() => setOpenFaq(openFaq === i ? null : i)} style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 0", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}>
+              <span style={{ fontSize: 15.5, fontWeight: 700, color: "var(--ink)", paddingRight: 24 }}>{faq.q}</span>
+              <span style={{ color: "var(--red)", fontSize: 20, flexShrink: 0, transform: openFaq === i ? "rotate(45deg)" : "none", transition: "transform .2s" }}>+</span>
+            </button>
+            {openFaq === i && <p style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.7, padding: "0 0 18px", margin: 0 }}>{faq.a}</p>}
+          </div>
+        </Reveal>
+      ))}
+    </>
   );
 }

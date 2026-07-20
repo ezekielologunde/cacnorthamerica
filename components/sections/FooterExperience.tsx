@@ -26,7 +26,6 @@ const quickLinks = [
   ['/events', 'Events'],
   ['/calendar', 'Calendar'],
   // Visit & Give
-  ['/visit', 'Plan a Visit'],
   ['/giving', 'Giving'],
   // Resources
   ['/blog', 'Blog & News'],
