@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import { Nav } from "@/components/navigation/Nav";
 import { Hero } from "@/components/sections/Hero";
 import { Spotlight } from "@/components/sections/Spotlight";
+import { HomepageAnnouncements } from "@/components/ui/HomepageAnnouncements";
 import { createServiceClient } from "@/lib/supabase/server";
 
 // Below-fold sections split into separate JS chunks — browser parses them
@@ -64,37 +65,7 @@ export default async function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }}
       />
       <Nav heroDark />
-      {announcements?.map((ann) => (
-        <div key={ann.id} style={{
-          background: ann.bg_color,
-          color: ann.text_color,
-          padding: "14px clamp(20px,5vw,64px)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 16,
-          flexWrap: "wrap",
-          textAlign: "center",
-        }}>
-          <span style={{ fontWeight: 700, fontSize: 15 }}>{ann.title}</span>
-          {ann.body && <span style={{ opacity: 0.85, fontSize: 14 }}>{ann.body}</span>}
-          {ann.cta_text && ann.cta_url && (
-            <a href={ann.cta_url} style={{
-              background: "rgba(255,255,255,0.2)",
-              color: ann.text_color,
-              fontWeight: 800,
-              fontSize: 13,
-              padding: "6px 16px",
-              borderRadius: 20,
-              textDecoration: "none",
-              border: "1px solid rgba(255,255,255,0.35)",
-              whiteSpace: "nowrap",
-            }}>
-              {ann.cta_text}
-            </a>
-          )}
-        </div>
-      ))}
+      {announcements && announcements.length > 0 && <HomepageAnnouncements announcements={announcements} />}
       <Hero />
       <Spotlight />
       <Watchword />

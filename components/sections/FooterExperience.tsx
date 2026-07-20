@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Reveal } from '@/components/ui/Reveal';
 import { InstagramIcon, YoutubeIcon } from '@/components/ui/SocialIcons';
 import { haptic } from '@/lib/haptics';
-import { MapPin, Phone, Mail } from 'lucide-react';
+import { MapPin, Phone, Mail, ArrowUp } from 'lucide-react';
 import { NewsletterForm } from '@/components/sections/NewsletterForm';
 
 const socials = [
@@ -13,40 +13,79 @@ const socials = [
   { icon: <InstagramIcon />, title: 'Instagram', href: 'https://instagram.com/cacnorthamericalatunderegion' },
 ];
 
-const quickLinks = [
-  // Who We Are
-  ['/about', 'Who We Are'],
-  ['/leadership', 'Leadership'],
-  ['/ministries', 'Ministries'],
-  ['/leadership#global-family', 'Our Global Family'],
-  // Watch & Grow
-  ['/online', 'Watch Online'],
-  ['/watchwords', 'Watchwords'],
-  // Events
-  ['/calendar', 'Calendar & Events'],
-  // Visit & Give
-  ['/giving', 'Giving'],
-  // Resources
-  ['/blog', 'Blog & News'],
-  ['/gallery', 'Gallery'],
-  ['/contact', 'Contact'],
-] as const;
+const columns: { heading: string; links: readonly (readonly [string, string])[] }[] = [
+  {
+    heading: 'Who We Are',
+    links: [
+      ['/about', 'About CACNA'],
+      ['/leadership', 'Leadership'],
+      ['/zones', 'Zones & DCCs'],
+      ['/ministries', 'Ministries'],
+      ['/bible-institute', 'Bible Institute'],
+    ],
+  },
+  {
+    heading: 'Watch & Connect',
+    links: [
+      ['/online', 'Watch Online'],
+      ['/watchwords', 'Watchwords'],
+      ['/calendar', 'Calendar & Events'],
+      ['/blog', 'Blog & News'],
+      ['/gallery', 'Gallery'],
+    ],
+  },
+];
+
+function BackToTop() {
+  return (
+    <button
+      onClick={() => { haptic('selection'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+      className="press"
+      style={{
+        display: 'inline-flex', alignItems: 'center', gap: 8,
+        background: 'rgba(245,246,250,.07)', border: '1px solid rgba(245,246,250,.14)',
+        color: 'rgba(245,246,250,.75)', fontSize: 12.5, fontWeight: 700,
+        padding: '9px 16px', borderRadius: 999, cursor: 'pointer',
+      }}
+    >
+      <ArrowUp size={13} strokeWidth={2.5} aria-hidden /> Back to top
+    </button>
+  );
+}
 
 export function FooterExperience() {
   return (
     <footer style={{ background: 'var(--ink)', padding: 'clamp(48px,7vw,80px) clamp(20px,5vw,64px) 0' }}>
       <Reveal>
+        {/* Newsletter — leads the footer as its own highlighted band */}
+        <div style={{
+          maxWidth: 1240, margin: '0 auto 44px', borderRadius: 24,
+          background: 'linear-gradient(120deg,rgba(253,200,65,.1),rgba(200,30,58,.12))',
+          border: '1px solid rgba(253,200,65,.2)',
+          padding: 'clamp(28px,4vw,40px)',
+          display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 24,
+        }}>
+          <div style={{ flex: '1 1 260px' }}>
+            <div style={{ fontWeight: 800, fontSize: 11.5, textTransform: 'uppercase', letterSpacing: '1.8px', color: 'var(--gold)', marginBottom: 8 }}>Stay connected</div>
+            <p style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(20px,2.4vw,26px)', color: '#fff', margin: '0 0 6px', letterSpacing: '-.4px' }}>Get updates from the family.</p>
+            <p style={{ fontSize: 13.5, color: 'rgba(245,246,250,.5)', margin: 0 }}>Sermons, events, and encouragement — straight to your inbox.</p>
+          </div>
+          <div style={{ flex: '1 1 340px' }}>
+            <NewsletterForm />
+          </div>
+        </div>
+
         <div style={{
           maxWidth: 1240, margin: '0 auto',
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%,220px), 1fr))',
-          gap: 'clamp(36px,4vw,56px)',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%,200px), 1fr))',
+          gap: 'clamp(32px,4vw,48px)',
           paddingBottom: 44,
           borderBottom: '1px solid rgba(245,246,250,.1)',
         }}>
 
           {/* Brand */}
-          <div>
+          <div style={{ gridColumn: 'span 1' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <Image src="/images/logo.png" alt="Christ Apostolic Church North America" width={42} height={42}
                 style={{ borderRadius: 12, objectFit: 'cover', flexShrink: 0 }} />
@@ -55,7 +94,7 @@ export function FooterExperience() {
                 <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18, color: '#fff', marginTop: 3 }}>North America</span>
               </div>
             </div>
-            <p style={{ fontSize: 14, color: 'rgba(245,246,250,.55)', margin: '16px 0 22px', lineHeight: 1.7, maxWidth: 280 }}>
+            <p style={{ fontSize: 14, color: 'rgba(245,246,250,.55)', margin: '16px 0 22px', lineHeight: 1.7, maxWidth: 260 }}>
               Uniting CAC member churches across the United States, Canada, and South America — one family, many homes.
             </p>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -69,21 +108,22 @@ export function FooterExperience() {
             </div>
           </div>
 
-          {/* Quick links */}
-          <div>
-            <div style={{ fontWeight: 800, fontSize: 12, textTransform: 'uppercase', letterSpacing: '1.8px', color: 'var(--gold)', marginBottom: 18 }}>Explore</div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px 20px', fontSize: 14 }}>
-              {quickLinks.map(([href, label]) => (
-                <Link key={href} href={href}
-                  style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{label}</Link>
-              ))}
+          {/* Link columns */}
+          {columns.map((col) => (
+            <div key={col.heading}>
+              <div style={{ fontWeight: 800, fontSize: 12, textTransform: 'uppercase', letterSpacing: '1.8px', color: 'var(--gold)', marginBottom: 18 }}>{col.heading}</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 14 }}>
+                {col.links.map(([href, label]) => (
+                  <Link key={href} href={href} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{label}</Link>
+                ))}
+              </div>
             </div>
-          </div>
+          ))}
 
-          {/* Services + contact */}
+          {/* Gather + contact */}
           <div>
             <div style={{ fontWeight: 800, fontSize: 12, textTransform: 'uppercase', letterSpacing: '1.8px', color: 'var(--gold)', marginBottom: 18 }}>How We Gather</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 9, fontSize: 14, color: 'rgba(245,246,250,.6)', marginBottom: 28 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 9, fontSize: 13.5, color: 'rgba(245,246,250,.6)', marginBottom: 24 }}>
               <span>Annual Convention · July, CAC Village PA</span>
               <span>Ministers Retreat · Annually</span>
               <span>Sunday School Rally · Annually</span>
@@ -105,26 +145,14 @@ export function FooterExperience() {
 
         </div>
 
-        {/* Newsletter */}
-        <div style={{ maxWidth: 1240, margin: '0 auto', padding: '36px 0', borderBottom: '1px solid rgba(245,246,250,.1)' }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 24 }}>
-            <div style={{ flex: '1 1 260px' }}>
-              <div style={{ fontWeight: 800, fontSize: 12, textTransform: 'uppercase', letterSpacing: '1.8px', color: 'var(--gold)', marginBottom: 6 }}>Stay connected</div>
-              <p style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 20, color: '#fff', margin: '0 0 4px', letterSpacing: '-.3px' }}>Get updates from the family.</p>
-              <p style={{ fontSize: 13.5, color: 'rgba(245,246,250,.45)', margin: 0 }}>Sermons, events, and encouragement — straight to your inbox.</p>
-            </div>
-            <div style={{ flex: '1 1 340px' }}>
-              <NewsletterForm />
-            </div>
-          </div>
-        </div>
-
         {/* Bottom bar */}
-        <div style={{ maxWidth: 1240, margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 12, padding: '20px 0 28px', fontSize: 12.5, color: 'rgba(245,246,250,.3)' }}>
+        <div style={{ maxWidth: 1240, margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 16, padding: '24px 0 28px', fontSize: 12.5, color: 'rgba(245,246,250,.3)' }}>
           <span>© 2026 Christ Apostolic Church North America · 24 Zones &amp; DCCs across the U.S., Canada &amp; South America</span>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 20px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px 20px' }}>
             <Link href="/tenets" style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>Our Tenets</Link>
-            <Link href="/leadership" style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>Leadership</Link>
+            <Link href="/leadership/past" style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>Past Leaders</Link>
+            <Link href="/contact" style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>Contact</Link>
+            <BackToTop />
           </div>
         </div>
       </Reveal>

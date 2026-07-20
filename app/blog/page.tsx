@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
+import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { POSTS, type BlogPost, badgeTextColor } from "@/lib/blog";
 import { specialEvents } from "@/lib/events";
 import { getApprovedCacWorldNews, type CacWorldNewsItem } from "@/lib/cacWorldNews";
@@ -9,7 +10,8 @@ import { GIVING_CAMPAIGNS, type GivingCampaign } from "@/lib/giving";
 import { currentOrNextConvention, dateRangeLabel, hasExternalRegistrationUrl } from "@/lib/conventions";
 import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
 import Link from "next/link";
-import { Clock, Calendar, ArrowRight, Globe2, Landmark } from "lucide-react";
+import { Clock, Calendar, ArrowRight, Globe2, Landmark, Sparkles, Archive, BookHeart } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 export const revalidate = 3600;
 
@@ -69,9 +71,8 @@ function ArticleCard({ post, archival }: { post: typeof POSTS[number]; archival?
       flexDirection: "column", height: "100%",
     }}>
       {post.image ? (
-        <div style={{ height: 240, position: "relative", flexShrink: 0 }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={post.image.url} alt={post.image.alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: archival ? 0.85 : 1 }} />
+        <div style={{ height: 240, position: "relative", flexShrink: 0, opacity: archival ? 0.85 : 1 }}>
+          <ImageLightbox src={post.image.url} alt={post.image.alt} />
         </div>
       ) : (
         <div style={{ height: 6, background: archival ? "var(--line)" : post.accent, flexShrink: 0 }} />
@@ -120,18 +121,17 @@ function FeaturedCard({ post }: { post: typeof POSTS[number] }) {
     }}>
       <div style={{ height: 320, background: post.image ? "var(--ink)" : post.accent, position: "relative" }}>
         {post.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={post.image.url} alt={post.image.alt} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+          <ImageLightbox src={post.image.url} alt={post.image.alt} />
         ) : (
           <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 70% 30%,rgba(255,255,255,.2),transparent 65%)" }} />
         )}
-        {post.image && <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(18,20,30,0),rgba(18,20,30,.5) 100%)" }} />}
-        <div style={{ position: "absolute", top: 22, left: 24 }}>
+        {post.image && <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(18,20,30,0),rgba(18,20,30,.5) 100%)", pointerEvents: "none" }} />}
+        <div style={{ position: "absolute", top: 22, left: 24, pointerEvents: "none" }}>
           <span style={{ display: "inline-block", fontSize: 9.5, fontWeight: 900, letterSpacing: "2.5px", textTransform: "uppercase", color: "#fff", background: "rgba(0,0,0,.35)", borderRadius: 999, padding: "5px 12px" }}>
             Latest · {post.readTime}
           </span>
         </div>
-        <div style={{ position: "absolute", bottom: 24, left: 24, right: 24 }}>
+        <div style={{ position: "absolute", bottom: 24, left: 24, right: 24, pointerEvents: "none" }}>
           <CategoryBadge label={post.category} color="rgba(0,0,0,.45)" />
         </div>
       </div>
@@ -182,12 +182,11 @@ function CacWorldCard({ item }: { item: CacWorldNewsItem }) {
     }}>
       <div style={{ height: 140, background: "var(--ink)", position: "relative", overflow: "hidden" }}>
         {item.imageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={item.imageUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <ImageLightbox src={item.imageUrl} alt={item.title} />
         ) : (
           <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 70% 30%,rgba(253,200,65,.25),transparent 65%)" }} />
         )}
-        <div style={{ position: "absolute", top: 14, left: 16 }}>
+        <div style={{ position: "absolute", top: 14, left: 16, pointerEvents: "none" }}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 9.5, fontWeight: 900, letterSpacing: "2px", textTransform: "uppercase", color: "#fff", background: "rgba(0,0,0,.5)", borderRadius: 999, padding: "5px 12px" }}>
             <Globe2 size={11} strokeWidth={2.5} aria-hidden /> CAC World
           </span>
@@ -218,6 +217,26 @@ function CacWorldCard({ item }: { item: CacWorldNewsItem }) {
         </div>
       </div>
     </article>
+  );
+}
+
+function SectionHeading({ icon: Icon, eyebrow, title, description, meta }: { icon: LucideIcon; eyebrow: string; title: string; description?: string; meta?: string }) {
+  return (
+    <Reveal style={{ marginBottom: 32 }}>
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
+        <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+          <div style={{ width: 48, height: 48, borderRadius: 14, background: "var(--paper)", border: "1px solid var(--line)", display: "grid", placeItems: "center", flexShrink: 0 }}>
+            <Icon size={22} strokeWidth={2} color="var(--red)" aria-hidden />
+          </div>
+          <div>
+            <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)" }}>{eyebrow}</span>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3vw,34px)", letterSpacing: "-.8px", color: "var(--ink)", margin: "4px 0 6px", lineHeight: 1.1 }}>{title}</h2>
+            {description && <p style={{ fontSize: 14, color: "var(--ink-soft)", margin: 0, maxWidth: 460, lineHeight: 1.6 }}>{description}</p>}
+          </div>
+        </div>
+        {meta && <span style={{ fontSize: 12, fontWeight: 700, color: "var(--ink-soft)", whiteSpace: "nowrap", marginTop: 12 }}>{meta}</span>}
+      </div>
+    </Reveal>
   );
 }
 
@@ -371,14 +390,12 @@ export default async function BlogPage() {
       {conventionCoverage.length > 0 && (
         <section style={{ background: "var(--cream-2)", padding: "clamp(40px,5vw,72px) clamp(20px,5vw,64px) clamp(20px,3vw,32px)" }}>
           <div style={{ maxWidth: 1140, margin: "0 auto" }}>
-            <Reveal style={{ marginBottom: 28 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 14, borderBottom: "2px solid var(--ink)", paddingBottom: 12 }}>
-                <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 13, letterSpacing: "3px", textTransform: "uppercase", color: "var(--ink)" }}>
-                  2026 Convention Coverage
-                </span>
-                <div style={{ flex: 1, height: 1, background: "var(--line)" }} />
-              </div>
-            </Reveal>
+            <SectionHeading
+              icon={Sparkles}
+              eyebrow="Featured coverage"
+              title="2026 Convention Coverage"
+              description="Welcome addresses, messages, and the closing word from CACNA's flagship gathering."
+            />
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,360px),1fr))", gap: 22 }}>
               {conventionCoverage.map((p, i) => (
                 <Reveal key={p.slug} delay={(i % 6) * 70}>
@@ -394,15 +411,13 @@ export default async function BlogPage() {
       {archiveArticles.length > 0 && (
         <section style={{ background: "var(--cream-2)", padding: "clamp(20px,3vw,32px) clamp(20px,5vw,64px) clamp(20px,3vw,32px)" }}>
           <div style={{ maxWidth: 1140, margin: "0 auto" }}>
-            <Reveal style={{ marginBottom: 28 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 14, borderBottom: "2px solid var(--line)", paddingBottom: 12 }}>
-                <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 13, letterSpacing: "3px", textTransform: "uppercase", color: "var(--ink-soft)" }}>
-                  From the Archives
-                </span>
-                <div style={{ flex: 1, height: 1, background: "var(--line)" }} />
-                <span style={{ fontSize: 11.5, fontWeight: 700, color: "var(--ink-soft)" }}>{archiveArticles.length} entries</span>
-              </div>
-            </Reveal>
+            <SectionHeading
+              icon={Archive}
+              eyebrow="Looking back"
+              title="From the Archives"
+              description="Earlier reflections and updates from across the CACNA family."
+              meta={`${archiveArticles.length} entries`}
+            />
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,360px),1fr))", gap: 22 }}>
               {archiveArticles.map((p, i) => (
                 <Reveal key={p.slug} delay={(i % 6) * 70}>
@@ -418,15 +433,13 @@ export default async function BlogPage() {
       {cacWorldNews.length > 0 && (
         <section style={{ background: "var(--cream)", padding: "clamp(40px,5vw,72px) clamp(20px,5vw,64px) clamp(20px,3vw,32px)" }}>
           <div style={{ maxWidth: 1140, margin: "0 auto" }}>
-            <Reveal style={{ marginBottom: 28 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 14, borderBottom: "2px solid var(--ink)", paddingBottom: 12 }}>
-                <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 13, letterSpacing: "3px", textTransform: "uppercase", color: "var(--ink)" }}>
-                  From CAC World
-                </span>
-                <div style={{ flex: 1, height: 1, background: "var(--line)" }} />
-                <span style={{ fontSize: 11.5, fontWeight: 700, color: "var(--ink-soft)" }}>via cacworldnews.com</span>
-              </div>
-            </Reveal>
+            <SectionHeading
+              icon={Globe2}
+              eyebrow="Beyond CACNA"
+              title="From CAC World"
+              description="News from Christ Apostolic Church Worldwide, headquartered in Nigeria."
+              meta="via cacworldnews.com"
+            />
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,360px),1fr))", gap: 22 }}>
               {cacWorldNews.map((item, i) => (
                 <Reveal key={item.id} delay={(i % 6) * 70}>
@@ -442,15 +455,13 @@ export default async function BlogPage() {
       {devotionalArticles.length > 0 && (
         <section style={{ background: "var(--cream-2)", padding: "clamp(24px,4vw,40px) clamp(20px,5vw,64px) clamp(60px,8vw,100px)" }}>
           <div style={{ maxWidth: 1140, margin: "0 auto" }}>
-            <Reveal style={{ marginBottom: 28 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 14, borderBottom: "2px solid var(--ink)", paddingBottom: 12 }}>
-                <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 13, letterSpacing: "3px", textTransform: "uppercase", color: "var(--ink)" }}>
-                  Devotionals
-                </span>
-                <div style={{ flex: 1, height: 1, background: "var(--line)" }} />
-                <span style={{ fontSize: 11.5, fontWeight: 700, color: "var(--ink-soft)" }}>{devotionalArticles.length} entries</span>
-              </div>
-            </Reveal>
+            <SectionHeading
+              icon={BookHeart}
+              eyebrow="Daily bread"
+              title="Devotionals"
+              description="Short reflections to ground your day in the Word."
+              meta={`${devotionalArticles.length} entries`}
+            />
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,360px),1fr))", gap: 22 }}>
               {devotionalArticles.map((p, i) => (
                 <Reveal key={p.slug} delay={(i % 9) * 55}>

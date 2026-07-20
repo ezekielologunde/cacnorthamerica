@@ -28,7 +28,6 @@ const navItems: NavItem[] = [
     href: nextConvention.href,
     dropdown: [
       { href: conventionCtaHref, label: conventionCtaLabel, desc: nextConvention.registrationUrl ? 'Secure your spot before rates rise' : 'Dates are confirmed — full details soon', external: isExternalHref(conventionCtaHref) },
-      { href: nextConvention.href, label: 'Convention Details', desc: 'Theme, schedule, venue & travel' },
       { href: '/calendar', label: 'Calendar & Events', desc: 'Special gatherings & CACNA\'s annual rhythm' },
     ],
   },
@@ -41,7 +40,6 @@ const navItems: NavItem[] = [
       { href: '/zones', label: 'Zones & DCCs', desc: 'Find your Zonal or DCC superintendent' },
       { href: '/ministries', label: 'Ministries', desc: 'Find your place to serve' },
       { href: '/bible-institute', label: 'Bible Institute', desc: 'Ministerial training arm of CACNA' },
-      { href: '/leadership#global-family', label: 'Our Global Family', desc: 'CAC Worldwide & CAC Anosike Region (Europe)' },
     ],
   },
   {
