@@ -74,3 +74,39 @@ export async function getLeaderRoles(personKey: string): Promise<Leader[]> {
     .order("sort_order");
   return (data ?? []) as Leader[];
 }
+
+/** URL-safe slug derived from a leader's name — strips honorifics/titles so
+ *  two rows for the same real person (e.g. different role titles) produce
+ *  the same slug. Not stored in the DB; computed on the fly since no
+ *  dedicated slug column exists. */
+export function slugifyLeaderName(name: string): string {
+  return name
+    .replace(/^(Pastor|Prophet|Evangelist|Apostle|Elder|Deaconess)\s+/i, "")
+    .replace(/\(Mrs\.?\)|Dr\.?|Ph\.?D\.?|D\.?Min\.?|Jr\.?|Sr\.?/gi, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/** Looks up one leader (any category) by their slugified name. If they hold
+ *  multiple role-rows linked by `person_key`, returns the row with the most
+ *  descriptive bio (or the first, if none have one) plus every linked role. */
+export async function getLeaderBySlug(
+  slug: string
+): Promise<{ leader: Leader; roles: Leader[] } | null> {
+  const { data } = await client()
+    .from("leaders")
+    .select(LEADER_COLUMNS)
+    .eq("is_published", true);
+  const all = (data ?? []) as Leader[];
+
+  const matches = all.filter((l) => slugifyLeaderName(l.full_name) === slug);
+  if (matches.length === 0) return null;
+
+  const primary = matches.find((l) => l.bio) ?? matches[0];
+  const roles = primary.person_key
+    ? all.filter((l) => l.person_key === primary.person_key).sort((a, b) => a.sort_order - b.sort_order)
+    : matches;
+
+  return { leader: primary, roles };
+}

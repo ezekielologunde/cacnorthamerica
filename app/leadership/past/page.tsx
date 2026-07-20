@@ -4,7 +4,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { getLeaders, type Leader } from "@/lib/leaders";
+import { getLeaders, slugifyLeaderName, type Leader } from "@/lib/leaders";
 
 function initials(name: string) {
   return name.replace(/^(Pastor|Prophet|Evangelist|Mrs\.?|Mr\.?|Dr\.?)\s+/i, "")
@@ -73,7 +73,7 @@ export default async function PastLeadersPage() {
                 <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                   {people.map((p, i) => (
                     <Reveal key={p.id} delay={i * 60}>
-                      <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 18, padding: "22px 24px", display: "flex", gap: 18, alignItems: "flex-start" }}>
+                      <Link href={`/leadership/${slugifyLeaderName(p.full_name)}`} className="card-lift" style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 18, padding: "22px 24px", display: "flex", gap: 18, alignItems: "flex-start", textDecoration: "none", color: "inherit" }}>
                         {p.photo_url ? (
                           <div style={{ position: "relative", width: 56, height: 56, borderRadius: 14, overflow: "hidden", flexShrink: 0, boxShadow: "0 8px 18px rgba(18,20,30,.18)" }}>
                             <Image src={p.photo_url} alt={p.full_name} fill style={{ objectFit: "cover", objectPosition: "center top" }} sizes="56px" unoptimized />
@@ -100,7 +100,7 @@ export default async function PastLeadersPage() {
                           </div>
                           {p.bio && <p style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.7, margin: 0 }}>{p.bio}</p>}
                         </div>
-                      </div>
+                      </Link>
                     </Reveal>
                   ))}
                 </div>

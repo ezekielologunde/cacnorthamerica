@@ -3,7 +3,7 @@ import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import Image from "next/image";
 import Link from "next/link";
-import { getLeaders, getLeaderRoles, type Leader } from "@/lib/leaders";
+import { getLeaders, getLeaderRoles, slugifyLeaderName, type Leader } from "@/lib/leaders";
 
 export const revalidate = 3600;
 
@@ -83,7 +83,7 @@ export default async function LeadershipPage() {
           `}</style>
           <div style={{ maxWidth: 1080, margin: "0 auto" }}>
             <Reveal>
-              <div className="ldr-card" style={{ background: "var(--ink)", borderRadius: 28, overflow: "hidden", boxShadow: "0 30px 60px rgba(18,20,30,.22)" }}>
+              <Link href={`/leadership/${slugifyLeaderName(featured.full_name)}`} className="ldr-card" style={{ display: "grid", background: "var(--ink)", borderRadius: 28, overflow: "hidden", boxShadow: "0 30px 60px rgba(18,20,30,.22)", textDecoration: "none" }}>
                 <div style={{ padding: "clamp(36px,5vw,60px)", display: "flex", flexDirection: "column", justifyContent: "center", color: "var(--cream)" }}>
                   <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 14 }}>{featured.title}</div>
                   <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3vw,42px)", letterSpacing: "-1px", margin: "0 0 22px", lineHeight: 1.04 }}>{featured.full_name}</h2>
@@ -101,7 +101,7 @@ export default async function LeadershipPage() {
                     />
                   </div>
                 )}
-              </div>
+              </Link>
             </Reveal>
           </div>
         </section>
@@ -119,10 +119,11 @@ export default async function LeadershipPage() {
           <div className="r2" style={{ gap: 22 }}>
             {team.map((p, i) => (
               <Reveal key={p.id} delay={i * 70}>
-                <div style={{
+                <Link href={`/leadership/${slugifyLeaderName(p.full_name)}`} className="card-lift" style={{
                   background: "var(--paper)", borderRadius: 22, padding: "28px 28px 30px",
                   border: "1px solid var(--line)", boxShadow: "0 10px 28px rgba(18,20,30,.07)",
                   height: "100%", display: "flex", flexDirection: "column", gap: 18,
+                  textDecoration: "none", color: "inherit",
                 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
                     {p.photo_url ? (
@@ -147,7 +148,7 @@ export default async function LeadershipPage() {
                   {bios.get(p.id) && (
                     <p style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.7, margin: 0 }}>{bios.get(p.id)}</p>
                   )}
-                </div>
+                </Link>
               </Reveal>
             ))}
           </div>
@@ -170,18 +171,24 @@ export default async function LeadershipPage() {
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 16 }}>
               {globalHq.map((p, i) => (
                 <Reveal key={p.id} delay={i * 60}>
-                  <div style={{ background: "rgba(245,246,250,.05)", border: "1px solid rgba(245,246,250,.1)", borderRadius: 18, padding: "22px 20px", display: "flex", alignItems: "center", gap: 14 }}>
-                    <div aria-hidden style={{
-                      width: 48, height: 48, borderRadius: 14, flexShrink: 0,
-                      background: gradients[i % gradients.length],
-                      display: "grid", placeItems: "center",
-                      color: "#fff", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 16,
-                    }}>{initials(p.full_name)}</div>
+                  <Link href={`/leadership/${slugifyLeaderName(p.full_name)}`} style={{ background: "rgba(245,246,250,.05)", border: "1px solid rgba(245,246,250,.1)", borderRadius: 18, padding: "22px 20px", display: "flex", alignItems: "center", gap: 14, textDecoration: "none" }}>
+                    {p.photo_url ? (
+                      <div style={{ position: "relative", width: 48, height: 48, borderRadius: 14, overflow: "hidden", flexShrink: 0 }}>
+                        <Image src={p.photo_url} alt={p.full_name} fill style={{ objectFit: "cover" }} sizes="48px" unoptimized />
+                      </div>
+                    ) : (
+                      <div aria-hidden style={{
+                        width: 48, height: 48, borderRadius: 14, flexShrink: 0,
+                        background: gradients[i % gradients.length],
+                        display: "grid", placeItems: "center",
+                        color: "#fff", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 16,
+                      }}>{initials(p.full_name)}</div>
+                    )}
                     <div>
                       <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 3 }}>{p.title}</div>
                       <div style={{ fontWeight: 700, fontSize: 15, color: "var(--cream)", lineHeight: 1.3 }}>{p.full_name}</div>
                     </div>
-                  </div>
+                  </Link>
                 </Reveal>
               ))}
             </div>
