@@ -14,11 +14,9 @@ import { getSermons } from "@/lib/sermons";
 const Watchword     = dynamic(() => import("@/components/sections/Watchword").then(m => ({ default: m.Watchword })));
 const PastorWelcome = dynamic(() => import("@/components/sections/PastorWelcome").then(m => ({ default: m.PastorWelcome })));
 const OurMinistries  = dynamic(() => import("@/components/sections/OurMinistries").then(m => ({ default: m.OurMinistries })));
+const FindAChurch   = dynamic(() => import("@/components/sections/FindAChurch").then(m => ({ default: m.FindAChurch })));
 const Impact        = dynamic(() => import("@/components/sections/Impact").then(m => ({ default: m.Impact })));
 const LatestNews    = dynamic(() => import("@/components/sections/LatestNews").then(m => ({ default: m.LatestNews })));
-const GlobalChurches = dynamic(() => import("@/components/sections/GlobalChurches").then(m => ({ default: m.GlobalChurches })));
-const PlanVisit     = dynamic(() => import("@/components/sections/PlanVisit").then(m => ({ default: m.PlanVisit })));
-const InstagramFeed = dynamic(() => import("@/components/sections/InstagramFeed").then(m => ({ default: m.InstagramFeed })));
 const FooterExperience = dynamic(() => import("@/components/sections/FooterExperience").then(m => ({ default: m.FooterExperience })));
 
 const faqJsonLd = {
@@ -73,11 +71,9 @@ export default async function Home() {
       <Watchword />
       <PastorWelcome />
       <OurMinistries />
+      <FindAChurch />
       <Impact />
       <LatestNews />
-      <GlobalChurches />
-      <PlanVisit />
-      <InstagramFeed />
       <FooterExperience />
     </main>
   );

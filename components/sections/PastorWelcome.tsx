@@ -18,7 +18,7 @@ export async function PastorWelcome() {
   const photoUrl = superintendent?.photo_url;
 
   return (
-    <section style={{ background: "var(--cream-2)", padding: "clamp(70px,9vw,120px) clamp(20px,5vw,64px)", position: "relative", overflow: "hidden" }}>
+    <section style={{ background: "var(--paper)", padding: "clamp(70px,9vw,120px) clamp(20px,5vw,64px)", position: "relative", overflow: "hidden" }}>
       <div aria-hidden style={{ position: "absolute", top: "-15%", left: "-8%", width: 520, height: 520, borderRadius: "50%", background: "radial-gradient(circle,rgba(200,30,58,.08),transparent 70%)", pointerEvents: "none" }} />
       <div className="r2c" style={{ maxWidth: 1200, margin: "0 auto", gap: "clamp(48px,5vw,80px)", position: "relative", zIndex: 1 }}>
         {/* Portrait with parallax */}
