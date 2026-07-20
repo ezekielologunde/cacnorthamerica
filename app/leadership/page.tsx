@@ -111,38 +111,36 @@ export default async function LeadershipPage() {
               Serving alongside.
             </h2>
           </Reveal>
-          <div className="r2" style={{ gap: 22 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: 24 }}>
             {team.map((p, i) => (
               <Reveal key={p.id} delay={i * 70}>
                 <Link href={`/leadership/${slugifyLeaderName(p.full_name)}`} className="card-lift" style={{
-                  background: "var(--paper)", borderRadius: 22, padding: "28px 28px 30px",
+                  background: "var(--paper)", borderRadius: 24, overflow: "hidden",
                   border: "1px solid var(--line)", boxShadow: "0 10px 28px rgba(18,20,30,.07)",
-                  height: "100%", display: "flex", flexDirection: "column", gap: 18,
+                  height: "100%", display: "flex", flexDirection: "column",
                   textDecoration: "none", color: "inherit",
                 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                  <div style={{ position: "relative", width: "100%", height: "clamp(200px,22vw,260px)", flexShrink: 0, background: "var(--ink)" }}>
                     {p.photo_url ? (
-                      <div style={{ position: "relative", width: 64, height: 64, borderRadius: 18, overflow: "hidden", flexShrink: 0, boxShadow: "0 10px 22px rgba(18,20,30,.2)" }}>
-                        <Image src={p.photo_url} alt={p.full_name} fill style={{ objectFit: "cover", objectPosition: "center top" }} sizes="64px" unoptimized />
-                      </div>
+                      <Image src={p.photo_url} alt={p.full_name} fill style={{ objectFit: "cover", objectPosition: "center top" }} sizes="(max-width: 680px) 100vw, 340px" unoptimized />
                     ) : (
                       <div aria-hidden style={{
-                        width: 64, height: 64, borderRadius: 18,
+                        position: "absolute", inset: 0, display: "grid", placeItems: "center",
                         background: gradients[i % gradients.length],
-                        display: "grid", placeItems: "center",
-                        color: "#fff", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22,
-                        letterSpacing: "-0.5px", boxShadow: "0 10px 22px rgba(200,30,58,.28)",
-                        flexShrink: 0,
-                      }}>{initials(p.full_name)}</div>
+                      }}>
+                        <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 56, color: "#fff" }}>{initials(p.full_name)}</span>
+                      </div>
                     )}
+                  </div>
+                  <div style={{ padding: "22px 26px 28px", display: "flex", flexDirection: "column", gap: 12, flex: 1 }}>
                     <div>
                       <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 4 }}>{p.title}</div>
                       <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 19, letterSpacing: "-0.4px", color: "var(--ink)", margin: 0, lineHeight: 1.15 }}>{p.full_name}</h3>
                     </div>
+                    {bios.get(p.id) && (
+                      <p style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.7, margin: 0 }}>{bios.get(p.id)}</p>
+                    )}
                   </div>
-                  {bios.get(p.id) && (
-                    <p style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.7, margin: 0 }}>{bios.get(p.id)}</p>
-                  )}
                 </Link>
               </Reveal>
             ))}
@@ -163,25 +161,25 @@ export default async function LeadershipPage() {
                 CACNA is one region of Christ Apostolic Church Worldwide, headquartered in Nigeria — currently led by:
               </p>
             </Reveal>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 16 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: 18 }}>
               {globalHq.map((p, i) => (
                 <Reveal key={p.id} delay={i * 60}>
-                  <Link href={`/leadership/${slugifyLeaderName(p.full_name)}`} style={{ background: "rgba(245,246,250,.05)", border: "1px solid rgba(245,246,250,.1)", borderRadius: 18, padding: "22px 20px", display: "flex", alignItems: "center", gap: 14, textDecoration: "none" }}>
+                  <Link href={`/leadership/${slugifyLeaderName(p.full_name)}`} className="card-lift" style={{ background: "rgba(245,246,250,.05)", border: "1px solid rgba(245,246,250,.1)", borderRadius: 20, padding: "22px 22px", display: "flex", alignItems: "center", gap: 18, textDecoration: "none" }}>
                     {p.photo_url ? (
-                      <div style={{ position: "relative", width: 48, height: 48, borderRadius: 14, overflow: "hidden", flexShrink: 0 }}>
-                        <Image src={p.photo_url} alt={p.full_name} fill style={{ objectFit: "cover" }} sizes="48px" unoptimized />
+                      <div style={{ position: "relative", width: 84, height: 84, borderRadius: 18, overflow: "hidden", flexShrink: 0, boxShadow: "0 10px 24px rgba(0,0,0,.3)" }}>
+                        <Image src={p.photo_url} alt={p.full_name} fill style={{ objectFit: "cover", objectPosition: "center top" }} sizes="84px" unoptimized />
                       </div>
                     ) : (
                       <div aria-hidden style={{
-                        width: 48, height: 48, borderRadius: 14, flexShrink: 0,
+                        width: 84, height: 84, borderRadius: 18, flexShrink: 0,
                         background: gradients[i % gradients.length],
                         display: "grid", placeItems: "center",
-                        color: "#fff", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 16,
+                        color: "#fff", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 28,
                       }}>{initials(p.full_name)}</div>
                     )}
                     <div>
-                      <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 3 }}>{p.title}</div>
-                      <div style={{ fontWeight: 700, fontSize: 15, color: "var(--cream)", lineHeight: 1.3 }}>{p.full_name}</div>
+                      <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 4 }}>{p.title}</div>
+                      <div style={{ fontWeight: 800, fontSize: 17, color: "var(--cream)", lineHeight: 1.3 }}>{p.full_name}</div>
                     </div>
                   </Link>
                 </Reveal>
