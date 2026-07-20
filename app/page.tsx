@@ -12,7 +12,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 // incrementally instead of one blocking task, cutting TBT significantly.
 const Watchword     = dynamic(() => import("@/components/sections/Watchword").then(m => ({ default: m.Watchword })));
 const PastorWelcome = dynamic(() => import("@/components/sections/PastorWelcome").then(m => ({ default: m.PastorWelcome })));
-const WhatToExpect  = dynamic(() => import("@/components/sections/WhatToExpect").then(m => ({ default: m.WhatToExpect })));
+const OurMinistries  = dynamic(() => import("@/components/sections/OurMinistries").then(m => ({ default: m.OurMinistries })));
 const Impact        = dynamic(() => import("@/components/sections/Impact").then(m => ({ default: m.Impact })));
 const LatestNews    = dynamic(() => import("@/components/sections/LatestNews").then(m => ({ default: m.LatestNews })));
 const GlobalChurches = dynamic(() => import("@/components/sections/GlobalChurches").then(m => ({ default: m.GlobalChurches })));
@@ -68,7 +68,7 @@ export default async function Home() {
       <Hero />
       <Watchword />
       <PastorWelcome />
-      <WhatToExpect />
+      <OurMinistries />
       <Impact />
       <LatestNews />
       <GlobalChurches />

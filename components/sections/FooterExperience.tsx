@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Reveal } from '@/components/ui/Reveal';
 import { InstagramIcon, YoutubeIcon } from '@/components/ui/SocialIcons';
 import { haptic } from '@/lib/haptics';
-import { MapPin, Phone, Mail, ArrowUp } from 'lucide-react';
+import { MapPin, Phone, Mail, ArrowUp, ArrowRight } from 'lucide-react';
 import { NewsletterForm } from '@/components/sections/NewsletterForm';
 
 const socials = [
@@ -120,13 +120,16 @@ export function FooterExperience() {
             </div>
           ))}
 
-          {/* Gather + contact */}
+          {/* Find a church + contact */}
           <div>
-            <div style={{ fontWeight: 800, fontSize: 12, textTransform: 'uppercase', letterSpacing: '1.8px', color: 'var(--gold)', marginBottom: 18 }}>How We Gather</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 9, fontSize: 13.5, color: 'rgba(245,246,250,.6)', marginBottom: 24 }}>
-              <span>Annual Convention · July, CAC Village PA</span>
-              <span>Ministers Retreat · Annually</span>
-              <span>Sunday School Rally · Annually</span>
+            <div style={{ fontWeight: 800, fontSize: 12, textTransform: 'uppercase', letterSpacing: '1.8px', color: 'var(--gold)', marginBottom: 18 }}>Find a Church</div>
+            <div style={{ marginBottom: 24 }}>
+              <p style={{ fontSize: 13.5, color: 'rgba(245,246,250,.6)', lineHeight: 1.6, margin: '0 0 12px' }}>
+                24 Zones &amp; DCCs across the U.S., Canada &amp; South America — find the one nearest you.
+              </p>
+              <Link href="/zones" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 800, color: 'var(--gold)', textDecoration: 'none' }}>
+                Browse the Zone Directory <ArrowRight size={12} strokeWidth={2.5} aria-hidden />
+              </Link>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 11, fontSize: 14 }}>
               <a href="tel:+13054690346" style={{ display: 'flex', alignItems: 'center', gap: 9, color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>
