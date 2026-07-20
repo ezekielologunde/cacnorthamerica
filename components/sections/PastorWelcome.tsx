@@ -59,7 +59,7 @@ export async function PastorWelcome() {
           </Reveal>
           <Reveal delay={120}>
             <p style={{ fontSize: "clamp(18px,1.9vw,24px)", lineHeight: 1.6, color: "var(--ink)", margin: "22px 0 18px", textWrap: "pretty", fontWeight: 500 }}>
-              We are given the mandate to preach the whole Gospel in a clear and undiluted manner. As a region of Christ Apostolic Church Worldwide, headquartered in Nigeria, we stand as part of the vast body of Christ across North America — fulfilling the Great Commission, building every believer to be God&apos;s Ambassadors here on earth, and preparing them for Christ&apos;s Kingdom to come.
+              Calvary greetings, in the name of our Lord and Savior Jesus Christ, by whose precious blood we are all redeemed. The Lord is calling us to walk in unity with our brethren — for we share the same Father — and to grow in every area of life and ministry in the work He has given us to do for the glory of His name. Let us do all things in the spirit of excellence, that when people see and hear of our works, His name will be praised.
             </p>
           </Reveal>
           <Reveal delay={160}>
