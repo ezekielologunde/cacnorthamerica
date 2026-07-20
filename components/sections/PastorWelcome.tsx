@@ -64,12 +64,12 @@ export async function PastorWelcome() {
           </Reveal>
           <Reveal delay={160}>
             <p style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,2.6vw,34px)", letterSpacing: "-.5px", lineHeight: 1.15, margin: "0 0 8px", color: "var(--ink)" }}>
-              With this in our heart, we say{" "}
-              <span style={{ color: "var(--red)" }}>Welcome Home!</span>
+              With this conviction in my heart, I say to you:{" "}
+              <span style={{ color: "var(--red)" }}>welcome home.</span>
             </p>
           </Reveal>
           <Reveal delay={200}>
-            <p style={{ fontSize: 16, color: "var(--ink-soft)", fontStyle: "italic", margin: "0 0 30px" }}>You are not a visitor here — you are family. It&apos;s more than a greeting — it&apos;s our lifestyle.</p>
+            <p style={{ fontSize: 16, color: "var(--ink-soft)", fontStyle: "italic", margin: "0 0 30px" }}>You are not a visitor passing through — you are family sitting down. That is not a greeting I extend once; it is a lifestyle we share every day.</p>
           </Reveal>
           <Reveal delay={240}>
             <Link href="/about" className="press card-lift" style={{ display: "inline-flex", alignItems: "center", gap: 8, fontWeight: 700, fontSize: 15, color: "var(--ink)", textDecoration: "none", padding: "14px 24px", borderRadius: 999, border: "1.5px solid var(--ink)" }}>

@@ -12,7 +12,7 @@ import { POSTS } from "@/lib/blog";
 import { GIVING_CAMPAIGNS } from "@/lib/giving";
 
 type SlideBg = { type: "photo"; src: string; alt: string } | { type: "gradient"; value: string };
-type SlideKind = "Event" | "Ad" | "News";
+type SlideKind = "Welcome" | "Event" | "Ad" | "News";
 
 interface Slide {
   key: string;
@@ -26,9 +26,13 @@ interface Slide {
    *  full-bleed background — shown inline in the content instead, dynamically,
    *  while the slide falls back to a gradient backdrop. */
   inlineImage?: { src: string; alt: string };
+  /** Extra navigation for the Welcome slide only — points visitors to the
+   *  site's other important sections instead of a single CTA. */
+  quickLinks?: { label: string; href: string }[];
 }
 
 const KIND_COLOR: Record<SlideKind, string> = {
+  Welcome: "var(--gold)",
   Event: "var(--gold)",
   Ad: "var(--gold)",
   News: "var(--gold)",
@@ -42,6 +46,21 @@ const KIND_COLOR: Record<SlideKind, string> = {
 function useSlides(): Slide[] {
   return useMemo(() => {
     const slides: Slide[] = [];
+
+    slides.push({
+      key: "welcome",
+      kind: "Welcome",
+      eyebrow: "Welcome Home",
+      title: "Welcome to CACNA",
+      desc: "The corporate home of Christ Apostolic Church across North America — part of a global family headquartered in Nigeria. Explore who we are, watch a service online, or find your zone.",
+      cta: { label: "About CACNA", href: "/about" },
+      quickLinks: [
+        { label: "Our Ministries", href: "/ministries" },
+        { label: "Watch Online", href: "/online" },
+        { label: "Find a Zone", href: "/zones" },
+      ],
+      bg: { type: "photo", src: "/images/cac-congregation-worship.jpg", alt: "CACNA congregation in worship" },
+    });
 
     const { cy: featuredCy, state } = conventionToFeature();
     const nextCy = currentOrNextConvention();
@@ -264,6 +283,20 @@ export function Hero() {
                 </Link>
               </Magnetic>
             </div>
+
+            {slide.quickLinks && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 18, justifyContent: "center" }}>
+                {slide.quickLinks.map((link) => (
+                  <Link key={link.href} href={link.href} className="press" style={{
+                    fontSize: 13.5, fontWeight: 700, color: "rgba(255,255,255,.82)",
+                    textDecoration: "none", padding: "8px 16px", borderRadius: 999,
+                    border: "1px solid rgba(255,255,255,.22)", background: "rgba(255,255,255,.06)",
+                  }}>
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            )}
           </motion.div>
         </AnimatePresence>
       </div>
