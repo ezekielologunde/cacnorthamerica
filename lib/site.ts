@@ -45,7 +45,6 @@ export const ROUTES: { path: string; priority: number }[] = [
   { path: "/events/ministers-retreat-2027", priority: 0.6 },
   { path: "/calendar", priority: 0.8 },
   { path: "/blog", priority: 0.6 },
-  { path: "/store", priority: 0.5 },
   { path: "/gallery", priority: 0.6 },
   { path: "/visit", priority: 0.9 },
   { path: "/contact", priority: 0.7 },

@@ -3,23 +3,19 @@ import DashboardCards from "@/components/admin/DashboardCards";
 
 async function getStats() {
   const service = createServiceClient();
-  const [posts, events, contacts, products, gallery, announcements, orders] = await Promise.all([
+  const [posts, events, contacts, gallery, announcements] = await Promise.all([
     service.from("blog_posts").select("id", { count: "exact", head: true }),
     service.from("events").select("id", { count: "exact", head: true }),
     service.from("contact_submissions").select("id", { count: "exact", head: true }).eq("archived", false),
-    service.from("products").select("id", { count: "exact", head: true }).eq("published", true),
     service.from("gallery_images").select("id", { count: "exact", head: true }).eq("published", true),
     service.from("announcements").select("id", { count: "exact", head: true }).eq("active", true),
-    service.from("orders").select("id", { count: "exact", head: true }),
   ]);
   return {
     posts: posts.count ?? 0,
     events: events.count ?? 0,
     contacts: contacts.count ?? 0,
-    products: products.count ?? 0,
     gallery: gallery.count ?? 0,
     announcements: announcements.count ?? 0,
-    orders: orders.count ?? 0,
   };
 }
 

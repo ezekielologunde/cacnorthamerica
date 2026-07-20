@@ -31,7 +31,7 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: "*",
         allow: "/",
         disallow: [
-          "/admin", "/admin/", "/store/success",
+          "/admin", "/admin/",
           // This domain ran WordPress before this Next.js rebuild. These paths
           // are leftovers Google still remembers crawling (theme assets,
           // uploads, category archives) that now 404 correctly — disallowing

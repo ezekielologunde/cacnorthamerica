@@ -9,7 +9,7 @@ import { GIVING_CAMPAIGNS, type GivingCampaign } from "@/lib/giving";
 import { currentOrNextConvention, dateRangeLabel, hasExternalRegistrationUrl } from "@/lib/conventions";
 import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
 import Link from "next/link";
-import { Clock, Calendar, ShoppingBag, ArrowRight, Globe2, Landmark } from "lucide-react";
+import { Clock, Calendar, ArrowRight, Globe2, Landmark } from "lucide-react";
 
 export const revalidate = 3600;
 
@@ -288,39 +288,6 @@ function UpcomingEventWidget() {
   );
 }
 
-function StoreAdWidget() {
-  return (
-    <aside style={{
-      background: "linear-gradient(140deg,#7A1128,#C81E3A)",
-      borderRadius: 20, padding: "24px 26px", position: "relative", overflow: "hidden",
-      marginBottom: 24,
-    }}>
-      <div aria-hidden style={{ position: "absolute", top: -30, right: -30, width: 130, height: 130, background: "radial-gradient(circle,rgba(253,200,65,.35),transparent 70%)", pointerEvents: "none" }} />
-      <div style={{ position: "relative", zIndex: 2 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 12 }}>
-          <ShoppingBag size={12} strokeWidth={2.5} color="var(--gold)" aria-hidden />
-          <span style={{ fontSize: 9.5, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "rgba(245,246,250,.7)" }}>
-            From the Store
-          </span>
-        </div>
-        <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "#fff", lineHeight: 1.1, marginBottom: 10 }}>
-          Wear the Word.
-        </div>
-        <p style={{ fontSize: 13, color: "rgba(245,246,250,.78)", lineHeight: 1.6, marginBottom: 18 }}>
-          CACNA merchandise — shirts, bibles, custom prints, and more. Quality that carries the message.
-        </p>
-        <Link href="/store" className="press" style={{
-          display: "inline-flex", alignItems: "center", gap: 7,
-          background: "#fff", color: "var(--red)", fontWeight: 800,
-          fontSize: 13, padding: "10px 20px", borderRadius: 999, textDecoration: "none",
-        }}>
-          Shop Now <ArrowRight size={13} strokeWidth={2.5} aria-hidden />
-        </Link>
-      </div>
-    </aside>
-  );
-}
-
 export default async function BlogPage() {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -395,9 +362,6 @@ export default async function BlogPage() {
             </Reveal>
             <Reveal delay={200}>
               <GivingAdWidget campaign={givingCampaign} />
-            </Reveal>
-            <Reveal delay={240}>
-              <StoreAdWidget />
             </Reveal>
           </div>
         </div>

@@ -63,7 +63,6 @@ const navItems: NavItem[] = [
     dropdown: [
       { href: '/blog', label: 'Blog & News', desc: 'Stories from the family' },
       { href: '/gallery', label: 'Gallery', desc: 'Moments from across CACNA' },
-      { href: '/store', label: 'Store', desc: 'Apparel, Bibles, music & prints' },
     ],
   },
   { label: 'Contact', href: '/contact' },

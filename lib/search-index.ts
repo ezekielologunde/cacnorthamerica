@@ -2,7 +2,7 @@ export interface SearchItem {
   title: string;
   desc: string;
   href: string;
-  tag: "Page" | "Blog" | "Event" | "Store";
+  tag: "Page" | "Blog" | "Event";
   keywords?: string;
 }
 
@@ -27,7 +27,6 @@ export const SEARCH_INDEX: SearchItem[] = [
   { title: "Giving", desc: "Support CACNA's ministries and missions", href: "/giving", tag: "Page", keywords: "giving tithe offering donate" },
   // Resources
   { title: "Blog & News", desc: "CACNA News — stories, devotionals, and news", href: "/blog", tag: "Blog", keywords: "blog news cacna stories articles devotional reflections" },
-  { title: "Store", desc: "Apparel, Bibles, worship music, and custom prints", href: "/store", tag: "Store", keywords: "store shop apparel hoodie shirt bible music print merchandise buy" },
   // Contact
   { title: "Contact", desc: "Get in touch with the CACNA team", href: "/contact", tag: "Page", keywords: "contact team phone email address reach out" },
   // Blog posts
