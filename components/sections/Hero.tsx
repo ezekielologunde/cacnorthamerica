@@ -268,8 +268,10 @@ export function Hero() {
             <AnimatePresence mode="wait">
               {lang === "en" ? (
                 <motion.span key="sub-en" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-                  Real worship, real community — preaching the whole Gospel in a clear
-                  and undiluted manner across every CACNA member church.{" "}
+                  Welcome home. As part of the worldwide family of Christ Apostolic
+                  Church, we bring real worship and real community to every CACNA
+                  member church — preaching the whole Gospel in a clear and undiluted
+                  manner, wherever you are.{" "}
                   <strong style={{ color: "#fff" }}>One fold, one Shepherd.</strong>
                 </motion.span>
               ) : (
