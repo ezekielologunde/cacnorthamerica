@@ -76,53 +76,62 @@ function HeroHighlights() {
     .sort((a, b) => b.dateIso.localeCompare(a.dateIso))[0];
 
   const cardBase: CSSProperties = {
-    display: "block", borderRadius: 18, padding: "18px 20px",
+    display: "block", borderRadius: 20, padding: "26px 28px",
     textDecoration: "none", textAlign: "left", height: "100%",
   };
 
   return (
     <div style={{
-      display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))",
-      gap: 12, maxWidth: 900, margin: "0 auto",
+      background: "rgba(12,14,19,.4)", border: "1px solid rgba(255,255,255,.14)",
+      backdropFilter: "blur(10px)", borderRadius: 28,
+      padding: "clamp(20px,3vw,28px)", maxWidth: 980, margin: "0 auto",
     }}>
-      <Link
-        href={showRecap ? (recapPost ? (recapPost.href ?? `/blog/${recapPost.slug}`) : featuredCy.href) : nextCy.href}
-        className="card-lift"
-        style={{ ...cardBase, background: "linear-gradient(140deg,var(--red),var(--red-deep))", boxShadow: "0 12px 30px rgba(200,30,58,.3)" }}
-      >
-        <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "rgba(255,255,255,.75)" }}>
-          {showRecap ? (state === "live" ? "Live now" : "Just concluded") : "Save the date"}
-        </span>
-        <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 17, color: "#fff", margin: "6px 0 4px", lineHeight: 1.15 }}>
-          {showRecap ? `CACNA ${featuredCy.year} Convention` : `CACNA ${nextCy.year} Convention`}
-        </div>
-        <div style={{ fontSize: 12.5, color: "rgba(255,255,255,.8)" }}>
-          {showRecap ? "Read the closing message →" : `${dateRangeLabel(nextCy)} · ${CONVENTION_VENUE_SHORT}`}
-        </div>
-      </Link>
-
-      {showAnniversary && (
-        <Link href={anniversary.href ?? "/calendar"} className="card-lift" style={{ ...cardBase, background: "#fff", boxShadow: "0 12px 30px rgba(0,0,0,.18)" }}>
-          <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)" }}>50 years strong</span>
-          <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 17, color: "var(--ink)", margin: "6px 0 4px", lineHeight: 1.15 }}>
-            50th Anniversary
+      <span style={{ display: "block", fontSize: 12.5, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 16, textAlign: "center" }}>
+        Right now at CACNA
+      </span>
+      <div style={{
+        display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
+        gap: 16,
+      }}>
+        <Link
+          href={showRecap ? (recapPost ? (recapPost.href ?? `/blog/${recapPost.slug}`) : featuredCy.href) : nextCy.href}
+          className="card-lift"
+          style={{ ...cardBase, background: "linear-gradient(140deg,var(--red),var(--red-deep))", boxShadow: "0 14px 34px rgba(200,30,58,.35)" }}
+        >
+          <span style={{ fontSize: 11.5, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "rgba(255,255,255,.8)" }}>
+            {showRecap ? (state === "live" ? "Live now" : "Just concluded") : "Save the date"}
+          </span>
+          <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "#fff", margin: "8px 0 6px", lineHeight: 1.15 }}>
+            {showRecap ? `CACNA ${featuredCy.year} Convention` : `CACNA ${nextCy.year} Convention`}
           </div>
-          <div style={{ fontSize: 12.5, color: "var(--ink-soft)" }}>{anniversary.dateLabel} →</div>
-        </Link>
-      )}
-
-      {latestPost && (
-        <Link href={latestPost.href ?? `/blog/${latestPost.slug}`} className="card-lift" style={{ ...cardBase, background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.2)", backdropFilter: "blur(8px)" }}>
-          <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)" }}>Latest news</span>
-          <div style={{
-            fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 15, color: "#fff", margin: "6px 0 4px", lineHeight: 1.25,
-            display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
-          }}>
-            {latestPost.title}
+          <div style={{ fontSize: 14, color: "rgba(255,255,255,.85)" }}>
+            {showRecap ? "Read the closing message →" : `${dateRangeLabel(nextCy)} · ${CONVENTION_VENUE_SHORT}`}
           </div>
-          <div style={{ fontSize: 12.5, color: "rgba(255,255,255,.7)" }}>Read the post →</div>
         </Link>
-      )}
+
+        {showAnniversary && (
+          <Link href={anniversary.href ?? "/calendar"} className="card-lift" style={{ ...cardBase, background: "#fff", boxShadow: "0 14px 34px rgba(0,0,0,.22)" }}>
+            <span style={{ fontSize: 11.5, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)" }}>50 years strong</span>
+            <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--ink)", margin: "8px 0 6px", lineHeight: 1.15 }}>
+              50th Anniversary
+            </div>
+            <div style={{ fontSize: 14, color: "var(--ink-soft)" }}>{anniversary.dateLabel} →</div>
+          </Link>
+        )}
+
+        {latestPost && (
+          <Link href={latestPost.href ?? `/blog/${latestPost.slug}`} className="card-lift" style={{ ...cardBase, background: "rgba(255,255,255,.14)", border: "1px solid rgba(255,255,255,.28)", backdropFilter: "blur(8px)" }}>
+            <span style={{ fontSize: 11.5, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)" }}>Latest news</span>
+            <div style={{
+              fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 19, color: "#fff", margin: "8px 0 6px", lineHeight: 1.25,
+              display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
+            }}>
+              {latestPost.title}
+            </div>
+            <div style={{ fontSize: 14, color: "rgba(255,255,255,.75)" }}>Read the post →</div>
+          </Link>
+        )}
+      </div>
     </div>
   );
 }
@@ -255,10 +264,11 @@ export function Hero() {
           </span>
         </Reveal>
 
-        <Reveal delay={60} style={{ marginTop: 18 }}>
+        <Reveal delay={60} style={{ marginTop: 20 }}>
           <p style={{
-            fontSize: "clamp(13px,1.3vw,15px)", fontWeight: 700, letterSpacing: "2px",
+            fontSize: "clamp(16px,1.8vw,20px)", fontWeight: 800, letterSpacing: "1px",
             textTransform: "uppercase", color: "var(--gold)", margin: 0,
+            textShadow: "0 2px 16px rgba(0,0,0,.4)",
           }}>
             Welcome to the Christ Apostolic Church North America website
           </p>
