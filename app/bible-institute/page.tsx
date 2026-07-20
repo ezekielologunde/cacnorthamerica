@@ -1,6 +1,7 @@
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
+import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { getLeaders } from "@/lib/leaders";
 import { GraduationCap } from "lucide-react";
 
@@ -48,6 +49,17 @@ export default async function BibleInstitutePage() {
             <p style={{ fontSize: "clamp(16px,1.8vw,19px)", color: "rgba(245,246,250,.72)", lineHeight: 1.65, maxWidth: 620, margin: "0 auto" }}>
               The CACNA Bible Institute is the region's ministerial training arm — equipping workers and ministers across CACNA's member churches for the work of the Gospel.
             </p>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Graduation photo */}
+      <section style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px)" }}>
+        <div style={{ maxWidth: 1080, margin: "0 auto", marginTop: -48, position: "relative", zIndex: 3 }}>
+          <Reveal>
+            <div style={{ position: "relative", width: "100%", height: "clamp(240px,32vw,420px)", borderRadius: 24, overflow: "hidden", boxShadow: "0 30px 60px rgba(18,20,30,.25)" }}>
+              <ImageLightbox src="/images/bible-institute-graduation.jpg" alt="CACNA Bible Institute graduates processing at a past commencement" objectPosition="center 35%" />
+            </div>
           </Reveal>
         </div>
       </section>

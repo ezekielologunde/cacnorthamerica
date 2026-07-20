@@ -2,6 +2,7 @@ import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { IconBadge } from "@/components/ui/IconBadge";
+import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { Phone, Mail, Landmark, Send } from "lucide-react";
 import { GIVING_CAMPAIGNS, type GivingCampaign } from "@/lib/giving";
 
@@ -89,6 +90,17 @@ export default function GivingPage() {
               </p>
               <figcaption style={{ marginTop: 12, fontSize: 12, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)" }}>2 Corinthians 9:9</figcaption>
             </figure>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Photo */}
+      <section style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(48px,6vw,72px)" }}>
+        <div style={{ maxWidth: 980, margin: "0 auto" }}>
+          <Reveal>
+            <div style={{ position: "relative", width: "100%", height: "clamp(220px,28vw,360px)", borderRadius: 24, overflow: "hidden", boxShadow: "0 24px 50px rgba(18,20,30,.15)" }}>
+              <ImageLightbox src="/images/giving-offering.jpg" alt="Ushers receiving the offering during a CACNA gathering" objectPosition="center 40%" />
+            </div>
           </Reveal>
         </div>
       </section>
