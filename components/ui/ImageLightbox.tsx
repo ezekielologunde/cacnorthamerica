@@ -2,10 +2,13 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 
-/** Makes a blog post's hero/cover photo clickable to view full-size —
- *  previously it only ever rendered as a fixed-height, cropped
- *  `object-fit: cover` band with no way to see the whole picture. */
-export function ImageLightbox({ src, alt }: { src: string; alt: string }) {
+/** Makes any photo clickable to view full-size in an overlay — previously
+ *  used only for blog cover photos, now shared across the site (leadership
+ *  portraits, etc.) since the fixed-height cropped thumbnail never let
+ *  visitors see the whole picture. */
+export function ImageLightbox({
+  src, alt, objectFit = "cover", objectPosition = "center",
+}: { src: string; alt: string; objectFit?: "cover" | "contain"; objectPosition?: string }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -33,7 +36,7 @@ export function ImageLightbox({ src, alt }: { src: string; alt: string }) {
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={src} alt={alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+        <img src={src} alt={alt} style={{ width: "100%", height: "100%", objectFit, objectPosition, display: "block" }} />
       </button>
 
       {open && (

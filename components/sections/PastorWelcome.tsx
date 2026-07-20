@@ -1,8 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Quote } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import { Parallax } from "@/components/ui/Parallax";
+import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { getLeaders } from "@/lib/leaders";
 
 function initials(name: string) {
@@ -27,7 +27,7 @@ export async function PastorWelcome() {
             {photoUrl ? (
               <Parallax distance={36} style={{ position: "absolute", left: 0, right: 0, top: "-9%", height: "118%" }}>
                 <div style={{ position: "relative", width: "100%", height: "100%" }}>
-                  <Image src={photoUrl} alt={name} fill style={{ objectFit: "cover", objectPosition: "center 28%" }} sizes="(max-width:900px) 100vw, 45vw" unoptimized={photoUrl.startsWith("http")} />
+                  <ImageLightbox src={photoUrl} alt={name} objectPosition="center 28%" />
                 </div>
               </Parallax>
             ) : (

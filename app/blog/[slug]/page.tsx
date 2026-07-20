@@ -11,7 +11,7 @@ import { POSTS, getPost, badgeTextColor } from "@/lib/blog";
 import type { BlogPost } from "@/lib/blog";
 import { SITE_URL } from "@/lib/site";
 import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
-import { ImageLightbox } from "@/components/blog/ImageLightbox";
+import { ImageLightbox } from "@/components/ui/ImageLightbox";
 
 function makePublicClient() {
   return createClient(

@@ -1,6 +1,7 @@
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
+import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import Image from "next/image";
 import Link from "next/link";
 import { getLeaders, getLeaderRoles, slugifyLeaderName, type Leader } from "@/lib/leaders";
@@ -84,25 +85,18 @@ export default async function LeadershipPage() {
           `}</style>
           <div style={{ maxWidth: 1080, margin: "0 auto" }}>
             <Reveal>
-              <Link href={`/leadership/${slugifyLeaderName(featured.full_name)}`} className="ldr-card" style={{ display: "grid", background: "var(--ink)", borderRadius: 28, overflow: "hidden", boxShadow: "0 30px 60px rgba(18,20,30,.22)", textDecoration: "none" }}>
-                <div style={{ padding: "clamp(36px,5vw,60px)", display: "flex", flexDirection: "column", justifyContent: "center", color: "var(--cream)" }}>
+              <div className="ldr-card" style={{ display: "grid", background: "var(--ink)", borderRadius: 28, overflow: "hidden", boxShadow: "0 30px 60px rgba(18,20,30,.22)" }}>
+                <Link href={`/leadership/${slugifyLeaderName(featured.full_name)}`} style={{ padding: "clamp(36px,5vw,60px)", display: "flex", flexDirection: "column", justifyContent: "center", color: "var(--cream)", textDecoration: "none" }}>
                   <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 14 }}>{featured.title}</div>
                   <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3vw,42px)", letterSpacing: "-1px", margin: "0 0 22px", lineHeight: 1.04 }}>{featured.full_name}</h2>
                   <p style={{ fontSize: 16.5, lineHeight: 1.75, color: "rgba(245,246,250,.78)", margin: 0 }}>{bios.get(featured.id)}</p>
-                </div>
+                </Link>
                 {featured.photo_url && (
                   <div className="ldr-photo" style={{ position: "relative" }}>
-                    <Image
-                      src={featured.photo_url}
-                      alt={featured.full_name}
-                      fill
-                      style={{ objectFit: "contain", objectPosition: "center bottom" }}
-                      sizes="(max-width: 680px) 100vw, 400px"
-                      unoptimized
-                    />
+                    <ImageLightbox src={featured.photo_url} alt={featured.full_name} objectFit="contain" objectPosition="center bottom" />
                   </div>
                 )}
-              </Link>
+              </div>
             </Reveal>
           </div>
         </section>

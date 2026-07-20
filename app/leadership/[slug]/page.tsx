@@ -1,7 +1,7 @@
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
-import Image from "next/image";
+import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Mail, Phone, MapPin } from "lucide-react";
@@ -80,7 +80,7 @@ export default async function LeaderProfilePage({ params }: { params: Promise<{ 
           {leader.photo_url ? (
             <Reveal>
               <div style={{ position: "relative", width: 180, height: 180, borderRadius: 24, overflow: "hidden", boxShadow: "0 20px 44px rgba(18,20,30,.18)", flexShrink: 0 }}>
-                <Image src={leader.photo_url} alt={leader.full_name} fill style={{ objectFit: "cover" }} sizes="180px" unoptimized />
+                <ImageLightbox src={leader.photo_url} alt={leader.full_name} />
               </div>
             </Reveal>
           ) : null}
