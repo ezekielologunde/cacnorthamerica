@@ -116,7 +116,7 @@ export default function MinistersRetreat2027Page() {
             {pillars.map((p, i) => (
               <Reveal key={p.label} delay={i * 70}>
                 <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, padding: "26px 24px", height: "100%" }}>
-                  <div style={{ display: "grid", placeItems: "center", width: 50, height: 50, borderRadius: 14, background: "linear-gradient(135deg,#2D42C9,#12141E)", marginBottom: 16 }}>
+                  <div style={{ display: "grid", placeItems: "center", width: 50, height: 50, borderRadius: 14, background: "linear-gradient(135deg,var(--blue),var(--ink))", marginBottom: 16 }}>
                     <p.icon size={22} color="#fff" strokeWidth={1.9} aria-hidden />
                   </div>
                   <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "var(--ink)", marginBottom: 6 }}>{p.label}</div>

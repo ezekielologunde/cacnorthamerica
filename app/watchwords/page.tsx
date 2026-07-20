@@ -39,7 +39,7 @@ export default function WatchwordsPage() {
       </section>
 
       {/* Current year, spotlighted */}
-      <section style={{ background: "linear-gradient(135deg,#7A1128,#C81E3A)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)", position: "relative", overflow: "hidden" }}>
+      <section style={{ background: "linear-gradient(135deg,var(--red-deep),var(--red))", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)", position: "relative", overflow: "hidden" }}>
         <div aria-hidden style={{ position: "absolute", top: -120, right: -80, width: 520, height: 420, background: "radial-gradient(circle,rgba(253,200,65,.28),transparent 65%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 860, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>

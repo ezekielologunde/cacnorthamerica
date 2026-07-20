@@ -4,7 +4,7 @@ import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
-import { POSTS, type BlogPost, badgeTextColor } from "@/lib/blog";
+import { POSTS, type BlogPost, badgeTextColor, CATEGORY_COLOR, CATEGORY_ACCENT } from "@/lib/blog";
 import { specialEvents } from "@/lib/events";
 import { getApprovedCacWorldNews, type CacWorldNewsItem } from "@/lib/cacWorldNews";
 import { GIVING_CAMPAIGNS, type GivingCampaign } from "@/lib/giving";
@@ -32,8 +32,8 @@ function dbPostToBlogPost(p: DbBlogRow): BlogPost {
     date: date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }),
     dateIso: p.published_at ?? p.created_at,
     category: "Ministry Update",
-    categoryColor: "#C81E3A",
-    accent: "#C81E3A",
+    categoryColor: CATEGORY_COLOR["Ministry Update"],
+    accent: CATEGORY_ACCENT["Ministry Update"],
     readTime: `${Math.max(1, Math.round(words / 200))} min read`,
     featured: true,
     image: p.image_url ? { url: p.image_url, alt: p.image_alt ?? p.title } : undefined,
@@ -251,7 +251,7 @@ function SectionHeading({ icon: Icon, eyebrow, title, description, meta, gradien
 function GivingAdWidget({ campaign }: { campaign: GivingCampaign }) {
   return (
     <aside style={{
-      background: "linear-gradient(140deg,#12141E,#2D42C9)",
+      background: "linear-gradient(140deg,var(--ink),var(--blue))",
       borderRadius: 20, padding: "24px 26px", position: "relative", overflow: "hidden",
       marginBottom: 24,
     }}>
@@ -318,7 +318,7 @@ function UpcomingEventWidget() {
 function CacWorldTeaserWidget({ item }: { item: CacWorldNewsItem }) {
   return (
     <aside style={{
-      background: "linear-gradient(140deg,#12141E,#2D42C9)",
+      background: "linear-gradient(140deg,var(--ink),var(--blue))",
       borderRadius: 20, padding: "22px 24px", position: "relative", overflow: "hidden",
       marginBottom: 24,
     }}>
@@ -468,7 +468,7 @@ export default async function BlogPage() {
               eyebrow="Featured coverage"
               title="2026 Convention Coverage"
               description="Welcome addresses, messages, and the closing word from CACNA's flagship gathering."
-              gradient="linear-gradient(135deg,#7A1128,#FDC841)"
+              gradient="linear-gradient(135deg,var(--red-deep),var(--gold))"
             />
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,360px),1fr))", gap: 22 }}>
               {conventionCoverage.map((p, i) => (
@@ -491,7 +491,7 @@ export default async function BlogPage() {
               title="From the Archives"
               description="Earlier reflections and updates from across the CACNA family."
               meta={`${archiveArticles.length} entries`}
-              gradient="linear-gradient(135deg,#3A3D4A,#12141E)"
+              gradient="linear-gradient(135deg,#3A3D4A,var(--ink))"
             />
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,360px),1fr))", gap: 22 }}>
               {archiveArticles.map((p, i) => (
@@ -514,7 +514,7 @@ export default async function BlogPage() {
               title="From CAC World"
               description="News from Christ Apostolic Church Worldwide, headquartered in Nigeria."
               meta="via cacworldnews.com"
-              gradient="linear-gradient(135deg,#2D42C9,#12141E)"
+              gradient="linear-gradient(135deg,var(--blue),var(--ink))"
             />
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,360px),1fr))", gap: 22 }}>
               {cacWorldNews.map((item, i) => (
@@ -537,7 +537,7 @@ export default async function BlogPage() {
               title="Devotionals"
               description="Short reflections to ground your day in the Word."
               meta={`${devotionalArticles.length} entries`}
-              gradient="linear-gradient(135deg,#C81E3A,#7A1128)"
+              gradient="linear-gradient(135deg,var(--red),var(--red-deep))"
             />
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,360px),1fr))", gap: 22 }}>
               {devotionalArticles.map((p, i) => (
@@ -555,7 +555,7 @@ export default async function BlogPage() {
         <Reveal>
           <div style={{
             maxWidth: 900, margin: "0 auto",
-            background: "linear-gradient(135deg,#7A1128,#C81E3A)",
+            background: "linear-gradient(135deg,var(--red-deep),var(--red))",
             borderRadius: 28, padding: "clamp(28px,4vw,44px)",
             display: "flex", flexWrap: "wrap", alignItems: "center",
             justifyContent: "space-between", gap: 24,

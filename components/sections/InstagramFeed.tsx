@@ -55,7 +55,7 @@ export function InstagramFeed() {
             )}
           </div>
           <a href={IG_URL} target="_blank" rel="noopener noreferrer" className="btn-sheen press"
-            style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "linear-gradient(120deg,#2D42C9,#C81E3A,#7A1128)", color: "#fff", fontWeight: 700, fontSize: 15, padding: "13px 24px", borderRadius: 999, textDecoration: "none", boxShadow: "0 12px 28px rgba(200,30,58,.32)" }}>
+            style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "linear-gradient(120deg,var(--blue),var(--red),var(--red-deep))", color: "#fff", fontWeight: 700, fontSize: 15, padding: "13px 24px", borderRadius: 999, textDecoration: "none", boxShadow: "0 12px 28px rgba(200,30,58,.32)" }}>
             <InstagramIcon size={18} aria-hidden /> {HANDLE}
           </a>
         </div>

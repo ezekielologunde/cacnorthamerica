@@ -10,8 +10,8 @@ const accountIcon = (label: string) => (label.toLowerCase().includes("zelle") ? 
 const [centenary, villagePayoff, hopeForAll] = GIVING_CAMPAIGNS;
 
 const SCHEMES = {
-  centenary: { gradient: "linear-gradient(135deg,#7A1128,#FDC841)", glow: "rgba(253,200,65,.35)", badge: "rgba(255,255,255,.16)" },
-  village: { gradient: "linear-gradient(135deg,#1B2A6B,#2D42C9)", glow: "rgba(45,66,201,.4)", badge: "rgba(255,255,255,.14)" },
+  centenary: { gradient: "linear-gradient(135deg,var(--red-deep),var(--gold))", glow: "rgba(253,200,65,.35)", badge: "rgba(255,255,255,.16)" },
+  village: { gradient: "linear-gradient(135deg,#1B2A6B,var(--blue))", glow: "rgba(45,66,201,.4)", badge: "rgba(255,255,255,.14)" },
   hope: { gradient: "linear-gradient(140deg,#1C3A2A,#2E6040)", glow: "rgba(46,96,64,.45)", badge: "rgba(255,255,255,.14)" },
 } as const;
 
@@ -67,7 +67,7 @@ export default function GivingPage() {
 
       {/* Hero */}
       <section style={{ background: "var(--cream)", padding: "140px clamp(20px,5vw,64px) 56px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -80, left: -80, width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle,#2D42C9,#C81E3A 70%)", opacity: 0.1, filter: "blur(6px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: -80, left: -80, width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle,var(--blue),var(--red) 70%)", opacity: 0.1, filter: "blur(6px)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 720, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Give</span>

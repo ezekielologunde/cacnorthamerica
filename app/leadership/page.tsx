@@ -34,10 +34,10 @@ function initials(name: string) {
 }
 
 const gradients = [
-  "linear-gradient(135deg,#7A1128,#C81E3A)",
-  "linear-gradient(135deg,#C81E3A,#2D42C9)",
-  "linear-gradient(135deg,#2D42C9,#FDC841)",
-  "linear-gradient(135deg,#12141E,#7A1128)",
+  "linear-gradient(135deg,var(--red-deep),var(--red))",
+  "linear-gradient(135deg,var(--red),var(--blue))",
+  "linear-gradient(135deg,var(--blue),var(--gold))",
+  "linear-gradient(135deg,var(--ink),var(--red-deep))",
 ];
 
 export default async function LeadershipPage() {
@@ -57,7 +57,7 @@ export default async function LeadershipPage() {
 
       {/* Hero */}
       <section style={{ background: "var(--cream)", padding: "140px clamp(20px,5vw,64px) 72px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -60, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,#2D42C9,#C81E3A 70%)", opacity: .1, filter: "blur(6px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: -60, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,var(--blue),var(--red) 70%)", opacity: .1, filter: "blur(6px)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 820, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Leadership</span>
@@ -242,7 +242,7 @@ export default async function LeadershipPage() {
         <Reveal>
           <div style={{
             maxWidth: 1080, margin: "0 auto",
-            background: "linear-gradient(135deg,#12141E,#2D42C9)",
+            background: "linear-gradient(135deg,var(--ink),var(--blue))",
             borderRadius: 28, padding: "clamp(32px,4.5vw,52px)",
             display: "flex", flexWrap: "wrap", alignItems: "center",
             justifyContent: "space-between", gap: 24,

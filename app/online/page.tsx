@@ -66,7 +66,7 @@ export default async function OnlinePage() {
       {/* Watch on YouTube — the primary action */}
       <section style={{ padding: "0 clamp(20px,5vw,64px) 56px" }}>
         <Reveal>
-          <a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer" className="btn-sheen card-lift" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "clamp(20px,3vw,40px)", maxWidth: 900, margin: "0 auto", background: "linear-gradient(120deg,#C81E3A,#7A1128)", borderRadius: 28, padding: "clamp(28px,4vw,44px)", textDecoration: "none", boxShadow: "0 30px 70px rgba(200,30,58,.35)" }}>
+          <a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer" className="btn-sheen card-lift" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "clamp(20px,3vw,40px)", maxWidth: 900, margin: "0 auto", background: "linear-gradient(120deg,var(--red),var(--red-deep))", borderRadius: 28, padding: "clamp(28px,4vw,44px)", textDecoration: "none", boxShadow: "0 30px 70px rgba(200,30,58,.35)" }}>
             <span style={{ flexShrink: 0, width: 72, height: 72, borderRadius: 20, background: "rgba(255,255,255,.18)", display: "grid", placeItems: "center", border: "1px solid rgba(255,255,255,.3)" }}>
               <Video size={36} color="#fff" strokeWidth={1.8} aria-hidden />
             </span>
@@ -77,7 +77,7 @@ export default async function OnlinePage() {
               <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.4vw,40px)", letterSpacing: "-1px", color: "#fff", margin: "0 0 6px" }}>CAC North America (Latunde Region)</h2>
               <p style={{ fontSize: 15, color: "rgba(255,255,255,.88)", margin: 0 }}>The Annual Convention and message replays — Zoom is also available during convention week.</p>
             </div>
-            <span style={{ flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 8, background: "#fff", color: "#7A1128", fontWeight: 800, fontSize: 16, padding: "15px 28px", borderRadius: 999 }}>
+            <span style={{ flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 8, background: "#fff", color: "var(--red-deep)", fontWeight: 800, fontSize: 16, padding: "15px 28px", borderRadius: 999 }}>
               Open YouTube →
             </span>
           </a>

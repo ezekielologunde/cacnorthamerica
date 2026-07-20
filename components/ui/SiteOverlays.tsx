@@ -115,19 +115,19 @@ export function SiteOverlays({ bannerAnn }: { bannerAnn?: BannerAnn | null }) {
           onBlur={() => setBarPaused(false)}
           style={{
             position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000,
-            background: '#12141E', height: 50,
+            background: 'var(--ink)', height: 50,
             display: 'flex', alignItems: 'center',
             padding: '0 clamp(16px,4vw,48px)', gap: 12,
           }}
         >
-          <div aria-hidden style={{ width: 8, height: 8, borderRadius: '50%', background: '#FDC841', flexShrink: 0 }} />
+          <div aria-hidden style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--gold)', flexShrink: 0 }} />
           <div key={currentBarEvent.id} style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1, minWidth: 0, animation: 'barFade .5s ease' }}>
             <span style={{ color: 'rgba(245,246,250,.9)', fontSize: 14, fontWeight: 700, flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {currentBarEvent.navLabel ?? currentBarEvent.title} · {currentBarEvent.dateLabel}
             </span>
             <Link
               href={currentBarEvent.href!}
-              style={{ color: '#FDC841', fontSize: 14, fontWeight: 800, textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0 }}
+              style={{ color: 'var(--gold)', fontSize: 14, fontWeight: 800, textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0 }}
             >
               Learn more →
             </Link>

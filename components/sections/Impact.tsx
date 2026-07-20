@@ -9,7 +9,7 @@ export function Impact() {
   return (
     <section style={{
       position: "relative", overflow: "hidden",
-      background: "linear-gradient(135deg,#C81E3A 0%,#7A1128 50%,#6B1010 100%)",
+      background: "linear-gradient(135deg,var(--red) 0%,var(--red-deep) 50%,#6B1010 100%)",
       padding: "80px clamp(20px,5vw,64px)",
     }}>
       {/* Decorative drifting glow */}

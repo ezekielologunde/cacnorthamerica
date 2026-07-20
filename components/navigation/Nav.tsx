@@ -242,7 +242,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                   rel="noopener noreferrer"
                   onClick={() => haptic('medium')}
                   className="btn-sheen press"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: 'linear-gradient(135deg,#7A1128,#FDC841)', color: '#fff', fontWeight: 800, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '0 8px 22px rgba(122,17,40,.45)' }}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: 'linear-gradient(135deg,var(--red-deep),var(--gold))', color: '#fff', fontWeight: 800, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '0 8px 22px rgba(122,17,40,.45)' }}
                 >
                   <CalendarDays size={14} strokeWidth={2.5} aria-hidden />
                   {conventionCtaLabel} →
@@ -252,7 +252,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                   href={conventionCtaHref}
                   onClick={() => haptic('medium')}
                   className="btn-sheen press"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: 'linear-gradient(135deg,#7A1128,#FDC841)', color: '#fff', fontWeight: 800, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '0 8px 22px rgba(122,17,40,.45)' }}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: 'linear-gradient(135deg,var(--red-deep),var(--gold))', color: '#fff', fontWeight: 800, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '0 8px 22px rgba(122,17,40,.45)' }}
                 >
                   <CalendarDays size={14} strokeWidth={2.5} aria-hidden />
                   {conventionCtaLabel} →
@@ -366,7 +366,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                   rel="noopener noreferrer"
                   onClick={() => { haptic('medium'); setOpen(false); }}
                   className="press"
-                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'linear-gradient(135deg,#7A1128,#FDC841)', color: '#fff', fontWeight: 800, fontSize: 17, padding: '18px 24px', borderRadius: 999, textDecoration: 'none', boxShadow: '0 14px 30px rgba(122,17,40,.45)' }}>
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'linear-gradient(135deg,var(--red-deep),var(--gold))', color: '#fff', fontWeight: 800, fontSize: 17, padding: '18px 24px', borderRadius: 999, textDecoration: 'none', boxShadow: '0 14px 30px rgba(122,17,40,.45)' }}>
                   <CalendarDays size={17} strokeWidth={2.5} aria-hidden />
                   {conventionCtaLabel} →
                 </a>
@@ -375,7 +375,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                   href={conventionCtaHref}
                   onClick={() => { haptic('medium'); setOpen(false); }}
                   className="press"
-                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'linear-gradient(135deg,#7A1128,#FDC841)', color: '#fff', fontWeight: 800, fontSize: 17, padding: '18px 24px', borderRadius: 999, textDecoration: 'none', boxShadow: '0 14px 30px rgba(122,17,40,.45)' }}>
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'linear-gradient(135deg,var(--red-deep),var(--gold))', color: '#fff', fontWeight: 800, fontSize: 17, padding: '18px 24px', borderRadius: 999, textDecoration: 'none', boxShadow: '0 14px 30px rgba(122,17,40,.45)' }}>
                   <CalendarDays size={17} strokeWidth={2.5} aria-hidden />
                   {conventionCtaLabel} →
                 </Link>

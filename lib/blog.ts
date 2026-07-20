@@ -30,7 +30,7 @@ export interface BlogPost {
 // were removed rather than presented as CACNA's own voice. Only the two
 // posts genuinely written for CACNA remain; new posts should be added here
 // or via the admin console (/admin/blog) going forward.
-export const POSTS: BlogPost[] = [
+const RAW_POSTS: Omit<BlogPost, "categoryColor" | "accent">[] = [
   {
     slug: "cacna-2026-what-to-expect",
     title: "CACNA 2026 — what to expect.",
@@ -39,8 +39,6 @@ export const POSTS: BlogPost[] = [
     date: "June 10, 2026",
     dateIso: "2026-06-10",
     category: "Ministry Update",
-    categoryColor: "#FDC841",
-    accent: "linear-gradient(135deg,#FDC841,#2D42C9)",
     readTime: "4 min read",
     featured: true,
     image: { url: "/images/cac-youth-convention.jpg", alt: "CACNA youth at a past Annual Convention" },
@@ -61,8 +59,6 @@ export const POSTS: BlogPost[] = [
     date: "May 25, 2026",
     dateIso: "2026-05-25",
     category: "Reflection",
-    categoryColor: "#7A1128",
-    accent: "linear-gradient(135deg,#7A1128,#C81E3A)",
     readTime: "4 min read",
     featured: true,
     image: { url: "/images/cac-congregation-worship.jpg", alt: "CACNA congregation in worship, from a past gathering" },
@@ -82,8 +78,6 @@ export const POSTS: BlogPost[] = [
     date: "July 15, 2026",
     dateIso: "2026-07-15",
     category: "Ministry Update",
-    categoryColor: "#2D42C9",
-    accent: "linear-gradient(135deg,#2D42C9,#12141E)",
     readTime: "6 min read",
     featured: true,
     image: { url: "/images/pastor-oladele-portrait.jpg", alt: "Pastor Samuel Olusegun Oladele, President of Christ Apostolic Church, Nigeria and Overseas" },
@@ -106,8 +100,6 @@ export const POSTS: BlogPost[] = [
     date: "July 13, 2026",
     dateIso: "2026-07-13",
     category: "Ministry Update",
-    categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "5 min read",
     featured: true,
     image: { url: "/images/pastor-agbeja-portrait.jpg", alt: "Pastor Dr. T.A.O. Agbeja, Regional Superintendent of CACNA (Latunde Region)" },
@@ -128,8 +120,6 @@ export const POSTS: BlogPost[] = [
     date: "July 14, 2026",
     dateIso: "2026-07-14",
     category: "Ministry Update",
-    categoryColor: "#FDC841",
-    accent: "linear-gradient(135deg,#FDC841,#7A1128)",
     readTime: "5 min read",
     featured: true,
     image: { url: "/images/pastor-adenodi-portrait.jpg", alt: "Pastor David Olusegun Adenodi, Ph.D., Chairman of the CACNA Convention & Conference Planning Committee" },
@@ -151,8 +141,6 @@ export const POSTS: BlogPost[] = [
     date: "July 13, 2026",
     dateIso: "2026-07-13",
     category: "Reflection",
-    categoryColor: "#2D42C9",
-    accent: "linear-gradient(135deg,#2D42C9,#7A1128)",
     readTime: "6 min read",
     featured: true,
     image: { url: "/images/pastor-agbeja-portrait.jpg", alt: "Pastor Dr. T.A.O. Agbeja, Regional Superintendent of CACNA (Latunde Region)" },
@@ -180,8 +168,6 @@ export const POSTS: BlogPost[] = [
     date: "July 15, 2026",
     dateIso: "2026-07-15",
     category: "Ministry Update",
-    categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#12141E)",
     readTime: "6 min read",
     featured: true,
     image: { url: "/images/cacna-2026-flyer.jpg", alt: "Official CACNA 2026 Annual Convention flyer" },
@@ -203,8 +189,6 @@ export const POSTS: BlogPost[] = [
     date: "July 14, 2026",
     dateIso: "2026-07-14",
     category: "Ministry Update",
-    categoryColor: "#2D42C9",
-    accent: "linear-gradient(135deg,#2D42C9,#FDC841)",
     readTime: "6 min read",
     featured: true,
     image: { url: "/images/cacna-2026-flyer.jpg", alt: "Official CACNA 2026 Annual Convention flyer" },
@@ -225,8 +209,6 @@ export const POSTS: BlogPost[] = [
     date: "July 18, 2026",
     dateIso: "2026-07-18",
     category: "Ministry Update",
-    categoryColor: "#2D42C9",
-    accent: "linear-gradient(135deg,#2D42C9,#FDC841)",
     readTime: "3 min read",
     featured: true,
     image: { url: "/images/pastor-adenodi-portrait.jpg", alt: "Pastor David Olusegun Adenodi, Ph.D., Chairman of the CACNA Convention & Conference Planning Committee" },
@@ -245,8 +227,6 @@ export const POSTS: BlogPost[] = [
     date: "July 2025",
     dateIso: "2025-07-01",
     category: "Ministry Update",
-    categoryColor: "#FDC841",
-    accent: "linear-gradient(135deg,#FDC841,#2D42C9)",
     readTime: "4 min read",
     image: { url: "/images/giving-offering.jpg", alt: "CACNA members bringing an offering during a service" },
     body: [
@@ -266,8 +246,6 @@ export const POSTS: BlogPost[] = [
     date: "July 2025",
     dateIso: "2025-07-01",
     category: "Ministry Update",
-    categoryColor: "#2D42C9",
-    accent: "linear-gradient(135deg,#2D42C9,#12141E)",
     readTime: "5 min read",
     image: { url: "/images/cac-clergy-ceremony.jpg", alt: "CACNA clergy at a past ministers' gathering" },
     body: [
@@ -287,8 +265,6 @@ export const POSTS: BlogPost[] = [
     date: "July 2025",
     dateIso: "2025-07-01",
     category: "Reflection",
-    categoryColor: "#7A1128",
-    accent: "linear-gradient(135deg,#7A1128,#C81E3A)",
     readTime: "5 min read",
     image: { url: "/images/cac-congregation-worship.jpg", alt: "CACNA congregation in worship, from a past gathering" },
     body: [
@@ -307,8 +283,6 @@ export const POSTS: BlogPost[] = [
     date: "July 2025",
     dateIso: "2025-07-01",
     category: "Ministry Update",
-    categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "5 min read",
     image: { url: "/images/pastor-amos-dada-portrait.jpg", alt: "Pastor Amos Dada, Ph.D., P.Eng, Convener of the International Gathering of Eagles Conference" },
     body: [
@@ -327,8 +301,6 @@ export const POSTS: BlogPost[] = [
     date: "July 2025",
     dateIso: "2025-07-01",
     category: "Devotional",
-    categoryColor: "#FDC841",
-    accent: "linear-gradient(135deg,#FDC841,#EB6342)",
     readTime: "4 min read",
     image: { url: "/images/cac-youth-convention.jpg", alt: "CACNA youth at a past Annual Convention" },
     body: [
@@ -346,8 +318,6 @@ export const POSTS: BlogPost[] = [
     date: "July 2025",
     dateIso: "2025-07-01",
     category: "Reflection",
-    categoryColor: "#2D42C9",
-    accent: "linear-gradient(135deg,#2D42C9,#FDC841)",
     readTime: "3 min read",
     image: { url: "/images/cac-gathering-crowd.jpg", alt: "A gathering of the CACNA family" },
     body: [
@@ -365,8 +335,6 @@ export const POSTS: BlogPost[] = [
     date: "July 2025",
     dateIso: "2025-07-01",
     category: "Reflection",
-    categoryColor: "#EB6342",
-    accent: "linear-gradient(135deg,#EB6342,#12141E)",
     readTime: "4 min read",
     image: { url: "/images/bible-institute-graduation.jpg", alt: "A CACNA Bible Institute graduation ceremony" },
     body: [
@@ -384,8 +352,6 @@ export const POSTS: BlogPost[] = [
     date: "July 2025",
     dateIso: "2025-07-01",
     category: "Reflection",
-    categoryColor: "#7A1128",
-    accent: "linear-gradient(135deg,#7A1128,#2D42C9)",
     readTime: "4 min read",
     image: { url: "/images/cac-graduation-group.jpg", alt: "CACNA family members at a past gathering" },
     body: [
@@ -403,8 +369,6 @@ export const POSTS: BlogPost[] = [
     date: "July 2025",
     dateIso: "2025-07-01",
     category: "Reflection",
-    categoryColor: "#2D42C9",
-    accent: "linear-gradient(135deg,#2D42C9,#7A1128)",
     readTime: "4 min read",
     image: { url: "/images/cacma-fellowship.jpg", alt: "A CACNA fellowship gathering, from a past event" },
     body: [
@@ -421,8 +385,6 @@ export const POSTS: BlogPost[] = [
     date: "July 2025",
     dateIso: "2025-07-02",
     category: "Reflection",
-    categoryColor: "#7A1128",
-    accent: "linear-gradient(135deg,#7A1128,#EB6342)",
     readTime: "5 min read",
     image: { url: "/images/pastor-agbeja-portrait.jpg", alt: "Pastor Dr. T.A.O. Agbeja, Regional Superintendent of CACNA (Latunde Region)" },
     body: [
@@ -436,6 +398,29 @@ export const POSTS: BlogPost[] = [
     ],
   },
 ];
+
+export const CATEGORY_COLOR: Record<PostCategory, string> = {
+  "Ministry Update": "#2D42C9",
+  "Reflection": "#7A1128",
+  "Devotional": "#FDC841",
+  "Event Spotlight": "#EB6342",
+};
+
+export const CATEGORY_ACCENT: Record<PostCategory, string> = {
+  "Ministry Update": "linear-gradient(135deg,#2D42C9,#12141E)",
+  "Reflection": "linear-gradient(135deg,#7A1128,#C81E3A)",
+  "Devotional": "linear-gradient(135deg,#FDC841,#EB6342)",
+  "Event Spotlight": "linear-gradient(135deg,#EB6342,#7A1128)",
+};
+
+/** One consistent color + gradient per category — assigned here, once, so
+ *  every post in the same category reads the same way instead of each
+ *  entry picking its own swatch. */
+export const POSTS: BlogPost[] = RAW_POSTS.map((p) => ({
+  ...p,
+  categoryColor: CATEGORY_COLOR[p.category],
+  accent: CATEGORY_ACCENT[p.category],
+}));
 
 export function getPost(slug: string): BlogPost | undefined {
   return POSTS.find((p) => p.slug === slug);

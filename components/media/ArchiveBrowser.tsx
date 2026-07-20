@@ -12,9 +12,9 @@ import {
 } from "@/lib/archive";
 
 const categoryAccent: Record<ArchiveCategory, string> = {
-  Convention: "#EB6342",
+  Convention: "var(--ember)",
   "Good Women Marathon": "var(--gold)",
-  CACMA: "#2D42C9",
+  CACMA: "var(--blue)",
   Ordination: "#7A5C2E",
   Other: "rgba(245,246,250,.5)",
 };
@@ -47,7 +47,7 @@ export function ArchiveBrowser({ entries }: { entries: ArchiveEntry[] }) {
               cursor: "pointer",
               border: active === cat ? "none" : "1px solid rgba(245,246,250,.2)",
               background: active === cat ? "var(--gold)" : "transparent",
-              color: active === cat ? "#12141E" : "rgba(245,246,250,.7)",
+              color: active === cat ? "var(--ink)" : "rgba(245,246,250,.7)",
             }}
           >
             {cat}

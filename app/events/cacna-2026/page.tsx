@@ -85,7 +85,7 @@ export default function CACNA2026Page() {
 
           <Reveal>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 80, height: 80, borderRadius: 20, background: "linear-gradient(150deg,#FDC841,#2D42C9)", boxShadow: "0 20px 44px rgba(253,200,65,.4)" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 80, height: 80, borderRadius: 20, background: "linear-gradient(150deg,var(--gold),var(--blue))", boxShadow: "0 20px 44px rgba(253,200,65,.4)" }}>
                 <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 13, color: "#fff", letterSpacing: 1 }}>JUL</span>
               </div>
               <div>

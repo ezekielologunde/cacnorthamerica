@@ -121,7 +121,7 @@ export default function ContactPage() {
 
       {/* Hero */}
       <section style={{ background: "var(--cream)", padding: "112px clamp(20px,5vw,64px) 36px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", bottom: -80, right: -60, width: 300, height: 300, borderRadius: "50%", background: "radial-gradient(circle,#2D42C9,#C81E3A 70%)", opacity: .1, filter: "blur(6px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", bottom: -80, right: -60, width: 300, height: 300, borderRadius: "50%", background: "radial-gradient(circle,var(--blue),var(--red) 70%)", opacity: .1, filter: "blur(6px)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Contact &amp; Visit</span>
@@ -238,7 +238,7 @@ export default function ContactPage() {
                           const active = groups.includes(g);
                           return (
                             <button key={g} type="button" onClick={() => toggleGroup(g)}
-                              style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "7px 14px", borderRadius: 999, fontSize: 12.5, fontWeight: 700, fontFamily: "inherit", cursor: "pointer", transition: "all .15s", border: active ? "none" : "1px solid var(--line)", background: active ? "var(--gold)" : "transparent", color: active ? "#12141E" : "var(--ink-soft)" }}>
+                              style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "7px 14px", borderRadius: 999, fontSize: 12.5, fontWeight: 700, fontFamily: "inherit", cursor: "pointer", transition: "all .15s", border: active ? "none" : "1px solid var(--line)", background: active ? "var(--gold)" : "transparent", color: active ? "var(--ink)" : "var(--ink-soft)" }}>
                               {active && <span aria-hidden style={{ fontSize: 11 }}>✓</span>}
                               {g}
                             </button>
@@ -262,7 +262,7 @@ export default function ContactPage() {
                   type="submit"
                   disabled={status === "loading"}
                   className="press"
-                  style={{ padding: "13px 32px", borderRadius: 999, background: status === "loading" ? "var(--line)" : "linear-gradient(100deg,#2D42C9,#C81E3A)", color: "#fff", fontWeight: 700, fontSize: 14.5, border: "none", cursor: status === "loading" ? "not-allowed" : "pointer", letterSpacing: ".3px" }}
+                  style={{ padding: "13px 32px", borderRadius: 999, background: status === "loading" ? "var(--line)" : "linear-gradient(100deg,var(--blue),var(--red))", color: "#fff", fontWeight: 700, fontSize: 14.5, border: "none", cursor: status === "loading" ? "not-allowed" : "pointer", letterSpacing: ".3px" }}
                 >
                   {status === "loading" ? "Sending…" : "Send Message"}
                 </button>

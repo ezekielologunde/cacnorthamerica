@@ -114,7 +114,7 @@ export default function PilgrimagePage() {
 
             <Reveal>
               <div style={{ display: "inline-flex", alignItems: "center", gap: 12, marginBottom: 28 }}>
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: 80, height: 80, borderRadius: 20, background: "linear-gradient(150deg,#FDC841,#B8860B)", boxShadow: "0 20px 44px rgba(253,200,65,.4)" }}>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: 80, height: 80, borderRadius: 20, background: "linear-gradient(150deg,var(--gold),#B8860B)", boxShadow: "0 20px 44px rgba(253,200,65,.4)" }}>
                   <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 12, color: "#fff", letterSpacing: 1 }}>NOV</span>
                   <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 24, color: "#fff", lineHeight: 1 }}>2</span>
                 </div>
@@ -219,7 +219,7 @@ export default function PilgrimagePage() {
             {highlights.map((h, i) => (
               <Reveal key={i} delay={i * 60}>
                 <div style={{ display: "flex", gap: "clamp(16px,3vw,28px)", alignItems: "flex-start", background: "rgba(245,246,250,.05)", border: "1px solid rgba(245,246,250,.1)", borderRadius: 20, padding: "clamp(18px,3vw,26px)" }}>
-                  <div style={{ flexShrink: 0, display: "grid", placeItems: "center", width: 50, height: 50, borderRadius: 14, background: "linear-gradient(135deg,#FDC841,#B8860B)", boxShadow: "0 8px 20px rgba(253,200,65,.3)" }}>
+                  <div style={{ flexShrink: 0, display: "grid", placeItems: "center", width: 50, height: 50, borderRadius: 14, background: "linear-gradient(135deg,var(--gold),#B8860B)", boxShadow: "0 8px 20px rgba(253,200,65,.3)" }}>
                     <h.icon size={22} color="#fff" strokeWidth={1.9} aria-hidden />
                   </div>
                   <div>
@@ -341,7 +341,7 @@ export default function PilgrimagePage() {
               ].map((c, i) => (
                 <Reveal key={i} delay={i * 80}>
                   <a href={`tel:${c.phone}`} style={{ display: "flex", alignItems: "center", gap: 14, background: "rgba(245,246,250,.07)", border: "1px solid rgba(245,246,250,.14)", borderRadius: 18, padding: "18px 22px", textDecoration: "none" }}>
-                    <div style={{ flexShrink: 0, display: "grid", placeItems: "center", width: 42, height: 42, borderRadius: 12, background: "linear-gradient(135deg,#FDC841,#B8860B)" }}>
+                    <div style={{ flexShrink: 0, display: "grid", placeItems: "center", width: 42, height: 42, borderRadius: 12, background: "linear-gradient(135deg,var(--gold),#B8860B)" }}>
                       <Phone size={19} color="#fff" strokeWidth={2} aria-hidden />
                     </div>
                     <div style={{ textAlign: "left" }}>

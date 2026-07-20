@@ -19,11 +19,11 @@ function initials(name: string) {
 }
 
 const gradients = [
-  "linear-gradient(135deg,#7A1128,#C81E3A)",
-  "linear-gradient(135deg,#C81E3A,#2D42C9)",
-  "linear-gradient(135deg,#2D42C9,#FDC841)",
-  "linear-gradient(135deg,#12141E,#7A1128)",
-  "linear-gradient(135deg,#7A1128,#2D42C9)",
+  "linear-gradient(135deg,var(--red-deep),var(--red))",
+  "linear-gradient(135deg,var(--red),var(--blue))",
+  "linear-gradient(135deg,var(--blue),var(--gold))",
+  "linear-gradient(135deg,var(--ink),var(--red-deep))",
+  "linear-gradient(135deg,var(--red-deep),var(--blue))",
 ];
 
 export default async function BibleInstitutePage() {

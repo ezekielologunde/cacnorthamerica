@@ -3,7 +3,12 @@
 :root {
   --red: #C81E3A;
   --red-deep: #7A1128;
+  /* NOTE: --flame is blue, not flame-colored — a legacy naming mismatch from
+   * an earlier palette. Kept as-is to avoid re-theming every existing
+   * consumer; --blue is the same value under an honest name for new code. */
   --flame: #2D42C9;
+  --blue: #2D42C9;
+  --ember: #EB6342;
   --gold: #FDC841;
   --cream: #F5F6FA;
   --cream-2: #ECEFF7;

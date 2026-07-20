@@ -58,7 +58,7 @@ export default function AboutPage() {
         background: "var(--cream)", padding: "140px clamp(20px,5vw,64px) 80px",
         position: "relative", overflow: "hidden",
       }}>
-        <div style={{ position: "absolute", top: -60, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,#2D42C9,#C81E3A 70%)", opacity: .12, filter: "blur(6px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: -60, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,var(--blue),var(--red) 70%)", opacity: .12, filter: "blur(6px)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Who We Are</span>
@@ -227,7 +227,7 @@ export default function AboutPage() {
                 <div style={{ textAlign: "center", background: "var(--cream)", border: "1px solid var(--line)", borderRadius: 18, padding: "24px 18px" }}>
                   <div aria-hidden style={{
                     width: 64, height: 64, margin: "0 auto 14px", borderRadius: "50%",
-                    background: "linear-gradient(135deg,#7A1128,#C81E3A)",
+                    background: "linear-gradient(135deg,var(--red-deep),var(--red))",
                     display: "grid", placeItems: "center",
                     color: "#fff", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22,
                   }}>{f.name.split(" ").filter((w) => /^[A-Z]/.test(w)).map((w) => w[0]).slice(-2).join("")}</div>

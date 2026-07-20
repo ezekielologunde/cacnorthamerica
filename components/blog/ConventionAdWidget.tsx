@@ -12,7 +12,7 @@ export function ConventionAdWidget() {
 
   return (
     <aside style={{
-      background: "linear-gradient(140deg,#7A1128,#FDC841)",
+      background: "linear-gradient(140deg,var(--red-deep),var(--gold))",
       borderRadius: 20, padding: "24px 26px", position: "relative", overflow: "hidden",
       marginBottom: 24,
     }}>
