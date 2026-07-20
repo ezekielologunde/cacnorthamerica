@@ -3,9 +3,17 @@ import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { MonthCalendar } from "@/components/calendar/MonthCalendar";
+import { IconBadge } from "@/components/ui/IconBadge";
 import Link from "next/link";
-import { CalendarPlus, Download } from "lucide-react";
+import { CalendarPlus, Download, Circle, ArrowDown, Users, BookOpen, GraduationCap, HeartHandshake } from "lucide-react";
 import { specialEvents, annualMoments, googleCalUrl, icsDataUri, splitByDate, type ChurchEvent } from "@/lib/events";
+
+const MOMENT_ICONS: Record<string, typeof Users> = {
+  "cacna-convention": Users,
+  "ministers-retreat": BookOpen,
+  "sunday-school-rally": GraduationCap,
+  "good-women-marathon": HeartHandshake,
+};
 
 export const revalidate = 3600;
 
@@ -95,20 +103,57 @@ export default async function CalendarPage() {
               CACNA's annual rhythm and special gatherings — save any of them to your phone in one tap.
             </p>
           </Reveal>
+          <Reveal delay={220}>
+            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 10, marginTop: 34 }}>
+              {[
+                { href: "#this-month", label: "This month" },
+                { href: "#special-gatherings", label: "Special gatherings" },
+                { href: "#annual-rhythm", label: "Annual rhythm" },
+              ].map((l) => (
+                <a key={l.href} href={l.href} className="press" style={{
+                  display: "inline-flex", alignItems: "center", gap: 6,
+                  fontSize: 13, fontWeight: 700, color: "rgba(245,246,250,.82)",
+                  border: "1.5px solid rgba(245,246,250,.22)", background: "rgba(245,246,250,.05)",
+                  borderRadius: 999, padding: "9px 18px", textDecoration: "none",
+                }}>
+                  {l.label} <ArrowDown size={13} strokeWidth={2.5} aria-hidden />
+                </a>
+              ))}
+            </div>
+          </Reveal>
         </div>
       </section>
 
       {/* Month calendar */}
-      <section style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(56px,7vw,90px)" }}>
-        <div style={{ maxWidth: 760, margin: "0 auto" }}>
+      <section id="this-month" style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(56px,7vw,90px)", scrollMarginTop: 90 }}>
+        <style>{`
+          .cal-layout { grid-template-columns: minmax(0,1fr) 260px; }
+          @media (max-width: 780px) { .cal-layout { grid-template-columns: 1fr; } }
+        `}</style>
+        <div className="cal-layout" style={{ maxWidth: 1040, margin: "0 auto", display: "grid", gap: 28, alignItems: "start" }}>
           <Reveal>
             <MonthCalendar events={allEvents} />
+          </Reveal>
+          <Reveal delay={100}>
+            <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 24, padding: "24px 22px", boxShadow: "0 10px 26px rgba(18,20,30,.05)" }}>
+              <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 14 }}>How to read it</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
+                <Circle size={9} fill="var(--red)" color="var(--red)" aria-hidden />
+                <span style={{ fontSize: 13.5, color: "var(--ink-soft)", lineHeight: 1.5 }}>A gathering is happening that day — tap it for details.</span>
+              </div>
+              <div style={{ height: 1, background: "var(--line)", marginBottom: 18 }} />
+              <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 12 }}>Jump to</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                <a href="#special-gatherings" style={{ fontSize: 14, fontWeight: 700, color: "var(--ink)", textDecoration: "none" }}>Special gatherings →</a>
+                <a href="#annual-rhythm" style={{ fontSize: 14, fontWeight: 700, color: "var(--ink)", textDecoration: "none" }}>Annual rhythm →</a>
+              </div>
+            </div>
           </Reveal>
         </div>
       </section>
 
       {/* Special events */}
-      <section style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+      <section id="special-gatherings" style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)", scrollMarginTop: 24 }}>
         <div style={{ maxWidth: 1000, margin: "0 auto" }}>
           <Reveal style={{ marginBottom: 40 }}>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Coming Up</span>
@@ -124,7 +169,7 @@ export default async function CalendarPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
             {upcomingSpecial.map((ev, i) => (
               <Reveal key={ev.id} delay={i * 90}>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "clamp(20px,3vw,36px)", alignItems: "center", background: "rgba(245,246,250,.05)", borderRadius: 24, padding: "clamp(22px,3vw,32px)", border: "1px solid rgba(245,246,250,.1)" }}>
+                <div className="card-lift" style={{ display: "flex", flexWrap: "wrap", gap: "clamp(20px,3vw,36px)", alignItems: "center", background: "rgba(245,246,250,.05)", borderRadius: 24, padding: "clamp(22px,3vw,32px)", border: "1px solid rgba(245,246,250,.1)" }}>
                   <div style={{ flexShrink: 0, width: 104, height: 104, borderRadius: 20, background: "linear-gradient(150deg,var(--flame),var(--red))", color: "#fff", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", lineHeight: 1, boxShadow: "0 14px 30px rgba(200,30,58,.3)" }}>
                     <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: "1.5px" }}>{ev.month}</span>
                     <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 44 }}>{ev.day}</span>
@@ -149,7 +194,7 @@ export default async function CalendarPage() {
       </section>
 
       {/* Annual moments */}
-      <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px) clamp(70px,9vw,110px)" }}>
+      <section id="annual-rhythm" style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px) clamp(70px,9vw,110px)", scrollMarginTop: 24 }}>
         <div style={{ maxWidth: 1000, margin: "0 auto" }}>
           <Reveal style={{ marginBottom: 36 }}>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Mark your year</span>
@@ -157,15 +202,32 @@ export default async function CalendarPage() {
             <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.7, margin: 0, maxWidth: 620 }}>The yearly gatherings that mark CACNA's calendar. Firm dates are announced on this site as they approach.</p>
           </Reveal>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 14 }}>
-            {annualMoments.map((m, i) => (
-              <Reveal key={m.id} delay={(i % 3) * 70}>
-                <div style={{ height: "100%", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, padding: "22px 22px 24px", boxShadow: "0 6px 18px rgba(18,20,30,.04)" }}>
-                  <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 8 }}>{m.when}</div>
-                  <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 19, letterSpacing: "-.3px", color: "var(--ink)", margin: "0 0 8px", lineHeight: 1.2 }}>{m.title}</h3>
-                  <p style={{ fontSize: 13.5, color: "var(--ink-soft)", lineHeight: 1.6, margin: 0 }}>{m.desc}</p>
-                </div>
-              </Reveal>
-            ))}
+            {annualMoments.map((m, i) => {
+              const Icon = MOMENT_ICONS[m.id] ?? Users;
+              const featured = m.id === "cacna-convention";
+              return (
+                <Reveal key={m.id} delay={(i % 3) * 70} style={featured ? { gridColumn: "1 / -1" } : undefined}>
+                  <div className="card-lift" style={{
+                    height: "100%", display: featured ? "flex" : "block", alignItems: featured ? "center" : undefined,
+                    gap: featured ? 24 : 0, flexWrap: "wrap",
+                    background: featured ? "linear-gradient(135deg,var(--ink),#1c2030)" : "var(--paper)",
+                    border: featured ? "none" : "1px solid var(--line)",
+                    borderRadius: 20, padding: "22px 22px 24px",
+                    boxShadow: featured ? "0 16px 36px rgba(18,20,30,.16)" : "0 6px 18px rgba(18,20,30,.04)",
+                  }}>
+                    <IconBadge icon={Icon} size={44} iconSize={20}
+                      bg={featured ? "rgba(253,200,65,.14)" : "var(--cream-2)"}
+                      color={featured ? "var(--gold)" : "var(--red)"}
+                      style={{ marginBottom: featured ? 0 : 14 }} />
+                    <div style={{ flex: featured ? "1 1 260px" : undefined, marginTop: featured ? 0 : 0 }}>
+                      <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: featured ? "var(--gold)" : "var(--red)", margin: featured ? "14px 0 6px" : "14px 0 8px" }}>{m.when}</div>
+                      <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: featured ? "clamp(22px,2.6vw,28px)" : 19, letterSpacing: "-.3px", color: featured ? "var(--cream)" : "var(--ink)", margin: "0 0 8px", lineHeight: 1.2 }}>{m.title}</h3>
+                      <p style={{ fontSize: featured ? 14.5 : 13.5, color: featured ? "rgba(245,246,250,.72)" : "var(--ink-soft)", lineHeight: 1.6, margin: 0, maxWidth: featured ? 520 : undefined }}>{m.desc}</p>
+                    </div>
+                  </div>
+                </Reveal>
+              );
+            })}
           </div>
         </div>
       </section>
