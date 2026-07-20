@@ -43,22 +43,16 @@ const navItems: NavItem[] = [
     ],
   },
   {
-    label: 'Watch & Grow',
-    href: '/online',
-    dropdown: [
-      { href: '/online', label: 'Watch Online', desc: 'Live, on-demand, and the full archive since 2022' },
-      { href: '/watchwords', label: 'Watchwords', desc: 'Every annual Watchword since 1989' },
-    ],
-  },
-  { label: 'Give', href: '/giving' },
-  {
-    label: 'Resources',
+    label: 'Media',
     href: '/blog',
     dropdown: [
+      { href: '/online', label: 'Watch Online', desc: 'Live, on-demand, and the full archive since 2022' },
       { href: '/blog', label: 'Blog & News', desc: 'Stories from the family' },
+      { href: '/watchwords', label: 'Watchwords', desc: 'Every annual Watchword since 1989' },
       { href: '/gallery', label: 'Gallery', desc: 'Moments from across CACNA' },
     ],
   },
+  { label: 'Give', href: '/giving' },
   { label: 'Contact', href: '/contact' },
 ];
 

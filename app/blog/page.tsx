@@ -314,6 +314,36 @@ function UpcomingEventWidget() {
   );
 }
 
+function CacWorldTeaserWidget({ item }: { item: CacWorldNewsItem }) {
+  return (
+    <aside style={{
+      background: "linear-gradient(140deg,#12141E,#2D42C9)",
+      borderRadius: 20, padding: "22px 24px", position: "relative", overflow: "hidden",
+      marginBottom: 24,
+    }}>
+      <div aria-hidden style={{ position: "absolute", bottom: -30, left: -30, width: 130, height: 130, background: "radial-gradient(circle,rgba(253,200,65,.25),transparent 70%)", pointerEvents: "none" }} />
+      <div style={{ position: "relative", zIndex: 2 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 12 }}>
+          <Globe2 size={12} strokeWidth={2.5} color="var(--gold)" aria-hidden />
+          <span style={{ fontSize: 9.5, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "rgba(245,246,250,.7)" }}>
+            From CAC World
+          </span>
+        </div>
+        <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 17, color: "#fff", lineHeight: 1.3, marginBottom: 14 }}>
+          {item.title}
+        </div>
+        <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" style={{
+          display: "inline-flex", alignItems: "center", gap: 7,
+          background: "rgba(255,255,255,.14)", color: "#fff", fontWeight: 700,
+          fontSize: 12.5, padding: "9px 16px", borderRadius: 999, textDecoration: "none",
+        }}>
+          Read on CAC World <ArrowRight size={12} strokeWidth={2.5} aria-hidden />
+        </a>
+      </div>
+    </aside>
+  );
+}
+
 export default async function BlogPage() {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -364,9 +394,27 @@ export default async function BlogPage() {
             }}>CACNA News</h1>
           </Reveal>
           <Reveal delay={140}>
-            <p style={{ textAlign: "center", fontSize: 13, fontWeight: 700, letterSpacing: "5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 0 }}>
+            <p style={{ textAlign: "center", fontSize: 13, fontWeight: 700, letterSpacing: "5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 28 }}>
               Christ Apostolic Church North America
             </p>
+          </Reveal>
+          <Reveal delay={200}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center" }}>
+              {[
+                { href: "#convention-coverage", label: "Convention Coverage" },
+                { href: "#archives", label: "Archives" },
+                { href: "#cac-world", label: "CAC World" },
+                { href: "#devotionals", label: "Devotionals" },
+              ].map((l) => (
+                <a key={l.href} href={l.href} style={{
+                  fontSize: 12.5, fontWeight: 700, color: "rgba(245,246,250,.75)",
+                  background: "rgba(245,246,250,.08)", border: "1px solid rgba(245,246,250,.16)",
+                  padding: "8px 16px", borderRadius: 999, textDecoration: "none",
+                }}>
+                  {l.label}
+                </a>
+              ))}
+            </div>
           </Reveal>
         </div>
       </section>
@@ -383,10 +431,15 @@ export default async function BlogPage() {
             <Reveal delay={80}>
               <UpcomingEventWidget />
             </Reveal>
-            <Reveal delay={160}>
+            <Reveal delay={140}>
               <ConventionAdWidget />
             </Reveal>
-            <Reveal delay={200}>
+            {cacWorldNews[0] && (
+              <Reveal delay={200}>
+                <CacWorldTeaserWidget item={cacWorldNews[0]} />
+              </Reveal>
+            )}
+            <Reveal delay={260}>
               <GivingAdWidget campaign={givingCampaign} />
             </Reveal>
           </div>
@@ -395,7 +448,7 @@ export default async function BlogPage() {
 
       {/* Convention Coverage — current-year featured posts */}
       {conventionCoverage.length > 0 && (
-        <section style={{ background: "var(--cream-2)", padding: "clamp(40px,5vw,72px) clamp(20px,5vw,64px) clamp(20px,3vw,32px)" }}>
+        <section id="convention-coverage" style={{ background: "var(--cream-2)", padding: "clamp(40px,5vw,72px) clamp(20px,5vw,64px) clamp(20px,3vw,32px)", scrollMarginTop: 90 }}>
           <div style={{ maxWidth: 1140, margin: "0 auto" }}>
             <SectionHeading
               icon={Sparkles}
@@ -417,7 +470,7 @@ export default async function BlogPage() {
 
       {/* From the Archives — earlier newsletter material, honestly dated */}
       {archiveArticles.length > 0 && (
-        <section style={{ background: "var(--cream-2)", padding: "clamp(20px,3vw,32px) clamp(20px,5vw,64px) clamp(20px,3vw,32px)" }}>
+        <section id="archives" style={{ background: "var(--cream-2)", padding: "clamp(20px,3vw,32px) clamp(20px,5vw,64px) clamp(20px,3vw,32px)", scrollMarginTop: 90 }}>
           <div style={{ maxWidth: 1140, margin: "0 auto" }}>
             <SectionHeading
               icon={Archive}
@@ -440,7 +493,7 @@ export default async function BlogPage() {
 
       {/* From CAC World News */}
       {cacWorldNews.length > 0 && (
-        <section style={{ background: "var(--cream)", padding: "clamp(40px,5vw,72px) clamp(20px,5vw,64px) clamp(20px,3vw,32px)" }}>
+        <section id="cac-world" style={{ background: "var(--cream)", padding: "clamp(40px,5vw,72px) clamp(20px,5vw,64px) clamp(20px,3vw,32px)", scrollMarginTop: 90 }}>
           <div style={{ maxWidth: 1140, margin: "0 auto" }}>
             <SectionHeading
               icon={Globe2}
@@ -463,7 +516,7 @@ export default async function BlogPage() {
 
       {/* Devotionals */}
       {devotionalArticles.length > 0 && (
-        <section style={{ background: "var(--cream-2)", padding: "clamp(24px,4vw,40px) clamp(20px,5vw,64px) clamp(60px,8vw,100px)" }}>
+        <section id="devotionals" style={{ background: "var(--cream-2)", padding: "clamp(24px,4vw,40px) clamp(20px,5vw,64px) clamp(60px,8vw,100px)", scrollMarginTop: 90 }}>
           <div style={{ maxWidth: 1140, margin: "0 auto" }}>
             <SectionHeading
               icon={BookHeart}

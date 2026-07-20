@@ -38,7 +38,7 @@ const faqJsonLd = {
     {
       "@type": "Question",
       name: "Can I watch CACNA services and the convention online?",
-      acceptedAnswer: { "@type": "Answer", text: "Yes. Services and the Annual Convention are streamed on YouTube, and a Zoom option is available for the convention. Visit the Watch & Grow page for links." },
+      acceptedAnswer: { "@type": "Answer", text: "Yes. Services and the Annual Convention are streamed on YouTube, and a Zoom option is available for the convention. Visit the Watch Online page for links." },
     },
     {
       "@type": "Question",

@@ -25,7 +25,7 @@ const columns: { heading: string; links: readonly (readonly [string, string])[] 
     ],
   },
   {
-    heading: 'Watch & Connect',
+    heading: 'Media',
     links: [
       ['/online', 'Watch Online'],
       ['/watchwords', 'Watchwords'],
