@@ -161,7 +161,7 @@ export default function CACNA2026Page() {
                 The whole family.<br />One place.
               </h2>
               <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.78, margin: "0 0 20px" }}>
-                The Christ Apostolic Church North America National Convention brings together the entire CAC family across the United States and Canada for one week at CAC Village — a dedicated conference and retreat center in the mountains of southern Pennsylvania.
+                The Christ Apostolic Church North America National Convention brings together the entire CAC family across the United States, Canada, and South America for one week at CAC Village — a dedicated conference and retreat center in the mountains of southern Pennsylvania.
               </p>
               <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.78, margin: 0 }}>
                 Unlike most conferences, the convention is residential. You eat, sleep, pray, and worship at the village — which means every conversation is a ministry conversation, every meal is fellowship, and every late-night prayer session is available because no one is commuting. It changes people.

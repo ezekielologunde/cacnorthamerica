@@ -27,7 +27,7 @@ const jakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "Christ Apostolic Church North America (CACNA)",
-  description: "CACNA unites Christ Apostolic Church member churches across the United States and Canada under 16 DCCs/Zones, preaching the whole Gospel in a clear and undiluted manner.",
+  description: "CACNA unites Christ Apostolic Church member churches across the United States, Canada, and South America under 16 DCCs/Zones, preaching the whole Gospel in a clear and undiluted manner.",
   keywords: [
     "CACNA", "Christ Apostolic Church North America", "Christ Apostolic Church",
     "Nigerian church USA", "Yoruba church", "Aladura church USA",

@@ -77,7 +77,7 @@ export async function GlobalChurches() {
             CACNA Zones Across North America
           </h2>
           <p style={{ fontSize: 16, color: 'var(--ink-soft)', maxWidth: 560, margin: '16px auto 0' }}>
-            Christ Apostolic Church North America is organized into DCCs (District Church Councils) / zones across the United States and Canada, each led by a Zonal Superintendent.
+            Christ Apostolic Church North America is organized into DCCs (District Church Councils) / zones across the United States, Canada, and South America, each led by a Zonal Superintendent.
           </p>
         </Reveal>
 

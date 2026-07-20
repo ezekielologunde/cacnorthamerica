@@ -17,7 +17,7 @@ export const SEARCH_INDEX: SearchItem[] = [
   { title: "Watch Online", desc: "The Annual Convention live, and message replays on YouTube", href: "/online", tag: "Page", keywords: "watch live stream youtube sermon online convention" },
   { title: "Watchwords", desc: "Every annual Watchword since 1989", href: "/watchwords", tag: "Page", keywords: "watchword scripture annual theme archive" },
   // Visit
-  { title: "Find a Church", desc: "Find a CACNA member church near you across the U.S. and Canada", href: "/visit", tag: "Page", keywords: "visit directions find a church zone superintendent member church" },
+  { title: "Find a Church", desc: "Find a CACNA member church near you across the U.S., Canada, and South America", href: "/visit", tag: "Page", keywords: "visit directions find a church zone superintendent member church" },
   // Events & Calendar
   { title: "Calendar", desc: "CACNA's annual rhythm and special gatherings", href: "/calendar", tag: "Page", keywords: "calendar schedule annual convention ministers retreat sunday school rally" },
   { title: "Events", desc: "Upcoming special events and gatherings", href: "/events", tag: "Event", keywords: "events special gatherings upcoming" },

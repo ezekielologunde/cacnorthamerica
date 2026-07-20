@@ -19,7 +19,7 @@ const homes: Home[] = [
   { tag: "Explore", name: "Our Leadership", place: "Regional officers and 16 zonal superintendents", href: "/leadership", cta: "Meet the team" },
   { tag: "Explore", name: "Our Ministries", place: "Departments serving every CACNA zone", href: "/ministries", cta: "See ministries" },
   { tag: "Explore", name: "Annual Convention", place: "CAC Village, Blue Ridge Summit, PA", href: "/events", cta: "Upcoming events" },
-  { tag: "Explore", name: "Find a Church", place: "Member churches across the U.S. and Canada", href: "/visit", cta: "Locate a zone" },
+  { tag: "Explore", name: "Find a Church", place: "Member churches across the U.S., Canada, and South America", href: "/visit", cta: "Locate a zone" },
 ];
 
 const homeCardStyle: CSSProperties = {
@@ -44,7 +44,7 @@ function HomeCard({ h }: { h: Home }) {
 
 export const metadata = {
   title: "About Us — Christ Apostolic Church North America (CACNA)",
-  description: "CACNA unites Christ Apostolic Church member churches across the United States and Canada under 16 DCCs/Zones — one family, many homes, one Gospel.",
+  description: "CACNA unites Christ Apostolic Church member churches across the United States, Canada, and South America under 16 DCCs/Zones — one family, many homes, one Gospel.",
   alternates: { canonical: "/about" },
 };
 
@@ -71,7 +71,7 @@ export default function AboutPage() {
           </Reveal>
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "var(--ink-soft)", lineHeight: 1.65, maxWidth: 640, margin: "0 auto 36px" }}>
-              Christ Apostolic Church North America unites CAC member churches across the United States and Canada to preach the whole Gospel — in a clear and undiluted manner — and to build God&apos;s ambassadors here on earth.
+              Christ Apostolic Church North America unites CAC member churches across the United States, Canada, and South America to preach the whole Gospel — in a clear and undiluted manner — and to build God&apos;s ambassadors here on earth.
             </p>
           </Reveal>
           <Reveal delay={220}>
@@ -135,7 +135,7 @@ export default function AboutPage() {
               Our Story
             </h2>
             <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.75, marginBottom: 20 }}>
-              As Christ Apostolic Church member churches took root across the United States and Canada, CACNA was formed to unite them under one regional body — organized today into 16 DCCs (District Church Councils) and Zones, each led by a Zonal Superintendent.
+              As Christ Apostolic Church member churches took root across the United States, Canada, and South America, CACNA was formed to unite them under one regional body — organized today into 16 DCCs (District Church Councils) and Zones, each led by a Zonal Superintendent.
             </p>
             <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.75 }}>
               Part of the Christ Apostolic Church — one of Africa&apos;s largest Pentecostal denominations — our mission is raising generations of believers liberated through the light of God&apos;s Word and prayer, across North America and beyond.
@@ -180,7 +180,7 @@ export default function AboutPage() {
             <Reveal>
               <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 12 }}>Christ Apostolic Church across North America</div>
               <p style={{ fontSize: 17, color: "var(--ink-soft)", lineHeight: 1.75, margin: "0 0 18px" }}>
-                As CAC member churches were planted across the United States and Canada, CACNA emerged to give this growing family a shared structure — <strong style={{ color: "var(--ink)" }}>16 DCCs (District Church Councils) and Zones</strong>, each shepherded by a Zonal Superintendent, all under one regional leadership.
+                As CAC member churches were planted across the United States, Canada, and South America, CACNA emerged to give this growing family a shared structure — <strong style={{ color: "var(--ink)" }}>16 DCCs (District Church Councils) and Zones</strong>, each shepherded by a Zonal Superintendent, all under one regional leadership.
               </p>
               <p style={{ fontSize: 17, color: "var(--ink-soft)", lineHeight: 1.75, margin: 0 }}>
                 Every July, the family gathers as one at the Annual Convention — CAC Village, Blue Ridge Summit, Pennsylvania — for six days of worship, teaching, and fellowship, onsite and online.
@@ -192,7 +192,7 @@ export default function AboutPage() {
             <Reveal delay={120}>
               <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 24, padding: "30px 28px", boxShadow: "0 14px 32px rgba(18,20,30,.06)" }}>
                 {[
-                  { year: "16", text: "DCCs (District Church Councils) and Zones across the U.S. and Canada." },
+                  { year: "16", text: "DCCs (District Church Councils) and Zones across the U.S., Canada, and South America." },
                   { year: "1", text: "Regional leadership uniting every member church under one mandate." },
                   { year: "July", text: "The whole family gathers each year at the CACNA Annual Convention." },
                 ].map((t, i) => (
@@ -247,7 +247,7 @@ export default function AboutPage() {
                 Evangelist (later Apostle) Joseph Ayodele Babalola joined the group in October 1928, and his ministry led to the Great Revival of 1930 at Oke Ooye, Ilesa — a turning point that spread the church across Nigeria. Over time, the group took the name &ldquo;Apostolic Church,&rdquo; then &ldquo;Nigerian Apostolic Church&rdquo; (1939), then &ldquo;United Apostolic Church&rdquo; (1942), before God revealed the name it carries today: <strong style={{ color: "var(--ink)" }}>Christ Apostolic Church</strong>, registered on May 4, 1943.
               </p>
               <p style={{ fontSize: 16.5, color: "var(--ink-soft)", lineHeight: 1.8, margin: 0 }}>
-                In the decades since, the Church has planted Bible training colleges — including at Iperu and Ilesa — a theological seminary at Ijebu-Ife, and grammar schools across Nigeria, and today operates <strong style={{ color: "var(--ink)" }}>Joseph Ayo Babalola University (JABU)</strong> in Ikeji-Arakeji, Osun State. Over a little more than six decades, Christ Apostolic Church has grown from a small band of persecuted believers into a denomination with many millions of adherents across the world — CACNA is proud to carry this same heritage across the United States and Canada.
+                In the decades since, the Church has planted Bible training colleges — including at Iperu and Ilesa — a theological seminary at Ijebu-Ife, and grammar schools across Nigeria, and today operates <strong style={{ color: "var(--ink)" }}>Joseph Ayo Babalola University (JABU)</strong> in Ikeji-Arakeji, Osun State. Over a little more than six decades, Christ Apostolic Church has grown from a small band of persecuted believers into a denomination with many millions of adherents across the world — CACNA is proud to carry this same heritage across the United States, Canada, and South America.
               </p>
             </div>
           </Reveal>
@@ -341,7 +341,7 @@ export default function AboutPage() {
                 24 zones &amp; DCCs.<br />One family.<br />One Gospel.
               </h3>
               <p style={{ fontSize: 15.5, lineHeight: 1.7, opacity: .92, margin: "0 0 26px" }}>
-                Alongside CACNA&apos;s national officers, 16 Zonal Superintendents shepherd member churches across the United States and Canada — one regional leadership, one mandate.
+                Alongside CACNA&apos;s national officers, 16 Zonal Superintendents shepherd member churches across the United States, Canada, and South America — one regional leadership, one mandate.
               </p>
               <Link href="/leadership" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, alignSelf: "flex-start", background: "var(--cream)", color: "var(--ink)", fontWeight: 700, fontSize: 15, padding: "14px 24px", borderRadius: 999, textDecoration: "none" }}>
                 Meet the full team →

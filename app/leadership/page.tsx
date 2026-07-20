@@ -68,7 +68,7 @@ export default async function LeadershipPage() {
           </Reveal>
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(16px,1.8vw,19px)", color: "var(--ink-soft)", lineHeight: 1.65, maxWidth: 580, margin: "0 auto" }}>
-              The CACNA Coordinating Council, committed to preaching the whole Gospel and shepherding every member church across the United States and Canada.
+              The CACNA Coordinating Council, committed to preaching the whole Gospel and shepherding every member church across the United States, Canada, and South America.
             </p>
           </Reveal>
         </div>

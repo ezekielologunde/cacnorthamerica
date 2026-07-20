@@ -8,7 +8,7 @@ export const revalidate = 3600;
 
 export const metadata = {
   title: "Our DCCs — Christ Apostolic Church North America (CACNA)",
-  description: "CACNA's District Church Councils (DCCs) and their Superintendents across the United States and Canada.",
+  description: "CACNA's District Church Councils (DCCs) and their Superintendents across the United States, Canada, and South America.",
   alternates: { canonical: "/dccs" },
 };
 
@@ -33,7 +33,7 @@ export default async function DCCsPage() {
           </Reveal>
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(16px,1.8vw,19px)", color: "rgba(245,246,250,.72)", lineHeight: 1.65, maxWidth: 620, margin: "0 auto" }}>
-              CACNA's DCCs (District Church Councils) are a separate tier from our Zones — each shepherded by its own Superintendent across the United States and Canada.
+              CACNA's DCCs (District Church Councils) are a separate tier from our Zones — each shepherded by its own Superintendent across the United States, Canada, and South America.
             </p>
           </Reveal>
         </div>

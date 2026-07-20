@@ -59,7 +59,7 @@ export default function MinistriesPage() {
           </h1>
           <Reveal delay={360}>
             <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "rgba(245,246,250,.72)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto", textWrap: "pretty" }}>
-              CACNA&apos;s departments serve every member church across the United States and Canada — a place to grow, to serve, and to belong.
+              CACNA&apos;s departments serve every member church across the United States, Canada, and South America — a place to grow, to serve, and to belong.
             </p>
           </Reveal>
         </div>

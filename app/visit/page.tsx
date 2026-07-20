@@ -8,7 +8,7 @@ import { MapPin, Clock, Phone, PartyPopper } from "lucide-react";
 import { submitLead, isValidEmail } from "@/lib/forms";
 
 const faqs = [
-  { q: "What is CACNA?", a: "Christ Apostolic Church North America is the regional body uniting CAC member churches across the United States and Canada, organized into 16 DCCs (District Church Councils) / Zones, each led by a Zonal Superintendent." },
+  { q: "What is CACNA?", a: "Christ Apostolic Church North America is the regional body uniting CAC member churches across the United States, Canada, and South America, organized into 16 DCCs (District Church Councils) / Zones, each led by a Zonal Superintendent." },
   { q: "Do all CACNA member churches share the same service times?", a: "No — each member church sets its own weekly schedule. Reach out to the Zonal Superintendent nearest you to find service times for a specific church." },
   { q: "Where is the CACNA Annual Convention held?", a: "At CAC Village, 14051 Stahley Road, Blue Ridge Summit, PA 17214 — six days of worship and teaching every July, onsite and online." },
   { q: "Can I join a CACNA member church online?", a: "Many member churches stream their services — check with your nearest zone. The Annual Convention itself streams on YouTube and Zoom." },
@@ -127,7 +127,7 @@ export default function VisitPage() {
           </Reveal>
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(16px,1.8vw,19px)", color: "var(--ink-soft)", lineHeight: 1.65, maxWidth: 560, margin: "0 auto" }}>
-              There&apos;s a CACNA member church waiting for you across the United States and Canada — here&apos;s how to find one, and a connect card so we can welcome you properly.
+              There&apos;s a CACNA member church waiting for you across the United States, Canada, and South America — here&apos;s how to find one, and a connect card so we can welcome you properly.
             </p>
           </Reveal>
         </div>
@@ -138,7 +138,7 @@ export default function VisitPage() {
         <div className="r3" style={{ maxWidth: 1100, margin: "0 auto", gap: 18 }}>
           {[
             { icon: MapPin, title: "CAC Village (Convention)", value: "14051 Stahley Road\nBlue Ridge Summit, PA 17214", link: "https://maps.google.com/?q=14051+Stahley+Road+Blue+Ridge+Summit+PA+17214" },
-            { icon: Clock,  title: "24 Zones & DCCs", value: "Member churches across\nthe U.S. and Canada", link: null },
+            { icon: Clock,  title: "24 Zones & DCCs", value: "Member churches across\nthe U.S., Canada, and South America", link: null },
             { icon: Phone,  title: "Phone", value: "(305) 469-0346", link: "tel:+13054690346" },
           ].map((card, i) => (
             <Reveal key={card.title} delay={i * 80}>
@@ -170,7 +170,7 @@ export default function VisitPage() {
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 32, color: "var(--ink)", margin: "0 0 28px" }}>Finding Your Zone</h2>
             <ol style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 22 }}>
               {[
-                { num: "01", title: "Find your nearest zone", body: "CACNA is organized into 16 DCCs/Zones across the U.S. and Canada — see the directory on our homepage." },
+                { num: "01", title: "Find your nearest zone", body: "CACNA is organized into 16 DCCs/Zones across the U.S., Canada, and South America — see the directory on our homepage." },
                 { num: "02", title: "Reach out to the Superintendent", body: "Each zone has a Zonal Superintendent who can connect you with a member church near you." },
                 { num: "03", title: "Visit a member church", body: "Every member church welcomes visitors — reach out ahead to confirm service times." },
                 { num: "04", title: "Stay connected", body: "Fill out the connect card below, and join us each July at the Annual Convention." },

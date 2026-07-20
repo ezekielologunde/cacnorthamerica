@@ -395,7 +395,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
               )
             )}
             <p style={{ fontSize: 12.5, color: dark ? 'rgba(245,246,250,.4)' : 'var(--ink-soft)', textAlign: 'center', margin: '8px 0 0' }}>
-              24 Zones &amp; DCCs · United States &amp; Canada · A region of Christ Apostolic Church Worldwide
+              24 Zones &amp; DCCs · United States, Canada &amp; South America · A region of Christ Apostolic Church Worldwide
             </p>
           </div>
         </div>

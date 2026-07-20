@@ -13,7 +13,7 @@ export function PlanVisit() {
             There&apos;s a seat with your name on it.
           </h2>
           <p style={{ fontSize: 16, lineHeight: 1.7, opacity: .8, maxWidth: 440 }}>
-            Find a CACNA member church near you across the United States and Canada — come as you are.
+            Find a CACNA member church near you across the United States, Canada, and South America — come as you are.
           </p>
           <div style={{ marginTop: 30, display: 'flex', flexDirection: 'column', gap: 14, fontSize: 15.5 }}>
             {[

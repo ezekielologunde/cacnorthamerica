@@ -8,7 +8,7 @@ export const SITE = {
   shortName: "CACNA",
   url: SITE_URL,
   description:
-    "CACNA unites Christ Apostolic Church member churches across the United States and Canada under 16 DCCs/Zones, preaching the whole Gospel in a clear and undiluted manner.",
+    "CACNA unites Christ Apostolic Church member churches across the United States, Canada, and South America under 16 DCCs/Zones, preaching the whole Gospel in a clear and undiluted manner.",
   telephone: "+1-305-469-0346",
   email: "info@cacnorthamerica.com",
   address: {
@@ -73,7 +73,7 @@ export function churchJsonLd() {
         priceRange: "Free",
         isAccessibleForFree: true,
         knowsLanguage: ["en", "yo"],
-        areaServed: ["United States", "Canada"],
+        areaServed: ["United States", "Canada", "South America"],
         hasMap: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`,
         geo: { "@type": "GeoCoordinates", latitude: 39.7454, longitude: -77.4894 },
         address: {

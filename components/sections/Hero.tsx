@@ -185,7 +185,7 @@ export function Hero() {
             backdropFilter: "blur(8px)",
           }}>
             <span style={{ background: "var(--red)", color: "#fff", fontSize: 11, fontWeight: 800, padding: "3px 9px", borderRadius: 999, letterSpacing: ".5px" }}>{t.badge}</span>
-            24 Zones &amp; DCCs, U.S. &amp; Canada · A Region of Christ Apostolic Church Worldwide
+            24 Zones &amp; DCCs, U.S., Canada &amp; South America · A Region of Christ Apostolic Church Worldwide
           </span>
         </Reveal>
 
@@ -200,7 +200,7 @@ export function Hero() {
             textWrap: "balance",
           }}
         >
-          <span className="sr-only">Christ Apostolic Church North America — uniting CAC member churches across the United States and Canada. </span>
+          <span className="sr-only">Christ Apostolic Church North America — uniting CAC member churches across the United States, Canada, and South America. </span>
           <AnimLetters key={`l1-${lang}`}>{t.line1}</AnimLetters>
           <br />
           <RevealText

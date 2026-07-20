@@ -28,7 +28,7 @@ const faqJsonLd = {
     {
       "@type": "Question",
       name: "What is Christ Apostolic Church North America (CACNA)?",
-      acceptedAnswer: { "@type": "Answer", text: "CACNA is the regional body uniting Christ Apostolic Church member churches across the United States and Canada, organized under 16 DCCs (District Church Councils)/Zones, each led by a Zonal Superintendent." },
+      acceptedAnswer: { "@type": "Answer", text: "CACNA is the regional body uniting Christ Apostolic Church member churches across the United States, Canada, and South America, organized under 16 DCCs (District Church Councils)/Zones, each led by a Zonal Superintendent." },
     },
     {
       "@type": "Question",

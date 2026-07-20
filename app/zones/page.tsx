@@ -8,7 +8,7 @@ export const revalidate = 3600;
 
 export const metadata = {
   title: "Our Zones — Christ Apostolic Church North America (CACNA)",
-  description: "Find your CACNA zone and its superintendent — the DCC/Zonal leaders shepherding member churches across the United States and Canada.",
+  description: "Find your CACNA zone and its superintendent — the DCC/Zonal leaders shepherding member churches across the United States, Canada, and South America.",
   alternates: { canonical: "/zones" },
 };
 
@@ -33,7 +33,7 @@ export default async function ZonesPage() {
           </Reveal>
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(16px,1.8vw,19px)", color: "rgba(245,246,250,.72)", lineHeight: 1.65, maxWidth: 620, margin: "0 auto" }}>
-              CACNA's member churches across the United States and Canada are organized into DCCs and Zones, each shepherded by a Zonal Superintendent. Reach out directly to the one nearest you.
+              CACNA's member churches across the United States, Canada, and South America are organized into DCCs and Zones, each shepherded by a Zonal Superintendent. Reach out directly to the one nearest you.
             </p>
           </Reveal>
         </div>
