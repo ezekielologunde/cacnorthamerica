@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useRef, useState, useEffect, type CSSProperties } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import { PlayCircle, X } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
@@ -8,7 +8,6 @@ import { RevealText } from "@/components/ui/RevealText";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { haptic } from "@/lib/haptics";
 import { conventionToFeature, currentOrNextConvention, dateRangeLabel, CONVENTION_VENUE_SHORT } from "@/lib/conventions";
-import { specialEvents, isEventPast } from "@/lib/events";
 import { POSTS } from "@/lib/blog";
 
 export type HeroVideo = { id: string; title: string };
@@ -163,80 +162,34 @@ function AnimLetters({ children, delay = 0 }: { children: string; delay?: number
   );
 }
 
-/** Compact "what's happening" cards, surfaced directly in the hero instead of
- *  requiring a scroll — the convention state is adaptive (live/just-concluded
- *  recap vs. next save-the-date), the others only show while still relevant. */
-function HeroHighlights() {
+/** One adaptive line of what's actually happening right now — not a bank of
+ *  cards, just the single fact most worth surfacing: the convention's real
+ *  live/just-concluded/next-date state. Real, current, CACNA-specific,
+ *  without stacking three separate cards in an already-busy hero. */
+function HeroNow() {
   const { cy: featuredCy, state } = conventionToFeature();
   const nextCy = currentOrNextConvention();
   const showRecap = state === "live" || state === "concluded-recent";
-
-  const anniversary = specialEvents.find((e) => e.id === "cacna-50th-anniversary-2026");
-  const showAnniversary = anniversary && !isEventPast(anniversary);
-
   const recapPost = POSTS.find((p) => p.slug === "cacna-2026-closing-appreciation");
-  const latestPost = [...POSTS]
-    .filter((p) => p.slug !== recapPost?.slug)
-    .sort((a, b) => b.dateIso.localeCompare(a.dateIso))[0];
 
-  const cardBase: CSSProperties = {
-    display: "block", borderRadius: 20, padding: "26px 28px",
-    textDecoration: "none", textAlign: "left", height: "100%",
-  };
+  const href = showRecap ? (recapPost ? (recapPost.href ?? `/blog/${recapPost.slug}`) : featuredCy.href) : nextCy.href;
+  const label = showRecap ? (state === "live" ? "Live now" : "Just concluded") : "Save the date";
+  const detail = showRecap
+    ? `CACNA ${featuredCy.year} Convention — read the closing message`
+    : `CACNA ${nextCy.year} Convention · ${dateRangeLabel(nextCy)} · ${CONVENTION_VENUE_SHORT}`;
 
   return (
-    <div style={{
-      background: "rgba(12,14,19,.4)", border: "1px solid rgba(255,255,255,.14)",
-      backdropFilter: "blur(10px)", borderRadius: 28,
-      padding: "clamp(20px,3vw,28px)", maxWidth: 980, margin: "0 auto",
+    <Link href={href} className="press" style={{
+      display: "inline-flex", alignItems: "center", gap: 12,
+      background: "rgba(12,14,19,.45)", border: "1px solid rgba(255,255,255,.16)",
+      backdropFilter: "blur(10px)", borderRadius: 999,
+      padding: "10px 22px 10px 14px", textDecoration: "none",
+      maxWidth: "100%",
     }}>
-      <span style={{ display: "block", fontSize: 12.5, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 16, textAlign: "center" }}>
-        Right now at CACNA
-      </span>
-      <div style={{
-        display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
-        gap: 16,
-      }}>
-        <Link
-          href={showRecap ? (recapPost ? (recapPost.href ?? `/blog/${recapPost.slug}`) : featuredCy.href) : nextCy.href}
-          className="card-lift"
-          style={{ ...cardBase, background: "linear-gradient(140deg,var(--red),var(--red-deep))", boxShadow: "0 14px 34px rgba(200,30,58,.35)" }}
-        >
-          <span style={{ fontSize: 11.5, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "rgba(255,255,255,.8)" }}>
-            {showRecap ? (state === "live" ? "Live now" : "Just concluded") : "Save the date"}
-          </span>
-          <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "#fff", margin: "8px 0 6px", lineHeight: 1.15 }}>
-            {showRecap ? `CACNA ${featuredCy.year} Convention` : `CACNA ${nextCy.year} Convention`}
-          </div>
-          <div style={{ fontSize: 14, color: "rgba(255,255,255,.85)" }}>
-            {showRecap ? "Read the closing message →" : `${dateRangeLabel(nextCy)} · ${CONVENTION_VENUE_SHORT}`}
-          </div>
-        </Link>
-
-        {showAnniversary && (
-          <Link href={anniversary.href ?? "/calendar"} className="card-lift" style={{ ...cardBase, background: "#fff", boxShadow: "0 14px 34px rgba(0,0,0,.22)" }}>
-            <span style={{ fontSize: 11.5, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)" }}>50 years strong</span>
-            <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--ink)", margin: "8px 0 6px", lineHeight: 1.15 }}>
-              50th Anniversary
-            </div>
-            <div style={{ fontSize: 14, color: "var(--ink-soft)" }}>{anniversary.dateLabel} →</div>
-          </Link>
-        )}
-
-        {latestPost && (
-          <Link href={latestPost.href ?? `/blog/${latestPost.slug}`} className="card-lift" style={{ ...cardBase, background: "rgba(255,255,255,.14)", border: "1px solid rgba(255,255,255,.28)", backdropFilter: "blur(8px)" }}>
-            <span style={{ fontSize: 11.5, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)" }}>Latest news</span>
-            <div style={{
-              fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 19, color: "#fff", margin: "8px 0 6px", lineHeight: 1.25,
-              display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
-            }}>
-              {latestPost.title}
-            </div>
-            <div style={{ fontSize: 14, color: "rgba(255,255,255,.75)" }}>Read the post →</div>
-          </Link>
-        )}
-      </div>
-    </div>
+      <span aria-hidden style={{ width: 7, height: 7, borderRadius: "50%", background: "var(--gold)", flexShrink: 0, animation: state === "live" ? "pulse-red 1.8s infinite" : "none" }} />
+      <span style={{ fontSize: 11.5, fontWeight: 800, letterSpacing: "1.2px", textTransform: "uppercase", color: "var(--gold)", flexShrink: 0 }}>{label}</span>
+      <span style={{ fontSize: 14, fontWeight: 600, color: "#fff", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{detail} →</span>
+    </Link>
   );
 }
 
@@ -361,16 +314,6 @@ export function Hero({ video }: { video?: HeroVideo | null }) {
           </span>
         </Reveal>
 
-        <Reveal delay={60} style={{ marginTop: 20 }}>
-          <p style={{
-            fontSize: "clamp(16px,1.8vw,20px)", fontWeight: 800, letterSpacing: "1px",
-            textTransform: "uppercase", color: "var(--gold)", margin: 0,
-            textShadow: "0 2px 16px rgba(0,0,0,.4)",
-          }}>
-            Welcome to the Christ Apostolic Church North America website
-          </p>
-        </Reveal>
-
         <motion.h1
           animate={reduce ? {} : { y: [0, -10, 0] }}
           transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut", delay: 1.4 }}
@@ -462,26 +405,21 @@ export function Hero({ video }: { video?: HeroVideo | null }) {
                 Plan a Visit
               </a>
             </Magnetic>
-            {video && (
-              <Magnetic strength={0.4}>
-                <button type="button" onClick={() => setVideoOpen(true)} className="btn-sheen press" style={{
-                  display: "inline-flex", alignItems: "center", gap: 10,
-                  background: "rgba(255,255,255,.12)", color: "#fff",
-                  fontWeight: 700, fontSize: 16,
-                  padding: "17px 30px", borderRadius: 999,
-                  border: "1.5px solid rgba(255,255,255,.35)",
-                  backdropFilter: "blur(8px)", cursor: "pointer",
-                }}>
-                  <PlayCircle size={19} strokeWidth={2} aria-hidden />
-                  Watch Latest Video
-                </button>
-              </Magnetic>
-            )}
           </div>
         </Reveal>
 
-        <Reveal delay={620} style={{ marginTop: 44 }}>
-          <HeroHighlights />
+        <Reveal delay={600} style={{ marginTop: 36, display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
+          <HeroNow />
+          {video && (
+            <button type="button" onClick={() => setVideoOpen(true)} className="press" style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              background: "none", border: "none", color: "rgba(255,255,255,.75)",
+              fontWeight: 700, fontSize: 14, cursor: "pointer", padding: 0,
+            }}>
+              <PlayCircle size={17} strokeWidth={2} aria-hidden />
+              Watch our latest video
+            </button>
+          )}
         </Reveal>
       </motion.div>
 
