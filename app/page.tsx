@@ -7,7 +7,6 @@ import { Nav } from "@/components/navigation/Nav";
 import { Hero } from "@/components/sections/Hero";
 import { HomepageAnnouncements } from "@/components/ui/HomepageAnnouncements";
 import { createServiceClient } from "@/lib/supabase/server";
-import { getSermons } from "@/lib/sermons";
 
 // Below-fold sections split into separate JS chunks — browser parses them
 // incrementally instead of one blocking task, cutting TBT significantly.
@@ -49,16 +48,13 @@ const faqJsonLd = {
 
 export default async function Home() {
   const service = createServiceClient();
-  const [{ data: announcements }, [latestVideo]] = await Promise.all([
-    service
-      .from("announcements")
-      .select("id, title, body, cta_text, cta_url, bg_color, text_color")
-      .eq("active", true)
-      .or("expires_at.is.null,expires_at.gt." + new Date().toISOString())
-      .in("placement", ["homepage", "both"])
-      .order("sort_order"),
-    getSermons(1),
-  ]);
+  const { data: announcements } = await service
+    .from("announcements")
+    .select("id, title, body, cta_text, cta_url, bg_color, text_color")
+    .eq("active", true)
+    .or("expires_at.is.null,expires_at.gt." + new Date().toISOString())
+    .in("placement", ["homepage", "both"])
+    .order("sort_order");
 
   return (
     <main>
@@ -68,7 +64,7 @@ export default async function Home() {
       />
       <Nav heroDark />
       {announcements && announcements.length > 0 && <HomepageAnnouncements announcements={announcements} />}
-      <Hero video={latestVideo ?? null} />
+      <Hero />
       <Watchword />
       <PastorWelcome />
       <OurMinistries />

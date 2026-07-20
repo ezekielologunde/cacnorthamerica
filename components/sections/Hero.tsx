@@ -2,9 +2,7 @@
 import Link from "next/link";
 import { useRef, useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { ChevronLeft, ChevronRight, PlayCircle, X } from "lucide-react";
-import { Reveal } from "@/components/ui/Reveal";
-import { RevealText } from "@/components/ui/RevealText";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { haptic } from "@/lib/haptics";
@@ -13,10 +11,8 @@ import { specialEvents, isEventPast } from "@/lib/events";
 import { POSTS } from "@/lib/blog";
 import { GIVING_CAMPAIGNS } from "@/lib/giving";
 
-export type HeroVideo = { id: string; title: string };
-
 type SlideBg = { type: "photo"; src: string; alt: string } | { type: "gradient"; value: string };
-type SlideKind = "Welcome" | "Event" | "Ad" | "News";
+type SlideKind = "Event" | "Ad" | "News";
 
 interface Slide {
   key: string;
@@ -33,7 +29,6 @@ interface Slide {
 }
 
 const KIND_COLOR: Record<SlideKind, string> = {
-  Welcome: "var(--gold)",
   Event: "var(--gold)",
   Ad: "var(--gold)",
   News: "var(--gold)",
@@ -44,19 +39,9 @@ const KIND_COLOR: Record<SlideKind, string> = {
  *  slide is real CACNA content: the adaptive convention state, real
  *  upcoming events, a real giving campaign, and the latest real post.
  *  Slides for events that have already passed simply don't get built. */
-function useSlides(video?: HeroVideo | null): Slide[] {
+function useSlides(): Slide[] {
   return useMemo(() => {
-    const slides: Slide[] = [
-      {
-        key: "welcome",
-        kind: "Welcome",
-        eyebrow: "Welcome Home",
-        title: "One Fold. One Shepherd.",
-        desc: "CACNA is the North America family of Christ Apostolic Church — part of a global movement born in Nigeria — uniting member churches across the United States, Canada, and South America under one Gospel and one Shepherd.",
-        cta: { label: "Join Us Online", href: "/online" },
-        bg: { type: "photo", src: "/images/cac-congregation-worship.jpg", alt: "CACNA congregation in worship" },
-      },
-    ];
+    const slides: Slide[] = [];
 
     const { cy: featuredCy, state } = conventionToFeature();
     const nextCy = currentOrNextConvention();
@@ -136,9 +121,8 @@ function useSlides(video?: HeroVideo | null): Slide[] {
       });
     }
 
-    void video; // video is surfaced as a small link on the welcome slide, not its own slide
     return slides;
-  }, [video]);
+  }, []);
 }
 
 const BG_WORDS = [
@@ -149,81 +133,13 @@ const BG_WORDS = [
   { w: "FAMILY",    l: 53, delay: 1.2, dur: 32, sz: 18, o: 0.04  },
 ] as const;
 
-/** Real YouTube embed (CACNA's own channel, fetched via lib/sermons.ts) in a
- *  lightbox — the honest "video feature": no fabricated background video
- *  file exists, so this plays CACNA's actual latest upload on demand instead. */
-function VideoLightbox({ video, onClose }: { video: HeroVideo; onClose: () => void }) {
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) { if (e.key === "Escape") onClose(); }
-    document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [onClose]);
-
-  return (
-    <div
-      role="dialog" aria-modal="true" aria-label={video.title}
-      onClick={onClose}
-      style={{
-        position: "fixed", inset: 0, zIndex: 1000,
-        background: "rgba(12,14,19,.92)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        padding: "clamp(20px,5vw,64px)",
-      }}
-    >
-      <button
-        type="button" onClick={onClose} aria-label="Close" className="press"
-        style={{
-          position: "absolute", top: 20, right: 20,
-          width: 44, height: 44, borderRadius: 999,
-          background: "rgba(255,255,255,.12)", border: "1px solid rgba(255,255,255,.2)",
-          display: "grid", placeItems: "center", cursor: "pointer",
-        }}
-      >
-        <X size={20} strokeWidth={2} color="#fff" aria-hidden />
-      </button>
-      <div onClick={(e) => e.stopPropagation()} style={{ width: "100%", maxWidth: 960, aspectRatio: "16/9", borderRadius: 14, overflow: "hidden", boxShadow: "0 30px 80px rgba(0,0,0,.5)" }}>
-        <iframe
-          src={`https://www.youtube.com/embed/${video.id}?autoplay=1`}
-          title={video.title}
-          allow="autoplay; encrypted-media; picture-in-picture"
-          allowFullScreen
-          style={{ width: "100%", height: "100%", border: 0, display: "block" }}
-        />
-      </div>
-    </div>
-  );
-}
-
-const HERO_T = {
-  en: { line1: "One Fold.", line2: "One Shepherd." },
-  yo: { line1: "Agbo Kan.", line2: "Oluṣọ-Agutan Kan." },
-} as const;
-
-export function Hero({ video }: { video?: HeroVideo | null }) {
+export function Hero() {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
-  const [videoOpen, setVideoOpen] = useState(false);
-  const slides = useSlides(video);
+  const slides = useSlides();
 
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
-
-  const [lang, setLang] = useState<"en" | "yo">("en");
-  useEffect(() => {
-    const saved = localStorage.getItem("cac-hero-lang");
-    if (saved === "yo" || saved === "en") setLang(saved);
-  }, []);
-  function switchLang(next: "en" | "yo") {
-    if (next === lang) return;
-    haptic("selection");
-    setLang(next);
-    try { localStorage.setItem("cac-hero-lang", next); } catch {}
-  }
-  const t = HERO_T[lang];
 
   useEffect(() => {
     if (reduce || paused || slides.length <= 1) return;
@@ -237,7 +153,6 @@ export function Hero({ video }: { video?: HeroVideo | null }) {
   }
 
   const slide = slides[index];
-  const isWelcome = slide.kind === "Welcome";
 
   return (
     <header
@@ -319,40 +234,13 @@ export function Hero({ video }: { video?: HeroVideo | null }) {
               {slide.eyebrow}
             </span>
 
-            {isWelcome ? (
-              <h1 style={{
-                fontFamily: "var(--font-display)", fontWeight: 800,
-                fontSize: "clamp(48px,7vw,96px)", lineHeight: .94, letterSpacing: "-0.03em",
-                margin: "22px 0 0", color: "#fff", textWrap: "balance",
-              }}>
-                <span className="sr-only">Christ Apostolic Church North America — the regional family of Christ Apostolic Church's global movement, uniting member churches across the United States, Canada, and South America. </span>
-                <RevealText key={`l1-${lang}`} immediate>{t.line1}</RevealText>
-                <br />
-                <RevealText key={`l2-${lang}`} immediate delay={0.12} style={{ color: "var(--red)" }}>{t.line2}</RevealText>
-              </h1>
-            ) : (
-              <h1 style={{
-                fontFamily: "var(--font-display)", fontWeight: 800,
-                fontSize: "clamp(32px,4.6vw,58px)", lineHeight: 1.05, letterSpacing: "-0.02em",
-                margin: "22px 0 0", color: "#fff", textWrap: "balance",
-              }}>
-                {slide.title}
-              </h1>
-            )}
-
-            {isWelcome && (
-              <div role="group" aria-label="Greeting language" style={{ display: "inline-flex", gap: 4, padding: 4, borderRadius: 999, background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.18)", backdropFilter: "blur(8px)", marginTop: 18 }}>
-                {(["en", "yo"] as const).map((l) => (
-                  <button
-                    key={l} type="button" onClick={() => switchLang(l)} aria-pressed={lang === l}
-                    className="press"
-                    style={{ padding: "7px 16px", borderRadius: 999, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 700, fontFamily: "var(--font-body)", background: lang === l ? "#fff" : "transparent", color: lang === l ? "var(--ink)" : "rgba(255,255,255,.8)", transition: "background .2s, color .2s" }}
-                  >
-                    {l === "en" ? "English" : "Yorùbá"}
-                  </button>
-                ))}
-              </div>
-            )}
+            <h1 style={{
+              fontFamily: "var(--font-display)", fontWeight: 800,
+              fontSize: "clamp(32px,4.6vw,58px)", lineHeight: 1.05, letterSpacing: "-0.02em",
+              margin: "22px 0 0", color: "#fff", textWrap: "balance",
+            }}>
+              {slide.title}
+            </h1>
 
             <p style={{
               fontSize: "clamp(15px,1.4vw,18px)", lineHeight: 1.65,
@@ -375,33 +263,7 @@ export function Hero({ video }: { video?: HeroVideo | null }) {
                   {slide.cta.label} →
                 </Link>
               </Magnetic>
-              {isWelcome && (
-                <Magnetic strength={0.4}>
-                  <a href="/contact" className="btn-sheen" style={{
-                    display: "inline-flex", alignItems: "center", gap: 10,
-                    background: "rgba(255,255,255,.12)", color: "#fff",
-                    fontWeight: 700, fontSize: 16,
-                    padding: "16px 28px", borderRadius: 999,
-                    textDecoration: "none",
-                    border: "1.5px solid rgba(255,255,255,.35)",
-                    backdropFilter: "blur(8px)",
-                  }}>
-                    Plan a Visit
-                  </a>
-                </Magnetic>
-              )}
             </div>
-
-            {isWelcome && video && (
-              <button type="button" onClick={() => setVideoOpen(true)} className="press" style={{
-                display: "inline-flex", alignItems: "center", gap: 8, marginTop: 22,
-                background: "none", border: "none", color: "rgba(255,255,255,.75)",
-                fontWeight: 700, fontSize: 14, cursor: "pointer", padding: 0,
-              }}>
-                <PlayCircle size={17} strokeWidth={2} aria-hidden />
-                Watch our latest video
-              </button>
-            )}
           </motion.div>
         </AnimatePresence>
       </div>
@@ -447,10 +309,6 @@ export function Hero({ video }: { video?: HeroVideo | null }) {
             ))}
           </div>
         </>
-      )}
-
-      {videoOpen && video && (
-        <VideoLightbox video={video} onClose={() => setVideoOpen(false)} />
       )}
     </header>
   );
