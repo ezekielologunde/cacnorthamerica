@@ -39,19 +39,17 @@ const navItems: NavItem[] = [
     dropdown: [
       { href: '/about', label: 'About CACNA', desc: 'A region of Christ Apostolic Church Worldwide' },
       { href: '/leadership', label: 'Leadership', desc: 'Meet our regional officers' },
-      { href: '/zones', label: 'Our Zones', desc: 'Find your DCC/Zonal superintendent' },
-      { href: '/dccs', label: 'Our DCCs', desc: 'District Church Councils & Superintendents' },
+      { href: '/zones', label: 'Zones & DCCs', desc: 'Find your Zonal or DCC superintendent' },
       { href: '/ministries', label: 'Ministries', desc: 'Find your place to serve' },
       { href: '/bible-institute', label: 'Bible Institute', desc: 'Ministerial training arm of CACNA' },
-      { href: '/global', label: 'Our Global Family', desc: 'CAC Worldwide & CAC Anosike Region (Europe)' },
+      { href: '/leadership#global-family', label: 'Our Global Family', desc: 'CAC Worldwide & CAC Anosike Region (Europe)' },
     ],
   },
   {
     label: 'Watch & Grow',
     href: '/online',
     dropdown: [
-      { href: '/online', label: 'Watch Online', desc: 'Live & on-demand services' },
-      { href: '/media', label: 'Media Archive', desc: 'Past sermons & conventions since 2022' },
+      { href: '/online', label: 'Watch Online', desc: 'Live, on-demand, and the full archive since 2022' },
       { href: '/watchwords', label: 'Watchwords', desc: 'Every annual Watchword since 1989' },
     ],
   },

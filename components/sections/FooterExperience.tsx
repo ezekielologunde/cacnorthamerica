@@ -18,7 +18,7 @@ const quickLinks = [
   ['/about', 'Who We Are'],
   ['/leadership', 'Leadership'],
   ['/ministries', 'Ministries'],
-  ['/global', 'Our Global Family'],
+  ['/leadership#global-family', 'Our Global Family'],
   // Watch & Grow
   ['/online', 'Watch Online'],
   ['/watchwords', 'Watchwords'],

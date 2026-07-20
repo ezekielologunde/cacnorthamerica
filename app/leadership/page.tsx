@@ -4,6 +4,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import Image from "next/image";
 import Link from "next/link";
 import { getLeaders, getLeaderRoles, slugifyLeaderName, type Leader } from "@/lib/leaders";
+import { CAC_WORLDWIDE, CAC_ANOSIKE_EUROPE } from "@/lib/global";
 
 export const revalidate = 3600;
 
@@ -195,6 +196,51 @@ export default async function LeadershipPage() {
           </div>
         </section>
       )}
+
+      {/* Our Global Family */}
+      <section id="global-family" style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) 56px", scrollMarginTop: 90 }}>
+        <div style={{ maxWidth: 1080, margin: "0 auto" }}>
+          <Reveal style={{ marginBottom: 28 }}>
+            <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)" }}>One Fold, One Shepherd</span>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3vw,38px)", letterSpacing: "-.7px", color: "var(--ink)", margin: "10px 0 0" }}>Our Global Family</h2>
+          </Reveal>
+          <div className="r2" style={{ gap: 18 }}>
+            <Reveal>
+              <div style={{ height: "100%", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, padding: "26px 24px" }}>
+                <span style={{ fontSize: 10.5, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)" }}>Worldwide</span>
+                <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 19, color: "var(--ink)", margin: "8px 0 10px" }}>{CAC_WORLDWIDE.name}</h3>
+                <p style={{ fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.65, marginBottom: 18 }}>{CAC_WORLDWIDE.description}</p>
+                <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                  <a href={CAC_WORLDWIDE.url} target="_blank" rel="noopener noreferrer" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "var(--red)", color: "#fff", fontWeight: 800, fontSize: 13.5, padding: "10px 20px", borderRadius: 999, textDecoration: "none" }}>
+                    Visit cacworld.org →
+                  </a>
+                  <a href={CAC_WORLDWIDE.newsUrl} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "var(--cream-2)", color: "var(--ink)", fontWeight: 700, fontSize: 13.5, padding: "10px 20px", borderRadius: 999, textDecoration: "none", border: "1px solid var(--line)" }}>
+                    CAC World News →
+                  </a>
+                </div>
+              </div>
+            </Reveal>
+            <Reveal delay={80}>
+              <div style={{ height: "100%", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, padding: "26px 24px" }}>
+                <span style={{ fontSize: 10.5, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)" }}>Sister Region</span>
+                <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 19, color: "var(--ink)", margin: "8px 0 10px" }}>{CAC_ANOSIKE_EUROPE.name}</h3>
+                <p style={{ fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.65, marginBottom: 8 }}>{CAC_ANOSIKE_EUROPE.description}</p>
+                <p style={{ fontSize: 12.5, color: "var(--ink-soft)", marginBottom: 18 }}>
+                  Regional Superintendent: <strong style={{ color: "var(--ink)" }}>{CAC_ANOSIKE_EUROPE.regionalSuperintendent}</strong>
+                </p>
+                <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                  <a href={CAC_ANOSIKE_EUROPE.url} target="_blank" rel="noopener noreferrer" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "var(--red)", color: "#fff", fontWeight: 800, fontSize: 13.5, padding: "10px 20px", borderRadius: 999, textDecoration: "none" }}>
+                    Visit cacanosike.org →
+                  </a>
+                  <a href={CAC_ANOSIKE_EUROPE.directoryUrl} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "var(--cream-2)", color: "var(--ink)", fontWeight: 700, fontSize: 13.5, padding: "10px 20px", borderRadius: 999, textDecoration: "none", border: "1px solid var(--line)" }}>
+                    Find a church in the UK & Europe →
+                  </a>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
 
       {/* Bible Institute teaser */}
       <section style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) 90px" }}>

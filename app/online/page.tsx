@@ -6,6 +6,8 @@ import Link from "next/link";
 import { getSermons, getLiveStream, formatSermonDate } from "@/lib/sermons";
 import { PRAYER_LINE } from "@/lib/prayerLine";
 import { Video } from "lucide-react";
+import { archiveEntries } from "@/lib/archive";
+import { ArchiveBrowser } from "@/components/media/ArchiveBrowser";
 
 const YOUTUBE_URL = "https://youtube.com/@cacnorthamericalatunderegi1330";
 
@@ -26,7 +28,7 @@ const schedule = [
 
 export const metadata = {
   title: "Watch Online — Christ Apostolic Church North America (CACNA)",
-  description: "Watch CACNA's Annual Convention and message replays online — on YouTube, with Zoom available during the convention.",
+  description: "Watch CACNA's Annual Convention and message replays online, and browse the full media archive back to 2022 — on YouTube, with Zoom available during the convention.",
   alternates: { canonical: "/online" },
 };
 
@@ -163,24 +165,19 @@ export default async function OnlinePage() {
       </section>
       )}
 
-      {/* Media Archive cross-link */}
-      <section style={{ padding: "0 clamp(20px,5vw,64px) 20px" }}>
-        <Reveal>
-          <a
-            href="/media"
-            className="press"
-            style={{
-              display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 16,
-              maxWidth: 1100, margin: "0 auto", padding: "22px 28px", borderRadius: 18,
-              background: "rgba(253,200,65,.08)", border: "1px solid rgba(253,200,65,.25)", textDecoration: "none",
-            }}
-          >
-            <span style={{ fontSize: 15, fontWeight: 700, color: "#fff" }}>Looking further back?</span>
-            <span style={{ fontSize: 14.5, fontWeight: 700, color: "var(--gold)", display: "inline-flex", alignItems: "center", gap: 8 }}>
-              Explore the full Media Archive <span aria-hidden>→</span>
-            </span>
-          </a>
-        </Reveal>
+      {/* Full archive, year-grouped, filterable */}
+      <section style={{ padding: "20px clamp(20px,5vw,64px) 80px" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <Reveal style={{ marginBottom: 28 }}>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3vw,38px)", letterSpacing: "-.8px", color: "#fff", margin: "0 0 8px" }}>
+              The Full Archive
+            </h2>
+            <p style={{ fontSize: 14.5, color: "rgba(255,255,255,.45)", margin: 0 }}>
+              Every message since 2022 — filter by type, or scroll through year by year.
+            </p>
+          </Reveal>
+          <ArchiveBrowser entries={archiveEntries} />
+        </div>
       </section>
 
       {/* Platforms */}

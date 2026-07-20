@@ -65,6 +65,12 @@ const nextConfig: NextConfig = {
       { source: "/leadership-meet-our-pastors/", destination: "/leadership", permanent: true },
       { source: "/online-connect-to-our-services", destination: "/online", permanent: true },
       { source: "/online-connect-to-our-services/", destination: "/online", permanent: true },
+      { source: "/dccs", destination: "/zones", permanent: true },
+      { source: "/dccs/", destination: "/zones", permanent: true },
+      { source: "/media", destination: "/online", permanent: true },
+      { source: "/media/", destination: "/online", permanent: true },
+      { source: "/global", destination: "/leadership#global-family", permanent: true },
+      { source: "/global/", destination: "/leadership#global-family", permanent: true },
     ];
   },
 
