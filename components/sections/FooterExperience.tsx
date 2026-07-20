@@ -131,6 +131,9 @@ export function FooterExperience() {
                 Browse the Zone Directory <ArrowRight size={12} strokeWidth={2.5} aria-hidden />
               </Link>
             </div>
+            <div style={{ fontSize: 10.5, fontWeight: 800, letterSpacing: '1.2px', textTransform: 'uppercase', color: 'rgba(245,246,250,.35)', marginBottom: 11 }}>
+              Regional Office &amp; CAC Village
+            </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 11, fontSize: 14 }}>
               <a href="tel:+13054690346" style={{ display: 'flex', alignItems: 'center', gap: 9, color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>
                 <Phone size={14} strokeWidth={2} style={{ flexShrink: 0 }} aria-hidden /> (305) 469-0346

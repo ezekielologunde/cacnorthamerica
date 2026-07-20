@@ -19,7 +19,7 @@ const homes: Home[] = [
   { tag: "Explore", name: "Our Leadership", place: "Regional officers and 16 zonal superintendents", href: "/leadership", cta: "Meet the team" },
   { tag: "Explore", name: "Our Ministries", place: "Departments serving every CACNA zone", href: "/ministries", cta: "See ministries" },
   { tag: "Explore", name: "Annual Convention", place: "CAC Village, Blue Ridge Summit, PA", href: "/calendar", cta: "Upcoming events" },
-  { tag: "Explore", name: "Find a Church", place: "Member churches across the U.S., Canada, and South America", href: "/contact", cta: "Locate a zone" },
+  { tag: "Explore", name: "Find a Church", place: "Member churches across the U.S., Canada, and South America", href: "/zones", cta: "Locate a zone" },
 ];
 
 const homeCardStyle: CSSProperties = {
