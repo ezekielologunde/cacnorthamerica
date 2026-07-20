@@ -73,7 +73,7 @@ function ArticleCard({ post, archival }: { post: typeof POSTS[number]; archival?
     }}>
       {post.image ? (
         <div style={{ height: 240, position: "relative", flexShrink: 0, opacity: archival ? 0.85 : 1 }}>
-          <ImageLightbox src={post.image.url} alt={post.image.alt} />
+          <ImageLightbox src={post.image.url} alt={post.image.alt} objectPosition={post.image.orientation === "portrait" ? "center 15%" : "center"} />
         </div>
       ) : (
         <div style={{ height: 6, background: archival ? "var(--line)" : post.accent, flexShrink: 0 }} />
@@ -122,7 +122,7 @@ function FeaturedCard({ post }: { post: typeof POSTS[number] }) {
     }}>
       <div style={{ height: 320, background: post.image ? "var(--ink)" : post.accent, position: "relative" }}>
         {post.image ? (
-          <ImageLightbox src={post.image.url} alt={post.image.alt} />
+          <ImageLightbox src={post.image.url} alt={post.image.alt} objectPosition={post.image.orientation === "portrait" ? "center 15%" : "center"} />
         ) : (
           <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 70% 30%,rgba(255,255,255,.2),transparent 65%)" }} />
         )}

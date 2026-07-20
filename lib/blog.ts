@@ -19,8 +19,12 @@ export interface BlogPost {
   readTime: string;
   featured?: boolean;
   href?: string;
-  /** Real photo only — omit entirely rather than fabricate a stock image. */
-  image?: { url: string; alt: string };
+  /** Real photo only — omit entirely rather than fabricate a stock image.
+   *  orientation controls how the [slug] page displays it: "landscape"
+   *  (default) renders the usual full-width hero band; "portrait" (e.g. a
+   *  headshot) instead renders inline alongside the opening paragraph,
+   *  since forcing a tall portrait into a short wide band crops the face. */
+  image?: { url: string; alt: string; orientation?: "landscape" | "portrait" };
   body: string[];
 }
 
@@ -80,7 +84,7 @@ const RAW_POSTS: Omit<BlogPost, "categoryColor" | "accent">[] = [
     category: "Ministry Update",
     readTime: "6 min read",
     featured: true,
-    image: { url: "/images/pastor-oladele-portrait.jpg", alt: "Pastor Samuel Olusegun Oladele, President of Christ Apostolic Church, Nigeria and Overseas" },
+    image: { url: "/images/pastor-oladele-portrait.jpg", alt: "Pastor Samuel Olusegun Oladele, President of Christ Apostolic Church, Nigeria and Overseas", orientation: "portrait" },
     body: [
       "Pastor Samuel Olusegun Oladele, President of Christ Apostolic Church, Nigeria and Overseas, delivered the President's Message at this year's CAC Latunde Region (North America) Annual Retreat at the CAC Village in Blue Ridge Summit, Pennsylvania. Below are the highlights of his address to the region.",
       "**Our corporate theme this year is \"The Bible: God's Message to Man.\"** The Bible, Pastor Oladele reminded the gathering, is the means through which God's message to mankind is conveyed — contextually, textually, and verbally inspired by God through the Holy Spirit (2 Timothy 3:16, John 1:1, Hebrews 1:1-4). By reason of its divine authorship, Scripture carries **inerrancy** (entirely free from error), **congruence** (66 books, over 1,500 years, more than 40 authors, yet one consistent picture of God's plan), and **authority** for life and ministry.",
@@ -102,7 +106,7 @@ const RAW_POSTS: Omit<BlogPost, "categoryColor" | "accent">[] = [
     category: "Ministry Update",
     readTime: "5 min read",
     featured: true,
-    image: { url: "/images/pastor-agbeja-portrait.jpg", alt: "Pastor Dr. T.A.O. Agbeja, Regional Superintendent of CACNA (Latunde Region)" },
+    image: { url: "/images/pastor-agbeja-portrait.jpg", alt: "Pastor Dr. T.A.O. Agbeja, Regional Superintendent of CACNA (Latunde Region)", orientation: "portrait" },
     body: [
       "As CACNA gathered at CAC Village for the 2026 Annual Convention (July 13–18), Regional Superintendent Pastor Dr. T.A.O. Agbeja delivered the Welcome Address, opening this year's convention with thanksgiving to God and a warm welcome to the visiting church leaders who traveled to be with us.",
       "Pastor Agbeja welcomed President Pastor S.O. Oladele and Mrs. Susana Oladele, General Superintendent Pastor E.O. Odejobi, General Evangelist Prophet Hezekiah Oladeji, Mission Director Pastor C.S. Fasuyi, our brethren from CAC Europe led by Anosike Region Superintendent Pastor Simeon Oladokun, and Bishop and Mrs. Asaju of the Ilesa Anglican Diocese — alongside every DCC/Zonal Superintendent, pastor, evangelist, and member of the Latunde Region family gathered on \"this miracle ground\" for another year.",
@@ -122,7 +126,7 @@ const RAW_POSTS: Omit<BlogPost, "categoryColor" | "accent">[] = [
     category: "Ministry Update",
     readTime: "5 min read",
     featured: true,
-    image: { url: "/images/pastor-adenodi-portrait.jpg", alt: "Pastor David Olusegun Adenodi, Ph.D., Chairman of the CACNA Convention & Conference Planning Committee" },
+    image: { url: "/images/pastor-adenodi-portrait.jpg", alt: "Pastor David Olusegun Adenodi, Ph.D., Chairman of the CACNA Convention & Conference Planning Committee", orientation: "portrait" },
     body: [
       "Pastor David Olusegun Adenodi, Ph.D., Chairman of the CACNA Convention & Conference Planning Committee, delivered the Convention Chairman's Welcome Address at this year's gathering, welcoming President Pastor S.O. Oladele, General Superintendent Pastor E.O. Odejobi, General Evangelist Prophet Hezekiah Oladeji, Regional Superintendent Pastor Dr. T.O. Agbeja, and the entire Christ Apostolic Church North and South America (Latunde Region) family, reaffirming this year's theme, **\"The Bible: God's Message to Man\"** (2 Timothy 3:16-17, Hebrews 4:12, Psalm 119:105).",
       "\"The Bible remains God's infallible, inspired, and eternal message to humanity,\" he said. \"In a generation characterized by confusion, moral decline, false teachings, and spiritual distractions, God is calling His people back to His Word.\" His prayer for the convention was simple: that every participant would experience a fresh encounter with the God of the Bible, and be corrected, instructed, and equipped through it for effective Christian living and service.",
@@ -143,7 +147,7 @@ const RAW_POSTS: Omit<BlogPost, "categoryColor" | "accent">[] = [
     category: "Reflection",
     readTime: "6 min read",
     featured: true,
-    image: { url: "/images/pastor-agbeja-portrait.jpg", alt: "Pastor Dr. T.A.O. Agbeja, Regional Superintendent of CACNA (Latunde Region)" },
+    image: { url: "/images/pastor-agbeja-portrait.jpg", alt: "Pastor Dr. T.A.O. Agbeja, Regional Superintendent of CACNA (Latunde Region)", orientation: "portrait" },
     body: [
       "Ministers' Session 1 — **\"Transformative Power of the Word\"** — opened this year's convention with Pastor T.A.O. Agbeja teaching from Hebrews 4:12: \"the word of God is quick, and powerful, and sharper than any two-edged sword... a discerner of the thoughts and intents of the heart.\" God's Word, he said, is the only thing able to transform a person on all three levels — spirit, soul, and body. When it takes root in the spirit, it reshapes the way we think (Romans 12:2), and it even reaches the physical body: Proverbs calls it \"health... to all their flesh,\" from a Greek word that also means medicine.",
       "\"Now that you have purified yourselves by obeying the truth so that you have sincere love for each other, love one another deeply, from the heart\" (1 Peter 1:22-25, NIV). From this text, the message turned to a question every believer eventually has to sit with: what does it actually mean to obey the truth?",
@@ -211,7 +215,7 @@ const RAW_POSTS: Omit<BlogPost, "categoryColor" | "accent">[] = [
     category: "Ministry Update",
     readTime: "3 min read",
     featured: true,
-    image: { url: "/images/pastor-adenodi-portrait.jpg", alt: "Pastor David Olusegun Adenodi, Ph.D., Chairman of the CACNA Convention & Conference Planning Committee" },
+    image: { url: "/images/pastor-adenodi-portrait.jpg", alt: "Pastor David Olusegun Adenodi, Ph.D., Chairman of the CACNA Convention & Conference Planning Committee", orientation: "portrait" },
     body: [
       "\"Calvary greetings in the name of our Lord and Savior Jesus,\" Pastor David Olusegun Adenodi, Ph.D., Chairman of the CACNA Convention & Conference Planning Committee, wrote as the 2026 convention drew to a close. \"As we conclude this spiritually enriching convention themed 'The Bible: God's Message to Man,' I stand before you with a heart full of gratitude.\"",
       "On behalf of the Convention Committee, he extended thanks to CACNA's leaders and to the convention's distinguished speakers and ministers, \"for delivering messages that have challenged and uplifted us. Your insights have equipped us to lead with wisdom and humility.\"",
@@ -284,7 +288,7 @@ const RAW_POSTS: Omit<BlogPost, "categoryColor" | "accent">[] = [
     dateIso: "2025-07-01",
     category: "Ministry Update",
     readTime: "5 min read",
-    image: { url: "/images/pastor-amos-dada-portrait.jpg", alt: "Pastor Amos Dada, Ph.D., P.Eng, Convener of the International Gathering of Eagles Conference" },
+    image: { url: "/images/pastor-amos-dada-portrait.jpg", alt: "Pastor Amos Dada, Ph.D., P.Eng, Convener of the International Gathering of Eagles Conference", orientation: "portrait" },
     body: [
       "\"The evangelistic mandate of CAC is not limited to Nigeria. Through the International Gathering of Eagles Conference (IGOEC), global missions and various zonal outreaches, CAC has taken the gospel to Ghana, Kenya, the UK, Canada, the US, and beyond,\" writes Pastor Amos Dada, Ph.D., P.Eng, Convener of the International Gathering of Eagles Conference, in the Christ Apostolic Church Hope For All newsletter. \"This global focus aligns with the vision of taking the gospel to the uttermost parts of the earth\" (Acts 1:8).",
       "\"As a personal example, when I came to Canada in 2001, the Lord said I should put Canada on the spiritual map of the world and raise an eagle generation that led me to start International Gathering of Eagles Conference (IGOEC), a global outreach initiative birthed to fulfill the Great Commission beyond borders. Through this visionary platform, CAC Bethel Canada has extended its evangelistic reach to over 52 nations, engaging in dynamic crusades, revivals, and church planting efforts.\"",
@@ -386,7 +390,7 @@ const RAW_POSTS: Omit<BlogPost, "categoryColor" | "accent">[] = [
     dateIso: "2025-07-02",
     category: "Reflection",
     readTime: "5 min read",
-    image: { url: "/images/pastor-agbeja-portrait.jpg", alt: "Pastor Dr. T.A.O. Agbeja, Regional Superintendent of CACNA (Latunde Region)" },
+    image: { url: "/images/pastor-agbeja-portrait.jpg", alt: "Pastor Dr. T.A.O. Agbeja, Regional Superintendent of CACNA (Latunde Region)", orientation: "portrait" },
     body: [
       "\"When we embrace intentional rest and prioritize wellbeing, we are fostering a culture of self-care within our leadership and our teams,\" writes Pastor T.A.O. Agbeja, Ph.D., Regional Superintendent of CACNA (Latunde Region), in a reflection delivered under the 2025 convention's \"Balancing the Call: Burnout, Rest, and the Health of a Leader's Soul\" theme (Matthew 11:28-29). \"It's during these quieter times that leaders can engage in self-reflection and seek feedback from others, both of which are crucial components of emotional intelligence.\"",
       "\"In a world that seems to constantly prioritize busyness and productivity, finding time to recharge can be counterintuitive,\" he continues, recalling a panel discussion he facilitated where \"two wise and experienced leaders shared how emotional intelligence skills shaped their leadership journey\" — and how deeply a focus on wellbeing connected to those same skills.",

@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight, PlayCircle, X } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import { Magnetic } from "@/components/ui/Magnetic";
+import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { haptic } from "@/lib/haptics";
 import { conventionToFeature, currentOrNextConvention, dateRangeLabel, CONVENTION_VENUE_SHORT } from "@/lib/conventions";
 import { specialEvents, isEventPast } from "@/lib/events";
@@ -25,6 +26,10 @@ interface Slide {
   desc: string;
   cta: { label: string; href: string; external?: boolean };
   bg: SlideBg;
+  /** A portrait (e.g. a person's headshot) doesn't work stretched as a
+   *  full-bleed background — shown inline in the content instead, dynamically,
+   *  while the slide falls back to a gradient backdrop. */
+  inlineImage?: { src: string; alt: string };
 }
 
 const KIND_COLOR: Record<SlideKind, string> = {
@@ -114,6 +119,7 @@ function useSlides(video?: HeroVideo | null): Slide[] {
       .filter((p) => p.slug !== "cacna-2026-closing-appreciation")
       .sort((a, b) => b.dateIso.localeCompare(a.dateIso))[0];
     if (latestPost) {
+      const isPortrait = latestPost.image?.orientation === "portrait";
       slides.push({
         key: "news",
         kind: "News",
@@ -121,9 +127,12 @@ function useSlides(video?: HeroVideo | null): Slide[] {
         title: latestPost.title,
         desc: latestPost.excerpt,
         cta: { label: "Read the Post", href: latestPost.href ?? `/blog/${latestPost.slug}` },
-        bg: latestPost.image
+        bg: latestPost.image && !isPortrait
           ? { type: "photo", src: latestPost.image.url, alt: latestPost.image.alt }
           : { type: "gradient", value: latestPost.accent },
+        inlineImage: latestPost.image && isPortrait
+          ? { src: latestPost.image.url, alt: latestPost.image.alt }
+          : undefined,
       });
     }
 
@@ -294,6 +303,11 @@ export function Hero({ video }: { video?: HeroVideo | null }) {
             exit={{ opacity: 0, y: reduce ? 0 : -18 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
           >
+            {slide.inlineImage && (
+              <div style={{ width: 92, height: 92, borderRadius: "50%", overflow: "hidden", margin: "0 auto 18px", position: "relative", border: "3px solid rgba(255,255,255,.25)", boxShadow: "0 10px 26px rgba(0,0,0,.35)" }}>
+                <ImageLightbox src={slide.inlineImage.src} alt={slide.inlineImage.alt} objectPosition="center 15%" />
+              </div>
+            )}
             <span style={{
               display: "inline-flex", alignItems: "center", gap: 8,
               background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.2)",

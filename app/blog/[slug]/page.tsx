@@ -195,7 +195,7 @@ function RelatedCard({ post }: { post: BlogPost }) {
       {post.image ? (
         <div style={{ height: 200, flexShrink: 0 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={post.image.url} alt={post.image.alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+          <img src={post.image.url} alt={post.image.alt} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: post.image.orientation === "portrait" ? "center 15%" : "center", display: "block" }} />
         </div>
       ) : (
         <div
@@ -510,8 +510,11 @@ export default async function BlogSlugPage({
         </div>
       </section>
 
-      {/* Hero photo — click to view full-size */}
-      {post.image && (
+      {/* Hero photo — click to view full-size. Portrait photos (headshots)
+          skip this full-width band entirely (cropping a tall portrait into
+          a short wide band cuts the face) and render inline with the prose
+          instead — see the "Prose" block below. */}
+      {post.image && post.image.orientation !== "portrait" && (
         <div style={{ position: "relative", height: "clamp(220px,32vw,360px)", background: "var(--ink)" }}>
           <ImageLightbox src={post.image.url} alt={post.image.alt} />
         </div>
@@ -534,9 +537,19 @@ export default async function BlogSlugPage({
           {/* Prose */}
           <Reveal>
             <article style={{ maxWidth: 700 }}>
+              {post.image && post.image.orientation === "portrait" && (
+                <div style={{ float: "left", width: "clamp(120px,40vw,180px)", marginRight: 24, marginBottom: 12, borderRadius: 16, overflow: "hidden", boxShadow: "0 10px 26px rgba(18,20,30,.14)" }}>
+                  <div style={{ position: "relative", aspectRatio: "3 / 4" }}>
+                    <ImageLightbox src={post.image.url} alt={post.image.alt} objectPosition="center 20%" />
+                  </div>
+                </div>
+              )}
               {post.body.map((para, i) => (
                 <BodyParagraph key={i} text={para} first={i === 0} />
               ))}
+              {post.image && post.image.orientation === "portrait" && (
+                <div style={{ clear: "both" }} />
+              )}
             </article>
           </Reveal>
 
