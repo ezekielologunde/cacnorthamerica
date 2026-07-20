@@ -1,5 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import { MapPin, Landmark, Phone, Mail } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import type { Leader } from "@/lib/leaders";
@@ -11,6 +12,18 @@ const FILTERS: { value: Category; label: string }[] = [
   { value: "zonal_superintendent", label: "Zones" },
   { value: "dcc_superintendent", label: "DCCs" },
 ];
+
+const gradients = [
+  "linear-gradient(135deg,#7A1128,#C81E3A)",
+  "linear-gradient(135deg,#C81E3A,#2D42C9)",
+  "linear-gradient(135deg,#2D42C9,#FDC841)",
+  "linear-gradient(135deg,#12141E,#7A1128)",
+];
+
+function initials(name: string) {
+  const parts = name.replace(/^(Pastor|Prophet|Evangelist|Apostle)\s+(Dr\.?\s+)?(\(Mrs\.?\)\s+)?/i, "").trim().split(/\s+/);
+  return ((parts[0]?.[0] || "") + (parts[parts.length - 1]?.[0] || "")).toUpperCase();
+}
 
 export function ZoneDirectory({ leaders }: { leaders: Leader[] }) {
   const [category, setCategory] = useState<Category>("all");
@@ -85,9 +98,23 @@ export function ZoneDirectory({ leaders }: { leaders: Leader[] }) {
                       {isDcc ? "DCC" : "Zone"}
                     </span>
                   </div>
-                  <div>
-                    <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, letterSpacing: "-.3px", color: "var(--ink)", margin: "0 0 3px", lineHeight: 1.2 }}>{l.full_name}</h3>
-                    <div style={{ fontSize: 13, color: "var(--ink-soft)" }}>{l.title}</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                    {l.photo_url ? (
+                      <div style={{ position: "relative", width: 52, height: 52, borderRadius: 14, overflow: "hidden", flexShrink: 0, boxShadow: "0 8px 18px rgba(18,20,30,.18)" }}>
+                        <Image src={l.photo_url} alt={l.full_name} fill style={{ objectFit: "cover", objectPosition: "center top" }} sizes="52px" unoptimized />
+                      </div>
+                    ) : (
+                      <div aria-hidden style={{
+                        width: 52, height: 52, borderRadius: 14, flexShrink: 0,
+                        background: gradients[i % gradients.length],
+                        display: "grid", placeItems: "center",
+                        color: "#fff", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 17,
+                      }}>{initials(l.full_name)}</div>
+                    )}
+                    <div>
+                      <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, letterSpacing: "-.3px", color: "var(--ink)", margin: "0 0 3px", lineHeight: 1.2 }}>{l.full_name}</h3>
+                      <div style={{ fontSize: 13, color: "var(--ink-soft)" }}>{l.title}</div>
+                    </div>
                   </div>
                   {(l.phone || l.email) && (
                     <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: "auto", paddingTop: 10, borderTop: "1px solid var(--line)" }}>
