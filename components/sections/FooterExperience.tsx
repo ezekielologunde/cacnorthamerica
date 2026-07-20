@@ -23,8 +23,7 @@ const quickLinks = [
   ['/online', 'Watch Online'],
   ['/watchwords', 'Watchwords'],
   // Events
-  ['/events', 'Events'],
-  ['/calendar', 'Calendar'],
+  ['/calendar', 'Calendar & Events'],
   // Visit & Give
   ['/giving', 'Giving'],
   // Resources

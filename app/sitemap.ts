@@ -7,7 +7,6 @@ import { createServiceClient } from "@/lib/supabase/server";
 const WEEKLY = new Set([
   "/",
   "/online",
-  "/events",
   "/events/cacna-2026",
   "/calendar",
   "/blog",

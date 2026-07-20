@@ -7,6 +7,8 @@ import { IconBadge } from "@/components/ui/IconBadge";
 import Link from "next/link";
 import { CalendarPlus, Download, Circle, ArrowDown, Users, BookOpen, GraduationCap, HeartHandshake } from "lucide-react";
 import { specialEvents, annualMoments, googleCalUrl, icsDataUri, splitByDate, type ChurchEvent } from "@/lib/events";
+import { SITE, SITE_URL } from "@/lib/site";
+import { conventionYears, currentOrNextConvention, dateRangeLabel, CONVENTION_VENUE_SHORT } from "@/lib/conventions";
 
 const MOMENT_ICONS: Record<string, typeof Users> = {
   "cacna-convention": Users,
@@ -18,13 +20,33 @@ const MOMENT_ICONS: Record<string, typeof Users> = {
 export const revalidate = 3600;
 
 export const metadata = {
-  title: "Calendar — Christ Apostolic Church North America (CACNA)",
+  title: "Calendar & Events — Christ Apostolic Church North America (CACNA)",
   description:
     "CACNA's annual rhythm and special events — the Annual Convention, Ministers Retreat, Sunday School Rally, and more. Save any of them to Google, Apple, or Outlook.",
   alternates: { canonical: "/calendar" },
 };
 
 const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+
+function toIso(s: string): string {
+  const mo = parseInt(s.slice(4, 6), 10);
+  const off = mo >= 3 && mo <= 10 ? "-04:00" : "-05:00";
+  return `${s.slice(0,4)}-${s.slice(4,6)}-${s.slice(6,8)}T${s.slice(9,11)}:${s.slice(11,13)}:00${off}`;
+}
+
+function evPlace(id: string) {
+  if (id.startsWith("cacna-convention-"))
+    return { "@type": "Place", name: "CAC Village", address: { "@type": "PostalAddress", streetAddress: "14051 Stahley Rd", addressLocality: "Blue Ridge Summit", addressRegion: "PA", postalCode: "17214", addressCountry: "US" } };
+  if (id === "holy-land-pilgrimage-2026")
+    return { "@type": "Place", name: "Israel & Egypt (departing JFK)", address: { "@type": "PostalAddress", addressCountry: "IL" } };
+  return { "@type": "Place", name: SITE.name, address: { "@type": "PostalAddress", streetAddress: SITE.address.street, addressLocality: SITE.address.city, addressRegion: SITE.address.region, postalCode: SITE.address.postalCode, addressCountry: SITE.address.country } };
+}
+
+function evOffers(id: string) {
+  if (id === "holy-land-pilgrimage-2026")
+    return { "@type": "Offer", price: "4549", priceCurrency: "USD", availability: "https://schema.org/InStock", url: `${SITE_URL}/events/pilgrimage-2026` };
+  return { "@type": "Offer", price: "0", priceCurrency: "USD", availability: "https://schema.org/InStock" };
+}
 
 type DbEventRow = {
   id: string; title: string; description: string | null;
@@ -80,9 +102,37 @@ export default async function CalendarPage() {
 
   const dynamicEvents = (dbRows ?? []).map(dbEventToChurchEvent);
   const allEvents = [...specialEvents, ...dynamicEvents];
-  const { upcoming: upcomingSpecial } = splitByDate(specialEvents);
+  const { upcoming: upcomingSpecial, past } = splitByDate(allEvents);
+
+  const activeYear = currentOrNextConvention().year;
+  const futureConventions = conventionYears.filter((cy) => cy.year !== activeYear);
+
+  const eventsJsonLd = upcomingSpecial.length > 0 ? {
+    "@context": "https://schema.org",
+    "@graph": upcomingSpecial.map((ev) => ({
+      "@type": "Event",
+      name: ev.title,
+      description: ev.desc,
+      startDate: toIso(ev.startLocal),
+      endDate: toIso(ev.endLocal),
+      eventStatus: "https://schema.org/EventScheduled",
+      eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+      image: `${SITE_URL}/images/logo.png`,
+      url: ev.href ? `${SITE_URL}${ev.href}` : `${SITE_URL}/calendar`,
+      location: evPlace(ev.id),
+      organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },
+      offers: evOffers(ev.id),
+    })),
+  } : null;
+
   return (
     <main>
+      {eventsJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(eventsJsonLd).replace(/</g, "\\u003c") }}
+        />
+      )}
       <Nav heroDark />
 
       {/* Hero */}
@@ -90,7 +140,7 @@ export default async function CalendarPage() {
         <div aria-hidden style={{ position: "absolute", top: -100, right: -80, width: 620, height: 460, background: "radial-gradient(circle,rgba(253,200,65,.22),transparent 65%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 880, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Calendar</span>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Calendar &amp; Events</span>
           </Reveal>
           <Reveal delay={80}>
             <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(46px,7vw,98px)", letterSpacing: "-2.2px", color: "#fff", margin: "16px 0", lineHeight: 0.93 }}>
@@ -108,6 +158,7 @@ export default async function CalendarPage() {
               {[
                 { href: "#this-month", label: "This month" },
                 { href: "#special-gatherings", label: "Special gatherings" },
+                { href: "#future-dates", label: "Future dates" },
                 { href: "#annual-rhythm", label: "Annual rhythm" },
               ].map((l) => (
                 <a key={l.href} href={l.href} className="press" style={{
@@ -145,6 +196,7 @@ export default async function CalendarPage() {
               <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 12 }}>Jump to</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 <a href="#special-gatherings" style={{ fontSize: 14, fontWeight: 700, color: "var(--ink)", textDecoration: "none" }}>Special gatherings →</a>
+                <a href="#future-dates" style={{ fontSize: 14, fontWeight: 700, color: "var(--ink)", textDecoration: "none" }}>Future dates →</a>
                 <a href="#annual-rhythm" style={{ fontSize: 14, fontWeight: 700, color: "var(--ink)", textDecoration: "none" }}>Annual rhythm →</a>
               </div>
             </div>
@@ -162,7 +214,7 @@ export default async function CalendarPage() {
           {upcomingSpecial.length === 0 ? (
             <Reveal>
               <p style={{ fontSize: 16, color: "rgba(245,246,250,.6)", lineHeight: 1.7 }}>
-                No special events on the calendar right now — check back soon, or <Link href="/events" style={{ color: "var(--gold)", fontWeight: 700, textDecoration: "none" }}>browse past gatherings</Link>.
+                No special events on the calendar right now — check back soon.
               </p>
             </Reveal>
           ) : (
@@ -192,6 +244,65 @@ export default async function CalendarPage() {
           )}
         </div>
       </section>
+
+      {/* Past special events — auto-populated once end date passes */}
+      {past.length > 0 && (
+        <section style={{ background: "var(--cream)", padding: "clamp(48px,6vw,72px) clamp(20px,5vw,64px)" }}>
+          <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+            <Reveal style={{ marginBottom: 32 }}>
+              <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3.5vw,42px)", letterSpacing: "-1px", color: "var(--ink-soft)", margin: 0 }}>Past events</h2>
+            </Reveal>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              {past.map((ev, i) => (
+                <Reveal key={ev.id} delay={i * 70}>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "clamp(16px,2.5vw,28px)", alignItems: "center", background: "var(--paper)", borderRadius: 22, padding: "clamp(18px,2.5vw,26px)", border: "1px solid var(--line)", opacity: 0.82 }}>
+                    <div style={{ flexShrink: 0, width: 88, height: 88, borderRadius: 18, background: "linear-gradient(150deg,#8a8480,#6b6560)", color: "#fff", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "1.5px" }}>{ev.month}</span>
+                      <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 38 }}>{ev.day}</span>
+                    </div>
+                    <div style={{ flex: "1 1 240px", minWidth: 0 }}>
+                      <div style={{ display: "inline-block", fontSize: 10, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", background: "#edeae6", color: "#888780", padding: "3px 10px", borderRadius: 999, marginBottom: 8 }}>Archived</div>
+                      <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(18px,2.2vw,26px)", letterSpacing: "-.5px", color: "var(--ink-soft)", margin: "0 0 5px" }}>{ev.title}</h3>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "var(--ink-soft)", marginBottom: 8 }}>{ev.dateLabel} · {ev.timeLabel}</div>
+                      {ev.href && (
+                        <Link href={ev.href} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 700, color: "var(--ink-soft)", textDecoration: "none" }}>
+                          View archived page <span aria-hidden>→</span>
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Future Convention dates — confirmed venue/dates, details TBA */}
+      {futureConventions.length > 0 && (
+        <section id="future-dates" style={{ background: "var(--paper)", padding: "clamp(48px,6vw,72px) clamp(20px,5vw,64px)", scrollMarginTop: 24 }}>
+          <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+            <Reveal style={{ marginBottom: 32 }}>
+              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--flame)" }}>Looking further ahead</span>
+              <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.6vw,44px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 0" }}>Future Convention dates</h2>
+              <p style={{ fontSize: 15.5, color: "var(--ink-soft)", lineHeight: 1.7, maxWidth: 600, margin: "14px 0 0" }}>
+                The venue never changes — every CACNA Convention meets at {CONVENTION_VENUE_SHORT}. Themes, registration, and full schedules are announced closer to each date.
+              </p>
+            </Reveal>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 14 }}>
+              {futureConventions.map((cy, i) => (
+                <Reveal key={cy.year} delay={i * 70}>
+                  <Link href={cy.href} className="card-lift" style={{ display: "block", background: "var(--cream-2)", border: "1px solid var(--line)", borderRadius: 18, padding: "22px 22px", textDecoration: "none" }}>
+                    <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 28, color: "var(--ink)", letterSpacing: "-.5px" }}>{cy.year}</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: "var(--red)", margin: "6px 0 4px" }}>{dateRangeLabel(cy)}</div>
+                    <div style={{ fontSize: 13, color: "var(--ink-soft)" }}>{CONVENTION_VENUE_SHORT}</div>
+                  </Link>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Annual moments */}
       <section id="annual-rhythm" style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px) clamp(70px,9vw,110px)", scrollMarginTop: 24 }}>
@@ -230,6 +341,19 @@ export default async function CalendarPage() {
             })}
           </div>
         </div>
+      </section>
+
+      {/* Watch online CTA */}
+      <section style={{ background: "var(--ink)", padding: "clamp(44px,5vw,70px) clamp(20px,5vw,64px)" }}>
+        <Reveal style={{ maxWidth: 900, margin: "0 auto", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
+          <div>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,38px)", letterSpacing: "-.6px", color: "var(--cream)", margin: "0 0 8px" }}>Can&apos;t be there in person?</h2>
+            <p style={{ fontSize: 15, color: "rgba(245,246,250,.6)", margin: 0 }}>The Annual Convention streams live — YouTube and Zoom. Never miss a message.</p>
+          </div>
+          <Link href="/online" className="press btn-sheen" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 15, padding: "15px 28px", borderRadius: 999, textDecoration: "none", whiteSpace: "nowrap", flexShrink: 0, boxShadow: "0 10px 24px rgba(200,30,58,.35)" }}>
+            Watch online →
+          </Link>
+        </Reveal>
       </section>
 
       <FooterExperience />

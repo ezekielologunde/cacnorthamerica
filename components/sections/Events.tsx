@@ -75,7 +75,7 @@ export function Events() {
           </div>
         )}
         <Reveal delay={120} style={{ marginTop: 32 }}>
-          <Link href="/events" className="press" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontWeight: 700, fontSize: 15, color: 'var(--red)', textDecoration: 'none' }}>
+          <Link href="/calendar" className="press" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontWeight: 700, fontSize: 15, color: 'var(--red)', textDecoration: 'none' }}>
             View all events &amp; add to calendar <span aria-hidden style={{ fontSize: 17 }}>→</span>
           </Link>
         </Reveal>

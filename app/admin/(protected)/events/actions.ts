@@ -33,7 +33,7 @@ export async function createEvent(formData: FormData) {
     throw new Error("Could not create event. Please try again.");
   }
   revalidatePath("/admin/events");
-  revalidatePath("/events");
+  revalidatePath("/calendar");
   redirect(`/admin/events/${data.id}`);
 }
 
@@ -58,7 +58,7 @@ export async function updateEvent(id: string, formData: FormData) {
   }
   revalidatePath("/admin/events");
   revalidatePath(`/admin/events/${id}`);
-  revalidatePath("/events");
+  revalidatePath("/calendar");
 }
 
 export async function deleteEvent(id: string) {
@@ -69,6 +69,6 @@ export async function deleteEvent(id: string) {
     throw new Error("Could not delete event. Please try again.");
   }
   revalidatePath("/admin/events");
-  revalidatePath("/events");
+  revalidatePath("/calendar");
   redirect("/admin/events");
 }

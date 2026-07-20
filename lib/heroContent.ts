@@ -64,7 +64,7 @@ export function getHeroContent(): HeroContent {
       title: nextEvent.title,
       theme: isConvention ? cy.theme : undefined,
       ctaLabel: isConvention && cy.registrationUrl ? `Register — CACNA ${cy.year}` : nextEvent.href ? "Learn More" : `CACNA ${cy.year} — Save the Date`,
-      ctaHref: isConvention ? (cy.registrationUrl ?? cy.href) : (nextEvent.href ?? "/events"),
+      ctaHref: isConvention ? (cy.registrationUrl ?? cy.href) : (nextEvent.href ?? "/calendar"),
       ctaExternal: isConvention && !!cy.registrationUrl,
       dateLabel: nextEvent.dateLabel,
     };

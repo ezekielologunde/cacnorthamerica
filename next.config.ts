@@ -67,6 +67,8 @@ const nextConfig: NextConfig = {
       { source: "/online-connect-to-our-services/", destination: "/online", permanent: true },
       { source: "/dccs", destination: "/zones", permanent: true },
       { source: "/dccs/", destination: "/zones", permanent: true },
+      { source: "/events", destination: "/calendar", permanent: true },
+      { source: "/events/", destination: "/calendar", permanent: true },
       { source: "/media", destination: "/online", permanent: true },
       { source: "/media/", destination: "/online", permanent: true },
       { source: "/global", destination: "/leadership#global-family", permanent: true },

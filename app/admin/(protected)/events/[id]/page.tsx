@@ -36,7 +36,7 @@ export default async function EditEventPage({ params }: { params: Promise<{ id: 
           <h1 style={{ fontSize: 22, fontWeight: 700, color: "var(--ink)", margin: "8px 0 0" }}>Edit Event</h1>
           {event.published && (
             <Link
-              href="/events"
+              href="/calendar"
               target="_blank"
               rel="noopener noreferrer"
               style={{ fontSize: 13, fontWeight: 600, color: "var(--red)", textDecoration: "none", whiteSpace: "nowrap" }}
