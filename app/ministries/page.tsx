@@ -2,6 +2,7 @@ import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
+import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import Link from "next/link";
 import Image from "next/image";
 import { Music, HeartHandshake, Sparkles, HandHeart, Video, Wrench, Globe, ShieldCheck, BookOpen, Users2 } from "lucide-react";
@@ -164,6 +165,44 @@ export default function MinistriesPage() {
                 </div>
               </Reveal>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* More department histories */}
+      <section style={{ background: "var(--paper)", padding: "clamp(56px,7vw,96px) clamp(20px,5vw,64px)" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <Reveal style={{ marginBottom: 40, textAlign: "center" }}>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Where we come from</span>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,44px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 0", lineHeight: 1 }}>
+              More department histories.
+            </h2>
+          </Reveal>
+
+          <Reveal>
+            <div style={{ position: "relative", width: "100%", height: "clamp(200px,26vw,320px)", borderRadius: 22, overflow: "hidden", marginBottom: 18, boxShadow: "0 20px 44px rgba(18,20,30,.15)" }}>
+              <ImageLightbox src="/images/cacma-fellowship.jpg" alt="CACMA men fellowshipping at a CACNA gathering" objectPosition="center 30%" />
+            </div>
+          </Reveal>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 40 }}>
+            <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--ink)", margin: 0 }}>CACMA — Christ Apostolic Church Men&apos;s Association</h3>
+            <p style={{ fontSize: 15.5, color: "var(--ink-soft)", lineHeight: 1.8, margin: 0 }}>
+              CACMA grew out of the church&apos;s need to fund and support ministerial training. As the church&apos;s Bible training grew — from the School of Prophets and Evangelists founded at Ilesa in 1949, to CAC Bible Training College at Ede in 1952, and eventually CAC Theological Seminary at Ile-Ife — CACMA formed to mobilize married men across the church to contribute toward its upkeep, ultimately funding student housing, campus improvements, and the church&apos;s own printing press at Agege, Lagos.
+            </p>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 40 }}>
+            <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--ink)", margin: 0 }}>Music Department</h3>
+            <p style={{ fontSize: 15.5, color: "var(--ink-soft)", lineHeight: 1.8, margin: 0 }}>
+              The Music Department traces back to the church&apos;s earliest revivals, when Spirit-inspired composers like Apostle Joseph Ayo Babalola and Prophet D.O. Babajide first set lyrics to native airs, accompanied only by drums, gongs, hand claps, and bells. Later generations of choir leaders introduced harmoniums and accordions, then standard instrumentation and choral training, culminating in the formation of the United Association of CAC Choirs — bringing central choir performances, training, and conferences to assemblies across every district.
+            </p>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--ink)", margin: 0 }}>Evangelical Department</h3>
+            <p style={{ fontSize: 15.5, color: "var(--ink-soft)", lineHeight: 1.8, margin: 0 }}>
+              The Evangelical Department&apos;s office is traditionally held by the church&apos;s General Evangelist — the church&apos;s chief prophet and evangelist, responsible for organizing crusades and authorizing every evangelist&apos;s ministry. Apostle Joseph Ayo Babalola served as the first from the church&apos;s 1943 incorporation until his death in 1959, succeeded by Prophet David Olulana Babajide (1959–1991), Evangelist Jacob Oluwatuberu Alokan (1993–2006), Prophet Samuel Kayode Abiara (2006–2017), and the incumbent, Prophet Hezekiah Oluboye Oladeji, since January 2018.
+            </p>
           </div>
         </div>
       </section>
