@@ -25,6 +25,21 @@ type Ministry = {
   gradient?: string;
 };
 
+const christianEducationTeam: { name: string; title: string; photo: string }[] = [
+  { name: "Pastor Dr. Timothy A.O. Agbeja", title: "CACNA/Latunde Region Superintendent", photo: "/images/pastor-agbeja-portrait.jpg" },
+  { name: "Pastor Dr. Timothy O. Famojuro", title: "Chairman, Christian Education Dept.", photo: "/images/pastor-timothy-famojuro-portrait.jpg" },
+  { name: "Pastor Samuel Tunji Ayeni", title: "Secretary; CAC Agbala Itura Representative", photo: "/images/pastor-ayeni-portrait.jpg" },
+  { name: "Pastor Stephen O. Aluko", title: "Director of Sunday School, CAC Worldwide", photo: "/images/pastor-aluko-portrait.jpg" },
+  { name: "Pastor Sam. Olu. Falade", title: "Assistant Director, Sunday School, CAC Worldwide", photo: "/images/pastor-falade-portrait.jpg" },
+  { name: "Pastor Femi Olaluwoye", title: "EDCC Superintendent", photo: "/images/pastor-olaluwoye-portrait.jpg" },
+  { name: "Lady Evangelist Belinda Otusanya", title: "Philadelphia Zone Rep. / Treasurer", photo: "/images/evang-otusanya-portrait.jpg" },
+  { name: "Pastor Samuel Opadele", title: "EDCC Representative", photo: "/images/pastor-opadele-portrait.jpg" },
+  { name: "Lady Evangelist Linda Benson", title: "New England DCC Representative", photo: "/images/evang-benson-portrait.jpg" },
+  { name: "Pastor Teniola", title: "Texas DCC Representative", photo: "/images/pastor-teniola-portrait.jpg" },
+  { name: "Lady Evangelist Janet Olajide", title: "Washington DCC Representative", photo: "/images/evang-olajide-portrait.jpg" },
+  { name: "Pastor Matthew Oladejo", title: "Cornerstone Zone Representative", photo: "/images/pastor-oladejo-portrait.jpg" },
+];
+
 const ministries: Ministry[] = [
   { name: "Administration", desc: "Coordinating the presidency and regional leadership that guides CACNA's 16 DCCs and Zones.", icon: Wrench, gradient: "linear-gradient(140deg,var(--red),var(--flame))", href: "/leadership", cta: "Meet our leadership" },
   { name: "Christian Education", desc: "Grounding believers across every zone in sound biblical teaching and discipleship.", icon: BookOpen, gradient: "linear-gradient(140deg,var(--flame),var(--gold))", href: "/contact", cta: "Learn more" },
@@ -123,6 +138,33 @@ export default function MinistriesPage() {
               </p>
             </div>
           </Reveal>
+        </div>
+      </section>
+
+      {/* Christian Education Department Leadership */}
+      <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,96px) clamp(20px,5vw,64px)" }}>
+        <div style={{ maxWidth: 1080, margin: "0 auto" }}>
+          <Reveal style={{ marginBottom: 32, textAlign: "center" }}>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Christian Education</span>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.5vw,40px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 0", lineHeight: 1 }}>
+              Department leadership.
+            </h2>
+          </Reveal>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 18 }}>
+            {christianEducationTeam.map((p, i) => (
+              <Reveal key={p.name} delay={(i % 6) * 50}>
+                <div className="card-lift" style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 18, padding: "20px 18px", display: "flex", alignItems: "center", gap: 14, height: "100%" }}>
+                  <div style={{ position: "relative", width: 60, height: 60, borderRadius: 16, overflow: "hidden", flexShrink: 0, boxShadow: "0 8px 18px rgba(18,20,30,.15)" }}>
+                    <Image src={p.photo} alt={p.name} fill style={{ objectFit: "cover", objectPosition: "center top" }} sizes="60px" unoptimized />
+                  </div>
+                  <div>
+                    <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 15.5, letterSpacing: "-.2px", color: "var(--ink)", margin: "0 0 3px", lineHeight: 1.2 }}>{p.name}</h3>
+                    <div style={{ fontSize: 12.5, color: "var(--ink-soft)", lineHeight: 1.4 }}>{p.title}</div>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 
