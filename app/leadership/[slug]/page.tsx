@@ -101,7 +101,11 @@ export default async function LeaderProfilePage({ params }: { params: Promise<{ 
 
             <Reveal delay={60}>
               {leader.bio ? (
-                <p style={{ fontSize: 16.5, color: "var(--ink)", lineHeight: 1.8, margin: "0 0 24px" }}>{leader.bio}</p>
+                <div style={{ margin: "0 0 24px", display: "flex", flexDirection: "column", gap: 16 }}>
+                  {leader.bio.split(/\n\n+/).map((para, i) => (
+                    <p key={i} style={{ fontSize: 16.5, color: "var(--ink)", lineHeight: 1.8, margin: 0 }}>{para}</p>
+                  ))}
+                </div>
               ) : (
                 <p style={{ fontSize: 15, color: "var(--ink-soft)", fontStyle: "italic", lineHeight: 1.7, margin: "0 0 24px" }}>
                   A fuller story for {leader.full_name.split(" ").slice(-1)[0]} is coming soon.

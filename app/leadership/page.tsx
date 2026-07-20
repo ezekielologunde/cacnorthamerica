@@ -89,7 +89,10 @@ export default async function LeadershipPage() {
                 <Link href={`/leadership/${slugifyLeaderName(featured.full_name)}`} style={{ padding: "clamp(36px,5vw,60px)", display: "flex", flexDirection: "column", justifyContent: "center", color: "var(--cream)", textDecoration: "none" }}>
                   <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 14 }}>{featured.title}</div>
                   <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3vw,42px)", letterSpacing: "-1px", margin: "0 0 22px", lineHeight: 1.04 }}>{featured.full_name}</h2>
-                  <p style={{ fontSize: 16.5, lineHeight: 1.75, color: "rgba(245,246,250,.78)", margin: 0 }}>{bios.get(featured.id)}</p>
+                  <p style={{ fontSize: 16.5, lineHeight: 1.75, color: "rgba(245,246,250,.78)", margin: 0 }}>{bios.get(featured.id)?.split(/\n\n+/)[0]}</p>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 18, fontSize: 13.5, fontWeight: 700, color: "var(--gold)" }}>
+                    Read full story <span aria-hidden>→</span>
+                  </span>
                 </Link>
                 {featured.photo_url && (
                   <div className="ldr-photo" style={{ position: "relative" }}>
