@@ -22,6 +22,7 @@ export const SEARCH_INDEX: SearchItem[] = [
   { title: "Calendar", desc: "CACNA's annual rhythm and special gatherings", href: "/calendar", tag: "Page", keywords: "calendar schedule annual convention ministers retreat sunday school rally" },
   { title: "Events", desc: "Upcoming special events and gatherings", href: "/events", tag: "Event", keywords: "events special gatherings upcoming" },
   { title: "Holy Land Pilgrimage 2026", desc: "Nov 2–12 — CACNA Latunde Region Pilgrimage to Israel & Egypt — $500 deposit", href: "/events/pilgrimage-2026", tag: "Event", keywords: "holy land pilgrimage 2026 israel egypt jfk cacna november travel" },
+  { title: "CAC North America 50th Anniversary Celebration", desc: "October 10, 2026 — 50 years since CACNA's founding in 1976, at CAC Village, PA", href: "/events/cacna-50th-anniversary-2026", tag: "Event", keywords: "50th anniversary 1976 cacna cac village october 2026 milestone" },
   { title: "CACNA 2026", desc: "Annual Convention July 13–18, CAC Village, Blue Ridge Summit PA", href: "/events/cacna-2026", tag: "Event", keywords: "cacna 2026 annual convention july blue ridge summit pennsylvania north america" },
   // Give
   { title: "Giving", desc: "Support CACNA's ministries and missions", href: "/giving", tag: "Page", keywords: "giving tithe offering donate" },

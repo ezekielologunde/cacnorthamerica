@@ -64,6 +64,14 @@ export const specialEvents: ChurchEvent[] = [
   // next confirmed year's dates (and theme, once known) — see lib/conventions.ts.
   conventionChurchEvent(currentOrNextConvention()),
   {
+    id: "cacna-50th-anniversary-2026",
+    title: "CAC North America 50th Anniversary Celebration",
+    desc: "Christ Apostolic Church North America celebrates 50 years since its founding in 1976, at CAC Village — the same grounds that host the Annual Convention.",
+    dateLabel: "October 10, 2026", timeLabel: "CAC Village, PA", month: "OCT", day: "10",
+    startLocal: "20261010T100000", endLocal: "20261010T170000",
+    href: "/events/cacna-50th-anniversary-2026", navLabel: "50th Anniversary",
+  },
+  {
     id: "ministers-retreat-2027",
     title: "2027 Ministers Retreat",
     desc: "A time of refreshing, renewal & equipping for CACNA's ministers, held on Zoom — spiritual refreshment, unity & fellowship, empowerment, and prayer & intercession.",
