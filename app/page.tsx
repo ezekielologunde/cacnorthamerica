@@ -5,7 +5,7 @@ export const revalidate = 60;
 import dynamic from "next/dynamic";
 import { Nav } from "@/components/navigation/Nav";
 import { Hero } from "@/components/sections/Hero";
-import { ConventionSpotlight } from "@/components/sections/ConventionSpotlight";
+import { Spotlight } from "@/components/sections/Spotlight";
 import { createServiceClient } from "@/lib/supabase/server";
 
 // Below-fold sections split into separate JS chunks — browser parses them
@@ -14,7 +14,6 @@ const Watchword     = dynamic(() => import("@/components/sections/Watchword").th
 const PastorWelcome = dynamic(() => import("@/components/sections/PastorWelcome").then(m => ({ default: m.PastorWelcome })));
 const WhatToExpect  = dynamic(() => import("@/components/sections/WhatToExpect").then(m => ({ default: m.WhatToExpect })));
 const Impact        = dynamic(() => import("@/components/sections/Impact").then(m => ({ default: m.Impact })));
-const Events        = dynamic(() => import("@/components/sections/Events").then(m => ({ default: m.Events })));
 const LatestNews    = dynamic(() => import("@/components/sections/LatestNews").then(m => ({ default: m.LatestNews })));
 const GlobalChurches = dynamic(() => import("@/components/sections/GlobalChurches").then(m => ({ default: m.GlobalChurches })));
 const PlanVisit     = dynamic(() => import("@/components/sections/PlanVisit").then(m => ({ default: m.PlanVisit })));
@@ -97,12 +96,11 @@ export default async function Home() {
         </div>
       ))}
       <Hero />
-      <ConventionSpotlight />
+      <Spotlight />
       <Watchword />
       <PastorWelcome />
       <WhatToExpect />
       <Impact />
-      <Events />
       <LatestNews />
       <GlobalChurches />
       <PlanVisit />
