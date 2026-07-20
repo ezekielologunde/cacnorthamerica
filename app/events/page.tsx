@@ -29,7 +29,7 @@ function evPlace(id: string) {
 
 function evOffers(id: string) {
   if (id === "holy-land-pilgrimage-2026")
-    return { "@type": "Offer", price: "4795", priceCurrency: "USD", availability: "https://schema.org/InStock", url: `${SITE_URL}/events/pilgrimage-2026` };
+    return { "@type": "Offer", price: "4549", priceCurrency: "USD", availability: "https://schema.org/InStock", url: `${SITE_URL}/events/pilgrimage-2026` };
   return { "@type": "Offer", price: "0", priceCurrency: "USD", availability: "https://schema.org/InStock" };
 }
 

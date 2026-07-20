@@ -13,7 +13,7 @@ export const revalidate = 3600;
 export const metadata = {
   title: "Holy Land Pilgrimage 2026 — CACNA Latunde Region",
   description:
-    "CACNA Latunde Region Pilgrimage to Israel & Egypt, November 2–12, 2026. Led by Pastor Dr. H.O. Ilufoye & L/Evang. Bola Mustapha. From JFK, $4,795.",
+    "CACNA Latunde Region Pilgrimage to Israel & Egypt, November 2–12, 2026. Led by Pastor Dr. H.O. Ilufoye & L/Evang. Bola Mustapha. From JFK, $4,549.",
   alternates: { canonical: "/events/pilgrimage-2026" },
 };
 
@@ -75,7 +75,7 @@ export default function PilgrimagePage() {
     url: `${SITE_URL}/events/pilgrimage-2026`,
     location: { "@type": "Place", name: "Israel & Egypt (departing JFK)", address: { "@type": "PostalAddress", addressCountry: "IL" } },
     organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },
-    offers: { "@type": "Offer", price: "4795", priceCurrency: "USD", availability: "https://schema.org/InStock", url: `${SITE_URL}/events/pilgrimage-2026` },
+    offers: { "@type": "Offer", price: "4549", priceCurrency: "USD", availability: "https://schema.org/InStock", url: `${SITE_URL}/events/pilgrimage-2026` },
   };
   return (
     <main>
@@ -270,7 +270,7 @@ export default function PilgrimagePage() {
               <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 28 }}>
                 <div style={{ background: "var(--ink)", borderRadius: 18, padding: "22px 24px" }}>
                   <div style={{ fontSize: 13, fontWeight: 700, color: "rgba(245,246,250,.5)", marginBottom: 6 }}>Total trip price</div>
-                  <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 48, color: "#fff", letterSpacing: "-1px", lineHeight: 1 }}>$4,795</div>
+                  <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 48, color: "#fff", letterSpacing: "-1px", lineHeight: 1 }}>$4,549</div>
                 </div>
                 <div style={{ display: "flex", gap: 10 }}>
                   <div style={{ flex: 1, background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 16, padding: "18px 20px" }}>

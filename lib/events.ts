@@ -75,7 +75,7 @@ export const specialEvents: ChurchEvent[] = [
   {
     id: "holy-land-pilgrimage-2026",
     title: "Holy Land Pilgrimage 2026",
-    desc: "CACNA Latunde Region Pilgrimage to Israel & Egypt, November 2–12, 2026. Package includes round-trip flights from JFK, 8 nights accommodation (7 in Israel + 1 in St. Catherine, Egypt), daily meals, private guide, group coach, and Pilgrimage Certificate. Price $4,795 · $500 deposit to register · $2,000 second payment due Oct 31. Contact: info@cacnapilgrimage.org | @cacnapilgrimage",
+    desc: "CACNA Latunde Region Pilgrimage to Israel & Egypt, November 2–12, 2026. Package includes round-trip flights from JFK, 8 nights accommodation (7 in Israel + 1 in St. Catherine, Egypt), daily meals, private guide, group coach, and Pilgrimage Certificate. Price $4,549 · $500 deposit to register · $2,000 second payment due Oct 31. Contact: info@cacnapilgrimage.org | @cacnapilgrimage",
     dateLabel: "November 2–12, 2026", timeLabel: "Departing JFK", month: "NOV", day: "02",
     startLocal: "20261102T060000", endLocal: "20261112T230000",
     href: "/events/pilgrimage-2026", navLabel: "Holy Land Pilgrimage",
