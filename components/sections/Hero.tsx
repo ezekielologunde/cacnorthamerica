@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useRef, useState, useEffect, type CSSProperties } from "react";
 import { motion, AnimatePresence, useScroll, useTransform, useReducedMotion } from "framer-motion";
+import { PlayCircle, X } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import { Magnetic } from "@/components/ui/Magnetic";
@@ -9,6 +10,109 @@ import { haptic } from "@/lib/haptics";
 import { conventionToFeature, currentOrNextConvention, dateRangeLabel, CONVENTION_VENUE_SHORT } from "@/lib/conventions";
 import { specialEvents, isEventPast } from "@/lib/events";
 import { POSTS } from "@/lib/blog";
+
+export type HeroVideo = { id: string; title: string };
+
+/** Real, individually-verified CACNA photos (same set used elsewhere on the
+ *  site) — rotated as a slow Ken Burns crossfade instead of one static
+ *  frame. No stock imagery, no video file (none of CACNA's own exists yet —
+ *  see the real YouTube embed below for the "video feature" instead). */
+const SLIDES = [
+  { src: "/images/cac-congregation-worship.jpg", alt: "CACNA congregation in worship, from a past gathering" },
+  { src: "/images/cac-youth-convention.jpg", alt: "CACNA youth at a past Annual Convention" },
+  { src: "/images/cac-clergy-ceremony.jpg", alt: "CACNA clergy at a past ministers' gathering" },
+  { src: "/images/bible-institute-graduation.jpg", alt: "A CACNA Bible Institute graduation ceremony" },
+  { src: "/images/cac-graduation-group.jpg", alt: "CACNA family members at a past gathering" },
+] as const;
+
+/** Crossfading, slow-zooming photo backdrop — the "picture news" effect.
+ *  Reduced-motion visitors get the first photo, static, no cycling. */
+function HeroSlideshow({ reduce }: { reduce: boolean | null }) {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    if (reduce) return;
+    const id = setInterval(() => setIndex((i) => (i + 1) % SLIDES.length), 7000);
+    return () => clearInterval(id);
+  }, [reduce]);
+
+  if (reduce) {
+    return (
+      <div aria-hidden style={{
+        position: "absolute", inset: 0,
+        backgroundImage: `url(${SLIDES[0].src})`, backgroundSize: "cover", backgroundPosition: "center",
+      }} />
+    );
+  }
+
+  return (
+    <div aria-hidden style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
+      <AnimatePresence>
+        <motion.div
+          key={SLIDES[index].src}
+          initial={{ opacity: 0, scale: 1 }}
+          animate={{ opacity: 1, scale: 1.08 }}
+          exit={{ opacity: 0 }}
+          transition={{ opacity: { duration: 1.4, ease: "easeInOut" }, scale: { duration: 7.5, ease: "linear" } }}
+          style={{
+            position: "absolute", inset: 0,
+            backgroundImage: `url(${SLIDES[index].src})`,
+            backgroundSize: "cover", backgroundPosition: "center",
+          }}
+        />
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/** Real YouTube embed (CACNA's own channel, fetched via lib/sermons.ts) in a
+ *  lightbox — the honest "video feature": no fabricated background video
+ *  file exists, so this plays CACNA's actual latest upload on demand instead. */
+function VideoLightbox({ video, onClose }: { video: HeroVideo; onClose: () => void }) {
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) { if (e.key === "Escape") onClose(); }
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+
+  return (
+    <div
+      role="dialog" aria-modal="true" aria-label={video.title}
+      onClick={onClose}
+      style={{
+        position: "fixed", inset: 0, zIndex: 1000,
+        background: "rgba(12,14,19,.92)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        padding: "clamp(20px,5vw,64px)",
+      }}
+    >
+      <button
+        type="button" onClick={onClose} aria-label="Close" className="press"
+        style={{
+          position: "absolute", top: 20, right: 20,
+          width: 44, height: 44, borderRadius: 999,
+          background: "rgba(255,255,255,.12)", border: "1px solid rgba(255,255,255,.2)",
+          display: "grid", placeItems: "center", cursor: "pointer",
+        }}
+      >
+        <X size={20} strokeWidth={2} color="#fff" aria-hidden />
+      </button>
+      <div onClick={(e) => e.stopPropagation()} style={{ width: "100%", maxWidth: 960, aspectRatio: "16/9", borderRadius: 14, overflow: "hidden", boxShadow: "0 30px 80px rgba(0,0,0,.5)" }}>
+        <iframe
+          src={`https://www.youtube.com/embed/${video.id}?autoplay=1`}
+          title={video.title}
+          allow="autoplay; encrypted-media; picture-in-picture"
+          allowFullScreen
+          style={{ width: "100%", height: "100%", border: 0, display: "block" }}
+        />
+      </div>
+    </div>
+  );
+}
 
 const HERO_T = {
   en: { badge: "CACNA", line1: "One Fold.", line2: "One Shepherd." },
@@ -136,13 +240,10 @@ function HeroHighlights() {
   );
 }
 
-export function Hero() {
+export function Hero({ video }: { video?: HeroVideo | null }) {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
-
-  // No CACNA-specific background video is available yet (the source site's
-  // video belongs to a different, unrelated congregation) — a static photo
-  // stands in below until CACNA supplies its own footage.
+  const [videoOpen, setVideoOpen] = useState(false);
 
   // Bilingual hero greeting (English / Yorùbá). Scoped to the greeting;
   // persists per visit.
@@ -180,24 +281,20 @@ export function Hero() {
         padding: "140px clamp(20px,5vw,64px) 80px",
         overflow: "hidden",
         background: "#0d0a08",
-        backgroundImage: "url(/images/cac-congregation-worship.jpg)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
       }}
     >
-      {/* Static background photo, scroll-linked parallax (no video yet — see note above) */}
+      {/* Crossfading photo slideshow, scroll-linked parallax on top */}
       <motion.div
         aria-hidden
         style={{
           position: "absolute", inset: "-10%", zIndex: 0, overflow: "hidden",
-          backgroundImage: "url(/images/cac-congregation-worship.jpg)",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
           scale: reduce ? 1 : videoScale,
           y: reduce ? 0 : videoY,
           willChange: "transform",
         }}
-      />
+      >
+        <HeroSlideshow reduce={reduce} />
+      </motion.div>
 
       {/* Dark shadow overlay + grain vignette */}
       <div style={{
@@ -365,6 +462,21 @@ export function Hero() {
                 Plan a Visit
               </a>
             </Magnetic>
+            {video && (
+              <Magnetic strength={0.4}>
+                <button type="button" onClick={() => setVideoOpen(true)} className="btn-sheen press" style={{
+                  display: "inline-flex", alignItems: "center", gap: 10,
+                  background: "rgba(255,255,255,.12)", color: "#fff",
+                  fontWeight: 700, fontSize: 16,
+                  padding: "17px 30px", borderRadius: 999,
+                  border: "1.5px solid rgba(255,255,255,.35)",
+                  backdropFilter: "blur(8px)", cursor: "pointer",
+                }}>
+                  <PlayCircle size={19} strokeWidth={2} aria-hidden />
+                  Watch Latest Video
+                </button>
+              </Magnetic>
+            )}
           </div>
         </Reveal>
 
@@ -372,6 +484,10 @@ export function Hero() {
           <HeroHighlights />
         </Reveal>
       </motion.div>
+
+      {videoOpen && video && (
+        <VideoLightbox video={video} onClose={() => setVideoOpen(false)} />
+      )}
 
       {/* Scroll cue */}
       <motion.div
