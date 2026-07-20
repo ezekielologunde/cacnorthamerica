@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import Image from "next/image";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
@@ -377,24 +378,35 @@ export default async function BlogPage() {
       <Nav heroDark />
 
       {/* Masthead */}
-      <section style={{ background: "var(--ink)", padding: "130px clamp(20px,5vw,64px) 72px", position: "relative", overflow: "hidden" }}>
-        <div aria-hidden style={{ position: "absolute", top: -100, right: -80, width: 560, height: 440, background: "radial-gradient(circle,rgba(253,200,65,.2),transparent 65%)", pointerEvents: "none" }} />
-        <div style={{ maxWidth: 1140, margin: "0 auto", position: "relative", zIndex: 2 }}>
+      <section style={{ background: "var(--ink)", padding: "170px clamp(20px,5vw,64px) 110px", position: "relative", overflow: "hidden", minHeight: "72vh", display: "flex", alignItems: "center" }}>
+        <div aria-hidden style={{ position: "absolute", inset: 0 }}>
+          <Image
+            src="/images/cac-youth-convention.jpg"
+            alt="CACNA youth at a past Annual Convention"
+            fill
+            priority
+            style={{ objectFit: "cover", objectPosition: "center 30%" }}
+          />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(12,14,19,.55) 0%,rgba(12,14,19,.72) 55%,var(--ink) 100%)" }} />
+        </div>
+        <div aria-hidden style={{ position: "absolute", top: -100, right: -80, width: 560, height: 440, background: "radial-gradient(circle,rgba(253,200,65,.18),transparent 65%)", pointerEvents: "none" }} />
+        <div style={{ maxWidth: 1140, margin: "0 auto", position: "relative", zIndex: 2, width: "100%" }}>
           <Reveal>
-            <div style={{ borderBottom: "1px solid rgba(245,246,250,.12)", paddingBottom: 18, marginBottom: 22, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
-              <span style={{ fontSize: 11.5, fontWeight: 700, color: "rgba(245,246,250,.45)", letterSpacing: ".5px" }}>{dateStr}</span>
-              <span style={{ fontSize: 11.5, fontWeight: 700, color: "rgba(245,246,250,.45)", letterSpacing: ".5px" }}>cacnorthamerica.com</span>
+            <div style={{ borderBottom: "1px solid rgba(245,246,250,.16)", paddingBottom: 18, marginBottom: 26, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+              <span style={{ fontSize: 11.5, fontWeight: 700, color: "rgba(245,246,250,.55)", letterSpacing: ".5px" }}>{dateStr}</span>
+              <span style={{ fontSize: 11.5, fontWeight: 700, color: "rgba(245,246,250,.55)", letterSpacing: ".5px" }}>cacnorthamerica.com</span>
             </div>
           </Reveal>
           <Reveal delay={80}>
             <h1 style={{
               fontFamily: "var(--font-display)", fontWeight: 800,
-              fontSize: "clamp(56px,9vw,130px)", letterSpacing: "-0.025em",
-              color: "#fff", margin: "0 0 8px", lineHeight: 0.92, textAlign: "center",
+              fontSize: "clamp(64px,11vw,160px)", letterSpacing: "-0.03em",
+              color: "#fff", margin: "0 0 10px", lineHeight: 0.9, textAlign: "center",
+              textShadow: "0 8px 40px rgba(0,0,0,.35)",
             }}>CACNA News</h1>
           </Reveal>
           <Reveal delay={140}>
-            <p style={{ textAlign: "center", fontSize: 13, fontWeight: 700, letterSpacing: "5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 28 }}>
+            <p style={{ textAlign: "center", fontSize: 13, fontWeight: 700, letterSpacing: "5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 34 }}>
               Christ Apostolic Church North America
             </p>
           </Reveal>
@@ -407,8 +419,9 @@ export default async function BlogPage() {
                 { href: "#devotionals", label: "Devotionals" },
               ].map((l) => (
                 <a key={l.href} href={l.href} style={{
-                  fontSize: 12.5, fontWeight: 700, color: "rgba(245,246,250,.75)",
-                  background: "rgba(245,246,250,.08)", border: "1px solid rgba(245,246,250,.16)",
+                  fontSize: 12.5, fontWeight: 700, color: "rgba(245,246,250,.85)",
+                  background: "rgba(245,246,250,.1)", border: "1px solid rgba(245,246,250,.22)",
+                  backdropFilter: "blur(6px)",
                   padding: "8px 16px", borderRadius: 999, textDecoration: "none",
                 }}>
                   {l.label}

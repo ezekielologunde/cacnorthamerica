@@ -43,7 +43,7 @@ export const POSTS: BlogPost[] = [
     accent: "linear-gradient(135deg,#FDC841,#2D42C9)",
     readTime: "4 min read",
     featured: true,
-    image: { url: "/images/cacna-2026-flyer.jpg", alt: "Official CACNA 2026 Annual Convention flyer" },
+    image: { url: "/images/cac-youth-convention.jpg", alt: "CACNA youth at a past Annual Convention" },
     href: "/events/cacna-2026",
     body: [
       "The Christ Apostolic Church North America National Convention returns to CAC Village in Blue Ridge Summit, Pennsylvania from **July 13 to 18, 2026**. This is the gathering where the scattered family of CAC across North America becomes, for one week, a single congregation.",
@@ -65,7 +65,7 @@ export const POSTS: BlogPost[] = [
     accent: "linear-gradient(135deg,#7A1128,#C81E3A)",
     readTime: "4 min read",
     featured: true,
-    image: { url: "/images/cacna-2026-flyer.jpg", alt: "Official CACNA 2026 Annual Convention flyer" },
+    image: { url: "/images/cac-congregation-worship.jpg", alt: "CACNA congregation in worship, from a past gathering" },
     body: [
       '_\"We are therefore Christ\'s ambassadors, as though God were making his appeal through us.\"_ — 2 Corinthians 5:20',
       "An ambassador does not speak in their own name. They carry the authority of the one who sent them, the message of the one who sent them, and the reputation of the one who sent them. Their personal opinions are, in the formal moment, irrelevant.",
@@ -86,7 +86,7 @@ export const POSTS: BlogPost[] = [
     accent: "linear-gradient(135deg,#2D42C9,#12141E)",
     readTime: "6 min read",
     featured: true,
-    image: { url: "/images/cacna-2026-flyer.jpg", alt: "Official CACNA 2026 Annual Convention flyer" },
+    image: { url: "/images/pastor-oladele-portrait.jpg", alt: "Pastor Samuel Olusegun Oladele, President of Christ Apostolic Church, Nigeria and Overseas" },
     body: [
       "Pastor Samuel Olusegun Oladele, President of Christ Apostolic Church, Nigeria and Overseas, delivered the President's Message at this year's CAC Latunde Region (North America) Annual Retreat at the CAC Village in Blue Ridge Summit, Pennsylvania. Below are the highlights of his address to the region.",
       "**Our corporate theme this year is \"The Bible: God's Message to Man.\"** The Bible, Pastor Oladele reminded the gathering, is the means through which God's message to mankind is conveyed — contextually, textually, and verbally inspired by God through the Holy Spirit (2 Timothy 3:16, John 1:1, Hebrews 1:1-4). By reason of its divine authorship, Scripture carries **inerrancy** (entirely free from error), **congruence** (66 books, over 1,500 years, more than 40 authors, yet one consistent picture of God's plan), and **authority** for life and ministry.",
@@ -110,7 +110,7 @@ export const POSTS: BlogPost[] = [
     accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "5 min read",
     featured: true,
-    image: { url: "/images/cacna-2026-flyer.jpg", alt: "Official CACNA 2026 Annual Convention flyer" },
+    image: { url: "/images/pastor-agbeja-portrait.jpg", alt: "Pastor Dr. T.A.O. Agbeja, Regional Superintendent of CACNA (Latunde Region)" },
     body: [
       "As CACNA gathered at CAC Village for the 2026 Annual Convention (July 13–18), Regional Superintendent Pastor Dr. T.A.O. Agbeja delivered the Welcome Address, opening this year's convention with thanksgiving to God and a warm welcome to the visiting church leaders who traveled to be with us.",
       "Pastor Agbeja welcomed President Pastor S.O. Oladele and Mrs. Susana Oladele, General Superintendent Pastor E.O. Odejobi, General Evangelist Prophet Hezekiah Oladeji, Mission Director Pastor C.S. Fasuyi, our brethren from CAC Europe led by Anosike Region Superintendent Pastor Simeon Oladokun, and Bishop and Mrs. Asaju of the Ilesa Anglican Diocese — alongside every DCC/Zonal Superintendent, pastor, evangelist, and member of the Latunde Region family gathered on \"this miracle ground\" for another year.",
@@ -132,7 +132,7 @@ export const POSTS: BlogPost[] = [
     accent: "linear-gradient(135deg,#FDC841,#7A1128)",
     readTime: "5 min read",
     featured: true,
-    image: { url: "/images/cacna-2026-flyer.jpg", alt: "Official CACNA 2026 Annual Convention flyer" },
+    image: { url: "/images/pastor-adenodi-portrait.jpg", alt: "Pastor David Olusegun Adenodi, Ph.D., Chairman of the CACNA Convention & Conference Planning Committee" },
     body: [
       "Pastor David Olusegun Adenodi, Ph.D., Chairman of the CACNA Convention & Conference Planning Committee, delivered the Convention Chairman's Welcome Address at this year's gathering, welcoming President Pastor S.O. Oladele, General Superintendent Pastor E.O. Odejobi, General Evangelist Prophet Hezekiah Oladeji, Regional Superintendent Pastor Dr. T.O. Agbeja, and the entire Christ Apostolic Church North and South America (Latunde Region) family, reaffirming this year's theme, **\"The Bible: God's Message to Man\"** (2 Timothy 3:16-17, Hebrews 4:12, Psalm 119:105).",
       "\"The Bible remains God's infallible, inspired, and eternal message to humanity,\" he said. \"In a generation characterized by confusion, moral decline, false teachings, and spiritual distractions, God is calling His people back to His Word.\" His prayer for the convention was simple: that every participant would experience a fresh encounter with the God of the Bible, and be corrected, instructed, and equipped through it for effective Christian living and service.",
@@ -155,7 +155,7 @@ export const POSTS: BlogPost[] = [
     accent: "linear-gradient(135deg,#2D42C9,#7A1128)",
     readTime: "6 min read",
     featured: true,
-    image: { url: "/images/cacna-2026-flyer.jpg", alt: "Official CACNA 2026 Annual Convention flyer" },
+    image: { url: "/images/pastor-agbeja-portrait.jpg", alt: "Pastor Dr. T.A.O. Agbeja, Regional Superintendent of CACNA (Latunde Region)" },
     body: [
       "Ministers' Session 1 — **\"Transformative Power of the Word\"** — opened this year's convention with Pastor T.A.O. Agbeja teaching from Hebrews 4:12: \"the word of God is quick, and powerful, and sharper than any two-edged sword... a discerner of the thoughts and intents of the heart.\" God's Word, he said, is the only thing able to transform a person on all three levels — spirit, soul, and body. When it takes root in the spirit, it reshapes the way we think (Romans 12:2), and it even reaches the physical body: Proverbs calls it \"health... to all their flesh,\" from a Greek word that also means medicine.",
       "\"Now that you have purified yourselves by obeying the truth so that you have sincere love for each other, love one another deeply, from the heart\" (1 Peter 1:22-25, NIV). From this text, the message turned to a question every believer eventually has to sit with: what does it actually mean to obey the truth?",
@@ -229,7 +229,7 @@ export const POSTS: BlogPost[] = [
     accent: "linear-gradient(135deg,#2D42C9,#FDC841)",
     readTime: "3 min read",
     featured: true,
-    image: { url: "/images/cacna-2026-flyer.jpg", alt: "Official CACNA 2026 Annual Convention flyer" },
+    image: { url: "/images/pastor-adenodi-portrait.jpg", alt: "Pastor David Olusegun Adenodi, Ph.D., Chairman of the CACNA Convention & Conference Planning Committee" },
     body: [
       "\"Calvary greetings in the name of our Lord and Savior Jesus,\" Pastor David Olusegun Adenodi, Ph.D., Chairman of the CACNA Convention & Conference Planning Committee, wrote as the 2026 convention drew to a close. \"As we conclude this spiritually enriching convention themed 'The Bible: God's Message to Man,' I stand before you with a heart full of gratitude.\"",
       "On behalf of the Convention Committee, he extended thanks to CACNA's leaders and to the convention's distinguished speakers and ministers, \"for delivering messages that have challenged and uplifted us. Your insights have equipped us to lead with wisdom and humility.\"",
@@ -248,6 +248,7 @@ export const POSTS: BlogPost[] = [
     categoryColor: "#FDC841",
     accent: "linear-gradient(135deg,#FDC841,#2D42C9)",
     readTime: "4 min read",
+    image: { url: "/images/giving-offering.jpg", alt: "CACNA members bringing an offering during a service" },
     body: [
       "\"In Christendom, nothing significant happens without revelation from God. While articulating revelation is important, faithful, committed and dedicated people of like minds are very essential to accomplish it,\" writes Pastor Bolaji Oladunni, Chairman of the CACNA Business Group Fellowship, in the Christ Apostolic Church North America Hope For All newsletter. \"We often reduce revelation to mere information — we pray for changes but few respond.\"",
       "The story traces back to 2014, at an event in Philadelphia, when Deacon Amos Ajibolade — under the tenure of the former regional superintendent, the late Pastor Solomon Oyeleke (Rtd.) — followed a revelation about the business people in Christ Apostolic Church and what the Spirit was leading them to do to reduce poverty and support the church's Village Project.",
@@ -268,6 +269,7 @@ export const POSTS: BlogPost[] = [
     categoryColor: "#2D42C9",
     accent: "linear-gradient(135deg,#2D42C9,#12141E)",
     readTime: "5 min read",
+    image: { url: "/images/cac-clergy-ceremony.jpg", alt: "CACNA clergy at a past ministers' gathering" },
     body: [
       "\"There hasn't been any proper written documentation about the existence of the church prior to 2010, but of course the church started long before 2010,\" writes Pastor A.K. Bamidele, Acting Superintendent, in the Christ Apostolic Church Hope For All newsletter, recounting the founding of CAC Mount Joy Sao Paulo Brazil.",
       "In 2010, Pastor Isaac Ayani, from Mount Joy (UK), made a missionary visit to Sao Paulo with the sole aim of planting a Christ Apostolic Church assembly there. He met Pastor Gabriel Adedokun, now of blessed memory, who was then assisting in pastoring the Redeemed Christian Church of God, since there wasn't any Christ Apostolic Church present. \"Their meeting, facilitated through a known member of Christ Apostolic Church, led to the birth of CAC Mount Joy Sao Paulo, Brazil.\"",
@@ -288,6 +290,7 @@ export const POSTS: BlogPost[] = [
     categoryColor: "#7A1128",
     accent: "linear-gradient(135deg,#7A1128,#C81E3A)",
     readTime: "5 min read",
+    image: { url: "/images/cac-congregation-worship.jpg", alt: "CACNA congregation in worship, from a past gathering" },
     body: [
       "\"Church growth through pastoral care and welfare\" refers to the concept that churches can expand and thrive by prioritizing the well-being of their members and the communities they serve,\" writes Pastor Z.O. Oloba, Empowerment & Evangelism Coordinator, CAC Latunde Region. \"This approach emphasizes the importance of spiritual, emotional, and physical support in fostering the development and growth of a healthy and vibrant church.\"",
       "**Strengthening member retention**: compassionate pastoral care fosters strong relationships between church leaders and their members. \"When people feel genuinely cared for, they are more likely to stay committed to the church community and contribute to her growth\" (1 Peter 5:2).",
@@ -307,6 +310,7 @@ export const POSTS: BlogPost[] = [
     categoryColor: "#EB6342",
     accent: "linear-gradient(135deg,#EB6342,#7A1128)",
     readTime: "5 min read",
+    image: { url: "/images/pastor-amos-dada-portrait.jpg", alt: "Pastor Amos Dada, Ph.D., P.Eng, Convener of the International Gathering of Eagles Conference" },
     body: [
       "\"The evangelistic mandate of CAC is not limited to Nigeria. Through the International Gathering of Eagles Conference (IGOEC), global missions and various zonal outreaches, CAC has taken the gospel to Ghana, Kenya, the UK, Canada, the US, and beyond,\" writes Pastor Amos Dada, Ph.D., P.Eng, Convener of the International Gathering of Eagles Conference, in the Christ Apostolic Church Hope For All newsletter. \"This global focus aligns with the vision of taking the gospel to the uttermost parts of the earth\" (Acts 1:8).",
       "\"As a personal example, when I came to Canada in 2001, the Lord said I should put Canada on the spiritual map of the world and raise an eagle generation that led me to start International Gathering of Eagles Conference (IGOEC), a global outreach initiative birthed to fulfill the Great Commission beyond borders. Through this visionary platform, CAC Bethel Canada has extended its evangelistic reach to over 52 nations, engaging in dynamic crusades, revivals, and church planting efforts.\"",
@@ -326,6 +330,7 @@ export const POSTS: BlogPost[] = [
     categoryColor: "#FDC841",
     accent: "linear-gradient(135deg,#FDC841,#EB6342)",
     readTime: "4 min read",
+    image: { url: "/images/cac-youth-convention.jpg", alt: "CACNA youth at a past Annual Convention" },
     body: [
       "\"This idea is not just about physical health. A cheerful heart can lead to a positive outlook on life and can keep us energetic and vibrant,\" writes Pastor R.O. Adeagbo, Ph.D., HFA Director, CAC Latunde Region, in the Christ Apostolic Church Hope For All newsletter. \"Think of it like watering a healthy plant — happy heart nurtures both our minds and spirits.\"",
       "\"Just like how laughter is contagious, sharing joy can light up the day for others. Imagine walking into a room where friends are sharing happy moments and laughter — it's hard not to get caught up in that positive energy. We can be like light in each other's lives, helping us to counteract dark moments when they arise. Laughter not only boosts our outlook, but it can also improve our relationships,\" he writes, drawing on Proverbs 17:22.",
@@ -344,6 +349,7 @@ export const POSTS: BlogPost[] = [
     categoryColor: "#2D42C9",
     accent: "linear-gradient(135deg,#2D42C9,#FDC841)",
     readTime: "3 min read",
+    image: { url: "/images/cac-gathering-crowd.jpg", alt: "A gathering of the CACNA family" },
     body: [
       "\"Loneliness among fathers is a hidden epidemic, but it's not insurmountable,\" writes Professor (Pastor) Z.D. Adeyewa (fNMetS), Former Vice Chancellor of Redeemer University, Ede, Osun State, Nigeria, in the Christ Apostolic Church Hope For All newsletter. \"This Father's Day, let's commit to seeing fathers not just as providers or protectors, but as individuals with emotional needs. Reach out to a father in your life who might be struggling.\"",
       "\"A simple phone call, text, a heartfelt thank-you, or a visit can go a long way in brightening their day. For fathers feeling isolated, take a small step: join a local church group, share about your thoughts and feelings. Sometimes, all someone needs is someone to talk to. Be present and let them help.\"",
@@ -362,6 +368,7 @@ export const POSTS: BlogPost[] = [
     categoryColor: "#EB6342",
     accent: "linear-gradient(135deg,#EB6342,#12141E)",
     readTime: "4 min read",
+    image: { url: "/images/bible-institute-graduation.jpg", alt: "A CACNA Bible Institute graduation ceremony" },
     body: [
       "\"As a chiropractor and wellness advocate, I've spent years encouraging patients to tune in to the signals their bodies are sending, whether through pain, fatigue, or restlessness. But more than a physical response, these are often reminders of deeper imbalances in how we care for ourselves,\" writes Dr. Cassandra Laleye, Chiropractic Doctor, in the Christ Apostolic Church Hope For All newsletter. \"And as a woman of faith, I believe our health journey isn't just about wellness — it's about worship.\"",
       "\"Scripture is clear: 'Do you not know that your bodies are temples of the Holy Spirit, who is in you... therefore honor God with your bodies' (1 Corinthians 6:19-20). Our bodies are uniquely designed, miraculously knit together (Psalm 139:13) — and we have a divine responsibility to steward them well.\"",
@@ -380,6 +387,7 @@ export const POSTS: BlogPost[] = [
     categoryColor: "#7A1128",
     accent: "linear-gradient(135deg,#7A1128,#2D42C9)",
     readTime: "4 min read",
+    image: { url: "/images/cac-graduation-group.jpg", alt: "CACNA family members at a past gathering" },
     body: [
       "\"While some believers claim that being spiritual is all you need, I want to submit unequivocally that spirituality is not an antidote for the health and overall well-being of a leader, and this requires clarification and must be approached with caution,\" writes Pastor Bolaji Oladunni, Chairman of the Business Group Fellowship, in this year's Business Group Fellowship convention booklet, themed \"Balancing the Call: Burnout, Rest, and the Health of a Leader's Soul\" (Matthew 11:28-29).",
       "\"In the 3rd epistle of John, the Apostle expressed his letter to Gaius — by extension to all believers — to prioritize the desire to be in good health, and prosper in all things; as his soul prospers. 'The elder unto the well-beloved Gaius, whom I love in the truth. Beloved, I wish above all things that thou mayest prosper and be in health, even as thy soul prospereth' (3 John 1:1-2). The text above immediately suggests that physical health is not just a defining factor of a prosperous soul, but also a critical component. Gaius' prosperous soul was so excellent that John prayed his physical health and well-being would match his spiritual vigor.\"",
@@ -398,6 +406,7 @@ export const POSTS: BlogPost[] = [
     categoryColor: "#2D42C9",
     accent: "linear-gradient(135deg,#2D42C9,#7A1128)",
     readTime: "4 min read",
+    image: { url: "/images/cacma-fellowship.jpg", alt: "A CACNA fellowship gathering, from a past event" },
     body: [
       "Delivered at the 2025 Sunday School Rally, Pastor Michael Ekemode, Superintendent of CAC Orlando Zone, took as his text \"Leadership Hypocrisy: The Ruins of the Present Day Church\" (Matthew 23:27-28) — Jesus's rebuke of the Pharisees as \"whitewashed tombs,\" beautiful on the outside but full of decay within.",
       "Drawing on the Merriam-Webster definition of hypocrisy and the Greek word for church, *ekklesia* — literally \"the called-out ones\" — Pastor Ekemode argued that a church, and its leadership, is meant to be defined by integrity between what is professed and what is practiced, not by appearances maintained for others.",
@@ -415,6 +424,7 @@ export const POSTS: BlogPost[] = [
     categoryColor: "#7A1128",
     accent: "linear-gradient(135deg,#7A1128,#EB6342)",
     readTime: "5 min read",
+    image: { url: "/images/pastor-agbeja-portrait.jpg", alt: "Pastor Dr. T.A.O. Agbeja, Regional Superintendent of CACNA (Latunde Region)" },
     body: [
       "\"When we embrace intentional rest and prioritize wellbeing, we are fostering a culture of self-care within our leadership and our teams,\" writes Pastor T.A.O. Agbeja, Ph.D., Regional Superintendent of CACNA (Latunde Region), in a reflection delivered under the 2025 convention's \"Balancing the Call: Burnout, Rest, and the Health of a Leader's Soul\" theme (Matthew 11:28-29). \"It's during these quieter times that leaders can engage in self-reflection and seek feedback from others, both of which are crucial components of emotional intelligence.\"",
       "\"In a world that seems to constantly prioritize busyness and productivity, finding time to recharge can be counterintuitive,\" he continues, recalling a panel discussion he facilitated where \"two wise and experienced leaders shared how emotional intelligence skills shaped their leadership journey\" — and how deeply a focus on wellbeing connected to those same skills.",
