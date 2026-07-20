@@ -220,21 +220,28 @@ function CacWorldCard({ item }: { item: CacWorldNewsItem }) {
   );
 }
 
-function SectionHeading({ icon: Icon, eyebrow, title, description, meta }: { icon: LucideIcon; eyebrow: string; title: string; description?: string; meta?: string }) {
+function SectionHeading({ icon: Icon, eyebrow, title, description, meta, gradient }: { icon: LucideIcon; eyebrow: string; title: string; description?: string; meta?: string; gradient: string }) {
   return (
     <Reveal style={{ marginBottom: 32 }}>
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
-        <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
-          <div style={{ width: 48, height: 48, borderRadius: 14, background: "var(--paper)", border: "1px solid var(--line)", display: "grid", placeItems: "center", flexShrink: 0 }}>
-            <Icon size={22} strokeWidth={2} color="var(--red)" aria-hidden />
+      <div style={{
+        position: "relative", overflow: "hidden", borderRadius: 22,
+        padding: "clamp(22px,3vw,30px) clamp(22px,3vw,30px)",
+        background: gradient,
+      }}>
+        <div aria-hidden style={{ position: "absolute", top: -60, right: -40, width: 220, height: 220, borderRadius: "50%", background: "radial-gradient(circle,rgba(255,255,255,.14),transparent 70%)", pointerEvents: "none" }} />
+        <div style={{ position: "relative", zIndex: 2, display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
+          <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+            <div style={{ width: 48, height: 48, borderRadius: 14, background: "rgba(255,255,255,.14)", border: "1px solid rgba(255,255,255,.25)", display: "grid", placeItems: "center", flexShrink: 0, backdropFilter: "blur(6px)" }}>
+              <Icon size={22} strokeWidth={2} color="#fff" aria-hidden />
+            </div>
+            <div>
+              <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "rgba(255,255,255,.75)" }}>{eyebrow}</span>
+              <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3vw,34px)", letterSpacing: "-.8px", color: "#fff", margin: "4px 0 6px", lineHeight: 1.1 }}>{title}</h2>
+              {description && <p style={{ fontSize: 14, color: "rgba(255,255,255,.8)", margin: 0, maxWidth: 460, lineHeight: 1.6 }}>{description}</p>}
+            </div>
           </div>
-          <div>
-            <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)" }}>{eyebrow}</span>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3vw,34px)", letterSpacing: "-.8px", color: "var(--ink)", margin: "4px 0 6px", lineHeight: 1.1 }}>{title}</h2>
-            {description && <p style={{ fontSize: 14, color: "var(--ink-soft)", margin: 0, maxWidth: 460, lineHeight: 1.6 }}>{description}</p>}
-          </div>
+          {meta && <span style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,.8)", whiteSpace: "nowrap", marginTop: 12 }}>{meta}</span>}
         </div>
-        {meta && <span style={{ fontSize: 12, fontWeight: 700, color: "var(--ink-soft)", whiteSpace: "nowrap", marginTop: 12 }}>{meta}</span>}
       </div>
     </Reveal>
   );
@@ -395,6 +402,7 @@ export default async function BlogPage() {
               eyebrow="Featured coverage"
               title="2026 Convention Coverage"
               description="Welcome addresses, messages, and the closing word from CACNA's flagship gathering."
+              gradient="linear-gradient(135deg,#7A1128,#FDC841)"
             />
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,360px),1fr))", gap: 22 }}>
               {conventionCoverage.map((p, i) => (
@@ -417,6 +425,7 @@ export default async function BlogPage() {
               title="From the Archives"
               description="Earlier reflections and updates from across the CACNA family."
               meta={`${archiveArticles.length} entries`}
+              gradient="linear-gradient(135deg,#3A3D4A,#12141E)"
             />
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,360px),1fr))", gap: 22 }}>
               {archiveArticles.map((p, i) => (
@@ -439,6 +448,7 @@ export default async function BlogPage() {
               title="From CAC World"
               description="News from Christ Apostolic Church Worldwide, headquartered in Nigeria."
               meta="via cacworldnews.com"
+              gradient="linear-gradient(135deg,#2D42C9,#12141E)"
             />
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,360px),1fr))", gap: 22 }}>
               {cacWorldNews.map((item, i) => (
@@ -461,6 +471,7 @@ export default async function BlogPage() {
               title="Devotionals"
               description="Short reflections to ground your day in the Word."
               meta={`${devotionalArticles.length} entries`}
+              gradient="linear-gradient(135deg,#C81E3A,#7A1128)"
             />
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,360px),1fr))", gap: 22 }}>
               {devotionalArticles.map((p, i) => (
