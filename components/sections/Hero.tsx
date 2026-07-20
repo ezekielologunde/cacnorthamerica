@@ -1,68 +1,144 @@
 "use client";
 import Link from "next/link";
-import { useRef, useState, useEffect } from "react";
-import { motion, AnimatePresence, useScroll, useTransform, useReducedMotion } from "framer-motion";
-import { PlayCircle, X } from "lucide-react";
+import { useRef, useState, useEffect, useMemo } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { ChevronLeft, ChevronRight, PlayCircle, X } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { haptic } from "@/lib/haptics";
 import { conventionToFeature, currentOrNextConvention, dateRangeLabel, CONVENTION_VENUE_SHORT } from "@/lib/conventions";
+import { specialEvents, isEventPast } from "@/lib/events";
 import { POSTS } from "@/lib/blog";
+import { GIVING_CAMPAIGNS } from "@/lib/giving";
 
 export type HeroVideo = { id: string; title: string };
 
-/** Real, individually-verified CACNA photos (same set used elsewhere on the
- *  site) — rotated as a slow Ken Burns crossfade instead of one static
- *  frame. No stock imagery, no video file (none of CACNA's own exists yet —
- *  see the real YouTube embed below for the "video feature" instead). */
-const SLIDES = [
-  { src: "/images/cac-congregation-worship.jpg", alt: "CACNA congregation in worship, from a past gathering" },
-  { src: "/images/cac-youth-convention.jpg", alt: "CACNA youth at a past Annual Convention" },
-  { src: "/images/cac-clergy-ceremony.jpg", alt: "CACNA clergy at a past ministers' gathering" },
-  { src: "/images/bible-institute-graduation.jpg", alt: "A CACNA Bible Institute graduation ceremony" },
-  { src: "/images/cac-graduation-group.jpg", alt: "CACNA family members at a past gathering" },
-] as const;
+type SlideBg = { type: "photo"; src: string; alt: string } | { type: "gradient"; value: string };
+type SlideKind = "Welcome" | "Event" | "Ad" | "News";
 
-/** Crossfading, slow-zooming photo backdrop — the "picture news" effect.
- *  Reduced-motion visitors get the first photo, static, no cycling. */
-function HeroSlideshow({ reduce }: { reduce: boolean | null }) {
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    if (reduce) return;
-    const id = setInterval(() => setIndex((i) => (i + 1) % SLIDES.length), 7000);
-    return () => clearInterval(id);
-  }, [reduce]);
-
-  if (reduce) {
-    return (
-      <div aria-hidden style={{
-        position: "absolute", inset: 0,
-        backgroundImage: `url(${SLIDES[0].src})`, backgroundSize: "cover", backgroundPosition: "center",
-      }} />
-    );
-  }
-
-  return (
-    <div aria-hidden style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
-      <AnimatePresence>
-        <motion.div
-          key={SLIDES[index].src}
-          initial={{ opacity: 0, scale: 1 }}
-          animate={{ opacity: 1, scale: 1.08 }}
-          exit={{ opacity: 0 }}
-          transition={{ opacity: { duration: 1.4, ease: "easeInOut" }, scale: { duration: 7.5, ease: "linear" } }}
-          style={{
-            position: "absolute", inset: 0,
-            backgroundImage: `url(${SLIDES[index].src})`,
-            backgroundSize: "cover", backgroundPosition: "center",
-          }}
-        />
-      </AnimatePresence>
-    </div>
-  );
+interface Slide {
+  key: string;
+  kind: SlideKind;
+  eyebrow: string;
+  title: string;
+  desc: string;
+  cta: { label: string; href: string; external?: boolean };
+  bg: SlideBg;
 }
+
+const KIND_COLOR: Record<SlideKind, string> = {
+  Welcome: "var(--gold)",
+  Event: "var(--gold)",
+  Ad: "var(--gold)",
+  News: "var(--gold)",
+};
+
+/** Builds the rotating slide deck — a real news-and-events carousel (the
+ *  "college homepage" pattern) instead of one fixed hero message. Every
+ *  slide is real CACNA content: the adaptive convention state, real
+ *  upcoming events, a real giving campaign, and the latest real post.
+ *  Slides for events that have already passed simply don't get built. */
+function useSlides(video?: HeroVideo | null): Slide[] {
+  return useMemo(() => {
+    const slides: Slide[] = [
+      {
+        key: "welcome",
+        kind: "Welcome",
+        eyebrow: "Welcome Home",
+        title: "One Fold. One Shepherd.",
+        desc: "Real worship and real community across every CACNA member church — preaching the whole Gospel in a clear and undiluted manner, wherever you are.",
+        cta: { label: "Join Us Online", href: "/online" },
+        bg: { type: "photo", src: "/images/cac-congregation-worship.jpg", alt: "CACNA congregation in worship" },
+      },
+    ];
+
+    const { cy: featuredCy, state } = conventionToFeature();
+    const nextCy = currentOrNextConvention();
+    const showRecap = state === "live" || state === "concluded-recent";
+    const recapPost = POSTS.find((p) => p.slug === "cacna-2026-closing-appreciation");
+    slides.push({
+      key: "convention",
+      kind: "Event",
+      eyebrow: showRecap ? (state === "live" ? "Live Now" : "Just Concluded") : "Save the Date",
+      title: showRecap ? `CACNA ${featuredCy.year} Convention` : `CACNA ${nextCy.year} National Convention`,
+      desc: showRecap
+        ? "Read the Convention Chairman's closing message of thanks to every speaker, volunteer, and family."
+        : `${dateRangeLabel(nextCy)} · ${CONVENTION_VENUE_SHORT}`,
+      cta: showRecap
+        ? { label: "Read the Closing Message", href: recapPost ? (recapPost.href ?? `/blog/${recapPost.slug}`) : featuredCy.href }
+        : { label: "Event Details", href: nextCy.href },
+      bg: { type: "photo", src: "/images/cac-youth-convention.jpg", alt: "CACNA youth at a past Annual Convention" },
+    });
+
+    const anniversary = specialEvents.find((e) => e.id === "cacna-50th-anniversary-2026");
+    if (anniversary && !isEventPast(anniversary)) {
+      slides.push({
+        key: "anniversary",
+        kind: "Event",
+        eyebrow: "50 Years Strong",
+        title: "50th Anniversary Celebration",
+        desc: `${anniversary.dateLabel} · ${anniversary.timeLabel} — five decades of ministry across North America.`,
+        cta: { label: "Celebrate With Us", href: anniversary.href ?? "/calendar" },
+        bg: { type: "photo", src: "/images/cac-gathering-crowd.jpg", alt: "A gathering of the CACNA family" },
+      });
+    }
+
+    const pilgrimage = specialEvents.find((e) => e.id === "holy-land-pilgrimage-2026");
+    if (pilgrimage && !isEventPast(pilgrimage)) {
+      slides.push({
+        key: "pilgrimage",
+        kind: "Ad",
+        eyebrow: "Holy Land Pilgrimage",
+        title: `Israel & Egypt, ${pilgrimage.dateLabel}`,
+        desc: "Flights, hotels & a private guide included · $4,549 · $500 deposit to register.",
+        cta: { label: "Reserve Your Spot", href: pilgrimage.href ?? "/calendar" },
+        bg: { type: "gradient", value: "linear-gradient(135deg,#7A5A1E,#3D2C0F)" },
+      });
+    }
+
+    const givingCampaign = GIVING_CAMPAIGNS[0];
+    if (givingCampaign) {
+      slides.push({
+        key: "giving",
+        kind: "Ad",
+        eyebrow: givingCampaign.eyebrow,
+        title: givingCampaign.title,
+        desc: givingCampaign.adBlurb,
+        cta: { label: "Give Now", href: "/giving" },
+        bg: { type: "photo", src: "/images/giving-offering.jpg", alt: "CACNA members bringing an offering during a service" },
+      });
+    }
+
+    const latestPost = [...POSTS]
+      .filter((p) => p.slug !== "cacna-2026-closing-appreciation")
+      .sort((a, b) => b.dateIso.localeCompare(a.dateIso))[0];
+    if (latestPost) {
+      slides.push({
+        key: "news",
+        kind: "News",
+        eyebrow: "Latest News",
+        title: latestPost.title,
+        desc: latestPost.excerpt,
+        cta: { label: "Read the Post", href: latestPost.href ?? `/blog/${latestPost.slug}` },
+        bg: latestPost.image
+          ? { type: "photo", src: latestPost.image.url, alt: latestPost.image.alt }
+          : { type: "gradient", value: latestPost.accent },
+      });
+    }
+
+    void video; // video is surfaced as a small link on the welcome slide, not its own slide
+    return slides;
+  }, [video]);
+}
+
+const BG_WORDS = [
+  { w: "GRACE",     l: 4,  delay: 0,   dur: 22, sz: 48, o: 0.05  },
+  { w: "FAITH",     l: 77, delay: 1,   dur: 28, sz: 30, o: 0.04  },
+  { w: "HOPE",      l: 21, delay: 2,   dur: 18, sz: 62, o: 0.055 },
+  { w: "LOVE",      l: 63, delay: 0.5, dur: 24, sz: 38, o: 0.045 },
+  { w: "FAMILY",    l: 53, delay: 1.2, dur: 32, sz: 18, o: 0.04  },
+] as const;
 
 /** Real YouTube embed (CACNA's own channel, fetched via lib/sermons.ts) in a
  *  lightbox — the honest "video feature": no fabricated background video
@@ -114,92 +190,19 @@ function VideoLightbox({ video, onClose }: { video: HeroVideo; onClose: () => vo
 }
 
 const HERO_T = {
-  en: { badge: "CACNA", line1: "One Fold.", line2: "One Shepherd." },
-  yo: { badge: "CACNA", line1: "Agbo Kan.", line2: "Oluṣọ-Agutan Kan." },
+  en: { line1: "One Fold.", line2: "One Shepherd." },
+  yo: { line1: "Agbo Kan.", line2: "Oluṣọ-Agutan Kan." },
 } as const;
-
-const BG_WORDS = [
-  { w: "GRACE",     l: 4,  delay: 0,   dur: 22, sz: 48, o: 0.055 },
-  { w: "FAITH",     l: 77, delay: 1,   dur: 28, sz: 30, o: 0.045 },
-  { w: "HOPE",      l: 21, delay: 2,   dur: 18, sz: 62, o: 0.06  },
-  { w: "LOVE",      l: 63, delay: 0.5, dur: 24, sz: 38, o: 0.05  },
-  { w: "GLORY",     l: 41, delay: 2.5, dur: 20, sz: 26, o: 0.04  },
-  { w: "WORSHIP",   l: 87, delay: 1.5, dur: 30, sz: 22, o: 0.05  },
-  { w: "AMEN",      l: 11, delay: 3,   dur: 16, sz: 44, o: 0.055 },
-  { w: "FAMILY",    l: 53, delay: 1.2, dur: 32, sz: 18, o: 0.04  },
-] as const;
-
-function AnimLetters({ children, delay = 0 }: { children: string; delay?: number }) {
-  const reduce = useReducedMotion();
-  const chars = Array.from(children);
-  return (
-    <motion.span
-      role="img"
-      aria-label={children}
-      style={{ display: "inline-block" }}
-      variants={{
-        hidden: {},
-        show: { transition: { staggerChildren: reduce ? 0 : 0.045, delayChildren: delay } },
-      }}
-      initial="hidden"
-      animate="show"
-    >
-      {chars.map((char, i) => (
-        <span key={i} aria-hidden style={{ display: "inline-flex", overflow: "hidden", verticalAlign: "top" }}>
-          <motion.span
-            variants={
-              reduce
-                ? { hidden: { opacity: 0 }, show: { opacity: 1, transition: { duration: 0.3 } } }
-                : { hidden: { y: "110%" }, show: { y: "0%", transition: { type: "spring" as const, stiffness: 220, damping: 24, mass: 0.6 } } }
-            }
-            style={{ display: "inline-block" }}
-          >
-            {char}
-          </motion.span>
-        </span>
-      ))}
-    </motion.span>
-  );
-}
-
-/** One adaptive line of what's actually happening right now — not a bank of
- *  cards, just the single fact most worth surfacing: the convention's real
- *  live/just-concluded/next-date state. Real, current, CACNA-specific,
- *  without stacking three separate cards in an already-busy hero. */
-function HeroNow() {
-  const { cy: featuredCy, state } = conventionToFeature();
-  const nextCy = currentOrNextConvention();
-  const showRecap = state === "live" || state === "concluded-recent";
-  const recapPost = POSTS.find((p) => p.slug === "cacna-2026-closing-appreciation");
-
-  const href = showRecap ? (recapPost ? (recapPost.href ?? `/blog/${recapPost.slug}`) : featuredCy.href) : nextCy.href;
-  const label = showRecap ? (state === "live" ? "Live now" : "Just concluded") : "Save the date";
-  const detail = showRecap
-    ? `CACNA ${featuredCy.year} Convention — read the closing message`
-    : `CACNA ${nextCy.year} Convention · ${dateRangeLabel(nextCy)} · ${CONVENTION_VENUE_SHORT}`;
-
-  return (
-    <Link href={href} className="press" style={{
-      display: "inline-flex", alignItems: "center", gap: 12,
-      background: "rgba(12,14,19,.45)", border: "1px solid rgba(255,255,255,.16)",
-      backdropFilter: "blur(10px)", borderRadius: 999,
-      padding: "10px 22px 10px 14px", textDecoration: "none",
-      maxWidth: "100%",
-    }}>
-      <span aria-hidden style={{ width: 7, height: 7, borderRadius: "50%", background: "var(--gold)", flexShrink: 0, animation: state === "live" ? "pulse-red 1.8s infinite" : "none" }} />
-      <span style={{ fontSize: 11.5, fontWeight: 800, letterSpacing: "1.2px", textTransform: "uppercase", color: "var(--gold)", flexShrink: 0 }}>{label}</span>
-      <span style={{ fontSize: 14, fontWeight: 600, color: "#fff", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{detail} →</span>
-    </Link>
-  );
-}
 
 export function Hero({ video }: { video?: HeroVideo | null }) {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
   const [videoOpen, setVideoOpen] = useState(false);
+  const slides = useSlides(video);
 
-  // Bilingual hero greeting (English / Yorùbá). Scoped to the greeting;
-  // persists per visit.
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+
   const [lang, setLang] = useState<"en" | "yo">("en");
   useEffect(() => {
     const saved = localStorage.getItem("cac-hero-lang");
@@ -213,57 +216,58 @@ export function Hero({ video }: { video?: HeroVideo | null }) {
   }
   const t = HERO_T[lang];
 
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end start"],
-  });
+  useEffect(() => {
+    if (reduce || paused || slides.length <= 1) return;
+    const id = setInterval(() => setIndex((i) => (i + 1) % slides.length), 7000);
+    return () => clearInterval(id);
+  }, [reduce, paused, slides.length]);
 
-  // Cinematic scroll choreography: the video pushes back + scales while the
-  // copy drifts up and fades — a single, deliberate hero moment.
-  const videoScale = useTransform(scrollYProgress, [0, 1], [1, 1.18]);
-  const videoY = useTransform(scrollYProgress, [0, 1], ["0%", "14%"]);
-  const contentY = useTransform(scrollYProgress, [0, 1], [0, -70]);
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+  function goTo(i: number) {
+    haptic("selection");
+    setIndex(((i % slides.length) + slides.length) % slides.length);
+  }
+
+  const slide = slides[index];
+  const isWelcome = slide.kind === "Welcome";
 
   return (
     <header
       ref={ref}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
       style={{
         position: "relative", minHeight: "100vh",
         display: "flex", alignItems: "center",
-        padding: "140px clamp(20px,5vw,64px) 80px",
+        padding: "140px clamp(20px,5vw,64px) 110px",
         overflow: "hidden",
         background: "#0d0a08",
       }}
     >
-      {/* Crossfading photo slideshow, scroll-linked parallax on top */}
-      <motion.div
-        aria-hidden
-        style={{
-          position: "absolute", inset: "-10%", zIndex: 0, overflow: "hidden",
-          scale: reduce ? 1 : videoScale,
-          y: reduce ? 0 : videoY,
-          willChange: "transform",
-        }}
-      >
-        <HeroSlideshow reduce={reduce} />
-      </motion.div>
+      {/* Background — crossfades with the active slide */}
+      <div aria-hidden style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
+        <AnimatePresence>
+          <motion.div
+            key={slide.key}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.9, ease: "easeInOut" }}
+            style={{
+              position: "absolute", inset: 0,
+              ...(slide.bg.type === "photo"
+                ? { backgroundImage: `url(${slide.bg.src})`, backgroundSize: "cover", backgroundPosition: "center" }
+                : { background: slide.bg.value }),
+            }}
+          />
+        </AnimatePresence>
+      </div>
 
       {/* Dark shadow overlay + grain vignette */}
-      <div style={{
-        position: "absolute", inset: 0, zIndex: 1,
-        background: "linear-gradient(135deg,rgba(0,0,0,.8) 0%,rgba(0,0,0,.56) 55%,rgba(0,0,0,.4) 100%)",
-      }} />
-      <div style={{
-        position: "absolute", inset: 0, zIndex: 1,
-        background: "radial-gradient(120% 80% at 50% 0%,transparent 50%,rgba(0,0,0,.45) 100%)",
-      }} />
-      <div style={{
-        position: "absolute", bottom: 0, left: 0, right: 0, height: 160, zIndex: 1,
-        background: "linear-gradient(to bottom,transparent,rgba(0,0,0,.65))",
-      }} />
+      <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(135deg,rgba(0,0,0,.8) 0%,rgba(0,0,0,.56) 55%,rgba(0,0,0,.4) 100%)" }} />
+      <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "radial-gradient(120% 80% at 50% 0%,transparent 50%,rgba(0,0,0,.45) 100%)" }} />
+      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 200, zIndex: 1, background: "linear-gradient(to bottom,transparent,rgba(0,0,0,.7))" }} />
 
-      {/* Floating ambient words */}
+      {/* Floating ambient words — decorative, not slide-dependent */}
       {!reduce && (
         <div aria-hidden style={{ position: "absolute", inset: 0, zIndex: 1, overflow: "hidden", pointerEvents: "none" }}>
           {BG_WORDS.map(({ w, l, delay, dur, sz, o }) => (
@@ -272,18 +276,7 @@ export function Hero({ video }: { video?: HeroVideo | null }) {
               initial={{ y: "110vh" }}
               animate={{ y: "-110vh" }}
               transition={{ duration: dur, delay, repeat: Infinity, ease: "linear" }}
-              style={{
-                position: "absolute",
-                left: `${l}%`,
-                top: 0,
-                fontFamily: "var(--font-display)",
-                fontWeight: 800,
-                fontSize: sz,
-                color: `rgba(255,255,255,${o})`,
-                letterSpacing: "-0.02em",
-                userSelect: "none",
-                whiteSpace: "nowrap",
-              }}
+              style={{ position: "absolute", left: `${l}%`, top: 0, fontFamily: "var(--font-display)", fontWeight: 800, fontSize: sz, color: `rgba(255,255,255,${o})`, letterSpacing: "-0.02em", userSelect: "none", whiteSpace: "nowrap" }}
             >
               {w}
             </motion.span>
@@ -291,158 +284,160 @@ export function Hero({ video }: { video?: HeroVideo | null }) {
         </div>
       )}
 
-      {/* Content */}
-      <motion.div
-        style={{
-          position: "relative", zIndex: 2,
-          maxWidth: 860, margin: "0 auto", width: "100%",
-          textAlign: "center",
-          y: reduce ? 0 : contentY,
-          opacity: reduce ? 1 : contentOpacity,
-        }}
-      >
-        <Reveal from="scale">
-          <span style={{
-            display: "inline-flex", alignItems: "center", gap: 10,
-            background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.2)",
-            padding: "8px 16px 8px 10px", borderRadius: 999,
-            fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,.85)",
-            backdropFilter: "blur(8px)",
-          }}>
-            <span style={{ background: "var(--red)", color: "#fff", fontSize: 11, fontWeight: 800, padding: "3px 9px", borderRadius: 999, letterSpacing: ".5px" }}>{t.badge}</span>
-            24 Zones &amp; DCCs, U.S., Canada &amp; South America · A Region of Christ Apostolic Church Worldwide
-          </span>
-        </Reveal>
-
-        <motion.h1
-          animate={reduce ? {} : { y: [0, -10, 0] }}
-          transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut", delay: 1.4 }}
-          style={{
-            fontFamily: "var(--font-display)", fontWeight: 800,
-            fontSize: "clamp(52px,7.4vw,104px)",
-            lineHeight: .94, letterSpacing: "-0.03em",
-            margin: "22px 0 0", color: "#fff",
-            textWrap: "balance",
-          }}
-        >
-          <span className="sr-only">Christ Apostolic Church North America — uniting CAC member churches across the United States, Canada, and South America. </span>
-          <AnimLetters key={`l1-${lang}`}>{t.line1}</AnimLetters>
-          <br />
-          <RevealText
-            key={`l2-${lang}`}
-            immediate
-            delay={0.18}
-            style={{ color: "var(--red)" }}
+      {/* Slide content */}
+      <div style={{ position: "relative", zIndex: 2, maxWidth: 820, margin: "0 auto", width: "100%", textAlign: "center" }}>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={slide.key}
+            initial={{ opacity: 0, y: reduce ? 0 : 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: reduce ? 0 : -18 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
           >
-            {t.line2}
-          </RevealText>
-        </motion.h1>
+            <span style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.2)",
+              padding: "7px 16px", borderRadius: 999,
+              fontSize: 12, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase",
+              color: KIND_COLOR[slide.kind],
+              backdropFilter: "blur(8px)",
+            }}>
+              {slide.eyebrow}
+            </span>
 
-        <Reveal delay={300} style={{ marginTop: 18 }}>
-          <div role="group" aria-label="Greeting language" style={{ display: "inline-flex", gap: 4, padding: 4, borderRadius: 999, background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.18)", backdropFilter: "blur(8px)" }}>
-            {(["en", "yo"] as const).map((l) => (
-              <button
-                key={l} type="button" onClick={() => switchLang(l)} aria-pressed={lang === l}
-                className="press"
-                style={{ padding: "7px 16px", borderRadius: 999, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 700, fontFamily: "var(--font-body)", background: lang === l ? "#fff" : "transparent", color: lang === l ? "var(--ink)" : "rgba(255,255,255,.8)", transition: "background .2s, color .2s" }}
-              >
-                {l === "en" ? "English" : "Yorùbá"}
+            {isWelcome ? (
+              <h1 style={{
+                fontFamily: "var(--font-display)", fontWeight: 800,
+                fontSize: "clamp(48px,7vw,96px)", lineHeight: .94, letterSpacing: "-0.03em",
+                margin: "22px 0 0", color: "#fff", textWrap: "balance",
+              }}>
+                <span className="sr-only">Christ Apostolic Church North America — uniting CAC member churches across the United States, Canada, and South America. </span>
+                <RevealText key={`l1-${lang}`} immediate>{t.line1}</RevealText>
+                <br />
+                <RevealText key={`l2-${lang}`} immediate delay={0.12} style={{ color: "var(--red)" }}>{t.line2}</RevealText>
+              </h1>
+            ) : (
+              <h1 style={{
+                fontFamily: "var(--font-display)", fontWeight: 800,
+                fontSize: "clamp(32px,4.6vw,58px)", lineHeight: 1.05, letterSpacing: "-0.02em",
+                margin: "22px 0 0", color: "#fff", textWrap: "balance",
+              }}>
+                {slide.title}
+              </h1>
+            )}
+
+            {isWelcome && (
+              <div role="group" aria-label="Greeting language" style={{ display: "inline-flex", gap: 4, padding: 4, borderRadius: 999, background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.18)", backdropFilter: "blur(8px)", marginTop: 18 }}>
+                {(["en", "yo"] as const).map((l) => (
+                  <button
+                    key={l} type="button" onClick={() => switchLang(l)} aria-pressed={lang === l}
+                    className="press"
+                    style={{ padding: "7px 16px", borderRadius: 999, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 700, fontFamily: "var(--font-body)", background: lang === l ? "#fff" : "transparent", color: lang === l ? "var(--ink)" : "rgba(255,255,255,.8)", transition: "background .2s, color .2s" }}
+                  >
+                    {l === "en" ? "English" : "Yorùbá"}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <p style={{
+              fontSize: "clamp(15px,1.4vw,18px)", lineHeight: 1.65,
+              color: "rgba(255,255,255,.78)", maxWidth: 520, margin: "18px auto 0",
+              textWrap: "pretty",
+            }}>
+              {slide.desc}
+            </p>
+
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 30, justifyContent: "center" }}>
+              <Magnetic strength={0.4}>
+                <Link href={slide.cta.href} target={slide.cta.external ? "_blank" : undefined} rel={slide.cta.external ? "noopener noreferrer" : undefined} className="btn-sheen" style={{
+                  display: "inline-flex", alignItems: "center", gap: 10,
+                  background: "var(--gold)", color: "var(--ink)",
+                  fontWeight: 800, fontSize: 16,
+                  padding: "16px 28px", borderRadius: 999,
+                  textDecoration: "none",
+                  boxShadow: "0 14px 34px rgba(253,200,65,.5)",
+                }}>
+                  {slide.cta.label} →
+                </Link>
+              </Magnetic>
+              {isWelcome && (
+                <Magnetic strength={0.4}>
+                  <a href="/contact" className="btn-sheen" style={{
+                    display: "inline-flex", alignItems: "center", gap: 10,
+                    background: "rgba(255,255,255,.12)", color: "#fff",
+                    fontWeight: 700, fontSize: 16,
+                    padding: "16px 28px", borderRadius: 999,
+                    textDecoration: "none",
+                    border: "1.5px solid rgba(255,255,255,.35)",
+                    backdropFilter: "blur(8px)",
+                  }}>
+                    Plan a Visit
+                  </a>
+                </Magnetic>
+              )}
+            </div>
+
+            {isWelcome && video && (
+              <button type="button" onClick={() => setVideoOpen(true)} className="press" style={{
+                display: "inline-flex", alignItems: "center", gap: 8, marginTop: 22,
+                background: "none", border: "none", color: "rgba(255,255,255,.75)",
+                fontWeight: 700, fontSize: 14, cursor: "pointer", padding: 0,
+              }}>
+                <PlayCircle size={17} strokeWidth={2} aria-hidden />
+                Watch our latest video
               </button>
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Carousel arrows */}
+      {slides.length > 1 && (
+        <>
+          <button
+            type="button" onClick={() => goTo(index - 1)} aria-label="Previous slide" className="press"
+            style={{
+              position: "absolute", left: "clamp(10px,3vw,28px)", top: "50%", transform: "translateY(-50%)", zIndex: 3,
+              width: 44, height: 44, borderRadius: 999, background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.2)",
+              display: "grid", placeItems: "center", cursor: "pointer", backdropFilter: "blur(8px)",
+            }}
+          >
+            <ChevronLeft size={22} strokeWidth={2} color="#fff" aria-hidden />
+          </button>
+          <button
+            type="button" onClick={() => goTo(index + 1)} aria-label="Next slide" className="press"
+            style={{
+              position: "absolute", right: "clamp(10px,3vw,28px)", top: "50%", transform: "translateY(-50%)", zIndex: 3,
+              width: 44, height: 44, borderRadius: 999, background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.2)",
+              display: "grid", placeItems: "center", cursor: "pointer", backdropFilter: "blur(8px)",
+            }}
+          >
+            <ChevronRight size={22} strokeWidth={2} color="#fff" aria-hidden />
+          </button>
+
+          {/* Dots */}
+          <div style={{ position: "absolute", bottom: 34, left: "50%", transform: "translateX(-50%)", zIndex: 3, display: "flex", gap: 9, alignItems: "center" }}>
+            {slides.map((s, i) => (
+              <button
+                key={s.key} type="button" onClick={() => goTo(i)}
+                aria-label={`Go to slide ${i + 1}: ${s.title}`} aria-current={i === index}
+                className="press"
+                style={{
+                  width: i === index ? 28 : 8, height: 8, borderRadius: 999,
+                  background: i === index ? "var(--gold)" : "rgba(255,255,255,.4)",
+                  border: "none", cursor: "pointer", padding: 0,
+                  transition: "width .3s ease, background .3s ease",
+                }}
+              />
             ))}
           </div>
-        </Reveal>
-
-        <Reveal delay={420}>
-          <p style={{
-            fontSize: "clamp(16px,1.5vw,19px)", lineHeight: 1.65,
-            color: "rgba(255,255,255,.74)", maxWidth: 480, margin: "20px auto 0",
-            textWrap: "pretty", minHeight: 84,
-          }}>
-            <AnimatePresence mode="wait">
-              {lang === "en" ? (
-                <motion.span key="sub-en" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-                  Welcome home. As part of the worldwide family of Christ Apostolic
-                  Church, we bring real worship and real community to every CACNA
-                  member church — preaching the whole Gospel in a clear and undiluted
-                  manner, wherever you are.{" "}
-                  <strong style={{ color: "#fff" }}>One fold, one Shepherd.</strong>
-                </motion.span>
-              ) : (
-                <motion.span key="sub-yo" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-                  Ìjọsìn tòótọ́, ẹbí tòótọ́ ní gbogbo ìjọ CACNA —{" "}
-                  <strong style={{ color: "#fff" }}>agbo kan, oluṣọ-agutan kan.</strong>
-                </motion.span>
-              )}
-            </AnimatePresence>
-          </p>
-        </Reveal>
-
-        <Reveal delay={520}>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 34, justifyContent: "center" }}>
-            <Magnetic strength={0.4}>
-              <Link href="/online" className="btn-sheen" style={{
-                display: "inline-flex", alignItems: "center", gap: 10,
-                background: "var(--gold)", color: "var(--ink)",
-                fontWeight: 800, fontSize: 16,
-                padding: "17px 30px", borderRadius: 999,
-                textDecoration: "none",
-                boxShadow: "0 14px 34px rgba(253,200,65,.5)",
-              }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--ink)" aria-hidden><path d="M8 5v14l11-7z" /></svg>
-                Join Us Online
-              </Link>
-            </Magnetic>
-            <Magnetic strength={0.4}>
-              <a href="/contact" className="btn-sheen" style={{
-                display: "inline-flex", alignItems: "center", gap: 10,
-                background: "rgba(255,255,255,.12)", color: "#fff",
-                fontWeight: 700, fontSize: 16,
-                padding: "17px 30px", borderRadius: 999,
-                textDecoration: "none",
-                border: "1.5px solid rgba(255,255,255,.35)",
-                backdropFilter: "blur(8px)",
-              }}>
-                Plan a Visit
-              </a>
-            </Magnetic>
-          </div>
-        </Reveal>
-
-        <Reveal delay={600} style={{ marginTop: 36, display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
-          <HeroNow />
-          {video && (
-            <button type="button" onClick={() => setVideoOpen(true)} className="press" style={{
-              display: "inline-flex", alignItems: "center", gap: 8,
-              background: "none", border: "none", color: "rgba(255,255,255,.75)",
-              fontWeight: 700, fontSize: 14, cursor: "pointer", padding: 0,
-            }}>
-              <PlayCircle size={17} strokeWidth={2} aria-hidden />
-              Watch our latest video
-            </button>
-          )}
-        </Reveal>
-      </motion.div>
+        </>
+      )}
 
       {videoOpen && video && (
         <VideoLightbox video={video} onClose={() => setVideoOpen(false)} />
       )}
-
-      {/* Scroll cue */}
-      <motion.div
-        aria-hidden
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.1, duration: 0.8 }}
-        style={{ position: "absolute", bottom: 26, left: "50%", x: "-50%", zIndex: 2, opacity: reduce ? 1 : undefined }}
-      >
-        <motion.div
-          animate={reduce ? undefined : { y: [0, 9, 0] }}
-          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-          style={{ width: 26, height: 42, borderRadius: 999, border: "2px solid rgba(255,255,255,.35)", display: "flex", justifyContent: "center", paddingTop: 7 }}
-        >
-          <span style={{ width: 4, height: 8, borderRadius: 999, background: "rgba(255,255,255,.8)" }} />
-        </motion.div>
-      </motion.div>
     </header>
   );
 }
