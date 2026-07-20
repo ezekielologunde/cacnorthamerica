@@ -4,7 +4,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, CalendarDays, Car, Package, Clock, Users, Heart, ArrowLeft, Phone, Ticket, Sparkles, Landmark, Send, Wallet, ListOrdered } from "lucide-react";
+import { MapPin, CalendarDays, Users, Heart, ArrowLeft, Sparkles, ListOrdered } from "lucide-react";
 import { googleCalUrl, icsDataUri, isEventPast } from "@/lib/events";
 import { CalendarPlus, Download } from "lucide-react";
 import { SITE, SITE_URL, breadcrumbJsonLd } from "@/lib/site";
@@ -35,83 +35,6 @@ const sessions = [
   { day: "Thu · Jul 16", label: "Picnic, Sunday School & Business Group", desc: "An afternoon picnic with games and sports, the Sunday School General Session, the Business Group General Session, more break-out sessions, a Ministers' Prayer Night, and a Revival Night with Prophet H. Oladeji." },
   { day: "Fri · Jul 17", label: "Convention Program, Ordination & Impartation Night", desc: "The main Convention Program (10am–2pm), an Ordination Service, and an Impartation Night with Prophet H. Oladeji, General Evangelist." },
   { day: "Sat · Jul 18", label: "Holy Communion & Closing Service", desc: "The convention closes with Holy Communion and a Closing Service led by Pastor S.O. Oladele, President, CAC Nigeria and Overseas." },
-];
-
-const ORDER_OF_SERVICE = [
-  "Praise and Worship",
-  "Opening Hymn: CACGHB. 92 — “O Magnify the Lord with Me”",
-  "Prayer",
-  "Lesson",
-  "Introductions",
-  "Choir Ministration",
-  "Message by the President",
-  "Award Presentation",
-  "Convention Thanksgiving",
-  "Special Prayer",
-  "Closing Hymn: Various #6 — “O Thou Who Love Us, We Shall Serve for Ever”",
-  "Watchword",
-  "Closing Prayer and Benediction",
-];
-
-const ORDINATION_ORDER_OF_SERVICE = [
-  "Praise and Worship",
-  "Opening Hymn #79 — “Praise, My Soul the King of Heaven”",
-  "Prayer",
-  "Lesson",
-  "Introductions",
-  "Welcome Address",
-  "Choir Ministration",
-  "Pastors Ordination",
-  "Choir Ministration",
-  "Message by the President",
-  "Ordination Thanksgiving",
-  "Special Prayer",
-  "Closing Hymn #581 — “Lord, Dismiss Us with Thy Blessing”",
-  "Watchword",
-  "Benediction",
-];
-
-const CONVENTION_GIVING = [
-  { icon: Landmark, label: "Chase Bank", value: "Ac# 823936908" },
-  { icon: Send, label: "Zelle", value: "cacnaconvention@gmail.com" },
-  { icon: Wallet, label: "CashApp", value: "$cacnaconvention" },
-];
-
-const fees = [
-  { tier: "Adults", age: "Age 30 & above", free: false, rows: [
-    { when: "Oct 1 – Jan 31, 2026", price: "$125" },
-    { when: "Feb 1 – Apr 30, 2026", price: "$150" },
-    { when: "May 1 – Jul 10, 2026", price: "$200" },
-    { when: "At the Convention Ground", price: "$250" },
-  ] },
-  { tier: "Young Adults", age: "Age 20 – 29", free: false, rows: [
-    { when: "Oct 1 – Jan 31, 2026", price: "$100" },
-    { when: "Feb 1 – Apr 30, 2026", price: "$125" },
-    { when: "May 1 – Jul 10, 2026", price: "$150" },
-    { when: "At the Convention Ground", price: "$150" },
-  ] },
-  { tier: "Children", age: "Age 1 – 19", free: true, rows: [] },
-];
-
-const contacts = [
-  { name: "Dr. David Adenodi", role: "Chairman", phone: "301 440 7033", tel: "+13014407033" },
-  { name: "Dr. Timothy Famojuro", role: "Secretary", phone: "917 709 1892", tel: "+19177091892" },
-];
-
-const packList = [
-  "Bible with writing margins — messages are rich and worth noting",
-  "Journal — spiritual highlights from the village stay with you",
-  "Layers for all conditions (warm mornings, hot afternoons, cool evenings)",
-  "Comfortable walking shoes — the village grounds are spread out",
-  "Modest dress for services (the culture of the CAC family applies)",
-  "Your registration confirmation and ID for check-in",
-];
-
-const logistics = [
-  { icon: MapPin, label: "Location", detail: "CAC Village, 14051 Stahley Rd, Blue Ridge Summit, PA 17214" },
-  { icon: Car, label: "Carpooling", detail: "Reach out to your local zone or member church to coordinate carpooling to the village" },
-  { icon: CalendarDays, label: "Dates", detail: "Monday July 13 – Saturday July 18, 2026" },
-  { icon: Clock, label: "Registration", detail: "Opens Monday July 13 · Ministers' prayers the same day" },
 ];
 
 export default function CACNA2026Page() {
@@ -298,192 +221,24 @@ export default function CACNA2026Page() {
         </div>
       </section>
 
-      {/* Order of Service */}
+      {/* Full details live on the Convention website */}
       <section style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 700, margin: "0 auto" }}>
-          <Reveal style={{ marginBottom: 32 }}>
-            <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 12 }}>
-              <ListOrdered size={16} strokeWidth={2.5} style={{ verticalAlign: "middle", marginRight: 8, color: "var(--flame)" }} aria-hidden />
-              Convention Order of Service
-            </div>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.5vw,42px)", letterSpacing: "-.6px", color: "var(--ink)", margin: 0 }}>What to expect in the room.</h2>
-          </Reveal>
-          <ol style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
-            {ORDER_OF_SERVICE.map((item, i) => (
-              <Reveal key={i} delay={i * 30}>
-                <li style={{ display: "flex", gap: 14, alignItems: "flex-start", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 14, padding: "14px 18px" }}>
-                  <span style={{ flexShrink: 0, fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 14, color: "var(--red)", minWidth: 22 }}>{i + 1}</span>
-                  <span style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.6 }}>{item}</span>
-                </li>
-              </Reveal>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      {/* Ordination Order of Service */}
-      <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 700, margin: "0 auto" }}>
-          <Reveal style={{ marginBottom: 32 }}>
-            <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 12 }}>
-              <ListOrdered size={16} strokeWidth={2.5} style={{ verticalAlign: "middle", marginRight: 8, color: "var(--flame)" }} aria-hidden />
-              Friday, July 17 — Ordination Order of Service
-            </div>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.5vw,42px)", letterSpacing: "-.6px", color: "var(--ink)", margin: 0 }}>Pastors Ordination Service.</h2>
-          </Reveal>
-          <ol style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
-            {ORDINATION_ORDER_OF_SERVICE.map((item, i) => (
-              <Reveal key={i} delay={i * 30}>
-                <li style={{ display: "flex", gap: 14, alignItems: "flex-start", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 14, padding: "14px 18px" }}>
-                  <span style={{ flexShrink: 0, fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 14, color: "var(--red)", minWidth: 22 }}>{i + 1}</span>
-                  <span style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.6 }}>{item}</span>
-                </li>
-              </Reveal>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      {/* What to pack + Logistics */}
-      <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 960, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,420px),1fr))", gap: "clamp(36px,5vw,60px)" }}>
-
-          {/* Pack list */}
+        <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
           <Reveal>
-            <div>
-              <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 16 }}>Before you pack</div>
-              <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.5vw,40px)", letterSpacing: "-.6px", color: "var(--ink)", margin: "0 0 24px" }}>
-                <Package size={28} strokeWidth={2} style={{ verticalAlign: "middle", marginRight: 10, color: "var(--flame)" }} aria-hidden />
-                What to bring
-              </h2>
-              <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 12 }}>
-                {packList.map((item, i) => (
-                  <li key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.6 }}>
-                    <span style={{ flexShrink: 0, marginTop: 4, width: 8, height: 8, borderRadius: "50%", background: "var(--red)", display: "inline-block" }} />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </Reveal>
-
-          {/* Logistics */}
-          <Reveal delay={120}>
-            <div>
-              <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 16 }}>Getting there</div>
-              <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.5vw,40px)", letterSpacing: "-.6px", color: "var(--ink)", margin: "0 0 24px" }}>Logistics</h2>
-              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                {logistics.map((l, i) => (
-                  <div key={i} style={{ display: "flex", gap: 16, alignItems: "flex-start", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 16, padding: "18px 20px", boxShadow: "0 6px 16px rgba(18,20,30,.06)" }}>
-                    <div style={{ flexShrink: 0, display: "grid", placeItems: "center", width: 40, height: 40, borderRadius: 10, background: "linear-gradient(135deg,var(--flame),var(--red))" }}>
-                      <l.icon size={18} color="#fff" strokeWidth={2} aria-hidden />
-                    </div>
-                    <div>
-                      <div style={{ fontWeight: 800, fontSize: 14, color: "var(--ink)", marginBottom: 4 }}>{l.label}</div>
-                      <div style={{ fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.55 }}>{l.detail}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <p style={{ fontSize: 13.5, color: "var(--ink-soft)", marginTop: 20, lineHeight: 1.6 }}>
-                Carpooling is often organized by individual member churches — speak to your zone superintendent to join a car.
-              </p>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* Registration fees + contacts */}
-      <section style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-          <Reveal style={{ marginBottom: 12 }}>
             <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 16 }}>
-              <Ticket size={16} strokeWidth={2.5} style={{ verticalAlign: "middle", marginRight: 8, color: "var(--flame)" }} aria-hidden />
-              Registration
+              <ListOrdered size={16} strokeWidth={2.5} style={{ verticalAlign: "middle", marginRight: 8, color: "var(--flame)" }} aria-hidden />
+              Full Convention Details
             </div>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,4vw,48px)", letterSpacing: "-.8px", color: "var(--ink)", margin: 0 }}>Fees by age group</h2>
-          </Reveal>
-          <Reveal delay={80} style={{ marginBottom: 36 }}>
-            <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.7, maxWidth: 620 }}>Rates rise as the convention approaches, so register early — children attend completely free.</p>
-          </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,280px),1fr))", gap: 18 }}>
-            {fees.map((f, i) => (
-              <Reveal key={f.tier} delay={i * 90}>
-                <div style={{ height: "100%", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, padding: "26px 24px", boxShadow: "0 10px 26px rgba(18,20,30,.06)", display: "flex", flexDirection: "column" }}>
-                  <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--ink)", letterSpacing: "-.3px" }}>{f.tier}</div>
-                  <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginTop: 4, marginBottom: 18 }}>{f.age}</div>
-                  {f.free ? (
-                    <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", flex: 1, minHeight: 120 }}>
-                      <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 46, color: "var(--flame)", lineHeight: 1 }}>FREE</div>
-                      <div style={{ fontSize: 13.5, color: "var(--ink-soft)", marginTop: 8, lineHeight: 1.5 }}>All children are welcome at no cost.</div>
-                    </div>
-                  ) : (
-                    <div style={{ display: "flex", flexDirection: "column", gap: 10, flex: 1 }}>
-                      {f.rows.map((r, j) => (
-                        <div key={j} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, paddingBottom: 10, borderBottom: j < f.rows.length - 1 ? "1px solid var(--line)" : "none" }}>
-                          <span style={{ fontSize: 13, color: "var(--ink-soft)", lineHeight: 1.4 }}>{r.when}</span>
-                          <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "var(--ink)", fontVariantNumeric: "tabular-nums" }}>{r.price}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </Reveal>
-            ))}
-          </div>
-
-          <Reveal delay={200}>
-            <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,260px),1fr))", gap: 16 }}>
-              {contacts.map((c) => (
-                <a key={c.name} href={`tel:${c.tel}`} className="press" style={{ display: "flex", gap: 14, alignItems: "center", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 16, padding: "18px 20px", textDecoration: "none", boxShadow: "0 6px 16px rgba(18,20,30,.05)" }}>
-                  <div style={{ flexShrink: 0, display: "grid", placeItems: "center", width: 44, height: 44, borderRadius: 12, background: "linear-gradient(135deg,var(--flame),var(--red))" }}>
-                    <Phone size={18} color="#fff" strokeWidth={2} aria-hidden />
-                  </div>
-                  <div>
-                    <div style={{ fontWeight: 800, fontSize: 15, color: "var(--ink)" }}>{c.name}</div>
-                    <div style={{ fontSize: 13, color: "var(--ink-soft)" }}>{c.role} · {c.phone}</div>
-                  </div>
-                </a>
-              ))}
-            </div>
-          </Reveal>
-          <Reveal delay={280}>
-            <p style={{ fontSize: 13.5, color: "var(--ink-soft)", marginTop: 20, lineHeight: 1.6, textAlign: "center" }}>
-              <strong style={{ color: "var(--ink)" }}>Book your hotel early.</strong> For further information, contact the Chairman or Secretary above.
-            </p>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* Give at the Convention */}
-      <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 700, margin: "0 auto" }}>
-          <Reveal style={{ textAlign: "center", marginBottom: 32 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Give at the Convention</span>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3vw,40px)", letterSpacing: "-1px", color: "var(--ink)", margin: "10px 0 0" }}>
-              Offerings & Donations
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,4vw,48px)", letterSpacing: "-.8px", color: "var(--ink)", margin: "0 0 20px" }}>
+              Schedule, registration fees, packing, and giving.
             </h2>
-            <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.7, margin: "14px auto 0", maxWidth: 560 }}>
-              Make checks payable to CACNA Convention, or give directly using any of the options below.
+            <p style={{ fontSize: 15.5, color: "var(--ink-soft)", lineHeight: 1.7, margin: "0 0 32px" }}>
+              The order of service, day-by-day schedule, registration fees, what to pack, travel logistics, and giving options all live on the official CACNA Convention website.
             </p>
+            <a href="https://cacnaconvention.org/" target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--red)", color: "#fff", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none" }}>
+              Visit cacnaconvention.org →
+            </a>
           </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 16 }}>
-            {CONVENTION_GIVING.map((a, i) => (
-              <Reveal key={a.label} delay={i * 70}>
-                <div style={{ background: "var(--paper)", borderRadius: 20, padding: "22px 20px", border: "1px solid var(--line)", boxShadow: "0 8px 22px rgba(18,20,30,.05)", height: "100%", textAlign: "center" }}>
-                  <div style={{ display: "grid", placeItems: "center", width: 44, height: 44, margin: "0 auto 14px", borderRadius: 12, background: "linear-gradient(135deg,var(--flame),var(--red))" }}>
-                    <a.icon size={20} color="#fff" strokeWidth={2} aria-hidden />
-                  </div>
-                  <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 6 }}>
-                    {a.label}
-                  </div>
-                  <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 16, color: "var(--ink)" }}>
-                    {a.value}
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
         </div>
       </section>
 
