@@ -1,9 +1,10 @@
 "use client";
 import { useMemo, useState } from "react";
 import Image from "next/image";
-import { MapPin, Landmark, Phone, Mail } from "lucide-react";
+import { MapPin, Landmark, Phone, Mail, Church } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import type { Leader } from "@/lib/leaders";
+import { MEMBER_CHURCHES } from "@/lib/churches";
 
 type Category = "all" | "zonal_superintendent" | "dcc_superintendent";
 
@@ -116,20 +117,41 @@ export function ZoneDirectory({ leaders }: { leaders: Leader[] }) {
                       <div style={{ fontSize: 13, color: "var(--ink-soft)" }}>{l.title}</div>
                     </div>
                   </div>
-                  {(l.phone || l.email) && (
-                    <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: "auto", paddingTop: 10, borderTop: "1px solid var(--line)" }}>
-                      {l.phone && (
-                        <a href={`tel:${l.phone.replace(/[^\d+]/g, "")}`} style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 14, fontWeight: 600, color: "var(--ink)", textDecoration: "none" }}>
-                          <Phone size={14} strokeWidth={2} color="var(--ink-soft)" aria-hidden /> {l.phone}
-                        </a>
-                      )}
-                      {l.email && (
-                        <a href={`mailto:${l.email}`} style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 14, fontWeight: 600, color: "var(--ink)", textDecoration: "none", wordBreak: "break-all" }}>
-                          <Mail size={14} strokeWidth={2} color="var(--ink-soft)" aria-hidden /> {l.email}
-                        </a>
-                      )}
-                    </div>
-                  )}
+                  {(() => {
+                    const churches = MEMBER_CHURCHES.filter((c) => c.zoneName === l.zone_name);
+                    if (!l.phone && !l.email && churches.length === 0) return null;
+                    return (
+                      <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: "auto", paddingTop: 10, borderTop: "1px solid var(--line)" }}>
+                        {(l.phone || l.email) && (
+                          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                            {l.phone && (
+                              <a href={`tel:${l.phone.replace(/[^\d+]/g, "")}`} style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 14, fontWeight: 600, color: "var(--ink)", textDecoration: "none" }}>
+                                <Phone size={14} strokeWidth={2} color="var(--ink-soft)" aria-hidden /> {l.phone}
+                              </a>
+                            )}
+                            {l.email && (
+                              <a href={`mailto:${l.email}`} style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 14, fontWeight: 600, color: "var(--ink)", textDecoration: "none", wordBreak: "break-all" }}>
+                                <Mail size={14} strokeWidth={2} color="var(--ink-soft)" aria-hidden /> {l.email}
+                              </a>
+                            )}
+                          </div>
+                        )}
+                        {churches.length > 0 && (
+                          <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: (l.phone || l.email) ? 10 : 0, borderTop: (l.phone || l.email) ? "1px solid var(--line)" : "none" }}>
+                            {churches.map((c) => (
+                              <div key={c.name} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
+                                <Church size={14} strokeWidth={2} color="var(--ink-soft)" aria-hidden style={{ marginTop: 2, flexShrink: 0 }} />
+                                <div>
+                                  <div style={{ fontSize: 13.5, fontWeight: 700, color: "var(--ink)", lineHeight: 1.35 }}>{c.name}</div>
+                                  <div style={{ fontSize: 12.5, color: "var(--ink-soft)", lineHeight: 1.4 }}>{c.address}</div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </div>
               </Reveal>
             );
