@@ -80,7 +80,7 @@ const departments: Department[] = [
 ];
 
 const ministries: Ministry[] = [
-  { name: "Administration", desc: "Coordinating the presidency and regional leadership that guides CACNA's 16 DCCs and Zones.", icon: Wrench, gradient: "linear-gradient(140deg,var(--red),var(--flame))", href: "/leadership", cta: "Meet our leadership" },
+  { name: "Administration", desc: "Coordinating the presidency and regional leadership that guides CACNA's 24 Zones & DCCs.", icon: Wrench, gradient: "linear-gradient(140deg,var(--red),var(--flame))", href: "/leadership", cta: "Meet our leadership" },
   { name: "Christian Education", desc: "Grounding believers across every zone in sound biblical teaching and discipleship.", icon: BookOpen, gradient: "linear-gradient(140deg,var(--flame),var(--gold))", href: "#departments", cta: "Read our history" },
   { name: "Evangelism, Prayer & Counselling", desc: "Carrying the whole Gospel to the lost and standing in the gap in prayer for our churches and cities.", icon: HandHeart, gradient: "linear-gradient(140deg,var(--ember),var(--red-deep))", href: "#departments", cta: "Read our history" },
   { name: "Youth & Young Adult", desc: "Raising the next generation as bold, grounded ambassadors of Christ across every CACNA zone.", icon: Sparkles, gradient: "linear-gradient(140deg,var(--red-deep),var(--red))", href: "/contact", cta: "Get involved" },

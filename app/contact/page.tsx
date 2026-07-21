@@ -48,7 +48,7 @@ const GROUPS = [
 ];
 
 const faqs = [
-  { q: "What is CACNA?", a: "Christ Apostolic Church North America is the regional body uniting CAC member churches across the United States, Canada, and South America, organized into 16 DCCs (District Church Councils) / Zones, each led by a Zonal Superintendent." },
+  { q: "What is CACNA?", a: "Christ Apostolic Church North America is the regional body uniting CAC member churches across the United States, Canada, and South America, organized into 24 Zones & DCCs (District Church Councils), each led by a Zonal Superintendent." },
   { q: "Do all CACNA member churches share the same service times?", a: "No — each member church sets its own weekly schedule. Reach out to the Zonal Superintendent nearest you to find service times for a specific church." },
   { q: "Where is the CACNA Annual Convention held?", a: "At CAC Village, 14051 Stahley Road, Blue Ridge Summit, PA 17214 — six days of worship and teaching every July, onsite and online." },
   { q: "Can I join a CACNA member church online?", a: "Many member churches stream their services — check with your nearest zone. The Annual Convention itself streams on YouTube and Zoom." },
@@ -323,7 +323,7 @@ export default function ContactPage() {
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 30, color: "var(--ink)", margin: "0 0 24px" }}>Finding Your Zone</h2>
             <ol style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 20 }}>
               {[
-                { num: "01", title: "Find your nearest zone", body: "CACNA is organized into 16 DCCs/Zones across the U.S., Canada, and South America — see the directory on our homepage." },
+                { num: "01", title: "Find your nearest zone", body: "CACNA is organized into 24 Zones & DCCs across the U.S., Canada, and South America — see the directory on our homepage." },
                 { num: "02", title: "Reach out to the Superintendent", body: "Each zone has a Zonal Superintendent who can connect you with a member church near you." },
                 { num: "03", title: "Visit a member church", body: "Every member church welcomes visitors — reach out ahead to confirm service times." },
                 { num: "04", title: "Stay connected", body: "Fill out the form above with \"Find a Member Church\" as your subject, and join us each July at the Annual Convention." },

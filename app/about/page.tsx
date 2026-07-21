@@ -16,10 +16,15 @@ const values = [
 type Home = { tag: string; name: string; place: string; href: string; cta: string; external?: boolean };
 
 const homes: Home[] = [
-  { tag: "Explore", name: "Our Leadership", place: "Regional officers and 16 zonal superintendents", href: "/leadership", cta: "Meet the team" },
+  { tag: "Explore", name: "Our Leadership", place: "Regional officers and 24 zonal superintendents", href: "/leadership", cta: "Meet the team" },
+  { tag: "Explore", name: "Bible Institute", place: "CACNA's ministerial training arm", href: "/bible-institute", cta: "Learn more" },
   { tag: "Explore", name: "Our Ministries", place: "Departments serving every CACNA zone", href: "/ministries", cta: "See ministries" },
+  { tag: "Explore", name: "Zones & DCCs", place: "Member churches across the U.S., Canada, and South America", href: "/zones", cta: "Find a zone" },
   { tag: "Explore", name: "Annual Convention", place: "CAC Village, Blue Ridge Summit, PA", href: "/calendar", cta: "Upcoming events" },
-  { tag: "Explore", name: "Find a Church", place: "Member churches across the U.S., Canada, and South America", href: "/zones", cta: "Locate a zone" },
+  { tag: "Explore", name: "Watch Online", place: "Services and the Convention, streamed live", href: "/online", cta: "Watch now" },
+  { tag: "Explore", name: "Giving", place: "Support CACNA's ministries and the Centenary Building Project", href: "/giving", cta: "Give now" },
+  { tag: "Explore", name: "Blog & News", place: "Stories, updates, and reflections from across CACNA", href: "/blog", cta: "Read the latest" },
+  { tag: "Explore", name: "Gallery", place: "Photos from the Convention and CACNA life", href: "/gallery", cta: "See photos" },
 ];
 
 const homeCardStyle: CSSProperties = {
@@ -44,7 +49,7 @@ function HomeCard({ h }: { h: Home }) {
 
 export const metadata = {
   title: "About Us — Christ Apostolic Church North America (CACNA)",
-  description: "CACNA unites Christ Apostolic Church member churches across the United States, Canada, and South America under 16 DCCs/Zones — one family, many homes, one Gospel.",
+  description: "The story of CACNA — the corporate regional family of Christ Apostolic Church across the United States, Canada, and South America, organized into 24 Zones & DCCs, part of a global movement born in Nigeria in 1918.",
   alternates: { canonical: "/about" },
 };
 
@@ -61,22 +66,22 @@ export default function AboutPage() {
         <div style={{ position: "absolute", top: -60, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,var(--blue),var(--red) 70%)", opacity: .12, filter: "blur(6px)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Who We Are</span>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Our Story</span>
           </Reveal>
           <Reveal delay={80}>
             <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(48px,7vw,96px)", letterSpacing: "-2px", color: "var(--ink)", margin: "18px 0", lineHeight: .92 }}>
-              More than a greeting.<br />
-              <span style={{ color: "var(--red)" }}>A lifestyle.</span>
+              One movement.<br />
+              <span style={{ color: "var(--red)" }}>Every corner of North America.</span>
             </h1>
           </Reveal>
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "var(--ink-soft)", lineHeight: 1.65, maxWidth: 640, margin: "0 auto 36px" }}>
-              Christ Apostolic Church North America unites CAC member churches across the United States, Canada, and South America to preach the whole Gospel — in a clear and undiluted manner — and to build God&apos;s ambassadors here on earth.
+              Christ Apostolic Church North America (CACNA) is the corporate regional family uniting CAC member churches across the United States, Canada, and South America — part of a global movement, born in Nigeria in 1918, to preach the whole Gospel in a clear and undiluted manner.
             </p>
           </Reveal>
           <Reveal delay={220}>
-            <Link href="/contact" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(200,30,58,.34)" }}>
-              Plan a Visit →
+            <Link href="/leadership" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(200,30,58,.34)" }}>
+              Meet Our Leadership →
             </Link>
           </Reveal>
         </div>
@@ -86,24 +91,24 @@ export default function AboutPage() {
       <section style={{ background: "var(--paper)", padding: "100px clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 760, margin: "0 auto", textAlign: "center" }}>
           <Reveal>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>The Family</span>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>One Regional Family</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(34px,4.5vw,56px)", letterSpacing: "-1.2px", color: "var(--ink)", margin: "14px 0 26px", lineHeight: .98 }}>
-              The Church is more than a building.<br />
-              <span style={{ color: "var(--red)" }}>It’s a family.</span>
+              CACNA isn&apos;t a building.<br />
+              <span style={{ color: "var(--red)" }}>It&apos;s a network of churches.</span>
             </h2>
           </Reveal>
           <Reveal delay={100}>
             <p style={{ fontSize: 17.5, color: "var(--ink-soft)", lineHeight: 1.8, margin: "0 0 20px" }}>
-              Walls don’t make a church — people do. The day you said <em style={{ fontStyle: "italic", color: "var(--ink)" }}>yes</em> to Jesus, you were grafted into a great family of believers. That family has a name and a face in every CACNA zone, from coast to coast.
+              CACNA doesn&apos;t hold its own Sunday services — it exists to connect the member churches that do. From a handful of congregations to a regional family spanning three countries, every CACNA zone has its own local church, pastor, and gathering.
             </p>
             <p style={{ fontSize: 17.5, color: "var(--ink-soft)", lineHeight: 1.8, margin: 0 }}>
-              Whether it’s your first gathering or your hundredth, our prayer is the same: that you’d find a home with us — a people who know you, and a place to grow in Christ alongside the family.
+              What ties them together is one shared mandate, one Gospel, and one shepherd — Zonal Superintendents leading local congregations, all part of a movement that stretches back to Nigeria in 1918.
             </p>
           </Reveal>
           <Reveal delay={180}>
             <div style={{ marginTop: 36 }}>
-              <Link href="/contact" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--ink)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "16px 28px", borderRadius: 999, textDecoration: "none", boxShadow: "0 12px 28px rgba(18,20,30,.18)" }}>
-                Get plugged in →
+              <Link href="/zones" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--ink)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "16px 28px", borderRadius: 999, textDecoration: "none", boxShadow: "0 12px 28px rgba(18,20,30,.18)" }}>
+                Find a church near you →
               </Link>
             </div>
           </Reveal>
@@ -135,7 +140,7 @@ export default function AboutPage() {
               Our Story
             </h2>
             <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.75, marginBottom: 20 }}>
-              As Christ Apostolic Church member churches took root across the United States, Canada, and South America, CACNA was formed to unite them under one regional body — organized today into 16 DCCs (District Church Councils) and Zones, each led by a Zonal Superintendent.
+              As Christ Apostolic Church member churches took root across the United States, Canada, and South America, CACNA was formed to unite them under one regional body — organized today into 24 Zones &amp; DCCs (District Church Councils), each led by a Zonal Superintendent.
             </p>
             <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.75 }}>
               Part of the Christ Apostolic Church — one of Africa&apos;s largest Pentecostal denominations — our mission is raising generations of believers liberated through the light of God&apos;s Word and prayer, across North America and beyond.
@@ -180,7 +185,7 @@ export default function AboutPage() {
             <Reveal>
               <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 12 }}>Christ Apostolic Church across North America</div>
               <p style={{ fontSize: 17, color: "var(--ink-soft)", lineHeight: 1.75, margin: "0 0 18px" }}>
-                As CAC member churches were planted across the United States, Canada, and South America, CACNA emerged to give this growing family a shared structure — <strong style={{ color: "var(--ink)" }}>16 DCCs (District Church Councils) and Zones</strong>, each shepherded by a Zonal Superintendent, all under one regional leadership.
+                As CAC member churches were planted across the United States, Canada, and South America, CACNA emerged to give this growing family a shared structure — <strong style={{ color: "var(--ink)" }}>24 Zones &amp; DCCs (District Church Councils)</strong>, each shepherded by a Zonal Superintendent, all under one regional leadership.
               </p>
               <p style={{ fontSize: 17, color: "var(--ink-soft)", lineHeight: 1.75, margin: 0 }}>
                 Every July, the family gathers as one at the Annual Convention — CAC Village, Blue Ridge Summit, Pennsylvania — for six days of worship, teaching, and fellowship, onsite and online.
@@ -192,7 +197,7 @@ export default function AboutPage() {
             <Reveal delay={120}>
               <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 24, padding: "30px 28px", boxShadow: "0 14px 32px rgba(18,20,30,.06)" }}>
                 {[
-                  { year: "16", text: "DCCs (District Church Councils) and Zones across the U.S., Canada, and South America." },
+                  { year: "24", text: "Zones & DCCs (District Church Councils) across the U.S., Canada, and South America." },
                   { year: "1", text: "Regional leadership uniting every member church under one mandate." },
                   { year: "July", text: "The whole family gathers each year at the CACNA Annual Convention." },
                 ].map((t, i) => (
@@ -321,7 +326,7 @@ export default function AboutPage() {
           <Reveal style={{ textAlign: "center", marginBottom: 60 }}>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Leadership</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(36px,5vw,64px)", letterSpacing: "-1.5px", color: "var(--ink)", margin: "14px 0 0", lineHeight: .95 }}>
-              Meet Our President
+              Meet Our Regional Superintendent
             </h2>
           </Reveal>
           <div className="r2" style={{ gap: 22, alignItems: "stretch" }}>
@@ -341,7 +346,7 @@ export default function AboutPage() {
                 24 zones &amp; DCCs.<br />One family.<br />One Gospel.
               </h3>
               <p style={{ fontSize: 15.5, lineHeight: 1.7, opacity: .92, margin: "0 0 26px" }}>
-                Alongside CACNA&apos;s national officers, 16 Zonal Superintendents shepherd member churches across the United States, Canada, and South America — one regional leadership, one mandate.
+                Alongside CACNA&apos;s national officers, Zonal Superintendents across all 24 Zones &amp; DCCs shepherd member churches spanning the United States, Canada, and South America — one regional leadership, one mandate.
               </p>
               <Link href="/leadership" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, alignSelf: "flex-start", background: "var(--cream)", color: "var(--ink)", fontWeight: 700, fontSize: 15, padding: "14px 24px", borderRadius: 999, textDecoration: "none" }}>
                 Meet the full team →
