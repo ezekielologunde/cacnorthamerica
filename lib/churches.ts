@@ -148,4 +148,16 @@ export const MEMBER_CHURCHES: MemberChurch[] = [
     zoneName: "New England DCC",
     source: "BibleTimes.app church directory (exact zone-name match: \"Christ Apostolic Church New England Districts Coordinating Council\")",
   },
+  {
+    name: "CAC Vineyard of Comfort — Toronto",
+    address: "104 Fenmar Drive, North York, ON M9L 1M5",
+    zoneName: "Agbala Itura Canada",
+    source: "CAC VOC Toronto's own Facebook (\"Pastor Ademola Oyeniyi is the Zonal Coordinator of CAC Vineyard of Comfort, Canada\") + independent Canadian business directories",
+  },
+  {
+    name: "Christ Apostolic Church Mount Pleasant",
+    address: "1132 East Tremont Avenue, Bronx, NY 10460",
+    zoneName: "Eastern DCC",
+    source: "LinkedIn (Olufemi Olaluwoye, Senior Pastor) + Facebook (CACmountpleasant) + nonprofit EIN filing (13-3508326)",
+  },
 ];
