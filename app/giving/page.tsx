@@ -6,6 +6,12 @@ import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { Phone, Mail, Landmark, Send } from "lucide-react";
 import { GIVING_CAMPAIGNS, type GivingCampaign } from "@/lib/giving";
 
+export const metadata = {
+  title: "Giving — Christ Apostolic Church North America (CACNA)",
+  description: "Ways to give to CACNA — the CAC Centenary Building Project, the CAC Village Pay Off, and the Hope For All Initiative — with real account details for Zelle, wire, and check.",
+  alternates: { canonical: "/giving" },
+};
+
 const accountIcon = (label: string) => (label.toLowerCase().includes("zelle") ? Send : Landmark);
 const [centenary, villagePayoff, hopeForAll] = GIVING_CAMPAIGNS;
 
