@@ -280,7 +280,7 @@ export default function AboutPage() {
       </section>
 
       {/* What We Believe — 13 Tenets */}
-      <section style={{ background: "var(--cream)", padding: "100px clamp(20px,5vw,64px)" }}>
+      <section id="tenets" style={{ background: "var(--cream)", padding: "100px clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 1180, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 56 }}>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>What We Believe</span>
@@ -290,6 +290,9 @@ export default function AboutPage() {
             <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.7, maxWidth: 640, margin: "20px auto 0" }}>
               The doctrinal foundation of the Christ Apostolic Church — what every CACNA pulpit preaches and what we live by.
             </p>
+            <Link href="/statement-of-faith" style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: 18, color: "var(--red)", fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
+              Read our full Statement of Faith →
+            </Link>
           </Reveal>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
             {[

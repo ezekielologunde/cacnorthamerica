@@ -155,7 +155,8 @@ export function FooterExperience() {
         <div style={{ maxWidth: 1240, margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 16, padding: '24px 0 28px', fontSize: 12.5, color: 'rgba(245,246,250,.3)' }}>
           <span>© 2026 Christ Apostolic Church North America · 24 Zones &amp; DCCs across the U.S., Canada &amp; South America</span>
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px 20px' }}>
-            <Link href="/tenets" style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>Our Tenets</Link>
+            <Link href="/about#tenets" style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>Our Tenets</Link>
+            <Link href="/statement-of-faith" style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>Statement of Faith</Link>
             <Link href="/leadership/past" style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>Past Leaders</Link>
             <Link href="/contact" style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>Contact</Link>
             <BackToTop />

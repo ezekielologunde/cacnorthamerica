@@ -26,13 +26,28 @@ const pillars = [
   { icon: HandHeart, label: "Our Values", body: "Our values and priorities are expressed in prayer — an effective prayer life remains our core value." },
 ];
 
+// 2026 Annual Convention theme + coordinator, sourced from the Convention
+// site's own lib/content/youth-program.ts.
+const CONVENTION_THEME = "Did God Really Say...? Knowing God's Word for Yourself";
+const REGIONAL_COORDINATOR = "Pastor Adekunmi Browne";
+
 // Real program names from the source page -- no descriptions were given
-// there beyond the titles themselves, so none are invented here.
+// there beyond the titles themselves, so none are invented here. Photos are
+// each program's own real thumbnail from cacnorthamerica.com/youth-young-adult/.
 const programs = [
-  { name: "Academic Conference", icon: BookOpen },
-  { name: "Leadership Retreat", icon: Users },
-  { name: "Night of Divine Encounter", icon: Sparkles },
-  { name: "Youth Conference", icon: Mic2 },
+  { name: "Academic Conference", icon: BookOpen, photo: "/images/cac-youth-program-academic.jpg" },
+  { name: "Leadership Retreat", icon: Users, photo: "/images/cac-youth-program-retreat.jpg" },
+  { name: "Night of Divine Encounter", icon: Sparkles, photo: "/images/cac-youth-program-divine-encounter.jpg" },
+  { name: "Youth Conference", icon: Mic2, photo: "/images/cac-youth-program-conference.jpg" },
+];
+
+// Real event photos from cacnorthamerica.com/youth-young-adult/ (2026-07-21) --
+// no per-photo captions exist upstream, so alt text describes what's shown.
+const moments = [
+  { src: "/images/cac-youth-unity-1.jpg", alt: "CACNA youth and pastors together in matching Unity t-shirts at a past gathering" },
+  { src: "/images/cac-youth-unity-2.jpg", alt: "CACNA youth from DCCs across North America gathered in Unity t-shirts" },
+  { src: "/images/cac-youth-worship.jpg", alt: "A CACNA youth leader in worship at a past gathering" },
+  { src: "/images/cac-youth-conference-group.jpg", alt: "CACNA youth and young adults gathered outdoors at a past conference" },
 ];
 
 export default function YouthPage() {
@@ -77,6 +92,24 @@ export default function YouthPage() {
               >
                 Journey With Us
               </Link>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Convention identity: theme + coordinator */}
+      <section style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(48px,6vw,72px)" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 14 }}>
+          <Reveal>
+            <div style={{ borderRadius: 18, padding: "22px 24px", background: "var(--paper)", border: "1px solid var(--line)" }}>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 8 }}>2026 Convention Theme</div>
+              <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 17, color: "var(--ink)", margin: 0, lineHeight: 1.4 }}>&ldquo;{CONVENTION_THEME}&rdquo;</p>
+            </div>
+          </Reveal>
+          <Reveal delay={80}>
+            <div style={{ borderRadius: 18, padding: "22px 24px", background: "var(--paper)", border: "1px solid var(--line)" }}>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 8 }}>Regional Coordinator</div>
+              <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 17, color: "var(--ink)", margin: 0, lineHeight: 1.4 }}>{REGIONAL_COORDINATOR}</p>
             </div>
           </Reveal>
         </div>
@@ -138,11 +171,37 @@ export default function YouthPage() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 16 }}>
             {programs.map((p, i) => (
               <Reveal key={p.name} delay={i * 80}>
-                <div style={{ height: "100%", borderRadius: 18, padding: "24px 20px", background: "var(--paper)", border: "1px solid var(--line)", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 12 }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 12, background: "linear-gradient(140deg,var(--flame),var(--gold))", display: "grid", placeItems: "center" }}>
-                    <p.icon size={20} strokeWidth={2} color="#fff" aria-hidden />
+                <div style={{ height: "100%", borderRadius: 18, overflow: "hidden", background: "var(--paper)", border: "1px solid var(--line)" }}>
+                  <div style={{ position: "relative", width: "100%", height: 150 }}>
+                    <ImageLightbox src={p.photo} alt={`CACNA youth at a past ${p.name}`} />
                   </div>
-                  <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 15.5, color: "var(--ink)", margin: 0, lineHeight: 1.3 }}>{p.name}</h3>
+                  <div style={{ padding: "18px 18px 22px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 10 }}>
+                    <div style={{ width: 40, height: 40, borderRadius: 11, background: "linear-gradient(140deg,var(--flame),var(--gold))", display: "grid", placeItems: "center", marginTop: -40, boxShadow: "0 6px 16px rgba(18,20,30,.2)" }}>
+                      <p.icon size={18} strokeWidth={2} color="#fff" aria-hidden />
+                    </div>
+                    <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 15.5, color: "var(--ink)", margin: 0, lineHeight: 1.3 }}>{p.name}</h3>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Moments */}
+      <section style={{ background: "var(--paper)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <Reveal style={{ textAlign: "center", marginBottom: 40 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Moments</span>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,44px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 0", lineHeight: 1 }}>
+              Life among CACNA&apos;s youth.
+            </h2>
+          </Reveal>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 14 }}>
+            {moments.map((m, i) => (
+              <Reveal key={m.src} delay={i * 80}>
+                <div style={{ position: "relative", width: "100%", height: 230, borderRadius: 18, overflow: "hidden", boxShadow: "0 12px 28px rgba(18,20,30,.1)" }}>
+                  <ImageLightbox src={m.src} alt={m.alt} />
                 </div>
               </Reveal>
             ))}
