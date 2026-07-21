@@ -63,8 +63,15 @@ const departments: Department[] = [
     key: "cacma",
     label: "CACMA",
     heading: "Christ Apostolic Church Men's Association.",
+    // Sourced from cacnorthamerica.com/cacma/ (2026-07-21). One omission:
+    // the source's claim that the Akure bookshop "could not improve due to
+    // staff mismanagement" is dropped -- an unverified internal criticism,
+    // not appropriate to publish about the association without more
+    // context. Everything else real is kept.
     body: [
-      "CACMA grew out of the church's need to fund and support ministerial training. As the church's Bible training grew — from the School of Prophets and Evangelists founded at Ilesa in 1949, to CAC Bible Training College at Ede in 1952, and eventually CAC Theological Seminary at Ile-Ife — CACMA formed to mobilize married men across the church to contribute toward its upkeep, ultimately funding student housing, campus improvements, and the church's own printing press at Agege, Lagos.",
+      "CACMA's founding purpose was to \"raise up the hands of Moses\" (Exodus 17:8-13) in support of the church's ministers — the same spirit as the church at Antioch's own support for its workers (Acts 13:1-5). As the church spread rapidly after the revival at Oke Ooye, the need for trained ministers grew: early trainees (called tuule in Yoruba, roughly \"learners\") studied for three to six months under a senior pastor before being posted to a church.",
+      "As the church grew, standardized Bible training became necessary: the School of Prophets and Evangelists was founded at Ilesa in 1949, followed by CAC Bible Training College at Ede in 1952 under Pastor D.O. Odubanjo, and eventually CAC Theological Seminary at Ile-Ife. CACMA formed to fund this training, mobilizing married men across the church to contribute one shilling per person each month — sent to the missionary headquarters at Ibadan to feed students and pay staff.",
+      "CACMA's support continued as the schools consolidated at Ile-Ife: a student hostel was completed and dedicated in 2005, followed by four phases of fencing the seminary compound. The association also established the church's printing press at Agege, Lagos, and a bookshop in Akure.",
     ],
     photo: { src: "/images/cacma-fellowship.jpg", alt: "CACMA men fellowshipping at a CACNA gathering", objectPosition: "center 30%" },
   },
@@ -72,9 +79,15 @@ const departments: Department[] = [
     key: "music",
     label: "Music",
     heading: "Spirit-filled praise, since the earliest revivals.",
+    // Sourced from cacnorthamerica.com/music-department/ (2026-07-21).
+    // Condensed from a much longer list of named musicians across three
+    // generations -- every name that appears here is real and drawn
+    // directly from that source, not invented; trimmed to a representative
+    // few per generation rather than reproducing the full roster of ~40.
     body: [
-      "The Music Department traces back to the church's earliest revivals, when Spirit-inspired composers like Apostle Joseph Ayo Babalola and Prophet D.O. Babajide first set lyrics to native airs, accompanied only by drums, gongs, hand claps, and bells.",
-      "Later generations of choir leaders introduced harmoniums and accordions, then standard instrumentation and choral training, culminating in the formation of the United Association of CAC Choirs — bringing central choir performances, training, and conferences to assemblies across every district.",
+      "The Music Department is the formation of choir groups within Christ Apostolic Church, dating back to the church's earliest revivals. Its earliest music was accompanied only by drums, gongs, hand claps, and other percussion — instruments common to the traditional religious ceremonies of the Yoruba nation, among whom the church originated — with no formal notation. Spirit-inspired composers of that first generation, among them Apostle Joseph Ayo Babalola and Prophet D.O. Babajide, set lyrics to native airs during revivals and crusades: \"I will sing with the spirit, and I will sing with the understanding also\" (1 Corinthians 14:15).",
+      "A second generation of musicians — including Elder James Babalola, Dr. J.O. Ogunranti, and Prophet Fesojaiye Adedeji, among others — carried the tradition forward, still built on hand claps and bells as the church's earliest instrumental accompaniment.",
+      "A third generation of choir leaders introduced the church's first standard instruments, the harmonium and accordion, and later standard and a cappella choral singing — pioneered among choirs in Lagos and among educated youth choirs in Akure, Ondo State. This group, including Pastor Professor Femi Adedeji and Pastor Dr. Moses Awojobi among many others, brought central choir performances, training, and conferences to assemblies across every district, and formed the United Association of CAC Choirs — a landmark in the history of CAC's music.",
     ],
   },
   {
@@ -113,7 +126,7 @@ const ministries: Ministry[] = [
   { name: "ICT", desc: "The history of the ICT Department of Christ Apostolic Church dates back to 2003 and allows for the seamless liaison with Christ Apostolic Churches overseas.", icon: Video, gradient: "linear-gradient(140deg,var(--ink),var(--red-deep))", href: "/online", cta: "Watch online" },
   { name: "CAC Men Association", desc: "The history of CACMA at Christ Apostolic Church is narrated for the benefits of all men members of the church.", icon: ShieldCheck, gradient: "linear-gradient(140deg,var(--red-deep),var(--ink))", href: "#departments", cta: "Read our history" },
   { name: "CAC Good Women Association", desc: "The impact of the Good Women, either as members, ministers, or spouses of ministers has embellished the history of Christ Apostolic Church at all levels.", icon: Users2, gradient: "linear-gradient(140deg,var(--gold),var(--red))", href: "/contact", cta: "Connect" },
-  { name: "Youth & Young Adult", desc: "The history of the Youth Department dates back to the 1930s when Nigerian and white Apostolic from Britain were still in alliance.", icon: Sparkles, gradient: "linear-gradient(140deg,var(--red-deep),var(--red))", href: "/contact", cta: "Get involved" },
+  { name: "Youth & Young Adult", desc: "The history of the Youth Department dates back to the 1930s when Nigerian and white Apostolic from Britain were still in alliance.", icon: Sparkles, gradient: "linear-gradient(140deg,var(--red-deep),var(--red))", href: "/youth", cta: "Meet the ministry" },
 ];
 
 export default function MinistriesPage() {
