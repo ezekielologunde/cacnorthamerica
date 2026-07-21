@@ -59,7 +59,7 @@ export default function CACNA2026Page() {
     offers: { "@type": "Offer", url: CACNA_REG, availability: "https://schema.org/InStock" },
   };
   return (
-    <main>
+    <main id="main-content">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Events", path: "/calendar" }, { name: ev.navLabel ?? ev.title, path: "/events/cacna-2026" }])).replace(/</g, "\\u003c") }} />
       <Nav heroDark />

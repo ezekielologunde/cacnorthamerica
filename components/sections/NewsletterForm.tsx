@@ -37,7 +37,7 @@ export function NewsletterForm() {
 
   if (state?.ok) {
     return (
-      <div style={{
+      <div role="status" style={{
         display: "flex",
         alignItems: "center",
         gap: 12,
@@ -60,7 +60,14 @@ export function NewsletterForm() {
   return (
     <form action={action} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+        <label htmlFor="newsletter-email" style={{
+          position: "absolute", width: 1, height: 1, padding: 0, margin: -1,
+          overflow: "hidden", clip: "rect(0,0,0,0)", whiteSpace: "nowrap", border: 0,
+        }}>
+          Your email address
+        </label>
         <input
+          id="newsletter-email"
           name="email"
           type="email"
           required
@@ -83,7 +90,7 @@ export function NewsletterForm() {
         <SubmitButton />
       </div>
       {state && !state.ok && (
-        <p style={{ fontSize: 13, color: "#fca5a5", margin: 0 }}>{state.message}</p>
+        <p role="alert" style={{ fontSize: 13, color: "#fca5a5", margin: 0 }}>{state.message}</p>
       )}
     </form>
   );

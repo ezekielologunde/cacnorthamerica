@@ -197,7 +197,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                           const onMouseLeave = (e: MouseEvent<HTMLElement>) => (e.currentTarget.style.background = d.external ? (dark ? 'rgba(253,200,65,.12)' : 'var(--cream-2)') : 'transparent');
                           const content = (
                             <>
-                              <div style={{ fontWeight: 700, fontSize: 14, color: d.external ? 'var(--gold)' : dark ? 'var(--cream)' : 'var(--ink)' }}>{d.label}</div>
+                              <div style={{ fontWeight: 700, fontSize: 14, color: d.external ? (dark ? 'var(--gold)' : 'var(--red-deep)') : dark ? 'var(--cream)' : 'var(--ink)' }}>{d.label}</div>
                               <div style={{ fontSize: 12, color: dark ? 'rgba(245,246,250,.5)' : 'var(--ink-soft)', marginTop: 2 }}>{d.desc}</div>
                             </>
                           );

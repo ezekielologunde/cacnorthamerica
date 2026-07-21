@@ -13,7 +13,7 @@ export const metadata = {
 
 export default function GalleryPage() {
   return (
-    <main>
+    <main id="main-content">
       <Nav />
 
       {/* Hero */}

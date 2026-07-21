@@ -111,6 +111,12 @@ export function NearbyChurchFinder({ leaders }: { leaders: Leader[] }) {
 
         {status === "done" && (
           <div style={{ marginTop: 28 }}>
+            <p role="status" style={{
+              position: "absolute", width: 1, height: 1, padding: 0, margin: -1,
+              overflow: "hidden", clip: "rect(0,0,0,0)", whiteSpace: "nowrap", border: 0,
+            }}>
+              {results.length === 0 ? "No churches found." : `${results.length} church${results.length === 1 ? "" : "es"} found near you.`}
+            </p>
             {results.length > 0 && results[0].miles > 150 && (
               <p style={{ fontSize: 13.5, color: "rgba(245,246,250,.65)", marginBottom: 16, lineHeight: 1.5 }}>
                 Coverage is still growing — the closest verified church we have is {Math.round(results[0].miles)} miles away. Browse the full directory below in case your zone's Superintendent knows of a closer assembly not yet listed here.

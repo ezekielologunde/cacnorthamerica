@@ -69,6 +69,7 @@ export function ZoneDirectory({ leaders }: { leaders: Leader[] }) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search by zone or name…"
+          aria-label="Search by zone or name"
           className="field-input"
           style={{
             width: "min(280px,100%)", padding: "10px 16px", borderRadius: 999,

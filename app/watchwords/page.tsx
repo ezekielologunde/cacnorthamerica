@@ -13,7 +13,7 @@ export const metadata = {
 
 export default function WatchwordsPage() {
   return (
-    <main>
+    <main id="main-content">
       <Nav heroDark />
 
       {/* Hero */}

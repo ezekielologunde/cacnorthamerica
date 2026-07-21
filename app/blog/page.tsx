@@ -374,7 +374,7 @@ export default async function BlogPage() {
   const cy = currentOrNextConvention();
 
   return (
-    <main>
+    <main id="main-content">
       <Nav heroDark />
 
       {/* Masthead */}

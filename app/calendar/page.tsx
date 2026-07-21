@@ -126,7 +126,7 @@ export default async function CalendarPage() {
   } : null;
 
   return (
-    <main>
+    <main id="main-content">
       {eventsJsonLd && (
         <script
           type="application/ld+json"

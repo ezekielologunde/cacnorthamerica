@@ -52,7 +52,7 @@ export default async function LeadershipPage() {
   );
 
   return (
-    <main>
+    <main id="main-content">
       <Nav />
 
       {/* Hero */}

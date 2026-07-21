@@ -36,7 +36,7 @@ export default async function OnlinePage() {
   const [live, pastSermons] = await Promise.all([getLiveStream(), getSermons(9)]);
   const featured = live ?? pastSermons[0];
   return (
-    <main style={{ background: "#0C0E13", minHeight: "100vh" }}>
+    <main id="main-content" style={{ background: "#0C0E13", minHeight: "100vh" }}>
       <Nav dark />
 
       {/* Hero */}

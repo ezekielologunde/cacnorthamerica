@@ -116,7 +116,7 @@ export default function ContactPage() {
   const labelStyle: React.CSSProperties = { display: "block", fontSize: 12.5, fontWeight: 600, color: "var(--ink-soft)", marginBottom: 5 };
 
   return (
-    <main>
+    <main id="main-content">
       <Nav />
 
       {/* Hero */}

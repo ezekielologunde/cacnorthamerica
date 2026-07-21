@@ -8,6 +8,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { GoogleTags } from "@/components/analytics/GoogleTags";
 import { SiteOverlays } from "@/components/ui/SiteOverlays";
+import { SkipToContent } from "@/components/ui/SkipToContent";
 import { createServiceClient } from "@/lib/supabase/server";
 
 const bricolage = Bricolage_Grotesque({
@@ -90,6 +91,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="preload" as="image" href="https://img.youtube.com/vi/RX1NjOYtDxo/maxresdefault.jpg" />
       </head>
       <body>
+        <SkipToContent />
         <script
           type="application/ld+json"
           // Static, app-controlled data only. `<` is escaped so no value can

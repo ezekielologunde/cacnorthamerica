@@ -17,7 +17,7 @@ export default async function ZonesPage() {
   const leaders = await getLeaders(["zonal_superintendent", "dcc_superintendent"]);
 
   return (
-    <main>
+    <main id="main-content">
       <Nav heroDark />
 
       {/* Hero */}

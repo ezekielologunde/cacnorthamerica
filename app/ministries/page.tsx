@@ -94,7 +94,7 @@ const ministries: Ministry[] = [
 
 export default function MinistriesPage() {
   return (
-    <main>
+    <main id="main-content">
       <Nav heroDark />
 
       {/* Hero */}

@@ -41,7 +41,7 @@ export default function MinistersRetreat2027Page() {
     url: `${SITE_URL}/events/ministers-retreat-2027`,
   };
   return (
-    <main>
+    <main id="main-content">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Events", path: "/calendar" }, { name: ev.navLabel ?? ev.title, path: "/events/ministers-retreat-2027" }])).replace(/</g, "\\u003c") }} />
       <Nav heroDark />

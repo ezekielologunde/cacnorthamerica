@@ -31,7 +31,7 @@ export default async function PastLeadersPage() {
   const leaders = await getLeaders(["past_president", "past_superintendent", "past_evangelist", "past_secretary", "past_treasurer"]);
 
   return (
-    <main>
+    <main id="main-content">
       <Nav heroDark />
 
       {/* Hero */}

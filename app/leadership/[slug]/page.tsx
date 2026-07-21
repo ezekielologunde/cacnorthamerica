@@ -46,7 +46,7 @@ export default async function LeaderProfilePage({ params }: { params: Promise<{ 
   const { leader, roles } = result;
 
   return (
-    <main>
+    <main id="main-content">
       <Nav heroDark />
 
       <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 80px", position: "relative", overflow: "hidden" }}>

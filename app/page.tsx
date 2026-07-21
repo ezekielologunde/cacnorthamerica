@@ -58,7 +58,7 @@ export default async function Home() {
     .order("sort_order");
 
   return (
-    <main>
+    <main id="main-content">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }}

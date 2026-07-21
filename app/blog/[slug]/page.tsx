@@ -351,7 +351,7 @@ export default async function BlogSlugPage({
   const whatsappUrl = `https://wa.me/?text=${shareText}`;
 
   return (
-    <main>
+    <main id="main-content">
       <Nav heroDark />
 
       {/* Hero */}

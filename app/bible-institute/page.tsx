@@ -30,7 +30,7 @@ export default async function BibleInstitutePage() {
   const faculty = await getLeaders(["bible_institute"]);
 
   return (
-    <main>
+    <main id="main-content">
       <Nav heroDark />
 
       {/* Hero */}

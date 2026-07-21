@@ -68,7 +68,7 @@ function CampaignCard({ campaign, scheme }: { campaign: GivingCampaign; scheme: 
 
 export default function GivingPage() {
   return (
-    <main>
+    <main id="main-content">
       <Nav />
 
       {/* Hero */}
