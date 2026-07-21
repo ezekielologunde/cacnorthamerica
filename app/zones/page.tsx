@@ -2,6 +2,7 @@ import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { ZoneDirectory } from "@/components/zones/ZoneDirectory";
+import { NearbyChurchFinder } from "@/components/zones/NearbyChurchFinder";
 import { getLeaders } from "@/lib/leaders";
 
 export const revalidate = 3600;
@@ -42,6 +43,9 @@ export default async function ZonesPage() {
       {/* Directory */}
       <section style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 1080, margin: "0 auto" }}>
+          <Reveal>
+            <NearbyChurchFinder leaders={leaders} />
+          </Reveal>
           {leaders.length === 0 ? (
             <Reveal>
               <p style={{ fontSize: 16, color: "var(--ink-soft)", textAlign: "center" }}>Zone directory coming soon.</p>
