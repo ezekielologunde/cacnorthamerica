@@ -10,6 +10,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 
 // Below-fold sections split into separate JS chunks — browser parses them
 // incrementally instead of one blocking task, cutting TBT significantly.
+const AnniversaryCelebration = dynamic(() => import("@/components/sections/AnniversaryCelebration").then(m => ({ default: m.AnniversaryCelebration })));
 const PastorWelcome = dynamic(() => import("@/components/sections/PastorWelcome").then(m => ({ default: m.PastorWelcome })));
 const Watchword     = dynamic(() => import("@/components/sections/Watchword").then(m => ({ default: m.Watchword })));
 const WatchOnline   = dynamic(() => import("@/components/sections/WatchOnline").then(m => ({ default: m.WatchOnline })));
@@ -68,6 +69,7 @@ export default async function Home() {
       <Nav heroDark />
       {announcements && announcements.length > 0 && <HomepageAnnouncements announcements={announcements} />}
       <Hero />
+      <AnniversaryCelebration />
       <PastorWelcome />
       <Watchword />
       <WatchOnline />
