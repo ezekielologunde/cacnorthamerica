@@ -189,7 +189,7 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
             ))}
           </div>
           <p style={{ fontSize: 14, color: "rgba(245,246,250,.5)", marginTop: 28, lineHeight: 1.7 }}>
-            Registration fees, the convention theme, and the ministers/speakers list will be announced closer to {dateRangeLabel(cy)} — follow @CACNA Latunde Region or check cacnaconvention.org for updates.
+            Registration fees, the convention theme, and the ministers/speakers list will be announced closer to {dateRangeLabel(cy)} — follow @CACNA Latunde Region or check <a href="https://cacnaconvention.org/" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>cacnaconvention.org</a> for updates.
           </p>
         </div>
       </section>

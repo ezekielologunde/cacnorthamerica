@@ -4,15 +4,11 @@ import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, CalendarDays, Users, Heart, ArrowLeft, Sparkles, ListOrdered, BedDouble, Plane, ShieldCheck, Phone } from "lucide-react";
+import { MapPin, Users, Heart, ArrowLeft, Sparkles, ListOrdered } from "lucide-react";
 import { googleCalUrl, icsDataUri, isEventPast } from "@/lib/events";
 import { CalendarPlus, Download } from "lucide-react";
 import { SITE, SITE_URL, breadcrumbJsonLd } from "@/lib/site";
 import { conventionYears, conventionChurchEvent } from "@/lib/conventions";
-import {
-  CONVENTION_HOTELS, CONVENTION_HOTEL_NOTE, CONVENTION_PRIMARY_AIRPORT,
-  CONVENTION_NEARBY_AIRPORTS, CONVENTION_RULES,
-} from "@/lib/convention-visit";
 
 export const revalidate = 3600;
 
@@ -28,18 +24,6 @@ const ev = conventionChurchEvent(cy2026);
 const CACNA_REG = cy2026.registrationUrl!;
 
 const THEME = "The Bible: God’s Message to Man";
-
-// The real, published 2026 schedule (from the convention program book) —
-// specific to this year's speaker assignments, unlike the generic recurring
-// pattern used for future years that haven't been announced yet.
-const sessions = [
-  { day: "Mon · Jul 13", label: "Daily Opening: Praise, Worship & Prayer", desc: "Registration opens for the week, followed by the Daily General Opening Session of praise, worship, and prayer, and Ministers' Session 1 — “Transformative Power of the Word” with Pastor T.A.O. Agbeja, Regional Superintendent, Latunde Region." },
-  { day: "Tue · Jul 14", label: "Ministers' Sessions & Registration", desc: "Registration continues alongside Ministers' Session 2 — “The Divine Word as a Guide for Our Daily Living” with Pastor Simeon Oladokun, Ph.D., D.Th., Regional Superintendent, CAC Anosike (Europe) Region." },
-  { day: "Wed · Jul 15", label: "Theme Sessions & Break-Outs", desc: "Ministers' Session 3 — “The Bible as an Encourager in Times of Trials, Tribulations and Challenges” with Rt. Rev. Prof. Dapo F. Asaju, Bishop of Ilesa Anglican Diocese — and Ministers' Session 4 with Pastor S.O. Oladele, President. Break-out sessions for CACMWF, CACMA, CACNAGWA, Youth/Young Adult, and Children, plus a Revival Night with Prophet H. Oladeji, General Evangelist." },
-  { day: "Thu · Jul 16", label: "Picnic, Sunday School & Business Group", desc: "An afternoon picnic with games and sports, the Sunday School General Session, the Business Group General Session, more break-out sessions, a Ministers' Prayer Night, and a Revival Night with Prophet H. Oladeji." },
-  { day: "Fri · Jul 17", label: "Convention Program, Ordination & Impartation Night", desc: "The main Convention Program (10am–2pm), an Ordination Service, and an Impartation Night with Prophet H. Oladeji, General Evangelist." },
-  { day: "Sat · Jul 18", label: "Holy Communion & Closing Service", desc: "The convention closes with Holy Communion and a Closing Service led by Pastor S.O. Oladele, President, CAC Nigeria and Overseas." },
-];
 
 export default function CACNA2026Page() {
   const isPast = isEventPast(ev);
@@ -195,136 +179,21 @@ export default function CACNA2026Page() {
         </div>
       </section>
 
-      {/* Session overview */}
-      <section style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 960, margin: "0 auto" }}>
-          <Reveal style={{ marginBottom: 44 }}>
-            <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 12 }}>Schedule overview</div>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,50px)", letterSpacing: "-.8px", color: "var(--cream)", margin: 0 }}>Six days in the village.</h2>
-          </Reveal>
-          <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-            {sessions.map((s, i) => (
-              <Reveal key={i} delay={i * 70}>
-                <div style={{ display: "flex", gap: "clamp(16px,3vw,32px)", alignItems: "flex-start", background: "rgba(245,246,250,.05)", border: "1px solid rgba(245,246,250,.1)", borderRadius: 20, padding: "clamp(20px,3vw,28px)" }}>
-                  <div style={{ flexShrink: 0, minWidth: 88, textAlign: "center" }}>
-                    <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 15, color: "var(--gold)", lineHeight: 1.2 }}>{s.day}</div>
-                  </div>
-                  <div>
-                    <div style={{ fontWeight: 800, fontSize: 18, color: "var(--cream)", marginBottom: 6 }}>{s.label}</div>
-                    <div style={{ fontSize: 14.5, color: "rgba(245,246,250,.62)", lineHeight: 1.68 }}>{s.desc}</div>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-          <Reveal delay={400}>
-            <p style={{ fontSize: 14, color: "rgba(245,246,250,.45)", marginTop: 22, lineHeight: 1.6 }}>
-              Every night is a <strong style={{ color: "rgba(245,246,250,.7)" }}>combined revival for all</strong>, with <strong style={{ color: "rgba(245,246,250,.7)" }}>free food for all</strong>. Schedule is subject to change — follow <strong style={{ color: "rgba(245,246,250,.7)" }}>@CACNA Latunde Region</strong> or cacnaconvention.org for updates.
-            </p>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* Plan Your Visit: hotels, travel, rules */}
-      <section style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 1080, margin: "0 auto" }}>
-          <Reveal style={{ marginBottom: 44, textAlign: "center" }}>
-            <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 12 }}>Plan your visit</div>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,50px)", letterSpacing: "-.8px", color: "var(--ink)", margin: "0 0 16px" }}>Hotels, travel, and what to expect.</h2>
-            <p style={{ fontSize: 15.5, color: "var(--ink-soft)", lineHeight: 1.7, maxWidth: 620, margin: "0 auto" }}>Registration isn&apos;t open here yet, and this page doesn&apos;t collect your hotel booking — those live at cacnaconvention.org. But everything you need to plan your trip is right here.</p>
-          </Reveal>
-
-          {/* Hotels */}
-          <Reveal delay={80}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
-              <BedDouble size={20} strokeWidth={2} color="var(--red)" aria-hidden />
-              <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--ink)", margin: 0 }}>Preferred hotels</h3>
-            </div>
-            <p style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.65, margin: "0 0 20px", maxWidth: 720 }}>{CONVENTION_HOTEL_NOTE}</p>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 12, marginBottom: 48 }}>
-              {CONVENTION_HOTELS.map((h) => (
-                <div key={h.name} style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 16, padding: "16px 18px" }}>
-                  <div style={{ fontWeight: 800, fontSize: 14.5, color: "var(--ink)", marginBottom: 4, lineHeight: 1.3 }}>{h.name}</div>
-                  <div style={{ fontSize: 13, color: "var(--ink-soft)", marginBottom: 8 }}>{h.city}</div>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                    <a href={`tel:${h.phone.replace(/[^\d+]/g, "")}`} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 700, color: "var(--red)", textDecoration: "none" }}>
-                      <Phone size={12} strokeWidth={2.5} aria-hidden /> {h.phone}
-                    </a>
-                    <span style={{ fontSize: 12.5, fontWeight: 700, color: "var(--ink-soft)" }}>{h.rate}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Reveal>
-
-          {/* Travel */}
-          <Reveal delay={120}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
-              <Plane size={20} strokeWidth={2} color="var(--red)" aria-hidden />
-              <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--ink)", margin: 0 }}>Getting there</h3>
-            </div>
-            <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 18, padding: "22px 24px", marginBottom: 48 }}>
-              <div style={{ fontWeight: 800, fontSize: 15, color: "var(--ink)", marginBottom: 6 }}>{CONVENTION_PRIMARY_AIRPORT.name} ({CONVENTION_PRIMARY_AIRPORT.code})</div>
-              <p style={{ fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.6, margin: "0 0 16px" }}>{CONVENTION_PRIMARY_AIRPORT.note}</p>
-              <div style={{ fontSize: 12.5, fontWeight: 700, letterSpacing: ".5px", textTransform: "uppercase", color: "var(--ink-soft)", marginBottom: 10 }}>Other nearby airports</div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                {CONVENTION_NEARBY_AIRPORTS.map((a) => (
-                  <span key={a.code} style={{ fontSize: 12.5, fontWeight: 600, color: "var(--ink)", background: "var(--cream-2)", padding: "6px 12px", borderRadius: 999 }}>
-                    {a.name} ({a.code}) · {a.miles} mi
-                  </span>
-                ))}
-              </div>
-            </div>
-          </Reveal>
-
-          {/* Rules & Etiquette */}
-          <Reveal delay={160}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
-              <ShieldCheck size={20} strokeWidth={2} color="var(--red)" aria-hidden />
-              <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--ink)", margin: 0 }}>Conference rules &amp; etiquette</h3>
-            </div>
-            <ul style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: "10px 24px", listStyle: "none", margin: 0, padding: 0 }}>
-              {CONVENTION_RULES.map((r, i) => (
-                <li key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.6 }}>
-                  <span aria-hidden style={{ flexShrink: 0, width: 6, height: 6, borderRadius: "50%", background: "var(--red)", marginTop: 7 }} />
-                  {r}
-                </li>
-              ))}
-            </ul>
-          </Reveal>
-        </div>
-      </section>
-
       {/* Full details live on the Convention website */}
       <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
           <Reveal>
             <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 16 }}>
               <ListOrdered size={16} strokeWidth={2.5} style={{ verticalAlign: "middle", marginRight: 8, color: "var(--flame)" }} aria-hidden />
-              {isPast ? "Registration Fees — Archival Record" : "Registration & Full Schedule"}
+              {isPast ? "This Convention's Archive" : "Registration & Full Details"}
             </div>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,4vw,48px)", letterSpacing: "-.8px", color: "var(--ink)", margin: "0 0 20px" }}>
-              {isPast ? "What registration cost for this convention." : "Registration fees and the day-by-day order of service."}
+              {isPast ? "This convention has come and gone." : "Registration, hotels, travel, and the full order of service."}
             </h2>
-            {isPast && (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 12, marginBottom: 28, textAlign: "left" }}>
-                {[
-                  { label: "Adults (30+)", price: "$125 – $250", note: "Rose in tiers from Oct. 2025 through the convention ground rate." },
-                  { label: "Young Adults (20–29)", price: "$100 – $150", note: "Rose in tiers from Oct. 2025 through the convention ground rate." },
-                  { label: "Children (1–19)", price: "Free", note: "No registration fee for children and youth." },
-                ].map((f) => (
-                  <div key={f.label} style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 16, padding: "16px 18px" }}>
-                    <div style={{ fontSize: 12.5, fontWeight: 700, letterSpacing: ".5px", textTransform: "uppercase", color: "var(--ink-soft)", marginBottom: 6 }}>{f.label}</div>
-                    <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--red)", marginBottom: 6 }}>{f.price}</div>
-                    <div style={{ fontSize: 12.5, color: "var(--ink-soft)", lineHeight: 1.5 }}>{f.note}</div>
-                  </div>
-                ))}
-              </div>
-            )}
             <p style={{ fontSize: 15.5, color: "var(--ink-soft)", lineHeight: 1.7, margin: "0 0 32px" }}>
               {isPast
-                ? "Food was free for all age groups; fees didn't include hotel accommodation. Full details for the next convention will be posted as they're announced."
-                : "Online registration, fees by category, and the full order of service live on the official CACNA Convention website."}
+                ? "Full details for the next convention will be posted as they're announced."
+                : "Online registration, fees by category, hotels, travel, and the full order of service live on the official CACNA Convention website."}
             </p>
             <a href="https://cacnaconvention.org/" target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--red)", color: "#fff", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none" }}>
               Visit cacnaconvention.org →
