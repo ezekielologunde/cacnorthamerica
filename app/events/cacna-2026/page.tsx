@@ -301,13 +301,30 @@ export default function CACNA2026Page() {
           <Reveal>
             <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 16 }}>
               <ListOrdered size={16} strokeWidth={2.5} style={{ verticalAlign: "middle", marginRight: 8, color: "var(--flame)" }} aria-hidden />
-              Registration &amp; Full Schedule
+              {isPast ? "Registration Fees — Archival Record" : "Registration & Full Schedule"}
             </div>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,4vw,48px)", letterSpacing: "-.8px", color: "var(--ink)", margin: "0 0 20px" }}>
-              Registration fees and the day-by-day order of service.
+              {isPast ? "What registration cost for this convention." : "Registration fees and the day-by-day order of service."}
             </h2>
+            {isPast && (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 12, marginBottom: 28, textAlign: "left" }}>
+                {[
+                  { label: "Adults (30+)", price: "$125 – $250", note: "Rose in tiers from Oct. 2025 through the convention ground rate." },
+                  { label: "Young Adults (20–29)", price: "$100 – $150", note: "Rose in tiers from Oct. 2025 through the convention ground rate." },
+                  { label: "Children (1–19)", price: "Free", note: "No registration fee for children and youth." },
+                ].map((f) => (
+                  <div key={f.label} style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 16, padding: "16px 18px" }}>
+                    <div style={{ fontSize: 12.5, fontWeight: 700, letterSpacing: ".5px", textTransform: "uppercase", color: "var(--ink-soft)", marginBottom: 6 }}>{f.label}</div>
+                    <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--red)", marginBottom: 6 }}>{f.price}</div>
+                    <div style={{ fontSize: 12.5, color: "var(--ink-soft)", lineHeight: 1.5 }}>{f.note}</div>
+                  </div>
+                ))}
+              </div>
+            )}
             <p style={{ fontSize: 15.5, color: "var(--ink-soft)", lineHeight: 1.7, margin: "0 0 32px" }}>
-              Online registration, fees by category, and the full order of service live on the official CACNA Convention website.
+              {isPast
+                ? "Food was free for all age groups; fees didn't include hotel accommodation. Full details for the next convention will be posted as they're announced."
+                : "Online registration, fees by category, and the full order of service live on the official CACNA Convention website."}
             </p>
             <a href="https://cacnaconvention.org/" target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--red)", color: "#fff", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none" }}>
               Visit cacnaconvention.org →
