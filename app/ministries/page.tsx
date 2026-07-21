@@ -31,7 +31,16 @@ const departments: Department[] = [
     key: "christian-education",
     label: "Christian Education",
     heading: "A department rooted in Sunday School.",
+    // First paragraph (the Sunday School movement's own origin) sourced from
+    // cacnorthamerica.com's own Christian Education page (2026-07-21) --
+    // condensed from a longer retelling while keeping every real name, date,
+    // and place. Robert Raikes founding the first Sunday School in
+    // Gloucester in 1780 is documented history, not CACNA-specific lore;
+    // included because it's the origin the church's own department page
+    // traces itself back to. The remaining two paragraphs (CACNA's own
+    // institutional history) are unchanged.
     body: [
+      "The Sunday School movement itself traces back to 1780s Gloucester, England, at the dawn of the industrial era. Factory children as young as eight worked six days a week in brutal conditions, with no free schooling — education was a family purchase, out of reach for the poor. On their one day off, many of these children turned to petty crime. Robert Raikes, editor of the Gloucester Journal, saw their lack of education and their dead-end path into poverty and started a school for them on Sundays, paying the first teacher himself and publishing printed sheets of the Ten Commandments and scripture as their curriculum — teaching them to read and write alongside moral instruction.",
       "Christ Apostolic Church's Christian Education Department grew out of the Sunday School movement — a founding vision laid on the Bible and on learning in Christian fellowship, in furtherance of Sunday School activities and how the church at large treats Sunday School lessons.",
       "The Annual Sunday School Rally was started in April 1978, continuing since then with the Holy Spirit-inspired additions and modifications that furthered Sunday School work across the Church. In 1982, the General Christian Education Committee (GCEC) was inaugurated to oversee the affairs of Christian Education in the church, including Sunday School's development. The Church later established its own Printing Press in 1987, at the Odubanjo Memorial Hall in Lagos, seeing the need to handle the production of its Sunday School materials and other publications by itself.",
     ],
@@ -72,9 +81,18 @@ const departments: Department[] = [
     key: "evangelical",
     label: "Evangelical",
     heading: "Five General Evangelists, one mandate.",
+    // Sourced from cacnorthamerica.com's own Evangelical Department page
+    // (2026-07-21), which adds real detail this entry didn't have before
+    // (Babalola's 1928 start with the Faith Tabernacle Group, Babajide as
+    // his "right-hand man," Abiara's 75-year retirement-age rule). One
+    // correction: the source states Alokan "retired... in 2015" but also
+    // says Abiara "was appointed to succeed him in December 2006" -- an
+    // internal contradiction. Kept 2006 as the transition year since it
+    // matches this entry's own already-verified 1993-2006/2006-2017 dates
+    // and is the only reading consistent with Abiara's appointment date.
     body: [
-      "The Evangelical Department's office is traditionally held by the church's General Evangelist — the church's chief prophet and evangelist, responsible for organizing crusades and authorizing every evangelist's ministry.",
-      "Apostle Joseph Ayo Babalola served as the first from the church's 1943 incorporation until his death in 1959, succeeded by Prophet David Olulana Babajide (1959–1991), Evangelist Jacob Oluwatuberu Alokan (1993–2006), Prophet Samuel Kayode Abiara (2006–2017), and the incumbent, Prophet Hezekiah Oluboye Oladeji, since January 2018.",
+      "The Evangelical Department's office is traditionally reserved for prophets and evangelists. Its occupant leads the evangelical efforts of the church as its chief prophet and evangelist, with every evangelist in the church operating under him — organizing crusades and evangelical outreaches, overseeing other prophets and evangelists, and authorizing the permits under which evangelists minister across the church's assemblies.",
+      "Apostle Joseph Ayo Babalola was the first General Evangelist, functioning as a prophet and evangelist from 1928 (when he joined the Faith Tabernacle Group) and officially holding the office from the church's 1943 incorporation until his death in 1959. He was succeeded by his right-hand man, Prophet David Olulana Babajide, who held the office until his retirement in 1991. Evangelist Jacob Oluwatuberu Alokan succeeded him in 1993 and led until 2006, when Prophet Samuel Kayode Abiara was appointed — Abiara retired from the office in 2017 upon reaching the church's retirement age of 75. Prophet Hezekiah Oluboye Oladeji, the incumbent General Evangelist, has held the office since January 2018.",
     ],
   },
 ];
