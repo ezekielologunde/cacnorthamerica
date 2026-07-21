@@ -4,11 +4,15 @@ import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, CalendarDays, Users, Heart, ArrowLeft, Sparkles, ListOrdered } from "lucide-react";
+import { MapPin, CalendarDays, Users, Heart, ArrowLeft, Sparkles, ListOrdered, BedDouble, Plane, ShieldCheck, Phone } from "lucide-react";
 import { googleCalUrl, icsDataUri, isEventPast } from "@/lib/events";
 import { CalendarPlus, Download } from "lucide-react";
 import { SITE, SITE_URL, breadcrumbJsonLd } from "@/lib/site";
 import { conventionYears, conventionChurchEvent } from "@/lib/conventions";
+import {
+  CONVENTION_HOTELS, CONVENTION_HOTEL_NOTE, CONVENTION_PRIMARY_AIRPORT,
+  CONVENTION_NEARBY_AIRPORTS, CONVENTION_RULES,
+} from "@/lib/convention-visit";
 
 export const revalidate = 3600;
 
@@ -221,19 +225,89 @@ export default function CACNA2026Page() {
         </div>
       </section>
 
-      {/* Full details live on the Convention website */}
+      {/* Plan Your Visit: hotels, travel, rules */}
       <section style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+        <div style={{ maxWidth: 1080, margin: "0 auto" }}>
+          <Reveal style={{ marginBottom: 44, textAlign: "center" }}>
+            <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 12 }}>Plan your visit</div>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,50px)", letterSpacing: "-.8px", color: "var(--ink)", margin: "0 0 16px" }}>Hotels, travel, and what to expect.</h2>
+            <p style={{ fontSize: 15.5, color: "var(--ink-soft)", lineHeight: 1.7, maxWidth: 620, margin: "0 auto" }}>Registration isn&apos;t open here yet, and this page doesn&apos;t collect your hotel booking — those live at cacnaconvention.org. But everything you need to plan your trip is right here.</p>
+          </Reveal>
+
+          {/* Hotels */}
+          <Reveal delay={80}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
+              <BedDouble size={20} strokeWidth={2} color="var(--red)" aria-hidden />
+              <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--ink)", margin: 0 }}>Preferred hotels</h3>
+            </div>
+            <p style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.65, margin: "0 0 20px", maxWidth: 720 }}>{CONVENTION_HOTEL_NOTE}</p>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 12, marginBottom: 48 }}>
+              {CONVENTION_HOTELS.map((h) => (
+                <div key={h.name} style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 16, padding: "16px 18px" }}>
+                  <div style={{ fontWeight: 800, fontSize: 14.5, color: "var(--ink)", marginBottom: 4, lineHeight: 1.3 }}>{h.name}</div>
+                  <div style={{ fontSize: 13, color: "var(--ink-soft)", marginBottom: 8 }}>{h.city}</div>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                    <a href={`tel:${h.phone.replace(/[^\d+]/g, "")}`} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 700, color: "var(--red)", textDecoration: "none" }}>
+                      <Phone size={12} strokeWidth={2.5} aria-hidden /> {h.phone}
+                    </a>
+                    <span style={{ fontSize: 12.5, fontWeight: 700, color: "var(--ink-soft)" }}>{h.rate}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+
+          {/* Travel */}
+          <Reveal delay={120}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
+              <Plane size={20} strokeWidth={2} color="var(--red)" aria-hidden />
+              <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--ink)", margin: 0 }}>Getting there</h3>
+            </div>
+            <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 18, padding: "22px 24px", marginBottom: 48 }}>
+              <div style={{ fontWeight: 800, fontSize: 15, color: "var(--ink)", marginBottom: 6 }}>{CONVENTION_PRIMARY_AIRPORT.name} ({CONVENTION_PRIMARY_AIRPORT.code})</div>
+              <p style={{ fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.6, margin: "0 0 16px" }}>{CONVENTION_PRIMARY_AIRPORT.note}</p>
+              <div style={{ fontSize: 12.5, fontWeight: 700, letterSpacing: ".5px", textTransform: "uppercase", color: "var(--ink-soft)", marginBottom: 10 }}>Other nearby airports</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {CONVENTION_NEARBY_AIRPORTS.map((a) => (
+                  <span key={a.code} style={{ fontSize: 12.5, fontWeight: 600, color: "var(--ink)", background: "var(--cream-2)", padding: "6px 12px", borderRadius: 999 }}>
+                    {a.name} ({a.code}) · {a.miles} mi
+                  </span>
+                ))}
+              </div>
+            </div>
+          </Reveal>
+
+          {/* Rules & Etiquette */}
+          <Reveal delay={160}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
+              <ShieldCheck size={20} strokeWidth={2} color="var(--red)" aria-hidden />
+              <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--ink)", margin: 0 }}>Conference rules &amp; etiquette</h3>
+            </div>
+            <ul style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: "10px 24px", listStyle: "none", margin: 0, padding: 0 }}>
+              {CONVENTION_RULES.map((r, i) => (
+                <li key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.6 }}>
+                  <span aria-hidden style={{ flexShrink: 0, width: 6, height: 6, borderRadius: "50%", background: "var(--red)", marginTop: 7 }} />
+                  {r}
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Full details live on the Convention website */}
+      <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
           <Reveal>
             <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 16 }}>
               <ListOrdered size={16} strokeWidth={2.5} style={{ verticalAlign: "middle", marginRight: 8, color: "var(--flame)" }} aria-hidden />
-              Full Convention Details
+              Registration &amp; Full Schedule
             </div>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,4vw,48px)", letterSpacing: "-.8px", color: "var(--ink)", margin: "0 0 20px" }}>
-              Schedule, registration fees, packing, and giving.
+              Registration fees and the day-by-day order of service.
             </h2>
             <p style={{ fontSize: 15.5, color: "var(--ink-soft)", lineHeight: 1.7, margin: "0 0 32px" }}>
-              The order of service, day-by-day schedule, registration fees, what to pack, travel logistics, and giving options all live on the official CACNA Convention website.
+              Online registration, fees by category, and the full order of service live on the official CACNA Convention website.
             </p>
             <a href="https://cacnaconvention.org/" target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--red)", color: "#fff", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none" }}>
               Visit cacnaconvention.org →

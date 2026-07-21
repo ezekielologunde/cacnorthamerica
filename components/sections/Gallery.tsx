@@ -7,9 +7,18 @@ import { X, ChevronLeft, ChevronRight, Images } from "lucide-react";
 import { haptic } from "@/lib/haptics";
 import { cloudinaryLoader } from "@/lib/cloudinary-loader";
 
-// No real CACNA gallery photos are available yet — the admin console
-// (Cloudinary-backed /api/gallery) is the source of truth once populated.
-const STATIC_PHOTOS: Photo[] = [];
+// Real photos from the 2025 CACNA Latunde Region General Convention, pulled
+// from cacnaconvention.org's own gallery and self-hosted here. Shown as a
+// fallback until the admin console (Cloudinary-backed /api/gallery) has real
+// uploads of its own.
+const STATIC_PHOTOS: Photo[] = [
+  { id: "convention-2025-01", src: "/images/convention-2025-01.jpg", alt: "Ministers seated together at the 2025 CACNA Latunde Region General Convention" },
+  { id: "convention-2025-02", src: "/images/convention-2025-02.jpg", alt: "Bible Institute graduates in cap and gown at the 2025 CACNA Convention" },
+  { id: "convention-2025-03", src: "/images/convention-2025-03.jpg", alt: "Two ministers in academic regalia at the 2025 CACNA Convention" },
+  { id: "convention-2025-04", src: "/images/convention-2025-04.jpg", alt: "Pastors gathered at the pulpit during the 2025 CACNA Convention" },
+  { id: "convention-2025-05", src: "/images/convention-2025-05.jpg", alt: "Women of CACNA worshiping together at the 2025 Convention" },
+  { id: "convention-2025-06", src: "/images/convention-2025-06.jpg", alt: "A graduate speaking at the podium during the 2025 CACNA Convention" },
+];
 
 interface Photo { src: string; alt: string; id: string; }
 
