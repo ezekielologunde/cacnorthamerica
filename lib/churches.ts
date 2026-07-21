@@ -178,4 +178,16 @@ export const MEMBER_CHURCHES: MemberChurch[] = [
     zoneName: "North Washington",
     source: "LinkedIn (Pastor Abayomi \"Yomi\" Ademuwagun's listed church role) + ZoomInfo (based in Halethorpe, MD)",
   },
+  {
+    name: "Christ Apostolic Church WDCC",
+    address: "8159 S Exchange Ave, Chicago, IL 60617",
+    zoneName: "Western DCC",
+    source: "Yelp (listed by name as \"CHRIST APOSTOLIC CHURCH WDCC\" — \"WDCC\" directly matching the Western DCC zone name) + GuideStar/ChurchFinder.com/Yahoo Local corroborating the same block under \"Christ Apostolic Church of Illinois\"",
+  },
+  {
+    name: "Christ Apostolic Church Kingdom Embassy",
+    address: "8733 Frankford Ave, Philadelphia, PA 19136",
+    zoneName: "Philadelphia",
+    source: "Multiple aggregator/directory listings (Yelp, Google Business) naming this address for a Philadelphia-based \"Christ Apostolic Church\" congregation",
+  },
 ];
