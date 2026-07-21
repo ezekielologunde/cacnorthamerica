@@ -12,9 +12,11 @@ import { createServiceClient } from "@/lib/supabase/server";
 // incrementally instead of one blocking task, cutting TBT significantly.
 const PastorWelcome = dynamic(() => import("@/components/sections/PastorWelcome").then(m => ({ default: m.PastorWelcome })));
 const Watchword     = dynamic(() => import("@/components/sections/Watchword").then(m => ({ default: m.Watchword })));
+const WatchOnline   = dynamic(() => import("@/components/sections/WatchOnline").then(m => ({ default: m.WatchOnline })));
 const UpcomingPrograms = dynamic(() => import("@/components/sections/UpcomingPrograms").then(m => ({ default: m.UpcomingPrograms })));
 const LatestNews    = dynamic(() => import("@/components/sections/LatestNews").then(m => ({ default: m.LatestNews })));
 const OurMinistries  = dynamic(() => import("@/components/sections/OurMinistries").then(m => ({ default: m.OurMinistries })));
+const PhotoMarquee   = dynamic(() => import("@/components/sections/PhotoMarquee").then(m => ({ default: m.PhotoMarquee })));
 const Impact        = dynamic(() => import("@/components/sections/Impact").then(m => ({ default: m.Impact })));
 const GlobalChurches = dynamic(() => import("@/components/sections/GlobalChurches").then(m => ({ default: m.GlobalChurches })));
 const PlanVisit     = dynamic(() => import("@/components/sections/PlanVisit").then(m => ({ default: m.PlanVisit })));
@@ -68,9 +70,11 @@ export default async function Home() {
       <Hero />
       <PastorWelcome />
       <Watchword />
+      <WatchOnline />
       <UpcomingPrograms />
       <LatestNews />
       <OurMinistries />
+      <PhotoMarquee />
       <Impact />
       <GlobalChurches />
       <PlanVisit />

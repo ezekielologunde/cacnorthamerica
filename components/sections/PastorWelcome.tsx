@@ -18,7 +18,7 @@ export async function PastorWelcome() {
   const photoUrl = superintendent?.photo_url;
 
   return (
-    <section style={{ background: "linear-gradient(155deg,var(--red) 0%,var(--flame) 55%,#7A1128 100%)", padding: "clamp(76px,10vw,130px) clamp(20px,5vw,64px)", position: "relative", overflow: "hidden" }}>
+    <section style={{ background: "var(--gradient-hero)", padding: "clamp(76px,10vw,130px) clamp(20px,5vw,64px)", position: "relative", overflow: "hidden" }}>
       {/* Warm decorative glows — joyful, not muted */}
       <div aria-hidden style={{ position: "absolute", top: "-20%", right: "-6%", width: 620, height: 620, borderRadius: "50%", background: "radial-gradient(circle,rgba(253,200,65,.22),transparent 70%)", pointerEvents: "none" }} />
       <div aria-hidden style={{ position: "absolute", bottom: "-18%", left: "-8%", width: 460, height: 460, borderRadius: "50%", background: "radial-gradient(circle,rgba(255,255,255,.12),transparent 70%)", pointerEvents: "none" }} />

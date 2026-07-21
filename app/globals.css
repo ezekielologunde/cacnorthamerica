@@ -17,6 +17,16 @@
   --ink-soft: #565A68;
   --line: rgba(18,20,30, 0.12);
 
+  /* Shared gradient roles — same token names/values used on the sibling
+   * Convention site (cacnaconvention.org) so both homepages read as one
+   * family. Lightest stop of each is var(--red)/#C81E3A or lighter, which
+   * already verifies >=5.67:1 for white text (see --red's own contrast on
+   * white), so white text passes across the whole ramp. */
+  --gradient-hero: linear-gradient(150deg,var(--red) 0%,#8F1530 55%,#4A0C1C 100%);
+  --gradient-hero-alt: linear-gradient(150deg,var(--blue) 0%,#1F2F96 55%,#121A52 100%);
+  --gradient-cta: linear-gradient(100deg,#A81430 0%,var(--red) 50%,var(--red-deep) 100%);
+  --gradient-band: linear-gradient(135deg,var(--ink) 0%,#1C1E2E 55%,#0A0B12 100%);
+
   /* Motion easing — exponential ease-out, no bounce */
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
@@ -231,6 +241,11 @@ html.lenis body { height: auto; }
 /* Soft elevation lift used across premium cards */
 .card-lift { transition: transform .35s var(--ease-out-quint), box-shadow .35s var(--ease-out-quint); will-change: transform; }
 .card-lift:hover { transform: translateY(-6px); }
+
+/* Watch section's recent-video thumbnail links — server component, so
+ * hover state lives in CSS rather than a JS handler. */
+.watch-thumb-link { transition: background .2s; }
+.watch-thumb-link:hover { background: rgba(245,246,250,.06); }
 
 /* Hero video fades in once it mounts after idle (poster shows first) */
 @keyframes hero-fade-in { from { opacity: 0; } to { opacity: 1; } }
