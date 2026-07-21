@@ -1,15 +1,16 @@
 import Link from "next/link";
 import { Reveal } from "@/components/ui/Reveal";
-import { BookOpen, HandHeart, Music, HeartHandshake, ArrowRight } from "lucide-react";
+import { BookOpen, HandHeart, Music, Landmark, ArrowRight } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 type MinistryTeaser = { name: string; desc: string; icon: LucideIcon; gradient: string };
 
+// Same verbatim source descriptions as the full /ministries page (2026-07-21).
 const featured: MinistryTeaser[] = [
-  { name: "Christian Education", desc: "Grounding believers across every zone in sound biblical teaching and discipleship.", icon: BookOpen, gradient: "linear-gradient(140deg,var(--flame),var(--gold))" },
-  { name: "Evangelism, Prayer & Counselling", desc: "Carrying the whole Gospel to the lost and standing in the gap in prayer for our churches and cities.", icon: HandHeart, gradient: "linear-gradient(140deg,var(--ember),var(--red-deep))" },
-  { name: "Music", desc: "Spirit-filled praise and worship carried across CACNA's member churches and the Annual Convention.", icon: Music, gradient: "linear-gradient(140deg,var(--gold),var(--flame))" },
-  { name: "Welfare & Outreach", desc: "Meeting practical needs and extending Christ's love to members and communities in every zone.", icon: HeartHandshake, gradient: "linear-gradient(140deg,var(--flame),var(--red))" },
+  { name: "Presidency", desc: "Administers and carries out policies formulated by the General Executive Council of the church.", icon: Landmark, gradient: "linear-gradient(140deg,var(--red-deep),var(--ink))" },
+  { name: "Christian Education", desc: "An established concept in Christ Apostolic Church from inception, founded by the progenitors of the church.", icon: BookOpen, gradient: "linear-gradient(140deg,var(--flame),var(--gold))" },
+  { name: "Evangelism, Prayer & Counselling", desc: "Leads all evangelical efforts and prophecy of the church.", icon: HandHeart, gradient: "linear-gradient(140deg,var(--ember),var(--red-deep))" },
+  { name: "Music", desc: "The formation of choir groups, dating back to the very foundations of the church.", icon: Music, gradient: "linear-gradient(140deg,var(--gold),var(--flame))" },
 ];
 
 /** Replaces the old "How We Gather" annual-events rundown — that framing

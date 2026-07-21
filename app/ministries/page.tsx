@@ -5,7 +5,7 @@ import { RevealText } from "@/components/ui/RevealText";
 import { DepartmentDirectory, type Department } from "@/components/ministries/DepartmentDirectory";
 import Link from "next/link";
 import Image from "next/image";
-import { Music, HeartHandshake, Sparkles, HandHeart, Video, Wrench, Globe, ShieldCheck, BookOpen, Users2 } from "lucide-react";
+import { Music, Landmark, Sparkles, HandHeart, Video, Wrench, Globe, ShieldCheck, BookOpen, Users2 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 export const metadata = {
@@ -79,17 +79,23 @@ const departments: Department[] = [
   },
 ];
 
+// Descriptions sourced verbatim from Christ Apostolic Church's own
+// "Our Departments" listing (2026-07-21) -- real denominational copy
+// rather than CACNA-specific paraphrase, matching this project's practice
+// of preferring authentic source text over invented marketing language.
+// Presidency is a genuine department that this list was previously missing;
+// "Welfare & Outreach" (not part of the source's 10 departments) is removed.
 const ministries: Ministry[] = [
-  { name: "Administration", desc: "Coordinating the presidency and regional leadership that guides CACNA's 24 Zones & DCCs.", icon: Wrench, gradient: "linear-gradient(140deg,var(--red),var(--flame))", href: "/leadership", cta: "Meet our leadership" },
-  { name: "Christian Education", desc: "Grounding believers across every zone in sound biblical teaching and discipleship.", icon: BookOpen, gradient: "linear-gradient(140deg,var(--flame),var(--gold))", href: "#departments", cta: "Read our history" },
-  { name: "Evangelism, Prayer & Counselling", desc: "Carrying the whole Gospel to the lost and standing in the gap in prayer for our churches and cities.", icon: HandHeart, gradient: "linear-gradient(140deg,var(--ember),var(--red-deep))", href: "#departments", cta: "Read our history" },
-  { name: "Youth & Young Adult", desc: "Raising the next generation as bold, grounded ambassadors of Christ across every CACNA zone.", icon: Sparkles, gradient: "linear-gradient(140deg,var(--red-deep),var(--red))", href: "/contact", cta: "Get involved" },
-  { name: "Missions", desc: "Reaching forgotten and hard-to-reach communities with the Gospel across the region.", icon: Globe, gradient: "linear-gradient(140deg,#1B4332,#2D6A4F)", href: "/contact", cta: "Get involved" },
-  { name: "Music", desc: "Spirit-filled praise and worship carried across CACNA's member churches and the Annual Convention.", icon: Music, gradient: "linear-gradient(140deg,var(--gold),var(--flame))", href: "#departments", cta: "Read our history" },
-  { name: "Welfare & Outreach", desc: "Meeting practical needs and extending Christ's love to members and communities in every zone.", icon: HeartHandshake, gradient: "linear-gradient(140deg,var(--flame),var(--red))", href: "/contact", cta: "Learn more" },
-  { name: "ICT & Technical", desc: "Powering CACNA's livestreams, media, and digital presence so the Gospel reaches every home.", icon: Video, gradient: "linear-gradient(140deg,var(--ink),var(--red-deep))", href: "/online", cta: "Watch online" },
-  { name: "CAC Good Women Association", desc: "Women across CACNA growing together in faith, prayer, and service.", icon: Users2, gradient: "linear-gradient(140deg,var(--gold),var(--red))", href: "/contact", cta: "Connect" },
-  { name: "CAC Men Association (CACMA)", desc: "Men across every CACNA zone standing together in discipleship and service.", icon: ShieldCheck, gradient: "linear-gradient(140deg,var(--red-deep),var(--ink))", href: "#departments", cta: "Read our history" },
+  { name: "Presidency", desc: "The Presidency of Christ Apostolic Church administers and carries out policies formulated by the General Executive Council of the church.", icon: Landmark, gradient: "linear-gradient(140deg,var(--red-deep),var(--ink))", href: "/leadership", cta: "Meet our leadership" },
+  { name: "Missions", desc: "The Missions Department of Christ Apostolic Church is responsible for taking the message of Jesus Christ to all nooks and crannies of the world.", icon: Globe, gradient: "linear-gradient(140deg,#1B4332,#2D6A4F)", href: "/contact", cta: "Get involved" },
+  { name: "Evangelism, Prayer & Counselling", desc: "The principal occupant of the Evangelical Department of Christ Apostolic Church leads all evangelical efforts and prophecy of the church.", icon: HandHeart, gradient: "linear-gradient(140deg,var(--ember),var(--red-deep))", href: "#departments", cta: "Read our history" },
+  { name: "Administration", desc: "Whether you need information regarding a specific department or you want to find out more information, dive into the departments of Christ Apostolic Church.", icon: Wrench, gradient: "linear-gradient(140deg,var(--red),var(--flame))", href: "#departments", cta: "Explore departments" },
+  { name: "Christian Education", desc: "The Christian Education Department is an established concept in Christ Apostolic Church from inception and it was established by the progenitors of the church.", icon: BookOpen, gradient: "linear-gradient(140deg,var(--flame),var(--gold))", href: "#departments", cta: "Read our history" },
+  { name: "Music", desc: "The Music Department of Christ Apostolic Church is the formation of choir groups and dates back to the very foundations of the church.", icon: Music, gradient: "linear-gradient(140deg,var(--gold),var(--flame))", href: "#departments", cta: "Read our history" },
+  { name: "ICT", desc: "The history of the ICT Department of Christ Apostolic Church dates back to 2003 and allows for the seamless liaison with Christ Apostolic Churches overseas.", icon: Video, gradient: "linear-gradient(140deg,var(--ink),var(--red-deep))", href: "/online", cta: "Watch online" },
+  { name: "CAC Men Association", desc: "The history of CACMA at Christ Apostolic Church is narrated for the benefits of all men members of the church.", icon: ShieldCheck, gradient: "linear-gradient(140deg,var(--red-deep),var(--ink))", href: "#departments", cta: "Read our history" },
+  { name: "CAC Good Women Association", desc: "The impact of the Good Women, either as members, ministers, or spouses of ministers has embellished the history of Christ Apostolic Church at all levels.", icon: Users2, gradient: "linear-gradient(140deg,var(--gold),var(--red))", href: "/contact", cta: "Connect" },
+  { name: "Youth & Young Adult", desc: "The history of the Youth Department dates back to the 1930s when Nigerian and white Apostolic from Britain were still in alliance.", icon: Sparkles, gradient: "linear-gradient(140deg,var(--red-deep),var(--red))", href: "/contact", cta: "Get involved" },
 ];
 
 export default function MinistriesPage() {
