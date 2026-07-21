@@ -137,6 +137,18 @@ export const MEMBER_CHURCHES: MemberChurch[] = [
     source: "cacsalvationcenter.org (Pastor Dr. Hezekiah O. Ilufoye listed as Baltimore DCC Superintendent)",
   },
   {
+    name: "CAC Palace of Peace",
+    address: "1451 North Rolling Road, Baltimore, MD 21228",
+    zoneName: "Baltimore DCC",
+    source: "cacpalaceofpeace.org — cacsalvationcenter.org names it as a sister assembly within the Baltimore DCC family",
+  },
+  {
+    name: "Salvation City",
+    address: "8330 Pulaski Hwy Suite F, Rosedale, MD 21237",
+    zoneName: "Baltimore DCC",
+    source: "city.cacsalvationcenter.org — cacsalvationcenter.org's own sister-assembly subdomain",
+  },
+  {
     name: "Christ Apostolic Church of Miami Inc",
     address: "2601 NW 123rd St, Miami, FL 33167",
     zoneName: "South Florida DCC",
@@ -159,5 +171,11 @@ export const MEMBER_CHURCHES: MemberChurch[] = [
     address: "1132 East Tremont Avenue, Bronx, NY 10460",
     zoneName: "Eastern DCC",
     source: "LinkedIn (Olufemi Olaluwoye, Senior Pastor) + Facebook (CACmountpleasant) + nonprofit EIN filing (13-3508326)",
+  },
+  {
+    name: "Christ Apostolic Church — Agape Fellowship",
+    address: "1505 Bloomfield Ave, Halethorpe, MD 21227",
+    zoneName: "North Washington",
+    source: "LinkedIn (Pastor Abayomi \"Yomi\" Ademuwagun's listed church role) + ZoomInfo (based in Halethorpe, MD)",
   },
 ];
