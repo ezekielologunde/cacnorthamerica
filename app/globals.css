@@ -18,8 +18,8 @@
   --line: rgba(18,20,30, 0.12);
 
   /* Shared gradient roles — same token names/values used on the sibling
-   * Convention site (cacnaconvention.org) so both homepages read as one
-   * family. Lightest stop of each is var(--red)/#C81E3A or lighter, which
+   * Convention site (cacna-convention.vercel.app) so both homepages read as
+   * one family. Lightest stop of each is var(--red)/#C81E3A or lighter, which
    * already verifies >=5.67:1 for white text (see --red's own contrast on
    * white), so white text passes across the whole ramp. */
   --gradient-hero: linear-gradient(150deg,var(--red) 0%,#8F1530 55%,#4A0C1C 100%);

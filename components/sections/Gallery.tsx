@@ -8,9 +8,9 @@ import { haptic } from "@/lib/haptics";
 import { cloudinaryLoader } from "@/lib/cloudinary-loader";
 
 // Real photos from the 2025 CACNA Latunde Region General Convention, pulled
-// from cacnaconvention.org's own gallery and self-hosted here. Shown as a
-// fallback until the admin console (Cloudinary-backed /api/gallery) has real
-// uploads of its own.
+// from the dedicated Convention site's (cacna-convention.vercel.app) own
+// gallery and self-hosted here. Shown as a fallback until the admin console
+// (Cloudinary-backed /api/gallery) has real uploads of its own.
 const STATIC_PHOTOS: Photo[] = [
   { id: "convention-2025-01", src: "/images/convention-2025-01.jpg", alt: "Ministers seated together at the 2025 CACNA Latunde Region General Convention" },
   { id: "convention-2025-02", src: "/images/convention-2025-02.jpg", alt: "Bible Institute graduates in cap and gown at the 2025 CACNA Convention" },

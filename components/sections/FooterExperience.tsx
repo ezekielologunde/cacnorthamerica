@@ -22,6 +22,7 @@ const columns: { heading: string; links: readonly (readonly [string, string])[] 
       ['/zones', 'Zones & DCCs'],
       ['/ministries', 'Ministries'],
       ['/bible-institute', 'Bible Institute'],
+      ['https://cacna-convention.vercel.app', 'Annual Convention'],
     ],
   },
   {
@@ -114,7 +115,11 @@ export function FooterExperience() {
               <div style={{ fontWeight: 800, fontSize: 12, textTransform: 'uppercase', letterSpacing: '1.8px', color: 'var(--gold)', marginBottom: 18 }}>{col.heading}</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 14 }}>
                 {col.links.map(([href, label]) => (
-                  <Link key={href} href={href} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{label}</Link>
+                  href.startsWith('http') ? (
+                    <a key={href} href={href} target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{label}</a>
+                  ) : (
+                    <Link key={href} href={href} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{label}</Link>
+                  )
                 ))}
               </div>
             </div>

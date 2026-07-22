@@ -195,8 +195,8 @@ export default function CACNA2026Page() {
                 ? "Full details for the next convention will be posted as they're announced."
                 : "Online registration, fees by category, hotels, travel, and the full order of service live on the official CACNA Convention website."}
             </p>
-            <a href="https://cacnaconvention.org/" target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--red)", color: "#fff", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none" }}>
-              Visit cacnaconvention.org →
+            <a href={isPast ? "https://cacna-convention.vercel.app/archive" : "https://cacna-convention.vercel.app"} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--red)", color: "#fff", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none" }}>
+              Visit the Convention Site →
             </a>
           </Reveal>
         </div>
@@ -216,7 +216,7 @@ export default function CACNA2026Page() {
             </p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 16, justifyContent: "center" }}>
               <a href={CACNA_REG} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 17, padding: "18px 36px", borderRadius: 999, textDecoration: "none", boxShadow: "0 20px 50px rgba(253,200,65,.35)" }}>
-                Register on CACNA.org →
+                Register on the Convention Site →
               </a>
               <Link href="/giving" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "rgba(245,246,250,.08)", color: "var(--cream)", fontWeight: 700, fontSize: 15, padding: "18px 30px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(245,246,250,.18)" }}>
                 Support the trip
