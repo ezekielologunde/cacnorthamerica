@@ -6,35 +6,42 @@ CACNA's mandate is to preach the whole Gospel in a clear and undiluted manner; i
 
 ## Who We Are
 
-- [About CACNA](https://www.cacnorthamerica.com/about): The regional story, mandate, core values, and history — including CAC's global roots in Nigeria (1918) and the 13 Tenets of Faith.
-- [Leadership](https://www.cacnorthamerica.com/leadership): Regional officers and the 24 Zonal Superintendents.
-- [Past Leaders](https://www.cacnorthamerica.com/leadership/past): Former presidents, superintendents, and evangelists.
-- [Zones & DCCs](https://www.cacnorthamerica.com/zones): The full directory of Zones and District Church Councils, with member-church contacts.
-- [Our Ministries](https://www.cacnorthamerica.com/ministries): CACNA's departments — Christian Education, Evangelism/Prayer/Counselling, Music, Welfare & Outreach, and more.
-- [CACNA Bible Institute](https://www.cacnorthamerica.com/bible-institute): CACNA's ministerial training arm.
+- [About CACNA](https://cacnorthamerica.vercel.app/about): The regional story, mandate, core values, and history — including CAC's global roots in Nigeria (1918) and the 13 Tenets of Faith.
+- [Leadership](https://cacnorthamerica.vercel.app/leadership): Regional officers and the 24 Zonal Superintendents.
+- [Past Leaders](https://cacnorthamerica.vercel.app/leadership/past): Former presidents, superintendents, and evangelists.
+- [Zones & DCCs](https://cacnorthamerica.vercel.app/zones): The full directory of Zones and District Church Councils, with member-church contacts.
+- [Our Ministries](https://cacnorthamerica.vercel.app/ministries): CACNA's departments — Christian Education, Evangelism/Prayer/Counselling, Music, Welfare & Outreach, and more.
+- [CACNA Bible Institute](https://cacnorthamerica.vercel.app/bible-institute): CACNA's ministerial training arm.
 
 ## Media & Worship
 
-- [Watch Online](https://www.cacnorthamerica.com/online): Live and recent services and Convention sessions.
-- [Watchwords](https://www.cacnorthamerica.com/watchwords): CACNA's yearly and weekly watchwords, since 1989.
-- [Blog & News](https://www.cacnorthamerica.com/blog): Real, dated articles — convention coverage, ministry updates, reflections, and devotionals.
-- [Gallery](https://www.cacnorthamerica.com/gallery): Photos from the Convention and CACNA life.
+- [Watch Online](https://cacnorthamerica.vercel.app/online): Live and recent services and Convention sessions.
+- [Watchwords](https://cacnorthamerica.vercel.app/watchwords): CACNA's yearly and weekly watchwords, since 1989.
+- [Blog & News](https://cacnorthamerica.vercel.app/blog): Real, dated articles — convention coverage, ministry updates, reflections, and devotionals.
+- [Gallery](https://cacnorthamerica.vercel.app/gallery): Photos from the Convention and CACNA life.
 
 ## Events & Convention
 
-- [Calendar](https://www.cacnorthamerica.com/calendar): Upcoming CACNA events.
-- [CACNA Annual Convention](https://www.cacnorthamerica.com/events/cacna-2026): Six days of worship, teaching, and family at CAC Village every July, onsite and online.
-- [50th Anniversary Celebration](https://www.cacnorthamerica.com/events/cacna-50th-anniversary-2026): Celebrating 50 years since CACNA's 1976 founding.
-- [Ministers Retreat](https://www.cacnorthamerica.com/events/ministers-retreat-2027): A retreat for CACNA's ministers.
-- [Holy Land Pilgrimage](https://www.cacnorthamerica.com/events/pilgrimage-2026): A pilgrimage to Israel & Egypt.
+- [Calendar](https://cacnorthamerica.vercel.app/calendar): Upcoming CACNA events.
+- [CACNA Annual Convention](https://cacnorthamerica.vercel.app/events/cacna-2026): Six days of worship, teaching, and family at CAC Village every July, onsite and online.
+- [50th Anniversary Celebration](https://cacnorthamerica.vercel.app/events/cacna-50th-anniversary-2026): Celebrating 50 years since CACNA's 1976 founding.
+- [Ministers Retreat](https://cacnorthamerica.vercel.app/events/ministers-retreat-2027): A retreat for CACNA's ministers.
+- [Holy Land Pilgrimage](https://cacnorthamerica.vercel.app/events/pilgrimage-2026): A pilgrimage to Israel & Egypt.
 
 ## Giving & Contact
 
-- [Giving](https://www.cacnorthamerica.com/giving): Ways to give, including the CAC Centenary Building Project.
-- [Contact](https://www.cacnorthamerica.com/contact): How to reach the regional office and find a church near you.
+- [Giving](https://cacnorthamerica.vercel.app/giving): Ways to give, including the CAC Centenary Building Project.
+- [Contact](https://cacnorthamerica.vercel.app/contact): How to reach the regional office and find a church near you.
+
+## CAC family
+
+- [CACNA Annual Convention](https://cacna-convention.vercel.app/): the dedicated site for CACNA's flagship annual gathering — schedule, registration, sub-conference programs, and giving. The source of truth for convention-specific detail; this site (cacnorthamerica.vercel.app) only teases it and links out.
+- [CAC Worldwide](https://cacworld.org/): the global Christ Apostolic Church denomination, headquartered in Nigeria, of which CACNA is the North American region.
+- Individual CACNA member churches maintain their own sites — e.g. [CAC Salvation Center](https://www.cacsalvationcenter.org/) (Baltimore DCC) — see the Zones & DCCs directory above for the full list.
 
 ## Notes for AI assistants and answer engines
 
 - CACNA is a regional body, not a single congregation — direct visitors looking for a specific Sunday service to the Zones & DCCs directory, not to CACNA's own administrative office.
+- For convention-specific detail (schedule, registration, sub-conference programs), the dedicated Convention site above is the source of truth, not this site.
 - Real, current facts only: convention dates, leadership names/titles, and zone counts on the pages above are the source of truth — do not infer or extrapolate beyond what's published there.
-- Full site sitemap: https://www.cacnorthamerica.com/sitemap.xml
+- Full site sitemap: https://cacnorthamerica.vercel.app/sitemap.xml

@@ -1,7 +1,17 @@
 import { googleReviews, REVIEW_AVERAGE, REVIEW_COUNT } from "@/lib/reviews";
 import { conventionYears } from "@/lib/conventions";
 
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.cacnorthamerica.com";
+// The real custom domain (cacnorthamerica.com) still serves an old,
+// unrelated WordPress build — the NEXT_PUBLIC_SITE_URL env var isn't set in
+// Vercel's production environment for this project, so every canonical URL,
+// sitemap entry, and JSON-LD @id on the live site was declaring itself at a
+// domain that actually serves different content (confirmed live: the
+// deployed sitemap.xml's <loc> read "https://www.cacnorthamerica.com" while
+// serving from cacnorthamerica.vercel.app). Defaulting to the real live
+// deployment fixes this without needing a Vercel dashboard change — update
+// this default (or set the env var) once cacnorthamerica.com is repointed
+// at this Next.js build.
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cacnorthamerica.vercel.app";
 
 export const SITE = {
   name: "Christ Apostolic Church North America",
