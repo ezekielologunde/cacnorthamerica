@@ -13,6 +13,7 @@ import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
 import Link from "next/link";
 import { Clock, Calendar, ArrowRight, Globe2, Landmark, Sparkles, Archive, BookHeart } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { SITE_URL } from "@/lib/site";
 
 export const revalidate = 3600;
 
@@ -49,7 +50,7 @@ export const metadata = {
 };
 
 const WHATSAPP_SHARE = (title: string, slug: string) =>
-  `https://wa.me/?text=${encodeURIComponent(`${title} — https://www.cacnorthamerica.com/blog/${slug}`)}`;
+  `https://wa.me/?text=${encodeURIComponent(`${title} — ${SITE_URL}/blog/${slug}`)}`;
 
 function CategoryBadge({ label, color }: { label: string; color: string }) {
   return (

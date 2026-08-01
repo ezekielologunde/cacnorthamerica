@@ -22,7 +22,7 @@ const columns: { heading: string; links: readonly (readonly [string, string])[] 
       ['/zones', 'Zones & DCCs'],
       ['/ministries', 'Ministries'],
       ['/bible-institute', 'Bible Institute'],
-      ['https://cacna-convention.vercel.app', 'Annual Convention'],
+      ['https://cacnaconvention.cacsalvationcenter.org', 'Annual Convention'],
     ],
   },
   {

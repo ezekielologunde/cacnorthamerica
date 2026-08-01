@@ -1,7 +1,7 @@
 import { googleReviews, REVIEW_AVERAGE, REVIEW_COUNT } from "@/lib/reviews";
 import { conventionYears } from "@/lib/conventions";
 
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.cacnorthamerica.com";
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cacna.cacsalvationcenter.org";
 
 export const SITE = {
   name: "Christ Apostolic Church North America",

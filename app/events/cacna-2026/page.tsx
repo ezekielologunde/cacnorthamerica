@@ -195,7 +195,7 @@ export default function CACNA2026Page() {
                 ? "Full details for the next convention will be posted as they're announced."
                 : "Online registration, fees by category, hotels, travel, and the full order of service live on the official CACNA Convention website."}
             </p>
-            <a href={isPast ? "https://cacna-convention.vercel.app/archive" : "https://cacna-convention.vercel.app"} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--red)", color: "#fff", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none" }}>
+            <a href={isPast ? "https://cacnaconvention.cacsalvationcenter.org/archive" : "https://cacnaconvention.cacsalvationcenter.org"} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--red)", color: "#fff", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none" }}>
               Visit the Convention Site →
             </a>
           </Reveal>

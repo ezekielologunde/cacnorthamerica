@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Resend } from "resend";
 import { headers } from "next/headers";
 import { rateLimit } from "@/lib/rateLimit";
+import { SITE_URL } from "@/lib/site";
 
 export type SubscribeState = { ok: boolean; message: string } | null;
 
@@ -24,7 +25,7 @@ function welcomeHtml(name: string | null): string {
         You'll hear from us about the Annual Convention, upcoming events, devotionals, and ways to get involved across CACNA's member churches.
       </p>
       <div style="text-align:center;margin-bottom:36px">
-        <a href="https://www.cacnorthamerica.com/online" style="display:inline-block;background:#C81E3A;color:#fff;font-weight:700;font-size:15px;padding:15px 36px;border-radius:999px;text-decoration:none;box-shadow:0 8px 20px rgba(200,30,58,.30)">
+        <a href="${SITE_URL}/online" style="display:inline-block;background:#C81E3A;color:#fff;font-weight:700;font-size:15px;padding:15px 36px;border-radius:999px;text-decoration:none;box-shadow:0 8px 20px rgba(200,30,58,.30)">
           Watch Online →
         </a>
       </div>
