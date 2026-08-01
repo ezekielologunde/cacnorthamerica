@@ -1,6 +1,16 @@
 import { googleReviews, REVIEW_AVERAGE, REVIEW_COUNT } from "@/lib/reviews";
 import { conventionYears } from "@/lib/conventions";
 
+// The real custom domain (cacnorthamerica.com) still serves an old,
+// unrelated WordPress build — the NEXT_PUBLIC_SITE_URL env var isn't set in
+// Vercel's production environment for this project, so every canonical URL,
+// sitemap entry, and JSON-LD @id on the live site was declaring itself at a
+// domain that actually serves different content. This app is now live at
+// cacna.cacsalvationcenter.org (a subdomain of the sibling church site,
+// set up so all CAC family sites share one domain for SEO). Defaulting to
+// that fixes the canonical mismatch without needing a Vercel dashboard
+// change — update this default (or set the env var) once cacnorthamerica.com
+// is repointed at this Next.js build.
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cacna.cacsalvationcenter.org";
 
 export const SITE = {
