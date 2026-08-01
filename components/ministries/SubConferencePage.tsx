@@ -15,6 +15,11 @@ export type SubConferencePageProps = {
   leaderNames?: string[];
   highlight?: { label: string; text: string };
   executive?: ExecutiveMember[];
+  /** Overrides the section heading above `executive` — defaults to "Executive
+   *  Committee". Use for lists that aren't actually a standing committee
+   *  (e.g. a year's convention speakers, some of whom may not even be CAC
+   *  clergy), so the label doesn't misrepresent who these people are. */
+  executiveLabel?: string;
   historyParagraphs?: string[];
   note?: string;
   relatedLink?: { href: string; label: string };
@@ -29,6 +34,7 @@ export function SubConferencePage({
   leaderNames,
   highlight,
   executive,
+  executiveLabel = "Executive Committee",
   historyParagraphs,
   note,
   relatedLink,
@@ -120,7 +126,7 @@ export function SubConferencePage({
         <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
           <div style={{ maxWidth: 1000, margin: "0 auto" }}>
             <Reveal style={{ textAlign: "center", marginBottom: 36 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Executive Committee</span>
+              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>{executiveLabel}</span>
             </Reveal>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 14 }}>
               {executive.map((m, i) => (
