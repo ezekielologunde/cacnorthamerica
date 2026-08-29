@@ -3,7 +3,7 @@ import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import Link from "next/link";
-import { Sparkles, Users, MapPin, HandHeart, ArrowLeft, CalendarPlus, Download, PartyPopper } from "lucide-react";
+import { Sparkles, Users, MapPin, HandHeart, ArrowLeft, CalendarPlus, Download, PartyPopper, ClipboardList } from "lucide-react";
 import { specialEvents, googleCalUrl, icsDataUri, isEventPast } from "@/lib/events";
 import { SITE, SITE_URL, breadcrumbJsonLd } from "@/lib/site";
 
@@ -12,11 +12,13 @@ export const revalidate = 3600;
 export const metadata = {
   title: "50th Anniversary Celebration — CAC North America",
   description:
-    "Christ Apostolic Church North America celebrates 50 years since its founding in 1976 — October 10, 2026, at CAC Village, Blue Ridge Summit, PA.",
+    "Christ Apostolic Church North America celebrates 50 years since its founding in 1976 — October 10, 2026, at CAC Village, Blue Ridge Summit, PA. RSVP to help with planning.",
   alternates: { canonical: "/events/cacna-50th-anniversary-2026" },
 };
 
 const ev = specialEvents.find((e) => e.id === "cacna-50th-anniversary-2026")!;
+const RSVP_URL = "https://forms.gle/FBzNzoXH76SK14Ah9";
+const rsvpFields = ["Your full name", "A contact phone number", "Your church", "Your DCC or Zone", "How many in your group"];
 
 const pillars = [
   { icon: Sparkles, label: "50 Years of Faithfulness", desc: "Est. 1976 — five decades of ministry across North America." },
@@ -32,7 +34,7 @@ export default function Cacna50thAnniversaryPage() {
     "@type": "Event",
     name: ev.title,
     description: ev.desc,
-    startDate: "2026-10-10T10:00:00-04:00",
+    startDate: "2026-10-10T11:00:00-04:00",
     endDate: "2026-10-10T17:00:00-04:00",
     eventStatus: "https://schema.org/EventScheduled",
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
@@ -43,6 +45,7 @@ export default function Cacna50thAnniversaryPage() {
     },
     organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },
     url: `${SITE_URL}/events/cacna-50th-anniversary-2026`,
+    offers: { "@type": "Offer", url: RSVP_URL, price: "0", priceCurrency: "USD", availability: "https://schema.org/InStock", validFrom: "2026-01-01T00:00:00-05:00" },
   };
   return (
     <main id="main-content">
@@ -96,7 +99,10 @@ export default function Cacna50thAnniversaryPage() {
 
           <Reveal delay={240}>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 36 }}>
-              <a href={googleCalUrl(ev)} target="_blank" rel="noopener noreferrer" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(253,200,65,.35)" }}>
+              <a href={RSVP_URL} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(253,200,65,.35)" }}>
+                RSVP Now →
+              </a>
+              <a href={googleCalUrl(ev)} target="_blank" rel="noopener noreferrer" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(245,246,250,.09)", color: "var(--cream)", fontWeight: 700, fontSize: 15, padding: "16px 28px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(245,246,250,.2)" }}>
                 <CalendarPlus size={17} strokeWidth={2} aria-hidden /> Add to Calendar
               </a>
               <a href={icsDataUri(ev)} download="cacna-50th-anniversary-2026.ics" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(245,246,250,.09)", color: "var(--cream)", fontWeight: 700, fontSize: 15, padding: "16px 28px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(245,246,250,.2)" }}>
@@ -132,20 +138,41 @@ export default function Cacna50thAnniversaryPage() {
         </div>
       </section>
 
-      {/* Contact CTA */}
+      {/* RSVP */}
       {!isPast && (
         <section style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
           <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}>
             <Reveal>
+              <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 16 }}>
+                <ClipboardList size={16} strokeWidth={2.5} style={{ verticalAlign: "middle", marginRight: 8 }} aria-hidden />
+                Why RSVP
+              </div>
               <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,48px)", letterSpacing: "-1px", color: "#fff", margin: "0 0 18px", lineHeight: 1.04 }}>
-                Full program details coming soon.
+                Help us prepare for you.
               </h2>
               <p style={{ fontSize: 16, color: "rgba(245,246,250,.65)", lineHeight: 1.72, marginBottom: 32 }}>
-                The day's schedule and any registration details will be shared closer to the date. In the meantime, reach out to CACNA with any questions.
+                This is a free gathering, but organizers need a headcount to plan the celebration properly. The form takes a minute and asks for:
               </p>
-              <Link href="/contact" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 15, padding: "15px 28px", borderRadius: 999, textDecoration: "none" }}>
-                Contact CACNA →
-              </Link>
+            </Reveal>
+            <Reveal delay={80}>
+              <ul style={{ margin: "0 0 36px", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 12, textAlign: "left", maxWidth: 380, marginInline: "auto" }}>
+                {rsvpFields.map((f, i) => (
+                  <li key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", fontSize: 15, color: "rgba(245,246,250,.75)", lineHeight: 1.6 }}>
+                    <span style={{ flexShrink: 0, marginTop: 4, width: 8, height: 8, borderRadius: "50%", background: "var(--gold)", display: "inline-block" }} />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+            <Reveal delay={140}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 14, justifyContent: "center" }}>
+                <a href={RSVP_URL} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 15, padding: "15px 28px", borderRadius: 999, textDecoration: "none" }}>
+                  RSVP Now →
+                </a>
+                <Link href="/contact" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(245,246,250,.09)", color: "var(--cream)", fontWeight: 700, fontSize: 14, padding: "15px 26px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(245,246,250,.2)" }}>
+                  Questions? Contact CACNA
+                </Link>
+              </div>
             </Reveal>
           </div>
         </section>
