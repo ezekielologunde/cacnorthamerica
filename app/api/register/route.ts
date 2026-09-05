@@ -4,6 +4,7 @@ import { logToSheet } from "@/lib/sheetsWebhook";
 import { rateLimit } from "@/lib/rateLimit";
 import { SITE_URL } from "@/lib/site";
 import { currentOrNextConvention, activePricing, priceForCategory, type RegistrantCategory } from "@/lib/conventions";
+import { encodeSummary, chunkForMetadata, type RegistrationSummary } from "@/lib/checkoutSummary";
 
 type RegisterRequestBody = {
   registrationType: "individual" | "group";
@@ -12,6 +13,8 @@ type RegisterRequestBody = {
   contactEmail: string;
   contactPhone: string;
   registrants: { fullName: string; category: RegistrantCategory }[];
+  isComplimentary?: boolean;
+  staffPasscode?: string;
 };
 
 const VALID_CATEGORIES: RegistrantCategory[] = ["adult", "young_adult", "child"];
@@ -50,6 +53,9 @@ function validateRequestBody(body: unknown): string | null {
       return `Invalid registrant category: ${String(r.category)}`;
     }
   }
+  if (b.isComplimentary !== undefined && typeof b.isComplimentary !== "boolean") {
+    return "isComplimentary must be a boolean";
+  }
   return null;
 }
 
@@ -72,20 +78,39 @@ export async function POST(request: Request) {
   }
 
   const body = rawBody as RegisterRequestBody;
+  const isComplimentary = body.isComplimentary === true;
+
+  // The Complimentary tab (RegisterForm's third tab) is staff/comp-only --
+  // unlike Individual/Group, it isn't meant to be publicly self-selectable,
+  // so it's gated behind a shared passcode staff enter into the form rather
+  // than being reachable by anyone who inspects the request body. An unset
+  // STAFF_PASSCODE disables the tab entirely rather than silently accepting
+  // any value.
+  if (isComplimentary) {
+    const staffPasscode = process.env.STAFF_PASSCODE;
+    if (!staffPasscode || body.staffPasscode !== staffPasscode) {
+      return NextResponse.json({ error: "Invalid staff passcode" }, { status: 403 });
+    }
+  }
+
   const cy = currentOrNextConvention();
   const tiers = activePricing(cy);
 
-  if (tiers.length === 0) {
+  if (!isComplimentary && tiers.length === 0) {
     return NextResponse.json({ error: "Registration is not open" }, { status: 409 });
   }
 
-  // Re-price every registrant from the server-side tiers looked up above —
+  // Re-price every registrant from the server-side tiers looked up above --
   // any price the client sent is read nowhere below and is discarded
-  // entirely. Child is always free per the fixed business rule, so it never
-  // goes through the tier lookup at all.
+  // entirely. Child is always free per the fixed business rule, and a
+  // Complimentary submission zeroes every registrant regardless of
+  // category, so neither ever goes through the tier lookup -- the
+  // Complimentary tab still works even when a category has no active tier
+  // configured yet (e.g. a staff member testing the flow before pricing
+  // goes live).
   const pricedRegistrants: { fullName: string; category: RegistrantCategory; priceCents: number }[] = [];
   for (const registrant of body.registrants) {
-    if (registrant.category === "child") {
+    if (isComplimentary || registrant.category === "child") {
       pricedRegistrants.push({ fullName: registrant.fullName, category: registrant.category, priceCents: 0 });
       continue;
     }
@@ -97,11 +122,27 @@ export async function POST(request: Request) {
   }
 
   const totalAmountCents = pricedRegistrants.reduce((sum, r) => sum + r.priceCents, 0);
-  const registrantSummary = pricedRegistrants.map((r) => `${r.fullName} (${r.category})`).join("; ");
+  const ref = crypto.randomUUID();
 
-  // If every registrant is free (e.g. a child-only registration), there's
-  // nothing for Stripe to charge and no async payment step whose outcome is
-  // still pending -- log it now instead of waiting on a webhook.
+  const summary: RegistrationSummary = {
+    ref,
+    year: cy.year,
+    registrationType: body.registrationType,
+    churchName: body.churchName ?? null,
+    contactName: body.contactName,
+    contactEmail: body.contactEmail,
+    contactPhone: body.contactPhone || "",
+    registrants: pricedRegistrants.map((r) => ({ n: r.fullName, c: r.category })),
+    totalAmountCents,
+    isComplimentary,
+  };
+  const encoded = encodeSummary(summary);
+
+  // If every registrant is free (a child-only registration, or the whole
+  // submission is Complimentary), there's nothing for Stripe to charge and
+  // no async payment step whose outcome is still pending -- log it now
+  // instead of waiting on a webhook, and send the visitor straight to their
+  // confirmation (with its check-in QR).
   if (totalAmountCents === 0) {
     logToSheet(`Registration — CACNA ${cy.year}`, {
       "Registration Type": body.registrationType,
@@ -109,20 +150,22 @@ export async function POST(request: Request) {
       "Contact Name": body.contactName,
       "Contact Email": body.contactEmail,
       "Contact Phone": body.contactPhone || "",
-      "Registrants": registrantSummary,
+      "Registrants": summary.registrants.map((r) => `${r.n} (${r.c})`).join("; "),
       "Total": "$0.00",
       "Stripe Session": "",
+      "Status": isComplimentary ? "complimentary" : "paid",
     });
-    return NextResponse.json({ checkoutUrl: `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?status=free` });
+    return NextResponse.json({
+      checkoutUrl: `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?status=free&d=${encoded}`,
+    });
   }
 
   const stripe = getStripeClient();
   // $0 line items (free child registrants mixed in with paid ones) aren't
-  // sent to Stripe -- their names/categories are carried in metadata
+  // sent to Stripe -- their names/categories travel in the encoded summary
   // instead, since they'd otherwise vanish once Stripe becomes the source
   // of truth for this registration.
   const payableRegistrants = pricedRegistrants.filter((r) => r.priceCents > 0);
-  const freeRegistrants = pricedRegistrants.filter((r) => r.priceCents === 0);
 
   try {
     const session = await stripe.checkout.sessions.create({
@@ -136,19 +179,12 @@ export async function POST(request: Request) {
         quantity: 1,
       })),
       customer_email: body.contactEmail,
-      success_url: `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?session_id={CHECKOUT_SESSION_ID}&d=${encoded}`,
       cancel_url: `${SITE_URL}/events/cacna-${cy.year}/register`,
       metadata: {
         kind: "registration",
         convention_year: String(cy.year),
-        registration_type: body.registrationType,
-        church_name: body.churchName ?? "",
-        contact_name: body.contactName,
-        contact_phone: body.contactPhone || "",
-        // Capped by Stripe's 500-character metadata value limit -- covers a
-        // typical family/small-group registration but not a very large
-        // all-free-registrant group.
-        free_registrants: JSON.stringify(freeRegistrants.map((r) => ({ n: r.fullName, c: r.category }))),
+        ...chunkForMetadata("d", encoded),
       },
     });
 

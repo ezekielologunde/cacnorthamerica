@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 export type RegistrantCategory = "adult" | "young_adult" | "child";
 type RegistrantRow = { fullName: string; category: RegistrantCategory };
+type Mode = "individual" | "group" | "complimentary";
 
 const inputStyle: CSSProperties = {
   width: "100%", boxSizing: "border-box",
@@ -17,14 +18,17 @@ const labelStyle: CSSProperties = { display: "block", fontSize: 12.5, fontWeight
 
 export function RegisterForm({ year }: { year: number }) {
   const router = useRouter();
-  const [mode, setMode] = useState<"individual" | "group">("individual");
+  const [mode, setMode] = useState<Mode>("individual");
   const [churchName, setChurchName] = useState("");
   const [registrants, setRegistrants] = useState<RegistrantRow[]>([{ fullName: "", category: "adult" }]);
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
+  const [staffPasscode, setStaffPasscode] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const isComplimentary = mode === "complimentary";
 
   function updateRegistrant(index: number, patch: Partial<RegistrantRow>) {
     setRegistrants((current) => current.map((r, i) => (i === index ? { ...r, ...patch } : r)));
@@ -48,12 +52,17 @@ export function RegisterForm({ year }: { year: number }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          registrationType: mode,
+          // The Complimentary tab reuses the single-registrant Individual
+          // layout (no church name, no add-another-registrant) -- it's a
+          // one-off comp/staff-test registration, not a group booking.
+          registrationType: mode === "group" ? "group" : "individual",
           churchName: mode === "group" ? churchName : null,
           contactName,
           contactEmail,
           contactPhone,
           registrants,
+          isComplimentary,
+          ...(isComplimentary ? { staffPasscode } : {}),
         }),
       });
 
@@ -78,19 +87,23 @@ export function RegisterForm({ year }: { year: number }) {
   return (
     <form onSubmit={handleSubmit}>
       <div style={{ display: "flex", gap: 8, marginBottom: 24, borderBottom: "1.5px solid var(--line)" }}>
-        {(["individual", "group"] as const).map((m) => (
+        {([
+          { key: "individual", label: "Individual" },
+          { key: "group", label: "Church / Group" },
+          { key: "complimentary", label: "Complimentary" },
+        ] as const).map((m) => (
           <button
-            key={m}
+            key={m.key}
             type="button"
-            onClick={() => setMode(m)}
+            onClick={() => setMode(m.key)}
             style={{
               padding: "10px 4px", marginBottom: -1.5, background: "none", border: "none",
-              borderBottom: mode === m ? "2.5px solid var(--red)" : "2.5px solid transparent",
-              color: mode === m ? "var(--red)" : "var(--ink-soft)",
+              borderBottom: mode === m.key ? "2.5px solid var(--red)" : "2.5px solid transparent",
+              color: mode === m.key ? "var(--red)" : "var(--ink-soft)",
               fontWeight: 700, fontSize: 14.5, cursor: "pointer", marginRight: 20,
             }}
           >
-            {m === "individual" ? "Individual" : "Church / Group"}
+            {m.label}
           </button>
         ))}
       </div>
@@ -107,6 +120,12 @@ export function RegisterForm({ year }: { year: number }) {
             autoComplete="organization"
           />
         </div>
+      )}
+
+      {isComplimentary && (
+        <p style={{ marginBottom: 16, padding: "11px 14px", borderRadius: 10, background: "var(--cream)", fontSize: 13.5, color: "var(--ink-soft)" }}>
+          Complimentary registrations are for staff/comp use only and require a staff passcode to submit.
+        </p>
       )}
 
       {registrants.map((r, i) => (
@@ -173,6 +192,21 @@ export function RegisterForm({ year }: { year: number }) {
         <input className="field-input" style={inputStyle} type="tel" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} autoComplete="tel" />
       </div>
 
+      {isComplimentary && (
+        <div style={{ marginBottom: 20 }}>
+          <label style={labelStyle}>Staff passcode <span style={{ color: "var(--red)" }}>*</span></label>
+          <input
+            className="field-input"
+            style={inputStyle}
+            type="password"
+            value={staffPasscode}
+            onChange={(e) => setStaffPasscode(e.target.value)}
+            required
+            autoComplete="off"
+          />
+        </div>
+      )}
+
       {status === "error" && errorMessage && (
         <p role="alert" style={{ color: "var(--red)", fontWeight: 600, fontSize: 14, marginBottom: 16 }}>
           {errorMessage}
@@ -190,7 +224,11 @@ export function RegisterForm({ year }: { year: number }) {
           cursor: status === "loading" ? "not-allowed" : "pointer",
         }}
       >
-        {status === "loading" ? "Submitting…" : `Continue to Payment — CACNA ${year}`}
+        {status === "loading"
+          ? "Submitting…"
+          : isComplimentary
+            ? `Submit Complimentary Registration — CACNA ${year}`
+            : `Continue to Payment — CACNA ${year}`}
       </button>
     </form>
   );

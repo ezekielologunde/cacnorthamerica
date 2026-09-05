@@ -10,6 +10,23 @@ tags: [project/cacnorthamerica]
 
 Related: [[Project]] · [[Decisions]] · [[Features]]
 
+## 2026-09-05 — Convention data reconciliation, staff-passcode gate, check-in QR
+
+Second phase of merging the Convention site into CACNA (see [[Decisions]]),
+stacked on the i18n branch below. `lib/conventions.ts` gained 2027's real
+pricing tiers and 2026's schedule sessions gained the `audience` field,
+both ported from Convention's `lib/content/convention.ts` after a
+field-by-field diff; also recorded that the 2020 convention was virtual
+(COVID) via a new optional `venue` override, surfaced on the archive page.
+The register flow (`RegisterForm`, `/api/register`) gained a third
+"Complimentary" tab gated by a server-checked `STAFF_PASSCODE`, and the
+confirmation page now renders a check-in QR code once payment (or a free/
+comp registration) is confirmed -- both via a new `lib/checkoutSummary.ts`
+carrying registration details through the URL and Stripe metadata, the same
+pattern Convention's own Supabase-removal rewrite used. Verified end-to-end
+against the local dev server: Complimentary tab renders, wrong passcode
+403s, correct passcode logs to Sheets and renders a real QR on confirmation.
+
 ## 2026-09-05 — Bilingual (en/yo) routing foundation
 
 First phase of merging the Convention site into CACNA (see [[Decisions]]).

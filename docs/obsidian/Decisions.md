@@ -36,6 +36,33 @@ Convention site's already-working next-intl configuration (always-prefixed
 `NextIntlClientProvider`). `/admin` and `/api` stay outside it entirely,
 matching how Convention itself exempted its own admin/auth routes.
 
+## Phase B data reconciliation: port real facts forward, flag real conflicts
+
+Diffing `lib/conventions.ts` against Convention's `lib/content/convention.ts`
+field-by-field (2026-09-05) found: identical 2026 pricing and identical 2026
+schedule content in both, so those needed no changes beyond porting over the
+`audience` field Convention's schedule sessions had and CACNA's didn't. Two
+real gaps, both resolved by porting Convention's already-correct data rather
+than guessing: CACNA had no 2027 pricing tiers at all (Convention's rewrite
+had already recorded the real ones, opened early on 2026-07-23), and CACNA's
+model had no way to record that 2020's convention was virtual (COVID) rather
+than at CAC Village -- added an optional `venue` override on `ConventionYear`
+for that one exception rather than a broader schema change. See [[Tasks]].
+
+Also ported from Convention's own recent Supabase-removal rewrite: a
+server-checked `STAFF_PASSCODE` gating the Complimentary registration tab
+(the tab is publicly visible, but submitting it without the right passcode
+403s), and a check-in QR code on the registration confirmation page. Both
+needed a `lib/checkoutSummary.ts` (registration details travel encoded in
+the confirmation URL and Stripe metadata, since this site also has no
+database) -- ported near-verbatim from Convention's version, adjusted to
+carry a `year` field since CACNA's register flow is per-year
+(`/events/cacna-YYYY/register`) where Convention's is single-edition. The
+Stripe webhook's Sheets logging was pointed at the same decoded summary
+instead of parsing registrant categories back out of Stripe line-item
+description strings -- more accurate, and CACNA's own `lib/sheetsWebhook.ts`
+fire-and-forget logging plumbing itself was left untouched, per the plan.
+
 ## Translation completeness is honest, not fabricated
 
 Yoruba translations were only carried over from Convention's own `yo.json`
