@@ -3,6 +3,17 @@
 export const CONVENTION_VENUE = "CAC Village, 14051 Stahley Rd, Blue Ridge Summit, PA 17214";
 export const CONVENTION_VENUE_SHORT = "CAC Village, Blue Ridge Summit, PA";
 
+export type RegistrantCategory = "adult" | "young_adult" | "child";
+
+export interface PricingTier {
+  category: RegistrantCategory;
+  priceCents: number;
+  /** ISO date — inclusive start of this tier's window. */
+  startsOn: string;
+  /** ISO date — inclusive end of this tier's window. */
+  endsOn: string;
+}
+
 export interface ConventionYear {
   year: number;
   /** ISO date, e.g. "2026-07-13" (always a Monday). */
@@ -11,8 +22,14 @@ export interface ConventionYear {
   endIso: string;
   /** Only known/confirmed for the current convention — future years don't have one yet. */
   theme?: string;
-  /** Only set once a real registration link exists for that year. */
+  /** Only set once a real registration link exists for that year. An
+   *  internal path (e.g. "/events/cacna-2027/register") renders as a normal
+   *  same-site link (see hasExternalRegistrationUrl); an absolute URL opens
+   *  in a new tab. */
   registrationUrl?: string;
+  /** Registration fees by category and date window. Undefined/empty means
+   *  registration for this year isn't open yet — pricing hasn't been set. */
+  pricingTiers?: PricingTier[];
   /** Detail page for this year. */
   href: string;
 }
@@ -21,15 +38,61 @@ export interface ConventionYear {
  *  as soon as it's announced — everything downstream (nav CTA, events page,
  *  announcement bar) picks it up automatically. */
 export const conventionYears: ConventionYear[] = [
+  // 2019/2020/2024 have no dedicated /events/cacna-YYYY detail page (excluded
+  // from the [slug] "Save the Date" template via its FUTURE_YEARS filter,
+  // since that copy is written for upcoming years, not archived ones) --
+  // href points at the archive listing instead. No pricingTiers recorded for
+  // these three; only 2026's fees were ever digitized.
+  {
+    year: 2019, startIso: "2019-07-15", endIso: "2019-07-20",
+    theme: "That the Scripture Might Be Fulfilled",
+    href: "/archive",
+  },
+  {
+    year: 2020, startIso: "2020-07-15", endIso: "2020-07-17",
+    theme: "God in the Administration of Man",
+    href: "/archive",
+  },
+  {
+    year: 2024, startIso: "2024-07-15", endIso: "2024-07-20",
+    theme: "Spiritual Power and Gifts for the Body of Christ",
+    href: "/archive",
+  },
   {
     year: 2026,
     startIso: "2026-07-13",
     endIso: "2026-07-18",
     theme: "The Bible: God’s Message to Man",
     registrationUrl: "https://cacnaconvention.cacsalvationcenter.org/archive",
+    // Archival record of what 2026 actually cost — this convention has
+    // already happened, so this only ever surfaces on the archive page, not
+    // a live /register flow (getOpenPricing() below only reads pricingTiers
+    // for the current/next convention).
+    pricingTiers: [
+      { category: "adult", priceCents: 12500, startsOn: "2025-10-01", endsOn: "2026-01-31" },
+      { category: "adult", priceCents: 15000, startsOn: "2026-02-01", endsOn: "2026-04-30" },
+      { category: "adult", priceCents: 20000, startsOn: "2026-05-01", endsOn: "2026-07-10" },
+      { category: "adult", priceCents: 25000, startsOn: "2026-07-11", endsOn: "2026-07-18" },
+      { category: "young_adult", priceCents: 10000, startsOn: "2025-10-01", endsOn: "2026-01-31" },
+      { category: "young_adult", priceCents: 12500, startsOn: "2026-02-01", endsOn: "2026-04-30" },
+      { category: "young_adult", priceCents: 15000, startsOn: "2026-05-01", endsOn: "2026-07-10" },
+      { category: "young_adult", priceCents: 15000, startsOn: "2026-07-11", endsOn: "2026-07-18" },
+      { category: "child", priceCents: 0, startsOn: "2025-10-01", endsOn: "2026-07-18" },
+    ],
     href: "/events/cacna-2026",
   },
-  { year: 2027, startIso: "2027-07-12", endIso: "2027-07-17", registrationUrl: "https://cacnaconvention.cacsalvationcenter.org/register", href: "/events/cacna-2027" },
+  {
+    year: 2027,
+    startIso: "2027-07-12",
+    endIso: "2027-07-17",
+    // Internal now that registration lives on this site (see
+    // app/events/cacna-2027/register) — Nav's isExternalHref() picks this up
+    // automatically. Registration itself doesn't open until October 2026
+    // (no pricingTiers set yet); the register page shows a "not open yet"
+    // state until pricing is added here.
+    registrationUrl: "/events/cacna-2027/register",
+    href: "/events/cacna-2027",
+  },
   { year: 2028, startIso: "2028-07-10", endIso: "2028-07-15", href: "/events/cacna-2028" },
   { year: 2029, startIso: "2029-07-09", endIso: "2029-07-14", href: "/events/cacna-2029" },
   { year: 2030, startIso: "2030-07-15", endIso: "2030-07-20", href: "/events/cacna-2030" },
@@ -169,3 +232,94 @@ export function conventionChurchEvent(cy: ConventionYear): ConventionChurchEvent
     href: cy.href, navLabel: `CACNA ${cy.year}`,
   };
 }
+
+// ---------------------------------------------------------------------------
+// Registration pricing
+// ---------------------------------------------------------------------------
+
+/** The tiers active for `cy` on a given date, using America/New_York's
+ *  calendar date (the convention's own timezone) rather than UTC, so a
+ *  tier cutover lands on the convention's real local date regardless of
+ *  the timezone the server process happens to run in. Empty when this
+ *  year's registration isn't open yet (no pricingTiers set). */
+export function activePricing(cy: ConventionYear, onDate: Date = new Date()): PricingTier[] {
+  if (!cy.pricingTiers) return [];
+  const iso = new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(onDate);
+  return cy.pricingTiers.filter((t) => t.startsOn <= iso && t.endsOn >= iso);
+}
+
+export function priceForCategory(tiers: PricingTier[], category: RegistrantCategory): number | null {
+  return tiers.find((t) => t.category === category)?.priceCents ?? null;
+}
+
+/** True once a category has ever had a priced tier for `cy` — used to tell
+ *  "this year's registration isn't open yet" apart from "this category
+ *  simply isn't offered" (not currently a distinction this data models,
+ *  but kept as a single choke point in case that changes). */
+export function registrationIsOpen(cy: ConventionYear): boolean {
+  return activePricing(cy).length > 0;
+}
+
+// ---------------------------------------------------------------------------
+// Detailed schedule (real per-session data, where it exists)
+// ---------------------------------------------------------------------------
+
+export interface ScheduleSession {
+  dayIso: string;
+  startsAt: string;
+  endsAt: string;
+  title: string;
+  ministerName?: string;
+  ministerTitle?: string;
+  track: "general" | "ministers" | "breakout";
+}
+
+/** Real, session-by-session detail for years that have it transcribed (only
+ *  2026 today, from the printed program). Years without an entry here fall
+ *  back to the generic sessionsFor() pattern above. */
+const DETAILED_SCHEDULE: Record<number, ScheduleSession[]> = {
+  2026: [
+    { dayIso: "2026-07-13", startsAt: "09:00", endsAt: "10:00", title: "Daily General Opening Session — Praise/Worship and Prayer", track: "general" },
+    { dayIso: "2026-07-13", startsAt: "10:00", endsAt: "11:30", title: "Registration", track: "general" },
+    { dayIso: "2026-07-13", startsAt: "11:45", endsAt: "13:15", title: "Registration", track: "general" },
+    { dayIso: "2026-07-13", startsAt: "17:00", endsAt: "19:00", title: "Ministers Prayer Night", ministerName: "Prophet H. Oladeji", ministerTitle: "Gen. Evangelist, CAC Nigeria & Overseas", track: "ministers" },
+    { dayIso: "2026-07-14", startsAt: "10:00", endsAt: "11:30", title: "Ministers' Session 1 — Transformative Power of The Word", ministerName: "Pastor T. A. O. Agbeja", ministerTitle: "Regional Supt. Latunde Region", track: "ministers" },
+    { dayIso: "2026-07-14", startsAt: "11:45", endsAt: "13:15", title: "Ministers' Session 2 — Divine Guide For Our Living", ministerName: "Pastor Simeon Oladokun", ministerTitle: "Regional Supt. Anosike Region", track: "ministers" },
+    { dayIso: "2026-07-14", startsAt: "13:15", endsAt: "15:30", title: "Lunch Time", track: "general" },
+    { dayIso: "2026-07-14", startsAt: "15:30", endsAt: "17:00", title: "Ministers' Session 3 — The Perfect Encourager In Time of Tries, Tribulations and Challenges", ministerName: "Right Rev. Prof. Dapo F. Asaju", ministerTitle: "Bishop of Ijesha Diocese", track: "ministers" },
+    { dayIso: "2026-07-14", startsAt: "17:00", endsAt: "19:00", title: "Revival Night", ministerName: "Prophet H. Oladeji", ministerTitle: "Gen. Evangelist, CAC Nigeria & Overseas", track: "general" },
+    { dayIso: "2026-07-15", startsAt: "10:00", endsAt: "11:30", title: "Ministers' Session 4", ministerName: "Pastor S. O. Oladele", ministerTitle: "President, CAC Nigeria & Overseas", track: "ministers" },
+    { dayIso: "2026-07-15", startsAt: "11:45", endsAt: "13:15", title: "Break Out #1 — CACMWF, CACMA, CACNAGWA, Youth/Young Adult, Children", track: "breakout" },
+    { dayIso: "2026-07-15", startsAt: "15:30", endsAt: "17:00", title: "Break Out #2 — CACMWF, CACMA, CACNAGWA, Youth/Young Adult, Children", track: "breakout" },
+    { dayIso: "2026-07-15", startsAt: "17:00", endsAt: "19:00", title: "Revival Night", ministerName: "Prophet H. Oladeji", ministerTitle: "Gen. Evangelist, CAC Nigeria & Overseas", track: "general" },
+    { dayIso: "2026-07-16", startsAt: "09:00", endsAt: "11:00", title: "Sunday School General Session for All", track: "general" },
+    { dayIso: "2026-07-16", startsAt: "11:15", endsAt: "12:45", title: "Business Group General Session for All", track: "general" },
+    { dayIso: "2026-07-16", startsAt: "13:00", endsAt: "14:15", title: "Break Out #3 — CACMWF, CACMA, CACNAGWA, Youth/Young Adult, Children", track: "breakout" },
+    { dayIso: "2026-07-16", startsAt: "14:15", endsAt: "19:00", title: "Picnic, Sports & Games", track: "general" },
+    { dayIso: "2026-07-16", startsAt: "19:00", endsAt: "21:00", title: "Praise Night", track: "general" },
+    { dayIso: "2026-07-17", startsAt: "10:00", endsAt: "14:00", title: "Convention Program", track: "general" },
+    { dayIso: "2026-07-17", startsAt: "14:00", endsAt: "17:00", title: "Ordination Service", track: "general" },
+    { dayIso: "2026-07-17", startsAt: "17:00", endsAt: "19:00", title: "Impartation Night", ministerName: "Prophet H. Oladeji", ministerTitle: "Gen. Evangelist, CAC Nigeria & Overseas", track: "general" },
+    { dayIso: "2026-07-18", startsAt: "09:00", endsAt: "10:00", title: "Holy Communion and Closing Service", ministerName: "Pastor S. O. Oladele", ministerTitle: "President, CAC Nigeria & Overseas", track: "general" },
+  ],
+};
+
+export function getDetailedSchedule(year: number): ScheduleSession[] | null {
+  return DETAILED_SCHEDULE[year] ?? null;
+}
+
+// ---------------------------------------------------------------------------
+// Store (merch) — no real catalog yet; add real products here (with a real
+// id/slug/priceCents/sizes) once one exists, following registrationUrl's
+// "empty means not live" convention.
+// ---------------------------------------------------------------------------
+
+export interface StoreProduct {
+  id: string;
+  name: string;
+  category: "convention" | "good_women" | "youth";
+  priceCents: number;
+  sizes: string[];
+}
+
+export const storeProducts: StoreProduct[] = [];

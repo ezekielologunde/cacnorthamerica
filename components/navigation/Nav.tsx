@@ -29,6 +29,7 @@ const navItems: NavItem[] = [
     dropdown: [
       { href: conventionCtaHref, label: conventionCtaLabel, desc: nextConvention.registrationUrl ? 'Secure your spot before rates rise' : 'Dates are confirmed — full details soon', external: isExternalHref(conventionCtaHref) },
       { href: '/calendar', label: 'Calendar & Events', desc: 'Special gatherings & CACNA\'s annual rhythm' },
+      { href: '/archive', label: 'Past Conventions', desc: 'Themes, dates, and fees since 2019' },
     ],
   },
   {

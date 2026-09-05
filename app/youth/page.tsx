@@ -4,6 +4,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { InstagramIcon } from "@/components/ui/SocialIcons";
+import { MealRequestForm } from "@/components/youth/MealRequestForm";
 import Link from "next/link";
 import { Compass, Target, HandHeart, BookOpen, Users, Mic2, Sparkles } from "lucide-react";
 
@@ -206,6 +207,25 @@ export default function YouthPage() {
               </Reveal>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* 2026 CACNA YYAM Convention meal RSVP -- a separate, address-and-dates
+          distinct youth event from the main Annual Convention. */}
+      <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+        <div style={{ maxWidth: 700, margin: "0 auto" }}>
+          <Reveal style={{ textAlign: "center", marginBottom: 32 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>YYAM Convention</span>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,4vw,42px)", letterSpacing: "-.8px", color: "var(--ink)", margin: "12px 0 14px", lineHeight: 1.05 }}>
+              2026 Meal Request
+            </h2>
+            <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.7 }}>
+              RSVP for meals during the Convention, July 14–17, 2026 at 14051 Stahley Road, Blue Ridge Summit, PA 17214. Questions? Email <a href="mailto:cacnayyam@outlook.com" style={{ color: "var(--red)" }}>cacnayyam@outlook.com</a>.
+            </p>
+          </Reveal>
+          <Reveal delay={80}>
+            <MealRequestForm />
+          </Reveal>
         </div>
       </section>
 

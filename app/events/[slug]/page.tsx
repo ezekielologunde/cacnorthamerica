@@ -19,10 +19,12 @@ import {
 
 export const revalidate = 3600;
 
-// The 2026 convention has its own hand-built page at app/events/cacna-2026 —
-// static folders always win over this dynamic [slug] route for that exact
-// path, so this only ever actually renders for 2027 and beyond.
-const FUTURE_YEARS = conventionYears.filter((cy) => cy.year !== 2026);
+// 2026 (and every year before it) either has its own hand-built page
+// (app/events/cacna-2026) or no detail page at all (2019/2020/2024, whose
+// href points at /archive instead) — this "Save the Date" template is only
+// appropriate for years that haven't happened yet, so it only ever actually
+// renders for 2027 and beyond.
+const FUTURE_YEARS = conventionYears.filter((cy) => cy.year > 2026);
 
 export function generateStaticParams() {
   return FUTURE_YEARS.map((cy) => ({ slug: `cacna-${cy.year}` }));

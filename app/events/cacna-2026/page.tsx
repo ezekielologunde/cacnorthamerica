@@ -192,12 +192,18 @@ export default function CACNA2026Page() {
             </h2>
             <p style={{ fontSize: 15.5, color: "var(--ink-soft)", lineHeight: 1.7, margin: "0 0 32px" }}>
               {isPast
-                ? "Full details for the next convention will be posted as they're announced."
+                ? "See the full day-by-day order of service from this convention below."
                 : "Online registration, fees by category, hotels, travel, and the full order of service live on the official CACNA Convention website."}
             </p>
-            <a href={isPast ? "https://cacnaconvention.cacsalvationcenter.org/archive" : "https://cacnaconvention.cacsalvationcenter.org"} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--red)", color: "#fff", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none" }}>
-              Visit the Convention Site →
-            </a>
+            {isPast ? (
+              <Link href="/events/cacna-2026/schedule" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--red)", color: "#fff", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none" }}>
+                View Full Schedule →
+              </Link>
+            ) : (
+              <a href="https://cacnaconvention.cacsalvationcenter.org" target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--red)", color: "#fff", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none" }}>
+                Visit the Convention Site →
+              </a>
+            )}
           </Reveal>
         </div>
       </section>

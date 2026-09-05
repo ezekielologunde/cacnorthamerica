@@ -1,0 +1,89 @@
+import { NextResponse } from "next/server";
+import { getStripeClient } from "@/lib/stripe";
+import { logToSheet } from "@/lib/sheetsWebhook";
+
+function requireEnv(name: string): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`Missing required environment variable: ${name}`);
+  }
+  return value;
+}
+
+export async function POST(request: Request) {
+  const stripe = getStripeClient();
+  const signature = request.headers.get("stripe-signature") ?? "";
+  const rawBody = await request.text();
+
+  let event;
+  try {
+    event = stripe.webhooks.constructEvent(rawBody, signature, requireEnv("STRIPE_WEBHOOK_SECRET"));
+  } catch {
+    return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+  }
+
+  // Rows are only ever logged here, on confirmed payment -- there's no
+  // "pending" row created at checkout-start and no update path (the Sheets
+  // webhook only appends), so a failed or abandoned checkout simply never
+  // produces a row. Stripe's own dashboard remains the record of
+  // failed/abandoned payment attempts.
+  if (event.type === "checkout.session.completed") {
+    const session = event.data.object as { id: string; metadata?: Record<string, string | undefined> };
+    const kind = session.metadata?.kind;
+
+    try {
+      const full = await stripe.checkout.sessions.retrieve(session.id, { expand: ["line_items"] });
+      const contactEmail = full.customer_details?.email ?? full.customer_email ?? "";
+      const totalDollars = `$${((full.amount_total ?? 0) / 100).toFixed(2)}`;
+      const lineDescriptions = (full.line_items?.data ?? []).map((li) => li.description ?? "");
+
+      if (kind === "registration") {
+        let freeNames: string[] = [];
+        try {
+          const free = JSON.parse(session.metadata?.free_registrants || "[]") as { n: string; c: string }[];
+          freeNames = free.map((r) => `${r.n} (${r.c})`);
+        } catch {
+          // Malformed/missing metadata -- fall back to just the paid line items.
+        }
+
+        logToSheet(`Registration — CACNA ${session.metadata?.convention_year ?? ""}`, {
+          "Registration Type": session.metadata?.registration_type ?? "",
+          "Church Name": session.metadata?.church_name ?? "",
+          "Contact Name": session.metadata?.contact_name ?? "",
+          "Contact Email": contactEmail,
+          "Contact Phone": session.metadata?.contact_phone ?? "",
+          "Registrants": [...lineDescriptions, ...freeNames].join("; "),
+          "Total": totalDollars,
+          "Stripe Session": session.id,
+        });
+      } else if (kind === "store_order") {
+        const itemsSummary = (full.line_items?.data ?? [])
+          .map((li) => `${li.description ?? ""} × ${li.quantity ?? 1}`)
+          .join("; ");
+
+        logToSheet("Store Order", {
+          "Contact Name": session.metadata?.contact_name ?? "",
+          "Contact Email": contactEmail,
+          "Items": itemsSummary,
+          "Total": totalDollars,
+          "Stripe Session": session.id,
+        });
+      } else {
+        console.error("Stripe checkout.session.completed event with unrecognized metadata.kind", {
+          sessionId: session.id,
+        });
+      }
+    } catch (recordError) {
+      // The payment already succeeded on Stripe's side regardless of
+      // whether this record-keeping step works -- log loudly rather than
+      // surface a 500 that would make Stripe retry an already-completed
+      // payment's webhook indefinitely.
+      console.error("Failed to record a completed checkout to Google Sheets", {
+        sessionId: session.id,
+        recordError,
+      });
+    }
+  }
+
+  return NextResponse.json({ received: true });
+}
