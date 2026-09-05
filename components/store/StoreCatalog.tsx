@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, type CSSProperties, type FormEvent } from "react";
+import Image from "next/image";
 import type { StoreProduct } from "@/lib/conventions";
 
 type CartLine = { productId: string; name: string; unitPriceCents: number; size: string | null; quantity: number };
@@ -82,9 +83,16 @@ export function StoreCatalog({ categories }: { categories: { key: string; label:
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {category.products.map((product) => (
               <div key={product.id} style={{ display: "flex", flexWrap: "wrap", gap: 14, justifyContent: "space-between", alignItems: "center", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 16, padding: "16px 20px" }}>
-                <div>
-                  <div style={{ fontWeight: 700, fontSize: 15, color: "var(--ink)" }}>{product.name}</div>
-                  <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 16, color: "var(--red)", marginTop: 2 }}>{formatPrice(product.priceCents)}</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                  {product.imageSrc && (
+                    <div style={{ position: "relative", width: 52, height: 52, borderRadius: 10, overflow: "hidden", flexShrink: 0, border: "1px solid var(--line)" }}>
+                      <Image src={product.imageSrc} alt={product.name} fill style={{ objectFit: "cover" }} sizes="52px" />
+                    </div>
+                  )}
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: 15, color: "var(--ink)" }}>{product.name}</div>
+                    <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 16, color: "var(--red)", marginTop: 2 }}>{formatPrice(product.priceCents)}</div>
+                  </div>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   {product.sizes.length > 0 && (

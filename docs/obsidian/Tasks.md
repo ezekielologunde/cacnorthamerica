@@ -55,6 +55,41 @@ per phase, all verified via build + typecheck + manual browser walk -- see
   "CACNA Home ↗" items from the original plan turned out to already be
   resolved on CACNA's side -- verified, no change needed.
 
+## Convention-merge: remaining data audit (2026-09-05)
+
+After Phases A-F, did a full pass over every remaining file in Convention's
+`lib/content/` to check for anything real that hadn't actually made it into
+CACNA yet (the user asked to "keep moving all Convention data"). Found:
+
+- **Already fully covered, verified, no action needed**: `statement-of-faith.ts`
+  (CACNA's live `/statement-of-faith` has the identical 12 articles,
+  word-for-word), `welcome.ts` (CACNA's homepage `PastorWelcome` component
+  already paraphrases the same "Calvary greetings... spirit of excellence"
+  message), `leadership.ts` (all 5 named leaders already present on CACNA's
+  live, DB-backed `/leadership` page), `archive.ts`'s recurring-speaker
+  note and `anniversary.ts` (both already ported in earlier sessions).
+- **Real gaps, now ported**: `store-items.ts` -- 12 real Christian
+  Education products (Sunday School lessons, Bible study manuals, real
+  prices, real photos) were sitting completely unused; added as a new
+  `christian_education` category in `lib/conventions.ts`'s `storeProducts`
+  (previously empty), with the real product photos copied into
+  `public/photos/store/` and a small thumbnail added to `StoreCatalog`.
+  `registration-guidelines.ts` and `payment-options.ts` -- informational
+  copy (5 guidelines, a free-food note, 3 payment methods) that Convention
+  showed on its register page but CACNA's never did; added as a
+  "Registration Guidelines" / "Payment Options" section on
+  `/events/[slug]/register`, via a new `lib/registrationInfo.ts`. The
+  Zelle/Check account details there are the registration-specific ones
+  (`cacnaconvention@gmail.com` / Chase 823936908, "CACNA CONVENTION") --
+  deliberately kept distinct from `/giving`'s different Village Pay Off
+  account, since these serve different purposes (see [[Decisions]]).
+- **Deliberately not ported**: `committee.ts`'s 30-member roster -- stays
+  off the public site, matching Convention's own restraint (only the
+  3-person contact block from `contacts.ts` is public-facing). Would be
+  worth a dedicated internal reference/PDF if ever needed, not a public
+  page. `external-resources.ts` -- these are outbound links FROM Convention
+  TO cacnorthamerica.com; nothing to port on CACNA's side.
+
 Remaining, not yet done:
 
 - **Real Yoruba translations** for every page beyond Nav/Footer --

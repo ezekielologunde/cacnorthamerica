@@ -10,6 +10,21 @@ tags: [project/cacnorthamerica]
 
 Related: [[Project]] · [[Decisions]] · [[Features]]
 
+## 2026-09-05 — Remaining Convention data: store catalog, registration info
+
+Final data-audit pass of the Convention merge. Checked every remaining
+`lib/content/*` file in Convention against CACNA: `statement-of-faith.ts`,
+`welcome.ts`, `leadership.ts`, `archive.ts`, and `anniversary.ts` were all
+already fully covered (verified, no changes). Two real gaps found and
+ported: a real 12-product Christian Education catalog (Sunday School
+lessons, Bible study manuals, with real prices and photos) that was sitting
+completely unused -- added as a new `christian_education` store category
+with real product photos in `public/photos/store/` and a thumbnail added
+to `StoreCatalog`; and registration guidelines + payment options copy,
+added to `/events/[slug]/register` via a new `lib/registrationInfo.ts`.
+The 30-member Convention Committee roster stays off the public site,
+matching Convention's own restraint.
+
 ## 2026-09-05 — Content merge Phases C-F: overlapping pages, sub-ministry schedules, net-new pages, branding cleanup
 
 Third phase of merging the Convention site into CACNA (see [[Decisions]]),

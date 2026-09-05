@@ -7,8 +7,8 @@ import { storeProducts } from "@/lib/conventions";
 import { setRequestLocale } from "next-intl/server";
 
 export const metadata = {
-  title: "Store — CACNA Convention Apparel",
-  description: "Convention, Good Women, and Youth & Young Adult apparel from CACNA — checkout securely with Stripe.",
+  title: "Store — CACNA Convention Apparel & Christian Education Materials",
+  description: "Convention, Good Women, and Youth & Young Adult apparel, plus real Sunday School lessons and Bible study manuals from CACNA's Christian Education Department — checkout securely with Stripe.",
   alternates: { canonical: "/store" },
 };
 
@@ -24,6 +24,7 @@ export default async function StorePage({
     { key: "convention", label: "Convention Apparel", products: storeProducts.filter((p) => p.category === "convention") },
     { key: "good_women", label: "Good Women Association Apparel", products: storeProducts.filter((p) => p.category === "good_women") },
     { key: "youth", label: "Youth & Young Adult Apparel", products: storeProducts.filter((p) => p.category === "youth") },
+    { key: "christian_education", label: "Christian Education Materials", products: storeProducts.filter((p) => p.category === "christian_education") },
   ];
   const hasAnyProducts = categories.some((c) => c.products.length > 0);
 
@@ -41,7 +42,7 @@ export default async function StorePage({
           </h1>
           <Reveal delay={140}>
             <p style={{ marginTop: 16, fontSize: 15.5, color: "rgba(245,246,250,.68)" }}>
-              Convention, Good Women, and Youth &amp; Young Adult apparel — checkout securely with Stripe.
+              Convention, Good Women, and Youth &amp; Young Adult apparel, plus Sunday School lessons and Bible study manuals from Christian Education — checkout securely with Stripe.
             </p>
           </Reveal>
         </div>

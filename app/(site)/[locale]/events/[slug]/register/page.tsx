@@ -7,6 +7,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import { RegisterForm } from "@/components/register/RegisterForm";
 import { CONVENTION_VENUE, conventionYears, dateRangeLabel, activePricing, type ConventionYear } from "@/lib/conventions";
+import { registrationGuidelines, paymentOptions } from "@/lib/registrationInfo";
 import { setRequestLocale } from "next-intl/server";
 
 export const revalidate = 3600;
@@ -95,6 +96,34 @@ export default async function RegisterPage({ params }: { params: Promise<{ local
               </p>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Registration guidelines + payment options */}
+      <section style={{ background: "var(--cream-2)", padding: "0 clamp(20px,5vw,64px) clamp(64px,8vw,100px)" }}>
+        <div className="r2" style={{ maxWidth: 900, margin: "0 auto", gap: 40 }}>
+          <div>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,30px)", color: "var(--ink)", margin: "0 0 16px" }}>Registration Guidelines</h2>
+            <ol style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
+              {registrationGuidelines.items.map((item, i) => (
+                <li key={item} style={{ display: "flex", gap: 10, fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.6 }}>
+                  <span style={{ color: "var(--red)", fontWeight: 800, flexShrink: 0 }}>{i + 1}.</span> {item}
+                </li>
+              ))}
+            </ol>
+            <p style={{ fontSize: 14, fontWeight: 700, color: "var(--red)", marginTop: 16 }}>{registrationGuidelines.freeFoodNote}</p>
+          </div>
+          <div>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,30px)", color: "var(--ink)", margin: "0 0 16px" }}>Payment Options</h2>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {paymentOptions.map((option) => (
+                <div key={option.name} style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 14, padding: "14px 18px" }}>
+                  <div style={{ fontWeight: 700, fontSize: 14.5, color: "var(--ink)", marginBottom: 4 }}>{option.name}</div>
+                  <div style={{ fontSize: 13.5, color: "var(--ink-soft)", lineHeight: 1.5 }}>{option.detail}</div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
