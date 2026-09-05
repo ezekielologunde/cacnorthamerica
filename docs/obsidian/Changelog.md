@@ -10,6 +10,20 @@ tags: [project/cacnorthamerica]
 
 Related: [[Project]] · [[Decisions]] · [[Features]]
 
+## 2026-09-05 — Phase H: final data-completeness audit, two real gaps fixed
+
+Ran a full audit of every remaining Convention data source before deciding
+the fate of the Convention repo/Vercel project. Found two real gaps: the
+6 sub-ministry pages were missing the 3-photo strips Convention's own
+versions show (fixed via a new `PhotoStrip` component + `lib/
+mainGalleryPhotos.ts`, reusing photos already self-hosted for `/gallery`
+-- no new assets needed), and the register page had no full fee ladder
+(fixed -- a new "Registration Fees" section shows every price tier per
+category with a "Current Rate" badge, sourced from data already in
+`lib/conventions.ts`). Everything else re-checked in this pass (gallery
+photos, sub-ministry content, contacts, statement of faith, store,
+registration guidelines) was already correctly in place.
+
 ## 2026-09-05 — Drafted Yoruba for all sub-ministry pages, Youth, and Give (site owner reviewing)
 
 Third translation pass, same day. Unlike the first two (which only carried

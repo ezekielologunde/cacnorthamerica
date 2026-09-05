@@ -1,0 +1,50 @@
+// Real 2025 CACNA Latunde Region General Convention photos, in the same
+// order as the Convention site's own lib/content/gallery.ts -- ported
+// during the Phase H data-completeness audit (2026-09) so sub-ministry
+// pages can reuse the exact same photo slices Convention's own pages did
+// (see components/ministries/PhotoStrip.tsx). The files themselves were
+// already self-hosted under public/photos/gallery/ for the main /gallery
+// page in an earlier phase.
+export const mainGalleryPhotos: string[] = [
+  "/photos/gallery/IMG-20250717-WA0040.jpg",
+  "/photos/gallery/IMG-20250719-WA0014.jpg",
+  "/photos/gallery/IMG-20250719-WA0018.jpg",
+  "/photos/gallery/IMG-20250719-WA0020.jpg",
+  "/photos/gallery/IMG-20250719-WA0021.jpg",
+  "/photos/gallery/IMG-20250719-WA0022.jpg",
+  "/photos/gallery/IMG-20250719-WA0023.jpg",
+  "/photos/gallery/IMG-20250719-WA0024.jpg",
+  "/photos/gallery/IMG-20250719-WA0025.jpg",
+  "/photos/gallery/IMG-20250719-WA0026.jpg",
+  "/photos/gallery/IMG-20250719-WA0027.jpg",
+  "/photos/gallery/IMG-20250719-WA0028.jpg",
+  "/photos/gallery/IMG-20250719-WA0029.jpg",
+  "/photos/gallery/IMG-20250719-WA0030.jpg",
+  "/photos/gallery/IMG-20250719-WA0031.jpg",
+  "/photos/gallery/IMG-20250719-WA0032.jpg",
+  "/photos/gallery/IMG-20250719-WA0033.jpg",
+  "/photos/gallery/IMG-20250719-WA0034.jpg",
+  "/photos/gallery/IMG-20250719-WA0035.jpg",
+  "/photos/gallery/IMG-20250719-WA0036.jpg",
+  "/photos/gallery/IMG-20250719-WA0037.jpg",
+  "/photos/gallery/IMG-20250719-WA0038.jpg",
+  "/photos/gallery/IMG-20250719-WA0039.jpg",
+  "/photos/gallery/IMG-20250719-WA0040.jpg",
+  "/photos/gallery/IMG-20250719-WA0041.jpg",
+  "/photos/gallery/IMG-20250719-WA0042.jpg",
+  "/photos/gallery/IMG-20250719-WA0043.jpg",
+  "/photos/gallery/IMG-20250719-WA0044.jpg",
+  "/photos/gallery/IMG-20250719-WA0045.jpg",
+  "/photos/gallery/IMG-20250719-WA0046.jpg",
+  "/photos/gallery/IMG-20250719-WA0047.jpg",
+  "/photos/gallery/IMG-20250719-WA0048.jpg",
+  "/photos/gallery/IMG-20250719-WA0049.jpg",
+  "/photos/gallery/IMG-20250719-WA0050.jpg",
+  "/photos/gallery/IMG-20250719-WA0051.jpg",
+  "/photos/gallery/IMG-20250719-WA0052.jpg",
+  "/photos/gallery/IMG-20250719-WA0053.jpg",
+  "/photos/gallery/IMG-20250719-WA0054.jpg",
+  "/photos/gallery/IMG-20250719-WA0055.jpg",
+  "/photos/gallery/IMG-20250719-WA0056.jpg",
+  "/photos/gallery/IMG-20250719-WA0057.jpg",
+];

@@ -164,6 +164,38 @@ quotes attributed to named speakers (translating a quote would misrepresent
 what they actually said), schedule/agenda item text, and nearby-essentials
 business listings.
 
+## Phase H: final data-completeness audit (2026-09-05)
+
+Requested after all of Phases A-G were merged to `master` -- a last check
+for anything from Convention that still isn't on cacnorthamerica.com before
+deciding whether to archive/retire the Convention repo and its Vercel
+project. Found two real, concrete gaps (everything else re-checked --
+gallery photos including the 20 children's photos, sub-ministry content,
+contacts, statement of faith, store, registration guidelines -- was
+already confirmed correctly in place from earlier phases):
+
+- **Sub-ministry photo strips were missing.** Convention's 6 sub-ministry
+  pages each embed a real 3-photo strip from the 2025 convention gallery
+  right under the hero (e.g. CACMA shows photos 4-6, Youth shows 1-3).
+  CACNA's versions had the schedules but never got the photos, even though
+  all 41 of the exact same photos already existed in
+  `public/photos/gallery/` (used on `/gallery`). Fixed: new
+  `components/ministries/PhotoStrip.tsx` (ported from Convention's own
+  `components/ui/PhotoStrip.tsx`) + `lib/mainGalleryPhotos.ts` (the same
+  41-photo ordered list, so the same slice indices produce the same
+  photos), wired into `SubConferencePage` (as an optional `photoStrip`
+  prop) and directly into the bespoke Youth page.
+- **The register page had no fee ladder.** Convention's register page
+  shows the complete early-bird schedule per category (e.g. "$125 through
+  Jan 31 -> $150 through Apr 30 -> ... -> $250 at the door") so people know
+  when prices increase; CACNA's only ever showed the current adult rate as
+  a one-liner. The tier data already existed in `lib/conventions.ts`
+  (`ConventionYear.pricingTiers`) -- just needed a "Registration Fees"
+  section built and wired in, with a "Current Rate" badge on whichever
+  tier is active today. Real Yoruba for the two new labels (`pricingHeading`,
+  `pricingCurrentBadge`) came from Convention's own already-reviewed
+  `Register` namespace.
+
 Remaining, not yet done:
 
 - **Everything else beyond Nav/Footer/the pages above** --

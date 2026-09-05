@@ -76,6 +76,8 @@
   },
   "Register": {
     "heroHeading": "Register for CACNA {year}",
+    "pricingHeading": "Registration Fees",
+    "pricingCurrentBadge": "Current Rate",
     "guidelinesHeading": "Registration Guidelines",
     "paymentOptionsHeading": "Payment Options",
     "individualTab": "Individual",

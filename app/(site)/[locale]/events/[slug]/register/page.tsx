@@ -50,6 +50,33 @@ export default async function RegisterPage({ params }: { params: Promise<{ local
   const isOpen = tiers.length > 0;
   const adultPrice = tiers.find((t) => t.category === "adult")?.priceCents;
 
+  // Full fee ladder -- every tier for this year, not just today's active
+  // one, so visitors can see the whole early-bird schedule at a glance.
+  // Ported from Convention's own PricingCards during the Phase H
+  // data-completeness audit (2026-09).
+  const activeTierKeys = new Set(tiers.map((tr) => `${tr.category}-${tr.startsOn}`));
+  const allTiers = cy.pricingTiers ?? [];
+  const CATEGORY_ORDER: { category: "adult" | "young_adult" | "child"; labelKey: "categoryAdult" | "categoryYoungAdult" | "categoryChild" }[] = [
+    { category: "adult", labelKey: "categoryAdult" },
+    { category: "young_adult", labelKey: "categoryYoungAdult" },
+    { category: "child", labelKey: "categoryChild" },
+  ];
+  const shortDate = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" });
+  const pricingLadder = CATEGORY_ORDER.map(({ category, labelKey }) => {
+    const rows = allTiers.filter((tr) => tr.category === category).sort((a, b) => a.startsOn.localeCompare(b.startsOn));
+    const lastStartsOn = rows.reduce((max, tr) => (tr.startsOn > max ? tr.startsOn : max), "");
+    return {
+      category,
+      label: t(labelKey),
+      tiers: rows.map((tr) => ({
+        key: `${tr.category}-${tr.startsOn}`,
+        priceLabel: tr.priceCents === 0 ? "Free" : `$${(tr.priceCents / 100).toFixed(0)}`,
+        dateLabel: tr.startsOn === lastStartsOn ? "At the Convention Ground" : `Through ${shortDate.format(new Date(`${tr.endsOn}T12:00:00Z`))}`,
+        isCurrent: activeTierKeys.has(`${tr.category}-${tr.startsOn}`),
+      })),
+    };
+  });
+
   return (
     <main id="main-content">
       <Nav heroDark />
@@ -80,6 +107,37 @@ export default async function RegisterPage({ params }: { params: Promise<{ local
           )}
         </div>
       </section>
+
+      {/* Full fee ladder */}
+      {isOpen && (
+        <section style={{ background: "var(--cream)", padding: "clamp(48px,6vw,72px) clamp(20px,5vw,64px) 0" }}>
+          <div style={{ maxWidth: 900, margin: "0 auto" }}>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,30px)", color: "var(--ink)", margin: "0 0 20px" }}>{t("pricingHeading")}</h2>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 16 }}>
+              {pricingLadder.map((cat) => (
+                <div key={cat.category} style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 18, padding: "20px 22px" }}>
+                  <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 17, color: "var(--ink)", margin: "0 0 14px" }}>{cat.label}</h3>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {cat.tiers.map((tier) => (
+                      <div key={tier.key} style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, borderRadius: 10, padding: "8px 10px", background: tier.isCurrent ? "var(--cream-2)" : "transparent" }}>
+                        <span>
+                          <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20, color: "var(--ink)" }}>{tier.priceLabel}</span>
+                          <span style={{ display: "block", fontSize: 11.5, color: "var(--ink-soft)", marginTop: 2 }}>{tier.dateLabel}</span>
+                        </span>
+                        {tier.isCurrent && (
+                          <span style={{ flexShrink: 0, fontSize: 10.5, fontWeight: 800, letterSpacing: "0.5px", textTransform: "uppercase", color: "#fff", background: "var(--red)", borderRadius: 999, padding: "4px 10px" }}>
+                            {t("pricingCurrentBadge")}
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Form / not-open state */}
       <section style={{ background: "var(--paper)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>

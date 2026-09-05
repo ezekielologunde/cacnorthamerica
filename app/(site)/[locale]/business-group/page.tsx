@@ -1,4 +1,5 @@
 import { SubConferencePage } from "@/components/ministries/SubConferencePage";
+import { mainGalleryPhotos } from "@/lib/mainGalleryPhotos";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 export const metadata = {
@@ -23,6 +24,7 @@ export default async function BusinessGroupPage({
       kicker={t("kicker")}
       headingLines={[t("headingLine1"), t("headingLine2")]}
       intro={t("intro")}
+      photoStrip={{ photos: mainGalleryPhotos.slice(6, 9), caption: "From the 2025 convention" }}
       leaderLabel={t("leaderLabel")}
       leaderNames={["Evangelist (Dr.) Efuntoye", "Evangelist Oyarombi"]}
       highlight={{
