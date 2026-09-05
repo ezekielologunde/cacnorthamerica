@@ -137,14 +137,35 @@ and most of the sub-ministry pages' bespoke intro/theme copy, which is
 real CACNA-specific prose that doesn't correspond 1:1 to anything in
 Convention's yo.json.
 
+**Third pass (same day)**: the site owner is a Yoruba speaker and asked to
+proceed with drafting real Yoruba for the remaining bespoke content
+themselves reviewing it, rather than leaving it as English placeholder
+indefinitely. Drafted and wired up: all 5 `SubConferencePage`-based pages'
+kicker/heading/intro/leaderLabel/highlightLabel/note/relatedLink text (new
+`Cacma`/`ChristianEducation`/`GoodWomen`/`MinistersWives`/`BusinessGroup`
+namespaces, plus a shared `OfficerTitle` namespace for repeated executive
+titles like Secretary/Treasurer/Chairman), the Youth page's entire bespoke
+copy (hero, vision/mission/values, history, section headings, meal RSVP,
+closing CTA), and `/give`'s three campaign cards -- the last one required
+making `lib/giving.ts`'s `GivingCampaign` type carry an optional
+`translations.yo` field and a `localizeCampaign(campaign, locale)` helper,
+since campaign text lives in a shared data array consumed by three
+different components (`/giving`, the blog's `GivingAdWidget`, and the
+homepage `Hero` carousel) -- all three now call the helper.
+
+**Every newly-drafted Yoruba string in this third pass carries an explicit
+`_translationStatus` note in `messages/yo.json`** (and a code comment in
+`lib/giving.ts`) saying it was drafted by Claude and is pending the site
+owner's own review -- unlike the first two passes, this isn't Convention's
+already-reviewed text, so it needs that explicit flag until confirmed.
+
+Still deliberately left untranslated, same reasoning as before: direct
+quotes attributed to named speakers (translating a quote would misrepresent
+what they actually said), schedule/agenda item text, and nearby-essentials
+business listings.
+
 Remaining, not yet done:
 
-- **Real Yoruba for the sub-ministry pages' bespoke copy** (kicker/intro/
-  theme/leader text passed as props to `SubConferencePage`, plus the Youth
-  page's own bespoke sections) and **`/give`'s campaign body text** -- the
-  latter needs `lib/giving.ts`'s `GivingCampaign` type to become
-  locale-aware (or a parallel Yoruba data set) before it can be translated
-  at all, which is a real structural change, not just a string swap.
 - **Everything else beyond Nav/Footer/the pages above** --
   `messages/yo.json` is honest English-placeholder content everywhere else
   right now (see [[Decisions]]). Needs a native-speaker review pass, not

@@ -1,5 +1,5 @@
 import { SubConferencePage } from "@/components/ministries/SubConferencePage";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 export const metadata = {
   title: "Good Women Association — Christ Apostolic Church North America (CACNA)",
@@ -15,24 +15,26 @@ export default async function GoodWomenPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const t = await getTranslations("GoodWomen");
+  const officer = await getTranslations("OfficerTitle");
 
   return (
     <SubConferencePage
-      kicker="Good Women Association"
-      headingLines={["Serving with", "open hands."]}
-      intro="CAC Latunde Region Good Women Association — leading the family in prayer, hospitality, and generosity at every gathering."
-      leaderLabel="Leader"
+      kicker={t("kicker")}
+      headingLines={[t("headingLine1"), t("headingLine2")]}
+      intro={t("intro")}
+      leaderLabel={t("leaderLabel")}
       leaderNames={["Evang. Mrs. Bolanle Mustapha"]}
       highlight={{
-        label: "2026 Convention Welcome Address",
+        label: t("highlightLabel"),
         text: "Leading the department's signature free-food initiative, the Good Women gave $40,000 in 2025 and $50,000 in 2026 toward food for all convention attendees.",
       }}
       executive={[
-        { name: "L/Evang. Bolanle Mustapha", title: "Leader" },
-        { name: "L/Evang. Bisi Benson", title: "Women Leader" },
-        { name: "L/Evang. Janet Olajide", title: "Secretary" },
-        { name: "L/Evang. Yomi Adeneye", title: "Chaplain" },
-        { name: "L/Evang. Bukola Awosanya", title: "Financial Secretary" },
+        { name: "L/Evang. Bolanle Mustapha", title: officer("leader") },
+        { name: "L/Evang. Bisi Benson", title: officer("womenLeader") },
+        { name: "L/Evang. Janet Olajide", title: officer("secretary") },
+        { name: "L/Evang. Yomi Adeneye", title: officer("chaplain") },
+        { name: "L/Evang. Bukola Awosanya", title: officer("financialSecretary") },
       ]}
       scheduleYear={2026}
       schedule={[
@@ -69,7 +71,7 @@ export default async function GoodWomenPage({
           ],
         },
       ]}
-      relatedLink={{ href: "/ministers-wives", label: "Ministers' Wives Conference" }}
+      relatedLink={{ href: "/ministers-wives", label: t("relatedLinkLabel") }}
     />
   );
 }

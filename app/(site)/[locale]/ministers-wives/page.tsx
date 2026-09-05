@@ -1,5 +1,5 @@
 import { SubConferencePage } from "@/components/ministries/SubConferencePage";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 export const metadata = {
   title: "Ministers' Wives Conference — Christ Apostolic Church North America (CACNA)",
@@ -15,20 +15,22 @@ export default async function MinistersWivesPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const t = await getTranslations("MinistersWives");
+  const officer = await getTranslations("OfficerTitle");
 
   return (
     <SubConferencePage
-      kicker="Ministers' Wives Conference"
-      headingLines={["Standing beside", "those who shepherd."]}
-      intro="CAC Latunde Region Ministers' Wives Conference — a fellowship for the wives of CACNA's ministers, gathered in prayer and mutual support."
-      leaderLabel="Chairperson"
+      kicker={t("kicker")}
+      headingLines={[t("headingLine1"), t("headingLine2")]}
+      intro={t("intro")}
+      leaderLabel={t("leaderLabel")}
       leaderNames={["Evang./Mrs. Agnes Agbeja"]}
       executive={[
-        { name: "Evang./Mrs. Agnes Agbeja", title: "Chairperson" },
-        { name: "Evang./Mrs. Esther Adenodi", title: "Executive Member" },
-        { name: "Evang./Mrs. Janet Adelani", title: "Executive Member" },
-        { name: "Evang./Mrs. Beatrice Olawale", title: "Executive Member" },
-        { name: "Evang./Mrs. Toyin Ademuwagun, Esq.", title: "Secretary" },
+        { name: "Evang./Mrs. Agnes Agbeja", title: officer("chairperson") },
+        { name: "Evang./Mrs. Esther Adenodi", title: officer("executiveMember") },
+        { name: "Evang./Mrs. Janet Adelani", title: officer("executiveMember") },
+        { name: "Evang./Mrs. Beatrice Olawale", title: officer("executiveMember") },
+        { name: "Evang./Mrs. Toyin Ademuwagun, Esq.", title: officer("secretary") },
       ]}
       scheduleYear={2026}
       schedule={[
@@ -53,7 +55,7 @@ export default async function MinistersWivesPage({
           ],
         },
       ]}
-      relatedLink={{ href: "/good-women", label: "Good Women Association" }}
+      relatedLink={{ href: "/good-women", label: t("relatedLinkLabel") }}
     />
   );
 }

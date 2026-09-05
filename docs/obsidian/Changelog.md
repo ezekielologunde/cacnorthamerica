@@ -10,6 +10,24 @@ tags: [project/cacnorthamerica]
 
 Related: [[Project]] · [[Decisions]] · [[Features]]
 
+## 2026-09-05 — Drafted Yoruba for all sub-ministry pages, Youth, and Give (site owner reviewing)
+
+Third translation pass, same day. Unlike the first two (which only carried
+over Convention's own already-reviewed Yoruba), this one drafts genuinely
+new Yoruba text -- the site owner is a Yoruba speaker and asked to proceed
+on that basis, reviewing the draft directly rather than leaving it as
+placeholder indefinitely. Covers: all 5 `SubConferencePage`-based pages
+(cacma, christian-education, good-women, ministers-wives, business-group),
+the Youth page's full bespoke copy, and `/give`'s three campaign cards.
+The Give work required a real structural change -- `lib/giving.ts`'s
+`GivingCampaign` type now carries an optional `translations.yo` field and
+a `localizeCampaign()` helper, since that data feeds three different
+components (`/giving`, the blog's `GivingAdWidget`, and the homepage
+`Hero` carousel). Every drafted string is flagged with `_translationStatus`
+in `messages/yo.json` pending the owner's review. Direct quotes, schedule
+content, and business listings still deliberately stay English -- same
+reasoning as the first two passes.
+
 ## 2026-09-05 — More real Yoruba: store, online, about, give, sub-ministry chrome
 
 Second translation pass, same day. The entire Store cart/checkout flow

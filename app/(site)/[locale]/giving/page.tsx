@@ -4,7 +4,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { IconBadge } from "@/components/ui/IconBadge";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { Phone, Mail, Landmark, Send } from "lucide-react";
-import { GIVING_CAMPAIGNS, type GivingCampaign } from "@/lib/giving";
+import { GIVING_CAMPAIGNS, localizeCampaign, type GivingCampaign } from "@/lib/giving";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 export const metadata = {
@@ -14,7 +14,6 @@ export const metadata = {
 };
 
 const accountIcon = (label: string) => (label.toLowerCase().includes("zelle") ? Send : Landmark);
-const [centenary, villagePayoff, hopeForAll] = GIVING_CAMPAIGNS;
 
 const SCHEMES = {
   centenary: { gradient: "linear-gradient(135deg,var(--red-deep),var(--gold))", glow: "rgba(253,200,65,.35)", badge: "rgba(255,255,255,.16)" },
@@ -75,6 +74,7 @@ export default async function GivingPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("Give");
+  const [centenary, villagePayoff, hopeForAll] = GIVING_CAMPAIGNS.map((c) => localizeCampaign(c, locale));
 
   return (
     <main id="main-content">
