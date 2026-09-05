@@ -6,6 +6,7 @@ import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import { conventionYears, sessionsFor, getDetailedSchedule, dateRangeLabel, CONVENTION_VENUE, type ConventionYear } from "@/lib/conventions";
+import { setRequestLocale } from "next-intl/server";
 
 export const revalidate = 3600;
 
@@ -25,7 +26,7 @@ export function generateStaticParams() {
   return FUTURE_YEARS.map((cy) => ({ slug: `cacna-${cy.year}` }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { slug } = await params;
   const cy = findYear(slug);
   if (!cy) return {};
@@ -36,8 +37,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-export default async function SchedulePage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+export default async function SchedulePage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
+  const { locale, slug } = await params;
+  setRequestLocale(locale);
+
   const cy = findYear(slug);
   if (!cy) notFound();
 

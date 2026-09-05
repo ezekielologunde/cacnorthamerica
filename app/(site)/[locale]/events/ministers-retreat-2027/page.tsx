@@ -6,6 +6,7 @@ import Link from "next/link";
 import { BookOpen, Users, Podium, HandHeart, ArrowLeft, CalendarPlus, Download, Video } from "lucide-react";
 import { specialEvents, googleCalUrl, icsDataUri, isEventPast } from "@/lib/events";
 import { SITE, SITE_URL, breadcrumbJsonLd } from "@/lib/site";
+import { setRequestLocale } from "next-intl/server";
 
 export const revalidate = 3600;
 
@@ -25,7 +26,14 @@ const pillars = [
   { icon: HandHeart, label: "Prayer & Intercession", desc: "Seek God together for our church and communities." },
 ];
 
-export default function MinistersRetreat2027Page() {
+export default async function MinistersRetreat2027Page({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   const isPast = isEventPast(ev);
   const jsonLd = {
     "@context": "https://schema.org",

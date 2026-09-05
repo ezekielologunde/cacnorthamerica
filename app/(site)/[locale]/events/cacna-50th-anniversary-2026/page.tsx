@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Sparkles, Users, MapPin, HandHeart, ArrowLeft, CalendarPlus, Download, PartyPopper, ClipboardList } from "lucide-react";
 import { specialEvents, googleCalUrl, icsDataUri, isEventPast } from "@/lib/events";
 import { SITE, SITE_URL, breadcrumbJsonLd } from "@/lib/site";
+import { setRequestLocale } from "next-intl/server";
 
 export const revalidate = 3600;
 
@@ -27,7 +28,14 @@ const pillars = [
   { icon: HandHeart, label: "A Season of Thanksgiving", desc: "A day set apart to thank God for five decades of grace and growth." },
 ];
 
-export default function Cacna50thAnniversaryPage() {
+export default async function Cacna50thAnniversaryPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   const isPast = isEventPast(ev);
   const jsonLd = {
     "@context": "https://schema.org",

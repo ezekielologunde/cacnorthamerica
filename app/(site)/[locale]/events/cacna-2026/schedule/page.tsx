@@ -5,6 +5,7 @@ import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import { getDetailedSchedule, CONVENTION_VENUE } from "@/lib/conventions";
+import { setRequestLocale } from "next-intl/server";
 
 export const metadata = {
   title: "2026 Schedule — CACNA Annual Convention",
@@ -17,7 +18,14 @@ const DAY_NAMES: Record<string, string> = {
   "2026-07-16": "Thu · Jul 16", "2026-07-17": "Fri · Jul 17", "2026-07-18": "Sat · Jul 18",
 };
 
-export default function Cacna2026SchedulePage() {
+export default async function Cacna2026SchedulePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   const sessions = getDetailedSchedule(2026)!;
   const byDay = new Map<string, typeof sessions>();
   for (const s of sessions) {

@@ -7,6 +7,7 @@ import Link from "next/link";
 import { MapPin, Flame, Waves, Landmark, Eye, ArrowLeft, CalendarPlus, Download, Phone, Mail, CreditCard } from "lucide-react";
 import { specialEvents, googleCalUrl, icsDataUri, isEventPast } from "@/lib/events";
 import { SITE, SITE_URL, breadcrumbJsonLd } from "@/lib/site";
+import { setRequestLocale } from "next-intl/server";
 
 export const revalidate = 3600;
 
@@ -60,7 +61,14 @@ const included = [
   "Personal Pilgrimage Certificate",
 ];
 
-export default function PilgrimagePage() {
+export default async function PilgrimagePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   const isPast = isEventPast(ev);
   const jsonLd = {
     "@context": "https://schema.org",

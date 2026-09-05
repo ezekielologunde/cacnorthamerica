@@ -5,6 +5,7 @@ import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { getStripeClient } from "@/lib/stripe";
 import { conventionYears, type ConventionYear } from "@/lib/conventions";
+import { setRequestLocale } from "next-intl/server";
 
 function findYear(slug: string): ConventionYear | undefined {
   const match = /^cacna-(\d{4})$/.exec(slug);
@@ -16,10 +17,12 @@ export default async function RegisterConfirmationPage({
   params,
   searchParams,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
   searchParams: Promise<{ session_id?: string; status?: string }>;
 }) {
-  const { slug } = await params;
+  const { locale, slug } = await params;
+  setRequestLocale(locale);
+
   const cy = findYear(slug);
   if (!cy) notFound();
 

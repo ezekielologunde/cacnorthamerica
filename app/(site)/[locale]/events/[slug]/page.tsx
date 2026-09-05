@@ -16,6 +16,7 @@ import {
   hasExternalRegistrationUrl,
   type ConventionYear,
 } from "@/lib/conventions";
+import { setRequestLocale } from "next-intl/server";
 
 export const revalidate = 3600;
 
@@ -37,7 +38,7 @@ function findYear(slug: string): ConventionYear | undefined {
   return FUTURE_YEARS.find((cy) => cy.year === year);
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { slug } = await params;
   const cy = findYear(slug);
   if (!cy) return {};
@@ -48,8 +49,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-export default async function CACNAFutureYearPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+export default async function CACNAFutureYearPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
+  const { locale, slug } = await params;
+  setRequestLocale(locale);
+
   const cy = findYear(slug);
   if (!cy) notFound();
 
