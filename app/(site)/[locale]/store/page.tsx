@@ -4,6 +4,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import { StoreCatalog } from "@/components/store/StoreCatalog";
 import { storeProducts } from "@/lib/conventions";
+import { setRequestLocale } from "next-intl/server";
 
 export const metadata = {
   title: "Store — CACNA Convention Apparel",
@@ -11,7 +12,14 @@ export const metadata = {
   alternates: { canonical: "/store" },
 };
 
-export default function StorePage() {
+export default async function StorePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   const categories = [
     { key: "convention", label: "Convention Apparel", products: storeProducts.filter((p) => p.category === "convention") },
     { key: "good_women", label: "Good Women Association Apparel", products: storeProducts.filter((p) => p.category === "good_women") },

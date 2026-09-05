@@ -4,6 +4,7 @@ import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import { conventionYears, isConventionPast, dateRangeLabel, type RegistrantCategory } from "@/lib/conventions";
+import { setRequestLocale } from "next-intl/server";
 
 export const metadata = {
   title: "Past Conventions — CACNA Annual Convention Archive",
@@ -21,7 +22,14 @@ function formatFee(range: { min: number; max: number }): string {
   return range.min === range.max ? fmt(range.min) : `${fmt(range.min)}–${fmt(range.max)}`;
 }
 
-export default function ArchivePage() {
+export default async function ArchivePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   const pastYears = conventionYears.filter(isConventionPast).sort((a, b) => b.year - a.year);
 
   return (

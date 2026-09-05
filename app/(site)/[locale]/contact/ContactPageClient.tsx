@@ -59,7 +59,7 @@ const BLANK_FIELDS = {
   visitType: "", address: "", city: "", state: "", zip: "",
 };
 
-export default function ContactPage() {
+export default function ContactPageClient() {
   const [fields, setFields] = useState(BLANK_FIELDS);
   const [groups, setGroups] = useState<string[]>([]);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");

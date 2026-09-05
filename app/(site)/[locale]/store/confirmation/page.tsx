@@ -3,12 +3,18 @@ import { CheckCircle2, XCircle } from "lucide-react";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { getStripeClient } from "@/lib/stripe";
+import { setRequestLocale } from "next-intl/server";
 
 export default async function StoreConfirmationPage({
+  params,
   searchParams,
 }: {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{ session_id?: string }>;
 }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   const { session_id: sessionId } = await searchParams;
 
   let contactEmail: string | null = null;

@@ -1,4 +1,5 @@
 import { SubConferencePage } from "@/components/ministries/SubConferencePage";
+import { setRequestLocale } from "next-intl/server";
 
 export const metadata = {
   title: "Business Group Fellowship — Christ Apostolic Church North America (CACNA)",
@@ -7,7 +8,14 @@ export const metadata = {
   alternates: { canonical: "/business-group" },
 };
 
-export default function BusinessGroupPage() {
+export default async function BusinessGroupPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <SubConferencePage
       kicker="Business Group Fellowship"

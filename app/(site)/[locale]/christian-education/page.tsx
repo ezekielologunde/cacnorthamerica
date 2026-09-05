@@ -1,4 +1,5 @@
 import { SubConferencePage } from "@/components/ministries/SubConferencePage";
+import { setRequestLocale } from "next-intl/server";
 
 export const metadata = {
   title: "Christian Education Department — Christ Apostolic Church North America (CACNA)",
@@ -7,7 +8,14 @@ export const metadata = {
   alternates: { canonical: "/christian-education" },
 };
 
-export default function ChristianEducationPage() {
+export default async function ChristianEducationPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <SubConferencePage
       kicker="Christian Education Department"

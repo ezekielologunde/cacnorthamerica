@@ -1,4 +1,5 @@
 import { SubConferencePage } from "@/components/ministries/SubConferencePage";
+import { setRequestLocale } from "next-intl/server";
 
 export const metadata = {
   title: "Ministers' Wives Conference — Christ Apostolic Church North America (CACNA)",
@@ -7,7 +8,14 @@ export const metadata = {
   alternates: { canonical: "/ministers-wives" },
 };
 
-export default function MinistersWivesPage() {
+export default async function MinistersWivesPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <SubConferencePage
       kicker="Ministers' Wives Conference"

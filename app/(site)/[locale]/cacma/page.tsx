@@ -1,4 +1,5 @@
 import { SubConferencePage } from "@/components/ministries/SubConferencePage";
+import { setRequestLocale } from "next-intl/server";
 
 export const metadata = {
   title: "CACMA — Christ Apostolic Church North America (CACNA)",
@@ -7,7 +8,14 @@ export const metadata = {
   alternates: { canonical: "/cacma" },
 };
 
-export default function CACMAPage() {
+export default async function CACMAPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <SubConferencePage
       kicker="CACMA"

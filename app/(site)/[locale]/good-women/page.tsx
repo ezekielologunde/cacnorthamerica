@@ -1,4 +1,5 @@
 import { SubConferencePage } from "@/components/ministries/SubConferencePage";
+import { setRequestLocale } from "next-intl/server";
 
 export const metadata = {
   title: "Good Women Association — Christ Apostolic Church North America (CACNA)",
@@ -7,7 +8,14 @@ export const metadata = {
   alternates: { canonical: "/good-women" },
 };
 
-export default function GoodWomenPage() {
+export default async function GoodWomenPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <SubConferencePage
       kicker="Good Women Association"

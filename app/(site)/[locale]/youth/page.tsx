@@ -7,6 +7,7 @@ import { InstagramIcon } from "@/components/ui/SocialIcons";
 import { MealRequestForm } from "@/components/youth/MealRequestForm";
 import Link from "next/link";
 import { Compass, Target, HandHeart, BookOpen, Users, Mic2, Sparkles } from "lucide-react";
+import { setRequestLocale } from "next-intl/server";
 
 export const metadata = {
   title: "Youth & Young Adult — Christ Apostolic Church North America (CACNA)",
@@ -51,7 +52,14 @@ const moments = [
   { src: "/images/cac-youth-conference-group.jpg", alt: "CACNA youth and young adults gathered outdoors at a past conference" },
 ];
 
-export default function YouthPage() {
+export default async function YouthPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <main id="main-content">
       <Nav heroDark />
