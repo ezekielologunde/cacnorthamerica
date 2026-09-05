@@ -78,6 +78,8 @@
   "Register": {
     "_translationStatus": "Real Yoruba, carried over from the Convention site's own already-reviewed messages/yo.json where the concept matched exactly (register.form field labels). Headings/copy specific to CACNA's own phrasing not covered here stay English placeholders in the page itself.",
     "heroHeading": "Forúkọsílẹ̀ fún Àpéjọ CACNA {year}",
+    "pricingHeading": "Owó Ìforúkọsílẹ̀",
+    "pricingCurrentBadge": "Owó Lọ́wọ́lọ́wọ́",
     "guidelinesHeading": "Àwọn Ìtọ́nisọ́nà Ìforúkọsílẹ̀",
     "paymentOptionsHeading": "Àwọn Ọ̀nà Sísanwó",
     "individualTab": "Ẹnìkọ̀ọ̀kan",

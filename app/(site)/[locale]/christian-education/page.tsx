@@ -1,4 +1,5 @@
 import { SubConferencePage } from "@/components/ministries/SubConferencePage";
+import { mainGalleryPhotos } from "@/lib/mainGalleryPhotos";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 export const metadata = {
@@ -22,6 +23,7 @@ export default async function ChristianEducationPage({
       kicker={t("kicker")}
       headingLines={[t("headingLine1"), t("headingLine2")]}
       intro={t("intro")}
+      photoStrip={{ photos: mainGalleryPhotos.slice(15, 18), caption: "From the 2025 convention" }}
       theme={t("theme")}
       leaderLabel={t("leaderLabel")}
       leaderNames={[

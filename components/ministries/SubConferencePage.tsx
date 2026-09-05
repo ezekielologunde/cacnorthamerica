@@ -2,6 +2,7 @@ import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
+import { PhotoStrip } from "@/components/ministries/PhotoStrip";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
@@ -31,6 +32,10 @@ export type SubConferencePageProps = {
    *  note / CTA. */
   schedule?: ScheduleBlock[];
   scheduleYear?: number;
+  /** A real 3-photo strip from the 2025 convention gallery, right under the
+   *  hero — ported from Convention's own per-ministry pages during the
+   *  Phase H data-completeness audit (2026-09). */
+  photoStrip?: { photos: string[]; caption: string };
   note?: string;
   relatedLink?: { href: string; label: string };
 };
@@ -48,6 +53,7 @@ export async function SubConferencePage({
   historyParagraphs,
   schedule,
   scheduleYear,
+  photoStrip,
   note,
   relatedLink,
 }: SubConferencePageProps) {
@@ -78,6 +84,12 @@ export async function SubConferencePage({
           </Reveal>
         </div>
       </section>
+
+      {photoStrip && (
+        <section style={{ background: "var(--cream)", paddingBottom: 10 }}>
+          <PhotoStrip photos={photoStrip.photos} caption={photoStrip.caption} />
+        </section>
+      )}
 
       {/* Identity: theme + leadership */}
       {(theme || (leaderNames && leaderNames.length > 0)) && (

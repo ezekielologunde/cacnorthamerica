@@ -5,6 +5,8 @@ import { RevealText } from "@/components/ui/RevealText";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { InstagramIcon } from "@/components/ui/SocialIcons";
 import { MealRequestForm } from "@/components/youth/MealRequestForm";
+import { PhotoStrip } from "@/components/ministries/PhotoStrip";
+import { mainGalleryPhotos } from "@/lib/mainGalleryPhotos";
 import Link from "next/link";
 import { Compass, Target, HandHeart, BookOpen, Users, Mic2, Sparkles } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -146,6 +148,10 @@ export default async function YouthPage({
             </div>
           </Reveal>
         </div>
+      </section>
+
+      <section style={{ background: "var(--cream)", paddingBottom: 10 }}>
+        <PhotoStrip photos={mainGalleryPhotos.slice(0, 3)} caption="From the 2025 convention" />
       </section>
 
       {/* Convention identity: theme + coordinator */}
