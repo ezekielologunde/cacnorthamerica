@@ -47,6 +47,17 @@ const GROUPS = [
   "CAC Men Association (CACMA)",
 ];
 
+// Ported from the Convention site's lib/content/contacts.ts during the
+// Phase C content merge (2026-09) -- the three officers who actually field
+// convention-specific questions, distinct from CACNA's own general contact
+// line above. Secretary's name corrected there 2026-07-20 (was misattributed
+// to "Pastor Timothy Famojuro"); carried over already-corrected.
+const CONVENTION_CONTACTS = [
+  { name: "Pastor David Adenodi, Ph.D.", role: "Chairman, CACNA Convention", org: "C.A.C. Vineyard of Comfort, Lanham, MD", phone: "301-440-7033", email: "cacnaconvention@gmail.com" },
+  { name: "Pastor Oluwagbemiga Famojuro, D.Min.", role: "Secretary, CACNA Convention", org: "C.A.C. FITA, Brooklyn, NY", phone: "917-709-1892", email: "ftimothy54@aol.com" },
+  { name: "Pastor Joseph Olawale", role: "Convention General Inquiries", org: "CAC DFW Metroplex, Irving, TX", phone: "305-469-0346", email: "cacna@hotmail.com" },
+];
+
 const faqs = [
   { q: "What is CACNA?", a: "Christ Apostolic Church North America is the regional body uniting CAC member churches across the United States, Canada, and South America, organized into 24 Zones & DCCs (District Church Councils), each led by a Zonal Superintendent." },
   { q: "Do all CACNA member churches share the same service times?", a: "No — each member church sets its own weekly schedule. Reach out to the Zonal Superintendent nearest you to find service times for a specific church." },
@@ -305,6 +316,32 @@ export default function ContactPageClient() {
               General correspondence is handled through the CACNA Regional Secretariat, Pastor Joseph Olawale Latunde, Regional Secretary.
             </p>
           </Reveal>
+        </div>
+      </section>
+
+      {/* Convention Committee leadership */}
+      <section style={{ background: "var(--cream-2)", padding: "56px clamp(20px,5vw,64px)" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <Reveal style={{ textAlign: "center", marginBottom: 32 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Annual Convention</span>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,34px)", letterSpacing: "-0.8px", color: "var(--ink)", margin: "10px 0 0" }}>Convention Committee</h2>
+            <p style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.6, margin: "10px auto 0", maxWidth: 560 }}>
+              For questions specific to the Annual Convention — registration, schedule, or logistics — reach the committee directly.
+            </p>
+          </Reveal>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 14 }}>
+            {CONVENTION_CONTACTS.map((c) => (
+              <Reveal key={c.name}>
+                <div style={{ background: "var(--paper)", borderRadius: 18, padding: "20px 20px 22px", border: "1px solid var(--line)" }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 8 }}>{c.role}</div>
+                  <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 16, color: "var(--ink)", lineHeight: 1.3, marginBottom: 4 }}>{c.name}</div>
+                  <div style={{ fontSize: 12.5, color: "var(--ink-soft)", marginBottom: 12 }}>{c.org}</div>
+                  <a href={`tel:${c.phone.replace(/[^0-9+]/g, "")}`} style={{ display: "block", fontSize: 13.5, fontWeight: 600, color: "var(--ink)", textDecoration: "none", marginBottom: 3 }}>{c.phone}</a>
+                  <a href={`mailto:${c.email}`} style={{ display: "block", fontSize: 13.5, fontWeight: 600, color: "var(--ink)", textDecoration: "none" }}>{c.email}</a>
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 

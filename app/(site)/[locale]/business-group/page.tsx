@@ -41,6 +41,22 @@ export default async function BusinessGroupPage({
         { name: "Evangelist Adebisi Abikoye", title: "Assistant P.R.O" },
         { name: "Evangelist Wunmi Atomolagun", title: "Assistant P.R.O" },
       ]}
+      scheduleYear={2026}
+      schedule={[
+        {
+          dayLabel: "Thursday, July 16, 2026",
+          agenda: [
+            { time: "11:15–11:20am", event: "Opening Prayer", speaker: "Pastor (Dr.) Mathew Babalola" },
+            { time: "11:20–11:30am", event: "Chairman's Speech", speaker: "Pastor Bolaji Oladunni" },
+            { time: "11:35am–12:05pm", event: "Guest Speaker's Lecture", speaker: "Dr. Jumoke Ojo" },
+            { time: "12:05–12:15pm", event: "Questions and Answers", speaker: "Evangelist Janet Olajide" },
+            { time: "12:15–12:25pm", event: "Kingdom Partners", speaker: "Evangelist Abikoye" },
+            { time: "12:25–12:40pm", event: "Raffle Tickets / Prizes", speaker: "Evangelist Janet Olajide" },
+            { time: "12:45pm", event: "Introduction of the Regional Superintendent", speaker: "Pastor Gabriel Idowu" },
+            { event: "Closing Prayer and Benediction", speaker: "Pastor (Dr.) T.O.A. Agbeja" },
+          ],
+        },
+      ]}
       relatedLink={{ href: "/blog/cacna-business-group-founding-story", label: "Read the Founding Story" }}
     />
   );

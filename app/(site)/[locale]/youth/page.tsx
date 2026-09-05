@@ -43,6 +43,43 @@ const programs = [
   { name: "Youth Conference", icon: Mic2, photo: "/images/cac-youth-program-conference.jpg" },
 ];
 
+// Transcribed from the 2026 convention program book's "CAC North America
+// Youth and Young Ministry 2026 Convention Schedule" (ported from the
+// Convention site's lib/content/youth-program.ts during the Phase D
+// content merge, 2026-09). Speakers are embedded in the event text itself
+// where the source flyer printed them that way, rather than as a separate
+// field.
+const schedule2026 = [
+  {
+    day: "Wednesday, July 15",
+    agenda: [
+      "10:00–11:00am — Praise & Worship and Opening Prayer",
+      "11:30am–1:30pm — Session One: \"Did God Really Say...? How to Read the Bible for Yourself\"",
+      "3:00–4:00pm — Session Two: Real Men, Real Talk / Real Women, Real Talk (Becoming Him/Her: Identity)",
+      "4:00–5:00pm — Session Three: Panel Discussion — Unmasking and Healing Sexual Brokenness",
+      "7:00–9:00pm — Youth Explosion Impartation Service",
+    ],
+  },
+  {
+    day: "Thursday, July 16",
+    agenda: [
+      "10:45–11:15am — Opening Address: \"Did God Really Say...? Knowing God's Word for Yourself\" — Pastor Adekunmi Browne",
+      "11:30am–1:00pm — Session Four: Workshops (Calling All Creatives · iWorship for Psalmists & Levites · Marketplace Ministry)",
+      "1:00–2:30pm — Lunch | Annual CACNA Picnic",
+      "5:00–8:00pm — CACNA Praise Night!",
+    ],
+  },
+  {
+    day: "Friday, July 17",
+    agenda: [
+      "11:00am–1:00pm — Session Five: Breakout — Teen Talk · Singles Ministry · Marriage Ministry",
+      "2:30–3:30pm — Session Six: Owning Your Health",
+      "3:30–4:30pm — Session Seven: Bible Jeopardy & Prize Giveaway!",
+      "4:30–5:00pm — Testimonies · Reflection · Prayer",
+    ],
+  },
+];
+
 // Real event photos from cacnorthamerica.com/youth-young-adult/ (2026-07-21) --
 // no per-photo captions exist upstream, so alt text describes what's shown.
 const moments = [
@@ -190,6 +227,32 @@ export default async function YouthPage({
                     </div>
                     <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 15.5, color: "var(--ink)", margin: 0, lineHeight: 1.3 }}>{p.name}</h3>
                   </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 2026 Convention Schedule */}
+      <section style={{ background: "var(--paper)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+        <div style={{ maxWidth: 780, margin: "0 auto" }}>
+          <Reveal style={{ textAlign: "center", marginBottom: 40 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>2026 Convention Schedule</span>
+          </Reveal>
+          <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+            {schedule2026.map((block, i) => (
+              <Reveal key={block.day} delay={i * 60}>
+                <div>
+                  <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "var(--ink)", margin: "0 0 14px" }}>{block.day}</h3>
+                  <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10, borderLeft: "2px solid var(--line)" }}>
+                    {block.agenda.map((item, j) => (
+                      <li key={j} style={{ position: "relative", padding: "0 0 0 22px", fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.5 }}>
+                        <span aria-hidden style={{ position: "absolute", left: -5, top: 6, width: 8, height: 8, borderRadius: "50%", background: "var(--red)" }} />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </Reveal>
             ))}

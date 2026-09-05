@@ -23,8 +23,39 @@ Convention's `lib/content/convention.ts` -- see [[Decisions]]), schedule
 sessions carry the same `audience` targeting Convention's data had, and the
 register flow has the staff-passcode-gated Complimentary tab and a
 check-in QR on the confirmation page, both ported from Convention and
-verified end-to-end against the local dev server. Still pending, roughly
-in order:
+verified end-to-end against the local dev server.
+
+Phases C-F are also done now (stacked further on Phase B's branch, one PR
+per phase, all verified via build + typecheck + manual browser walk -- see
+[[Decisions]] and [[Changelog]] for what actually landed and why):
+
+- **Phase C** (merge the 5 overlapping top-level pages): `/contact` gained
+  a Convention Committee block, `/about` gained an "About the Convention"
+  section plus the real 1976/Rev. Goke Oyedeji founding fact, `/online`
+  gained a convention-week-only session playlist embed. `/giving` and
+  `/blog` needed no changes -- both verified to already fully cover what
+  Convention's versions said (CACNA's "Village Pay Off" account numbers
+  already matched exactly; CACNA's blog post on the Chairman's tenure was
+  already more detailed than Convention's own version).
+- **Phase D** (enrich sub-ministry pages): all 6 (cacma, youth,
+  christian-education, good-women, ministers-wives, business-group) now
+  show their real 2026 day-by-day convention schedule, transcribed from
+  Convention's per-ministry program files. `/children` added as a genuine
+  new page (schedule, daily rhythm, 2026 teacher roster) and linked from
+  `/ministries`.
+- **Phase E** (net-new pages): `/plan-your-visit` (travel, hotels, weather,
+  packing list, nearby essentials, rules & etiquette) and a human-readable
+  `/sitemap` (grouped by topic, using CACNA's own real route set, not a
+  copy of Convention's) -- both linked from the footer.
+- **Phase F** (branding cleanup): `lib/site.ts`'s `ROUTES` list was missing
+  every sub-ministry page plus `/statement-of-faith` and `/store` --
+  fixed. Two stale external links to the standalone Convention site
+  (`cacnaconvention.cacsalvationcenter.org`) found and pointed internally
+  instead, on the 2026/2027 event detail pages. The anniversary-banner and
+  "CACNA Home ↗" items from the original plan turned out to already be
+  resolved on CACNA's side -- verified, no change needed.
+
+Remaining, not yet done:
 
 - **Real Yoruba translations** for every page beyond Nav/Footer --
   `messages/yo.json` is honest English-placeholder content everywhere else
@@ -36,23 +67,21 @@ in order:
   (next-intl's middleware redirects a bare path to the default locale) but
   cost an extra redirect hop instead of linking directly. Worth cleaning up
   page-by-page as each one gets touched for real translation, rather than
-  a separate blanket sweep.
-- **Merge the overlapping top-level pages**: `/about`, `/contact`,
-  `/giving`, `/online`, `/blog` each have their own independently-built
-  Convention-site counterpart with different (event-specific) scope that
-  hasn't been folded in yet -- e.g. a "Convention Committee" contact block
-  for `/contact`, verifying `/giving`'s existing Village Pay Off campaign
-  already covers what Convention's version said.
-- **Enrich cacma/youth/christian-education/good-women/ministers-wives/
-  business-group** with Convention's day-by-day schedules (this repo's
-  versions currently have leader/history summaries only); add `/children`
-  as a new page (no CACNA equivalent exists).
-- **Port `/plan-your-visit`** and a human-readable `/sitemap` page -- the
-  two genuine gaps with zero CACNA equivalent.
-- Branding cleanup: the stale `FooterExperience`
-  "Annual Convention" link (already fixed to point internally, see
-  [[Changelog]]) was the main one; still worth a pass over `lib/site.ts`'s
-  JSON-LD and `ROUTES`/sitemap coverage once new routes exist.
+  a separate blanket sweep. (New pages added in Phases D-E were written
+  with locale-prefixed links from the start, so this gap doesn't grow.)
+- A **real content-fact discrepancy found but not resolved**: Convention's
+  `lib/content/payment-options.ts` lists a *different* Chase account number
+  (823936908, "CACNA CONVENTION") than the one on both sites' Village Pay
+  Off campaign (823986275) -- these appear to be two genuinely different
+  accounts (one for registration check-payments, one for general Village
+  giving) rather than a stale duplicate, but this should be confirmed with
+  the site owner rather than assumed.
+- The 30-member Convention & Conference Committee roster
+  (Convention's `lib/content/committee.ts`) was deliberately **not** ported
+  to the public `/contact` page -- only the 3-person contact block was
+  (chairman/secretary/general inquiries), matching Convention's own
+  restraint. The fuller roster may be worth a dedicated page/PDF someday if
+  ever needed publicly.
 
 ## Content
 

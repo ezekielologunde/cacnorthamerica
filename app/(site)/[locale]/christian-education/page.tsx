@@ -44,6 +44,22 @@ export default async function ChristianEducationPage({
         { name: "Pastor Samuel Tunji Ayeni", title: "CED Secretary; VOC USA DCC Rep — \"The Aseity of the Word of God\"" },
         { name: "Pastor Olufemi Olaluwoye", title: "Eastern DCC Superintendent — \"God Said It. Live It\"" },
       ]}
+      scheduleYear={2026}
+      schedule={[
+        {
+          dayLabel: "Thursday, July 16, 2026",
+          agenda: [
+            { time: "9:00–9:03am", event: "Opening Prayer", speaker: "Pastor Segun Olaniyi, VOC Atlanta DCC" },
+            { time: "9:04–9:09am", event: "Sunday School Anthem", speaker: "CED Voices" },
+            { time: "9:10–9:15am", event: "Welcome Address & Introduction of the Guest Speaker", speaker: "Pastor Dr. Gbenga Famojuro, FITA DCC / Chairman, CED" },
+            { time: "9:17–10:07am", event: "Main Lecture — \"The Bible: A Dynamic Force for the Church\"", speaker: "Rt. Rev. Prof. Dapo Folorunso Asaju, Bishop of Diocese, Ilesa" },
+            { time: "10:11–10:21am", event: "Q & A Session", speaker: "Pastor Matthew Oladejo, Cornerstone Zone" },
+            { time: "10:22–10:27am", event: "Sunday School Exam Matter", speaker: "Pastor Ajibade & Pastor Oderinde, Atlanta DCC" },
+            { time: "10:35–10:45am", event: "Prophetic Prayer Blessing", speaker: "Evang. Mrs. Bolanle Mustapha, CACNA Good Women Leader" },
+            { time: "10:50–11:00am", event: "Closing Remarks, Blessings & Benediction", speaker: "Pastor Dr. Timothy A.O. Agbeja, Latunde Regional Supt." },
+          ],
+        },
+      ]}
       note="For the department's full worldwide history — from the Sunday School movement's 1780s roots to CACNA's own Christian Education team — see the Ministries page."
       relatedLink={{ href: "/ministries#departments", label: "Read the Full History & Team" }}
     />

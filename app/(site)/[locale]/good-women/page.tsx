@@ -34,6 +34,41 @@ export default async function GoodWomenPage({
         { name: "L/Evang. Yomi Adeneye", title: "Chaplain" },
         { name: "L/Evang. Bukola Awosanya", title: "Financial Secretary" },
       ]}
+      scheduleYear={2026}
+      schedule={[
+        {
+          dayLabel: "Wednesday, July 15, 2026",
+          timeRange: "11:45am – 1:15pm",
+          agenda: [
+            { time: "11:45–11:50am", event: "Moderator's Opening Statement", speaker: "Evang. Bisi Benson" },
+            { time: "11:50–11:55am", event: "Opening Prayer", speaker: "Evang. Mrs. Bukola Awosanya" },
+            { time: "12:00–12:05pm", event: "CACNAGWA Leader's Address", speaker: "Evang. Mrs. Bolanle Mustapha" },
+            { time: "12:05–12:15pm", event: "Special Presentation", speaker: "CACNAGWA Choir" },
+            { time: "12:15–1:05pm", event: "Raising Godly Children in Navigating Cultural and Social Challenges" },
+            { time: "1:10–1:15pm", event: "Closing Prayers", speaker: "Evang. Bola Ajisafe" },
+          ],
+        },
+        {
+          dayLabel: "Wednesday, July 15, 2026",
+          timeRange: "3:30 – 5:00pm",
+          agenda: [
+            { event: "Raising Godly Children in Navigating Cultural and Social Challenges (continued)" },
+            { event: "Special Presentation", speaker: "CACNAGWA Drama" },
+            { event: "Closing Remarks", speaker: "L/E Bolanle Mustapha" },
+            { event: "Closing Prayers & Benediction", speaker: "Pastor Dr. Hezekiah Ilufoye" },
+          ],
+        },
+        {
+          dayLabel: "Thursday, July 16, 2026",
+          timeRange: "3:30 – 5:00pm",
+          agenda: [
+            { event: "Special Presentation", speaker: "CACNAGWA Drama Group" },
+            { event: "Reflections on Raising Godly Children in Marriages" },
+            { event: "Closing Remarks", speaker: "Pastor Wale Adelegan" },
+            { event: "Closing Prayers & Benediction", speaker: "Pastor Dr. Hezekiah Ilufoye" },
+          ],
+        },
+      ]}
       relatedLink={{ href: "/ministers-wives", label: "Ministers' Wives Conference" }}
     />
   );

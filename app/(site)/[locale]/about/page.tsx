@@ -148,6 +148,9 @@ export default async function AboutPage({
               Our Story
             </h2>
             <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.75, marginBottom: 20 }}>
+              The first Christ Apostolic Church in North America started as a house fellowship in <strong style={{ color: "var(--ink)" }}>1976</strong>, planted by the late <strong style={{ color: "var(--ink)" }}>Rev. Goke Oyedeji, Ph.D.</strong>, in Brooklyn, New York.
+            </p>
+            <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.75, marginBottom: 20 }}>
               As Christ Apostolic Church member churches took root across the United States, Canada, and South America, CACNA was formed to unite them under one regional body — organized today into 24 Zones &amp; DCCs (District Church Councils), each led by a Zonal Superintendent.
             </p>
             <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.75 }}>
@@ -264,6 +267,61 @@ export default async function AboutPage({
               </p>
             </div>
           </Reveal>
+        </div>
+      </section>
+
+      {/* About the Annual Convention -- ported from the Convention site's own
+          "About" content (lib/content/about-convention.ts) during the
+          Phase C content merge (2026-09). CACNA's own /about tells CAC's
+          global story; this section is specifically about the Convention
+          as an institution -- its own mission distinct from the region's. */}
+      <section id="convention" style={{ background: "var(--paper)", padding: "100px clamp(20px,5vw,64px)" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <Reveal style={{ textAlign: "center", marginBottom: 44 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Annual Convention</span>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(32px,4.5vw,56px)", letterSpacing: "-1.2px", color: "var(--ink)", margin: "14px 0 0", lineHeight: .98 }}>
+              About the Convention.
+            </h2>
+          </Reveal>
+          <Reveal delay={80}>
+            <p style={{ fontSize: 17, color: "var(--ink-soft)", lineHeight: 1.8, margin: "0 0 24px" }}>
+              The CACNA Convention is a large meeting of church members with their families coming together for several days to learn, be uplifted through the word of God ministered, talk about their shared work with other ministers, and to make decisions as a group.
+            </p>
+            <p style={{ fontSize: 17, color: "var(--ink-soft)", lineHeight: 1.8, margin: "0 0 32px" }}>
+              It exists to facilitate, extend and enlarge the Great Commission of Christ under the umbrella of Christ Apostolic Church North America — achieved through the authority of God&apos;s inerrant Word, to the glory of God the Father, under the Lordship of Jesus Christ, and by the empowerment of the Holy Spirit.
+            </p>
+          </Reveal>
+          <div className="r2" style={{ gap: 20 }}>
+            <Reveal delay={100}>
+              <div style={{ background: "var(--cream)", border: "1px solid var(--line)", borderRadius: 20, padding: "26px 26px 28px", height: "100%" }}>
+                <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "var(--ink)", margin: "0 0 14px" }}>Biblically Based</h3>
+                <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
+                  {[
+                    "Affirmation of a minimal set of doctrinal beliefs.",
+                    "Biblical inerrancy is the foundational element.",
+                    "Churches working together in mutual accountability.",
+                  ].map((item) => (
+                    <li key={item} style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.6 }}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            </Reveal>
+            <Reveal delay={160}>
+              <div style={{ background: "var(--cream)", border: "1px solid var(--line)", borderRadius: 20, padding: "26px 26px 28px", height: "100%" }}>
+                <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "var(--ink)", margin: "0 0 14px" }}>Kingdom Focused</h3>
+                <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
+                  {[
+                    "A focus on evangelism and church administration.",
+                    "Networking and fellowship with each other for growth and progress.",
+                    "Resourcing the needs of CACNA churches rather than directing their ministries.",
+                    "Maximizing the ministry effectiveness of CACNA ministers.",
+                  ].map((item) => (
+                    <li key={item} style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.6 }}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            </Reveal>
+          </div>
         </div>
       </section>
 

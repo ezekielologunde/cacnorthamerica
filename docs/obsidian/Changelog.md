@@ -10,6 +10,27 @@ tags: [project/cacnorthamerica]
 
 Related: [[Project]] · [[Decisions]] · [[Features]]
 
+## 2026-09-05 — Content merge Phases C-F: overlapping pages, sub-ministry schedules, net-new pages, branding cleanup
+
+Third phase of merging the Convention site into CACNA (see [[Decisions]]),
+stacked on Phase B's branch. `/contact` gained a 3-person "Convention
+Committee" block; `/about` gained an "About the Convention" section plus
+CACNA's actual 1976 founding (Rev. Goke Oyedeji, Brooklyn NY) which wasn't
+on the page before; `/online` gained a convention-week-only YouTube
+playlist embed (separate from the existing single-video live-check).
+`/giving` and `/blog` needed no changes after verification. All 6
+sub-ministry pages (cacma, youth, christian-education, good-women,
+ministers-wives, business-group) gained their real 2026 day-by-day
+schedule, transcribed from Convention's per-ministry program files;
+`SubConferencePage` gained an optional `schedule` prop for this. Added
+`/children` (new) and linked it from `/ministries`. Added `/plan-your-visit`
+(travel/hotels/weather/packing/nearby essentials/rules) and a
+human-readable `/sitemap`, both linked from the footer. Fixed `lib/site.ts`'s
+`ROUTES` list (was missing every sub-ministry page) and two stale external
+links to the standalone Convention site on the 2026/2027 event pages.
+Verified via `npm run build` + `tsc --noEmit` + a manual browser walk of
+every new/changed page.
+
 ## 2026-09-05 — Convention data reconciliation, staff-passcode gate, check-in QR
 
 Second phase of merging the Convention site into CACNA (see [[Decisions]]),
