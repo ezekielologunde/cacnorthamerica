@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react';
 import { usePathname } from 'next/navigation';
+import { useLocale, useTranslations } from 'next-intl';
 import { Search, CalendarDays } from 'lucide-react';
 import { haptic } from '@/lib/haptics';
 import { SearchModal } from '@/components/ui/SearchModal';
@@ -18,44 +19,18 @@ const isExternalHref = (href: string) => href.startsWith('http');
 
 // Whichever convention is current/next — once this year's dates pass, the
 // nav's "Register" CTA automatically points at the next confirmed year.
+// Locale-independent business logic (which year is "next"), so this stays
+// at module scope; only the hrefs built from it get locale-prefixed inside
+// the component, where the active locale is actually known.
 const nextConvention = currentOrNextConvention();
-const conventionCtaLabel = `Convention ${nextConvention.year}`;
 const conventionCtaHref = nextConvention.registrationUrl ?? nextConvention.href;
 
-const navItems: NavItem[] = [
-  {
-    label: 'Events & Convention',
-    href: nextConvention.href,
-    dropdown: [
-      { href: conventionCtaHref, label: conventionCtaLabel, desc: nextConvention.registrationUrl ? 'Secure your spot before rates rise' : 'Dates are confirmed — full details soon', external: isExternalHref(conventionCtaHref) },
-      { href: '/calendar', label: 'Calendar & Events', desc: 'Special gatherings & CACNA\'s annual rhythm' },
-      { href: '/archive', label: 'Past Conventions', desc: 'Themes, dates, and fees since 2019' },
-    ],
-  },
-  {
-    label: 'Who We Are',
-    href: '/about',
-    dropdown: [
-      { href: '/about', label: 'About CACNA', desc: 'A region of Christ Apostolic Church Worldwide' },
-      { href: '/leadership', label: 'Leadership', desc: 'Meet our regional officers' },
-      { href: '/zones', label: 'Zones & DCCs', desc: 'Find your Zonal or DCC superintendent' },
-      { href: '/ministries', label: 'Ministries', desc: 'Find your place to serve' },
-      { href: '/bible-institute', label: 'Bible Institute', desc: 'Ministerial training arm of CACNA' },
-    ],
-  },
-  {
-    label: 'Media',
-    href: '/blog',
-    dropdown: [
-      { href: '/online', label: 'Watch Online', desc: 'Live, on-demand, and the full archive since 2022' },
-      { href: '/blog', label: 'Blog & News', desc: 'Stories from the family' },
-      { href: '/watchwords', label: 'Watchwords', desc: 'Every annual Watchword since 1989' },
-      { href: '/gallery', label: 'Gallery', desc: 'Moments from across CACNA' },
-    ],
-  },
-  { label: 'Give', href: '/giving' },
-  { label: 'Contact', href: '/contact' },
-];
+// Prefixes an internal path with the active locale; external (http/https)
+// links pass through untouched. Every href in `navItems` below goes through
+// this before being rendered.
+function withLocale(href: string, locale: string): string {
+  return isExternalHref(href) ? href : `/${locale}${href}`;
+}
 
 interface NavProps {
   dark?: boolean;
@@ -66,6 +41,52 @@ interface NavProps {
 export function Nav({ dark = false, heroDark = false }: NavProps) {
   const navRef = useRef<HTMLElement>(null);
   const pathname = usePathname();
+  const locale = useLocale();
+  const t = useTranslations('Nav');
+  // `pathname` (from next/navigation) already includes the locale segment
+  // (e.g. "/en/about"), matching the locale-prefixed hrefs `navItems` below
+  // carries -- so the `pathname === item.href` active-link checks further
+  // down need no extra stripping/prefixing of their own.
+  const conventionCtaLabel = t('conventionCta', { year: nextConvention.year });
+  const navItems: NavItem[] = [
+    {
+      label: t('eventsConvention'),
+      href: withLocale(nextConvention.href, locale),
+      dropdown: [
+        {
+          href: withLocale(conventionCtaHref, locale),
+          label: conventionCtaLabel,
+          desc: nextConvention.registrationUrl ? t('conventionCtaDescOpen') : t('conventionCtaDescComingSoon'),
+          external: isExternalHref(conventionCtaHref),
+        },
+        { href: withLocale('/calendar', locale), label: t('calendarEvents'), desc: t('calendarEventsDesc') },
+        { href: withLocale('/archive', locale), label: t('pastConventions'), desc: t('pastConventionsDesc') },
+      ],
+    },
+    {
+      label: t('whoWeAre'),
+      href: withLocale('/about', locale),
+      dropdown: [
+        { href: withLocale('/about', locale), label: t('aboutCacna'), desc: t('aboutCacnaDesc') },
+        { href: withLocale('/leadership', locale), label: t('leadership'), desc: t('leadershipDesc') },
+        { href: withLocale('/zones', locale), label: t('zonesDccs'), desc: t('zonesDccsDesc') },
+        { href: withLocale('/ministries', locale), label: t('ministries'), desc: t('ministriesDesc') },
+        { href: withLocale('/bible-institute', locale), label: t('bibleInstitute'), desc: t('bibleInstituteDesc') },
+      ],
+    },
+    {
+      label: t('media'),
+      href: withLocale('/blog', locale),
+      dropdown: [
+        { href: withLocale('/online', locale), label: t('watchOnline'), desc: t('watchOnlineDesc') },
+        { href: withLocale('/blog', locale), label: t('blogNews'), desc: t('blogNewsDesc') },
+        { href: withLocale('/watchwords', locale), label: t('watchwords'), desc: t('watchwordsDesc') },
+        { href: withLocale('/gallery', locale), label: t('gallery'), desc: t('galleryDesc') },
+      ],
+    },
+    { label: t('give'), href: withLocale('/giving', locale) },
+    { label: t('contact'), href: withLocale('/contact', locale) },
+  ];
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -139,11 +160,11 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
         }}
       >
         {/* Logo */}
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', color: barInk, flexShrink: 0, transition: 'color .4s' }}>
-          <Image src="/images/logo.png" alt="CAC North America" width={42} height={42} style={{ borderRadius: 12, objectFit: 'cover', flexShrink: 0 }} />
+        <Link href={`/${locale}`} style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', color: barInk, flexShrink: 0, transition: 'color .4s' }}>
+          <Image src="/images/logo.png" alt={t('logoAlt')} width={42} height={42} style={{ borderRadius: 12, objectFit: 'cover', flexShrink: 0 }} />
           <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
-            <span style={{ fontSize: 10, letterSpacing: '2.5px', textTransform: 'uppercase', color: barAccent, fontWeight: 700, transition: 'color .4s' }}>Christ Apostolic Church</span>
-            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 19, letterSpacing: '-.3px', marginTop: 3 }}>North America</span>
+            <span style={{ fontSize: 10, letterSpacing: '2.5px', textTransform: 'uppercase', color: barAccent, fontWeight: 700, transition: 'color .4s' }}>{t('orgKicker')}</span>
+            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 19, letterSpacing: '-.3px', marginTop: 3 }}>{t('orgName')}</span>
           </span>
         </Link>
 
@@ -229,8 +250,8 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginLeft: 8 }}>
             <button
               onClick={() => setSearchOpen(true)}
-              aria-label="Search"
-              title="Search (Ctrl+K)"
+              aria-label={t("search")}
+              title={t("searchShortcut")}
               style={{ background: lightBar ? 'rgba(245,246,250,.1)' : 'var(--cream-2)', border: `1px solid ${lightBar ? 'rgba(245,246,250,.18)' : 'var(--line)'}`, borderRadius: 999, cursor: 'pointer', padding: '9px 13px', color: barInk, display: 'flex', alignItems: 'center', transition: 'all .4s' }}
             >
               <Search size={16} strokeWidth={2} />
@@ -267,7 +288,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
         <button
           className="nav-hbg"
           onClick={() => { haptic('light'); setSearchOpen(true); }}
-          aria-label="Search"
+          aria-label={t("search")}
           style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 8, color: barInk, flexDirection: 'row', gap: 0, alignItems: 'center', justifyContent: 'center', transition: 'color .4s' }}
         >
           <Search size={20} strokeWidth={2} />
@@ -277,7 +298,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
         <button
           className="nav-hbg"
           onClick={() => { haptic('light'); setOpen(o => !o); }}
-          aria-label={open ? 'Close menu' : 'Open menu'}
+          aria-label={open ? t('closeMenu') : t('openMenu')}
           aria-expanded={open}
           style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 8, color: barInk, gap: 5, alignItems: 'center', transition: 'color .4s' }}
         >
@@ -322,7 +343,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                       <button
                         onClick={() => setOpenMobileSection(mobileOpen ? null : item.label)}
                         style={{ background: 'none', border: 'none', cursor: 'pointer', color: ink, padding: '8px 4px' }}
-                        aria-label={mobileOpen ? 'Collapse' : 'Expand'}
+                        aria-label={mobileOpen ? t('collapse') : t('expand')}
                       >
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ transform: mobileOpen ? 'rotate(180deg)' : 'none', transition: 'transform .2s' }}>
                           <polyline points="6 9 12 15 18 9" />
@@ -383,7 +404,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
               )
             )}
             <p style={{ fontSize: 12.5, color: dark ? 'rgba(245,246,250,.4)' : 'var(--ink-soft)', textAlign: 'center', margin: '8px 0 0' }}>
-              24 Zones &amp; DCCs · United States, Canada &amp; South America · A region of Christ Apostolic Church Worldwide
+              {t('mobileFooterNote')}
             </p>
           </div>
         </div>

@@ -2,7 +2,7 @@
 project: cacnorthamerica
 type: project-overview
 status: active
-last_updated: 2026-08-22
+last_updated: 2026-09-05
 tags: [project/cacnorthamerica]
 ---
 
@@ -31,16 +31,23 @@ donor project. See [[Changelog]].
 - **Admin console** (`/admin`): announcements, blog, events, gallery,
   newsletter, orders, admin users — gated behind Supabase Auth, requires
   `SUPABASE_SERVICE_ROLE_KEY`.
-- Cross-linked with a dedicated **Convention site** (cacnaconvention.org) —
-  content and photos have been pulled in from there rather than duplicating
-  a full registration flow (see [[Decisions]]).
+- Registration, schedule, archive, and store for the annual Convention are
+  now handled in-app (`/events/...`, `/store`) rather than linking out to
+  the separate Convention site -- that site is actively being merged into
+  this one in phases, with the goal of this becoming the only site (see
+  [[Decisions]], [[Tasks]]).
 
 ## Stack
 
 - **Framework**: Next.js 16 (App Router), React 19, TypeScript
+- **i18n**: `next-intl`, locales `en`/`yo`, every public route under
+  `/[locale]/...` (added 2026-09-05, still English-only content beyond
+  Nav/Footer chrome -- see [[Tasks]])
 - **Styling**: Tailwind CSS 4
 - **Backend**: Supabase (Postgres, Auth, Row Level Security)
-- **Payments**: Stripe (`stripe` SDK) — used for the store/giving flow
+- **Payments**: Stripe (`stripe` SDK) — registration (`/api/register`),
+  store checkout (`/api/store/checkout`), reconciled via
+  `/api/stripe/webhook`, which logs to a Google Sheet on success
 - **Email**: Resend
 - **Media**: Cloudinary (image hosting/transform), Cloudinary loader for
   `next/image`
@@ -62,8 +69,8 @@ code and commit history.
 - No `Security.md` — auth is a single gate (Supabase Auth + `proxy.ts`
   middleware protecting `/admin`); covered in [[Architecture]] and
   [[Decisions]].
-- No `Payments.md` — Stripe is present as a dependency but there is no
-  checkout/webhook code under `app/api` yet (only `contact`, `gallery`,
-  `instagram`, `cloudinary/sign`); noted as a gap in [[Tasks]].
+- No `Payments.md` — Stripe checkout/webhook code exists (`api/register`,
+  `api/store/checkout`, `api/stripe/webhook`) but is small enough to cover
+  inline in [[Architecture]]; split out if it grows (refunds, disputes).
 - This is a **content site**, not a SaaS product — most "features" are
   informational pages backed by Supabase tables editable from `/admin`.
