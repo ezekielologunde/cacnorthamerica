@@ -2,17 +2,57 @@
 project: cacnorthamerica
 type: tasks
 status: active
-last_updated: 2026-08-22
+last_updated: 2026-09-05
 tags: [project/cacnorthamerica]
 ---
 
 # Tasks / Gaps
 
-Related: [[Project]] · [[Features]] · [[Architecture]]
+Related: [[Project]] · [[Features]] · [[Architecture]] · [[Decisions]]
 
-No `TODO`/`FIXME` comments were found in `app/`, `lib/`, or `components/` —
-the codebase is clean of inline markers. Gaps below are inferred from the
-README, dependency list, and route structure.
+## Convention-merge follow-up (in progress, 2026-09)
+
+Phase A (bilingual routing foundation) is done: every public route moved
+under `app/(site)/[locale]/`, Nav/Footer are genuinely bilingual, the site
+builds and prerenders cleanly at both `/en/...` and `/yo/...`. Still
+pending, roughly in order:
+
+- **Real Yoruba translations** for every page beyond Nav/Footer --
+  `messages/yo.json` is honest English-placeholder content everywhere else
+  right now (see [[Decisions]]). Needs a native-speaker review pass, not
+  just more of what I can generate myself.
+- **Per-page internal links aren't locale-prefixed yet** -- a page's own
+  body content (CTAs inside `components/sections/*`, individual page
+  components) still hardcodes bare hrefs like `/about`. These still work
+  (next-intl's middleware redirects a bare path to the default locale) but
+  cost an extra redirect hop instead of linking directly. Worth cleaning up
+  page-by-page as each one gets touched for real translation, rather than
+  a separate blanket sweep.
+- **Merge the overlapping top-level pages**: `/about`, `/contact`,
+  `/giving`, `/online`, `/blog` each have their own independently-built
+  Convention-site counterpart with different (event-specific) scope that
+  hasn't been folded in yet -- e.g. a "Convention Committee" contact block
+  for `/contact`, verifying `/giving`'s existing Village Pay Off campaign
+  already covers what Convention's version said.
+- **Enrich cacma/youth/christian-education/good-women/ministers-wives/
+  business-group** with Convention's day-by-day schedules (this repo's
+  versions currently have leader/history summaries only); add `/children`
+  as a new page (no CACNA equivalent exists).
+- **Port `/plan-your-visit`** and a human-readable `/sitemap` page -- the
+  two genuine gaps with zero CACNA equivalent.
+- **Reconcile `lib/conventions.ts` against Convention's own
+  `lib/content/convention.ts`** field-by-field (editions/pricing/schedule)
+  -- both evolved independently from the same real-world facts and may
+  disagree on a date or price; don't silently pick one without checking.
+- Two behavior improvements from Convention's own recent Supabase-removal
+  rewrite haven't been ported into this repo's register/checkout flow yet:
+  a server-checked staff passcode gating the Complimentary registration
+  path (right now nothing here gates it), and a check-in QR code shown on
+  the registration confirmation page.
+- Branding cleanup once the above lands: the stale `FooterExperience`
+  "Annual Convention" link (already fixed to point internally, see
+  [[Changelog]]) was the main one; still worth a pass over `lib/site.ts`'s
+  JSON-LD and `ROUTES`/sitemap coverage once new routes exist.
 
 ## Content
 
@@ -22,14 +62,14 @@ README, dependency list, and route structure.
   and data (stated directly in README's "Content status" section). Most of
   the commit history to date is this replacement work; it is not finished.
 
-## Stripe integration appears incomplete
+## Stripe integration (now wired up)
 
-`stripe` is a dependency and `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET`
-are in `.env.example`, but no `/api` route for checkout sessions or webhook
-handling was found under `app/api` (only `contact`, `gallery`, `instagram`,
-`cloudinary/sign` exist). The `products`/`orders` tables and `CartContext`
-exist, so a checkout/payment flow may be planned but not yet wired up —
-worth confirming with the project owner before assuming it's live.
+`api/register`, `api/store/checkout`, and `api/stripe/webhook` were added
+when the Convention site's registration/store flows were brought in-house
+-- see [[Architecture]]. Whether this uses the `products`/`orders` Supabase
+tables or `lib/conventions.ts`'s own in-code catalog/pricing is worth
+double-checking if working on checkout -- confirmed as of this writing that
+pricing/catalog data comes from `lib/conventions.ts`, not those tables.
 
 ## Admin coverage vs. site content
 

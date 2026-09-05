@@ -2,13 +2,50 @@
 project: cacnorthamerica
 type: decisions
 status: active
-last_updated: 2026-08-22
+last_updated: 2026-09-05
 tags: [project/cacnorthamerica]
 ---
 
 # Decisions
 
 Related: [[Project]] · [[Architecture]] · [[Features]]
+
+## Merge the Convention site into CACNA, in phases (2026-09)
+
+The Convention site (a dedicated registration/schedule/store site) and
+CACNA had been drifting toward one merged site for a while --
+registration/schedule/archive/store/meal-request were already "brought
+in-house" earlier. The owner then asked to fold in the rest properly:
+bilingual (en/yo) support for real (not just flattened to English), the
+overlapping pages (about/contact/giving/online/blog exist independently on
+both sites with different scope) kept as CACNA's single top-level pages
+rather than nested under `/events/...`, CACNA's existing sub-ministry pages
+enriched with Convention's day-by-day schedules rather than replaced
+outright, and the end goal of CACNA becoming the only site once parity is
+confirmed. Given the real size of this (a site-wide i18n retrofit plus
+per-page content reconciliation across ~13 pages), it's being done in
+ordered, independently-reviewable phases rather than one large change --
+see [[Tasks]] for what's landed vs. still pending.
+
+## i18n added via next-intl, mirroring the Convention site's own setup
+
+Rather than design a new bilingual approach, this repo's `i18n/routing.ts`
+/ `i18n/request.ts` / the intl half of `proxy.ts` are a direct port of the
+Convention site's already-working next-intl configuration (always-prefixed
+`/en`/`/yo` URLs, one nested `[locale]` layout adding only
+`NextIntlClientProvider`). `/admin` and `/api` stay outside it entirely,
+matching how Convention itself exempted its own admin/auth routes.
+
+## Translation completeness is honest, not fabricated
+
+Yoruba translations were only carried over from Convention's own `yo.json`
+where the exact same concept/wording already existed there and had
+presumably already been reviewed; everything else in this repo's
+`messages/yo.json` is an explicitly-labeled English placeholder rather than
+a fabricated translation. Church/doctrinal/organizational text is exactly
+the kind of content where a wrong guess is costly -- this gets a real
+native-speaker review pass as its own follow-up (see [[Tasks]]), not
+invented content shipped silently.
 
 Notable choices inferred from code and commit history (no ADR docs exist in
 the repo — this is reconstructed).

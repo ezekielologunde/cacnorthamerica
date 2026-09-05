@@ -2,13 +2,25 @@
 project: cacnorthamerica
 type: changelog
 status: active
-last_updated: 2026-08-22
+last_updated: 2026-09-05
 tags: [project/cacnorthamerica]
 ---
 
 # Changelog
 
 Related: [[Project]] · [[Decisions]] · [[Features]]
+
+## 2026-09-05 — Bilingual (en/yo) routing foundation
+
+First phase of merging the Convention site into CACNA (see [[Decisions]]).
+Added next-intl, moved every public route under `app/(site)/[locale]/`,
+made Nav/Footer genuinely locale-aware (including fixing a stale
+`FooterExperience` link that pointed external to the standalone Convention
+site's registration page -- it now points at whatever this site's own
+current-year convention register/save-the-date route is). `npm run build`
+prerenders ~140 pages at both `/en/...` and `/yo/...`; `/admin/**` and
+`/api/**` are unaffected. Individual page content isn't translated yet
+beyond Nav/Footer -- see [[Tasks]].
 
 Condensed from `git log --oneline`. The project's history is almost
 entirely a single long stream of content/copy/UX passes on top of a schema
