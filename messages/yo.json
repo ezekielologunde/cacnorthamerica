@@ -74,5 +74,55 @@
     "contact": "Kàn Sí Wa",
     "sitemap": "Sitemap",
     "backToTop": "Back to top"
+  },
+  "Register": {
+    "_translationStatus": "Real Yoruba, carried over from the Convention site's own already-reviewed messages/yo.json where the concept matched exactly (register.form field labels). Headings/copy specific to CACNA's own phrasing not covered here stay English placeholders in the page itself.",
+    "heroHeading": "Forúkọsílẹ̀ fún Àpéjọ CACNA {year}",
+    "guidelinesHeading": "Àwọn Ìtọ́nisọ́nà Ìforúkọsílẹ̀",
+    "paymentOptionsHeading": "Àwọn Ọ̀nà Sísanwó",
+    "individualTab": "Ẹnìkọ̀ọ̀kan",
+    "groupTab": "Ìjọ / Ẹgbẹ́",
+    "complimentaryTab": "Ọ̀fẹ́",
+    "churchName": "Orúkọ Ìjọ",
+    "addRegistrant": "Ṣafikun Olùforúkọsílẹ̀ mìíràn",
+    "removeRegistrant": "Yọ Kúrò",
+    "fullName": "Orúkọ Kíkún",
+    "category": "Ẹ̀ka",
+    "categoryAdult": "Àgbà (30+)",
+    "categoryYoungAdult": "Ọ̀dọ́mọdé Àgbà (20-29)",
+    "categoryChild": "Ọmọdé (1-19) — Ọ̀fẹ́",
+    "contactName": "Orúkọ Olùbánisọ̀rọ̀",
+    "contactEmail": "Ímeèlì",
+    "contactPhone": "Fóònù (kì í ṣe dandan)",
+    "staffPasscode": "Ọ̀rọ̀ìpamọ́ òṣìṣẹ́",
+    "submit": "Tẹ̀síwájú sí Ìsanwó",
+    "submitComplimentary": "Fi Ìforúkọsílẹ̀ Ọ̀fẹ́ Ránṣẹ́",
+    "submitting": "Ń fi ránṣẹ́…"
+  },
+  "Contact": {
+    "chairman": "Alága Àpéjọ",
+    "secretary": "Akọ̀wé Àpéjọ",
+    "generalInquiries": "Ìbéèrè gbogbogbò"
+  },
+  "PlanYourVisit": {
+    "title": "Ṣe Ètò Ìbẹ̀wò Rẹ",
+    "travelHeading": "Bí a ṣe lè dé ibẹ̀",
+    "hotelsHeading": "Àwọn Hotẹ́ẹ̀lì",
+    "packingHeading": "Àtòjọ Ìmúra",
+    "nearbyHeading": "Àwọn Ohun Pàtàkì Nítòsí",
+    "rememberHeading": "Rántí",
+    "rulesListHeading": "Àwọn Òfin",
+    "categoryFood": "Oúnjẹ",
+    "categoryGroceriesPharmacy": "Ọjà àti Ilé Ìṣègùn",
+    "categoryGas": "Epo"
+  },
+  "Sitemap": {
+    "title": "Àwòrán Ojú-Òpó Wẹ́ẹ̀bù",
+    "subtitle": "Gbogbo ojú-ìwé tí ó wà ní ojú-òpó wẹ́ẹ̀bù yìí, ní ibì kan náà."
+  },
+  "Children": {
+    "coordinatorLabel": "Alábòójútó Ètò",
+    "morningLabel": "Àárọ̀",
+    "afternoonLabel": "Ọ̀sán"
   }
 }

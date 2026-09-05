@@ -10,6 +10,19 @@ tags: [project/cacnorthamerica]
 
 Related: [[Project]] · [[Decisions]] · [[Features]]
 
+## 2026-09-05 — Real Yoruba translations: register, contact, plan-your-visit, sitemap, children
+
+Discovered Convention's `messages/yo.json` already has real, reviewed
+Yoruba matching most of what was just merged into CACNA (since that UI was
+itself ported from Convention's own design). Wired up genuine `next-intl`
+translations for the register form and page headings, the Contact page's
+Convention Committee labels, `/plan-your-visit`'s headings and category
+labels, `/sitemap`'s title, and `/children`'s coordinator/morning/afternoon
+labels -- verified live on `/yo/...`. Following Convention's own pattern,
+only UI chrome is translated; substantive content (guidelines, schedules,
+business listings) stays English on both locales, same as it does on
+Convention itself.
+
 ## 2026-09-05 — Remaining Convention data: store catalog, registration info
 
 Final data-audit pass of the Convention merge. Checked every remaining

@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
@@ -53,10 +54,10 @@ const GROUPS = [
 // line above. Secretary's name corrected there 2026-07-20 (was misattributed
 // to "Pastor Timothy Famojuro"); carried over already-corrected.
 const CONVENTION_CONTACTS = [
-  { name: "Pastor David Adenodi, Ph.D.", role: "Chairman, CACNA Convention", org: "C.A.C. Vineyard of Comfort, Lanham, MD", phone: "301-440-7033", email: "cacnaconvention@gmail.com" },
-  { name: "Pastor Oluwagbemiga Famojuro, D.Min.", role: "Secretary, CACNA Convention", org: "C.A.C. FITA, Brooklyn, NY", phone: "917-709-1892", email: "ftimothy54@aol.com" },
-  { name: "Pastor Joseph Olawale", role: "Convention General Inquiries", org: "CAC DFW Metroplex, Irving, TX", phone: "305-469-0346", email: "cacna@hotmail.com" },
-];
+  { name: "Pastor David Adenodi, Ph.D.", roleKey: "chairman", org: "C.A.C. Vineyard of Comfort, Lanham, MD", phone: "301-440-7033", email: "cacnaconvention@gmail.com" },
+  { name: "Pastor Oluwagbemiga Famojuro, D.Min.", roleKey: "secretary", org: "C.A.C. FITA, Brooklyn, NY", phone: "917-709-1892", email: "ftimothy54@aol.com" },
+  { name: "Pastor Joseph Olawale", roleKey: "generalInquiries", org: "CAC DFW Metroplex, Irving, TX", phone: "305-469-0346", email: "cacna@hotmail.com" },
+] as const;
 
 const faqs = [
   { q: "What is CACNA?", a: "Christ Apostolic Church North America is the regional body uniting CAC member churches across the United States, Canada, and South America, organized into 24 Zones & DCCs (District Church Councils), each led by a Zonal Superintendent." },
@@ -71,6 +72,7 @@ const BLANK_FIELDS = {
 };
 
 export default function ContactPageClient() {
+  const t = useTranslations("Contact");
   const [fields, setFields] = useState(BLANK_FIELDS);
   const [groups, setGroups] = useState<string[]>([]);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -333,7 +335,7 @@ export default function ContactPageClient() {
             {CONVENTION_CONTACTS.map((c) => (
               <Reveal key={c.name}>
                 <div style={{ background: "var(--paper)", borderRadius: 18, padding: "20px 20px 22px", border: "1px solid var(--line)" }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 8 }}>{c.role}</div>
+                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 8 }}>{t(c.roleKey)}</div>
                   <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 16, color: "var(--ink)", lineHeight: 1.3, marginBottom: 4 }}>{c.name}</div>
                   <div style={{ fontSize: 12.5, color: "var(--ink-soft)", marginBottom: 12 }}>{c.org}</div>
                   <a href={`tel:${c.phone.replace(/[^0-9+]/g, "")}`} style={{ display: "block", fontSize: 13.5, fontWeight: 600, color: "var(--ink)", textDecoration: "none", marginBottom: 3 }}>{c.phone}</a>

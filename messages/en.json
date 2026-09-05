@@ -73,5 +73,54 @@
     "contact": "Contact",
     "sitemap": "Sitemap",
     "backToTop": "Back to top"
+  },
+  "Register": {
+    "heroHeading": "Register for CACNA {year}",
+    "guidelinesHeading": "Registration Guidelines",
+    "paymentOptionsHeading": "Payment Options",
+    "individualTab": "Individual",
+    "groupTab": "Church / Group",
+    "complimentaryTab": "Complimentary",
+    "churchName": "Church name",
+    "addRegistrant": "Add another registrant",
+    "removeRegistrant": "Remove",
+    "fullName": "Full name",
+    "category": "Category",
+    "categoryAdult": "Adult (30+)",
+    "categoryYoungAdult": "Young Adult (20-29)",
+    "categoryChild": "Child (1-19) — Free",
+    "contactName": "Contact name",
+    "contactEmail": "Email",
+    "contactPhone": "Phone (optional)",
+    "staffPasscode": "Staff passcode",
+    "submit": "Continue to Payment",
+    "submitComplimentary": "Submit Complimentary Registration",
+    "submitting": "Submitting…"
+  },
+  "Contact": {
+    "chairman": "Convention Chairman",
+    "secretary": "Convention Secretary",
+    "generalInquiries": "Convention General Inquiries"
+  },
+  "PlanYourVisit": {
+    "title": "Plan Your Visit",
+    "travelHeading": "Getting There",
+    "hotelsHeading": "Hotels",
+    "packingHeading": "Packing Checklist",
+    "nearbyHeading": "Nearby Essentials",
+    "rememberHeading": "Remember",
+    "rulesListHeading": "Rules",
+    "categoryFood": "Food",
+    "categoryGroceriesPharmacy": "Groceries & Pharmacy",
+    "categoryGas": "Gas"
+  },
+  "Sitemap": {
+    "title": "Sitemap",
+    "subtitle": "Every page, in one place."
+  },
+  "Children": {
+    "coordinatorLabel": "Program Coordinator",
+    "morningLabel": "Morning",
+    "afternoonLabel": "Afternoon"
   }
 }

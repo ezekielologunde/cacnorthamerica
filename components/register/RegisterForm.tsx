@@ -2,6 +2,7 @@
 
 import { useState, type CSSProperties, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export type RegistrantCategory = "adult" | "young_adult" | "child";
 type RegistrantRow = { fullName: string; category: RegistrantCategory };
@@ -17,6 +18,7 @@ const inputStyle: CSSProperties = {
 const labelStyle: CSSProperties = { display: "block", fontSize: 12.5, fontWeight: 600, color: "var(--ink-soft)", marginBottom: 5 };
 
 export function RegisterForm({ year }: { year: number }) {
+  const t = useTranslations("Register");
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("individual");
   const [churchName, setChurchName] = useState("");
@@ -88,9 +90,9 @@ export function RegisterForm({ year }: { year: number }) {
     <form onSubmit={handleSubmit}>
       <div style={{ display: "flex", gap: 8, marginBottom: 24, borderBottom: "1.5px solid var(--line)" }}>
         {([
-          { key: "individual", label: "Individual" },
-          { key: "group", label: "Church / Group" },
-          { key: "complimentary", label: "Complimentary" },
+          { key: "individual", label: t("individualTab") },
+          { key: "group", label: t("groupTab") },
+          { key: "complimentary", label: t("complimentaryTab") },
         ] as const).map((m) => (
           <button
             key={m.key}
@@ -110,7 +112,7 @@ export function RegisterForm({ year }: { year: number }) {
 
       {mode === "group" && (
         <div style={{ marginBottom: 16 }}>
-          <label style={labelStyle}>Church name <span style={{ color: "var(--red)" }}>*</span></label>
+          <label style={labelStyle}>{t("churchName")} <span style={{ color: "var(--red)" }}>*</span></label>
           <input
             className="field-input"
             style={inputStyle}
@@ -131,7 +133,7 @@ export function RegisterForm({ year }: { year: number }) {
       {registrants.map((r, i) => (
         <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 180px", gap: 12, marginBottom: 12, alignItems: "end", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 14, padding: "16px 16px 16px", position: "relative" }}>
           <div>
-            <label style={labelStyle}>Full name <span style={{ color: "var(--red)" }}>*</span></label>
+            <label style={labelStyle}>{t("fullName")} <span style={{ color: "var(--red)" }}>*</span></label>
             <input
               className="field-input"
               style={inputStyle}
@@ -142,16 +144,16 @@ export function RegisterForm({ year }: { year: number }) {
             />
           </div>
           <div>
-            <label style={labelStyle}>Category</label>
+            <label style={labelStyle}>{t("category")}</label>
             <select
               className="field-input"
               style={{ ...inputStyle, cursor: "pointer" }}
               value={r.category}
               onChange={(e) => updateRegistrant(i, { category: e.target.value as RegistrantCategory })}
             >
-              <option value="adult">Adult (30+)</option>
-              <option value="young_adult">Young Adult (20-29)</option>
-              <option value="child">Child (1-19) — Free</option>
+              <option value="adult">{t("categoryAdult")}</option>
+              <option value="young_adult">{t("categoryYoungAdult")}</option>
+              <option value="child">{t("categoryChild")}</option>
             </select>
           </div>
           {mode === "group" && registrants.length > 1 && (
@@ -160,7 +162,7 @@ export function RegisterForm({ year }: { year: number }) {
               onClick={() => removeRegistrant(i)}
               style={{ position: "absolute", top: 10, right: 14, background: "none", border: "none", color: "var(--red)", fontWeight: 700, fontSize: 12.5, cursor: "pointer" }}
             >
-              Remove
+              {t("removeRegistrant")}
             </button>
           )}
         </div>
@@ -173,28 +175,28 @@ export function RegisterForm({ year }: { year: number }) {
           className="press"
           style={{ marginBottom: 20, background: "none", border: "1.5px solid var(--line)", borderRadius: 999, padding: "9px 18px", fontWeight: 700, fontSize: 13.5, color: "var(--ink)", cursor: "pointer" }}
         >
-          + Add another registrant
+          + {t("addRegistrant")}
         </button>
       )}
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 12, marginTop: 8, marginBottom: 12 }}>
         <div>
-          <label style={labelStyle}>Contact name <span style={{ color: "var(--red)" }}>*</span></label>
+          <label style={labelStyle}>{t("contactName")} <span style={{ color: "var(--red)" }}>*</span></label>
           <input className="field-input" style={inputStyle} value={contactName} onChange={(e) => setContactName(e.target.value)} required autoComplete="name" />
         </div>
         <div>
-          <label style={labelStyle}>Email <span style={{ color: "var(--red)" }}>*</span></label>
+          <label style={labelStyle}>{t("contactEmail")} <span style={{ color: "var(--red)" }}>*</span></label>
           <input className="field-input" style={inputStyle} type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} required autoComplete="email" />
         </div>
       </div>
       <div style={{ marginBottom: 20 }}>
-        <label style={labelStyle}>Phone <span style={{ fontWeight: 400, opacity: 0.6 }}>(optional)</span></label>
+        <label style={labelStyle}>{t("contactPhone")}</label>
         <input className="field-input" style={inputStyle} type="tel" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} autoComplete="tel" />
       </div>
 
       {isComplimentary && (
         <div style={{ marginBottom: 20 }}>
-          <label style={labelStyle}>Staff passcode <span style={{ color: "var(--red)" }}>*</span></label>
+          <label style={labelStyle}>{t("staffPasscode")} <span style={{ color: "var(--red)" }}>*</span></label>
           <input
             className="field-input"
             style={inputStyle}
@@ -225,10 +227,10 @@ export function RegisterForm({ year }: { year: number }) {
         }}
       >
         {status === "loading"
-          ? "Submitting…"
+          ? t("submitting")
           : isComplimentary
-            ? `Submit Complimentary Registration — CACNA ${year}`
-            : `Continue to Payment — CACNA ${year}`}
+            ? `${t("submitComplimentary")} — CACNA ${year}`
+            : `${t("submit")} — CACNA ${year}`}
       </button>
     </form>
   );

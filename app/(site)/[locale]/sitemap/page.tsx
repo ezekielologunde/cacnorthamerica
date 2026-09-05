@@ -3,7 +3,7 @@ import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { currentOrNextConvention } from "@/lib/conventions";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 export const metadata = {
   title: "Sitemap — Christ Apostolic Church North America (CACNA)",
@@ -18,6 +18,7 @@ export default async function SitemapPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const t = await getTranslations("Sitemap");
 
   const cy = currentOrNextConvention();
 
@@ -82,10 +83,10 @@ export default async function SitemapPage({
       <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 70px" }}>
         <div style={{ maxWidth: 760, margin: "0 auto", textAlign: "center" }}>
           <Reveal>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Sitemap</span>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>{t("title")}</span>
           </Reveal>
           <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(38px,6vw,64px)", letterSpacing: "-0.03em", color: "#fff", margin: "14px 0 0", lineHeight: 1 }}>
-            Every page, in one place.
+            {t("subtitle")}
           </h1>
         </div>
       </section>

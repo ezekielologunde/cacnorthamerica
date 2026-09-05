@@ -8,19 +8,13 @@ import {
   groundTransportNote, budgetLodgingNote, remotenessNote, weather, packingChecklist,
   nearbyEssentials, remember, rules, rulesAttribution, type NearbyEssential,
 } from "@/lib/planYourVisit";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 export const metadata = {
   title: "Plan Your Visit — Christ Apostolic Church North America (CACNA)",
   description:
     "Everything you need to plan your trip to the CACNA Annual Convention at CAC Village — travel, hotels, weather, what to pack, nearby essentials, and convention etiquette.",
   alternates: { canonical: "/plan-your-visit" },
-};
-
-const CATEGORY_LABEL: Record<NearbyEssential["category"], string> = {
-  food: "Food",
-  groceriesPharmacy: "Groceries & Pharmacy",
-  gas: "Gas",
 };
 
 function groupByArea(items: NearbyEssential[]) {
@@ -43,8 +37,14 @@ export default async function PlanYourVisitPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const t = await getTranslations("PlanYourVisit");
 
   const essentialsByArea = groupByArea(nearbyEssentials);
+  const categoryLabel: Record<NearbyEssential["category"], string> = {
+    food: t("categoryFood"),
+    groceriesPharmacy: t("categoryGroceriesPharmacy"),
+    gas: t("categoryGas"),
+  };
 
   return (
     <main id="main-content">
@@ -58,7 +58,7 @@ export default async function PlanYourVisitPage({
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Annual Convention</span>
           </Reveal>
           <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(40px,6vw,76px)", letterSpacing: "-0.03em", color: "#fff", margin: "16px 0", lineHeight: 1.02, textWrap: "balance" }}>
-            <RevealText immediate>Plan Your Visit</RevealText>
+            <RevealText immediate>{t("title")}</RevealText>
           </h1>
           <Reveal delay={200}>
             <p style={{ fontSize: "clamp(16px,1.8vw,19px)", color: "rgba(245,246,250,.72)", lineHeight: 1.7, maxWidth: 620, margin: "0 auto" }}>
@@ -72,7 +72,7 @@ export default async function PlanYourVisitPage({
       <section style={{ background: "var(--paper)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <Reveal style={{ marginBottom: 32 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Getting There</span>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>{t("travelHeading")}</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.5vw,40px)", color: "var(--ink)", margin: "10px 0 0" }}>Travel</h2>
           </Reveal>
           <div className="r2" style={{ gap: 20 }}>
@@ -117,7 +117,7 @@ export default async function PlanYourVisitPage({
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <Reveal style={{ marginBottom: 28 }}>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Stay Nearby</span>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.5vw,40px)", color: "var(--ink)", margin: "10px 0 8px" }}>Hotels</h2>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.5vw,40px)", color: "var(--ink)", margin: "10px 0 8px" }}>{t("hotelsHeading")}</h2>
             <p style={{ fontSize: 14.5, color: "var(--ink-soft)" }}>
               Mention the group code <strong style={{ color: "var(--ink)" }}>&ldquo;{HOTEL_GROUP_CODE}&rdquo;</strong> for the rates below. {budgetLodgingNote}
             </p>
@@ -156,7 +156,7 @@ export default async function PlanYourVisitPage({
             <p style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.7 }}>{weather.note}</p>
           </Reveal>
           <Reveal delay={80}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Packing Checklist</span>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>{t("packingHeading")}</span>
             <ul style={{ margin: "16px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
               {packingChecklist.map((item) => (
                 <li key={item} style={{ display: "flex", gap: 10, fontSize: 14.5, color: "var(--ink-soft)" }}>
@@ -172,7 +172,7 @@ export default async function PlanYourVisitPage({
       <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <Reveal style={{ marginBottom: 32 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Nearby Essentials</span>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>{t("nearbyHeading")}</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.5vw,40px)", color: "var(--ink)", margin: "10px 0 0" }}>Food, groceries & gas.</h2>
           </Reveal>
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
@@ -184,7 +184,7 @@ export default async function PlanYourVisitPage({
                     <div key={item.name} style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 12, padding: "12px 14px" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
                         <span style={{ fontSize: 13.5, fontWeight: 700, color: "var(--ink)" }}>{item.name}</span>
-                        <span style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--ink-soft)", whiteSpace: "nowrap" }}>{CATEGORY_LABEL[item.category]}</span>
+                        <span style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.5px", textTransform: "uppercase", color: "var(--ink-soft)", whiteSpace: "nowrap" }}>{categoryLabel[item.category]}</span>
                       </div>
                       <div style={{ fontSize: 12, color: "var(--ink-soft)", marginTop: 4 }}>{item.address}</div>
                     </div>
@@ -200,7 +200,7 @@ export default async function PlanYourVisitPage({
       <section style={{ background: "var(--paper)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div className="r2" style={{ maxWidth: 1000, margin: "0 auto", gap: 40 }}>
           <Reveal>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Please Remember</span>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>{t("rememberHeading")}</span>
             <ol style={{ margin: "16px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 12 }}>
               {remember.map((item, i) => (
                 <li key={i} style={{ display: "flex", gap: 10, fontSize: 13.5, color: "var(--ink-soft)", lineHeight: 1.65 }}>
@@ -210,7 +210,7 @@ export default async function PlanYourVisitPage({
             </ol>
           </Reveal>
           <Reveal delay={80}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Rules</span>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>{t("rulesListHeading")}</span>
             <ol style={{ margin: "16px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 12 }}>
               {rules.map((item, i) => (
                 <li key={i} style={{ display: "flex", gap: 10, fontSize: 13.5, color: "var(--ink-soft)", lineHeight: 1.65 }}>

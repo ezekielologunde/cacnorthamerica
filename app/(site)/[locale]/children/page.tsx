@@ -3,7 +3,7 @@ import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import Link from "next/link";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 export const metadata = {
   title: "Children's Ministry — Christ Apostolic Church North America (CACNA)",
@@ -63,6 +63,7 @@ export default async function ChildrenPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const t = await getTranslations("Children");
 
   return (
     <main id="main-content">
@@ -94,7 +95,7 @@ export default async function ChildrenPage({
         <div style={{ maxWidth: 500, margin: "0 auto" }}>
           <Reveal>
             <div style={{ borderRadius: 18, padding: "22px 24px", background: "var(--paper)", border: "1px solid var(--line)", textAlign: "center" }}>
-              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 8 }}>Program Coordinator</div>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 8 }}>{t("coordinatorLabel")}</div>
               <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 17, color: "var(--ink)", margin: 0 }}>{CHILDREN_CONVENTION.coordinator}</p>
             </div>
           </Reveal>
@@ -110,7 +111,7 @@ export default async function ChildrenPage({
           </Reveal>
           <div style={{ borderRadius: 18, border: "1px solid var(--line)", overflow: "hidden" }}>
             <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr", background: "var(--ink)", color: "#fff", fontSize: 12, fontWeight: 800, letterSpacing: "1px", textTransform: "uppercase", padding: "12px 18px" }}>
-              <span>Activity</span><span>Morning</span><span>Afternoon</span>
+              <span>Activity</span><span>{t("morningLabel")}</span><span>{t("afternoonLabel")}</span>
             </div>
             {dailyStructure.map((row, i) => (
               <div key={row.label} style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr", padding: "14px 18px", background: i % 2 ? "var(--cream-2)" : "var(--paper)", fontSize: 14 }}>
@@ -137,12 +138,12 @@ export default async function ChildrenPage({
                   <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                     {day.morning && (
                       <div style={{ fontSize: 14, color: "var(--ink-soft)" }}>
-                        <strong style={{ color: "var(--ink)" }}>Morning ({day.morning.time})</strong> — {day.morning.message ?? day.morning.activity}
+                        <strong style={{ color: "var(--ink)" }}>{t("morningLabel")} ({day.morning.time})</strong> — {day.morning.message ?? day.morning.activity}
                       </div>
                     )}
                     {day.afternoon && (
                       <div style={{ fontSize: 14, color: "var(--ink-soft)" }}>
-                        <strong style={{ color: "var(--ink)" }}>Afternoon ({day.afternoon.time})</strong> — {day.afternoon.message ?? day.afternoon.activity}
+                        <strong style={{ color: "var(--ink)" }}>{t("afternoonLabel")} ({day.afternoon.time})</strong> — {day.afternoon.message ?? day.afternoon.activity}
                       </div>
                     )}
                   </div>

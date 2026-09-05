@@ -90,9 +90,42 @@ CACNA yet (the user asked to "keep moving all Convention data"). Found:
   page. `external-resources.ts` -- these are outbound links FROM Convention
   TO cacnorthamerica.com; nothing to port on CACNA's side.
 
+## Real Yoruba translation pass, chrome-first (2026-09-05)
+
+Discovered that Convention's own `messages/yo.json` already has real,
+reviewed Yoruba for nearly every page merged in Phases C-G -- since much of
+CACNA's newly-added UI (register form fields, Convention Committee labels,
+plan-your-visit/sitemap/children headings) was itself ported from
+Convention's design in earlier phases, the two `Register`/`Contact`/etc.
+namespaces line up closely. Wired up real `next-intl` translations
+(matching Convention's yo.json exactly, or trivially adapted where CACNA's
+English wording differs only cosmetically) for: the entire register form
+(`RegisterForm.tsx` + the register page's headings), the Contact page's
+Convention Committee role labels, `/plan-your-visit`'s section headings and
+nearby-essentials category labels, `/sitemap`'s title, and `/children`'s
+coordinator/morning/afternoon labels. Verified live on `/yo/...` in a
+browser session.
+
+**Important nuance carried over from Convention's own pattern, not a new
+gap**: only page *chrome* (headings, field labels, buttons) is translated.
+Substantive content -- registration guidelines, payment option details,
+schedule agenda items, nearby-essentials business names -- stays English on
+both locales, because Convention's own site does the exact same thing (its
+`lib/content/*` data files were never translated either, only the
+`messages/yo.json` UI strings around them).
+
 Remaining, not yet done:
 
-- **Real Yoruba translations** for every page beyond Nav/Footer --
+- **Real Yoruba for the 6 sub-ministry pages, `/about`, `/give`, `/online`,
+  and `/store`** -- Convention has matching namespaces (`Cacma`,
+  `GoodWomen`, `MinistersWives`, `ChristianEducation`, `BusinessGroup`,
+  `Youth`, `About`, `Give`, `Live`, `Store`) with real reviewed Yoruba, but
+  these pages' English copy diverges from Convention's more than the ones
+  just done (different framing, CACNA-specific facts woven throughout),
+  so translating them safely needs more careful per-string comparison
+  than the mechanical 1:1 swaps done this round. Worth doing next, using
+  the same "only translate where the concept matches exactly" discipline.
+- **Everything else beyond Nav/Footer/the pages above** --
   `messages/yo.json` is honest English-placeholder content everywhere else
   right now (see [[Decisions]]). Needs a native-speaker review pass, not
   just more of what I can generate myself.
