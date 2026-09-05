@@ -7,6 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Music, Landmark, Sparkles, HandHeart, Video, Wrench, Globe, ShieldCheck, BookOpen, Users2 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { setRequestLocale } from "next-intl/server";
 
 export const metadata = {
   title: "Ministries — Christ Apostolic Church North America (CACNA)",
@@ -131,7 +132,14 @@ const ministries: Ministry[] = [
   { name: "Youth & Young Adult", desc: "The history of the Youth Department dates back to the 1930s when Nigerian and white Apostolic from Britain were still in alliance.", icon: Sparkles, gradient: "linear-gradient(140deg,var(--red-deep),var(--red))", href: "/youth", cta: "Meet the ministry" },
 ];
 
-export default function MinistriesPage() {
+export default async function MinistriesPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <main id="main-content">
       <Nav heroDark />

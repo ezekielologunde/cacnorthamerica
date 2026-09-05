@@ -2,6 +2,7 @@ import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import Link from "next/link";
+import { setRequestLocale } from "next-intl/server";
 
 export const metadata = {
   title: "Statement of Faith — Christ Apostolic Church North America (CACNA)",
@@ -61,7 +62,14 @@ const articles = [
   },
 ];
 
-export default function StatementOfFaithPage() {
+export default async function StatementOfFaithPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <main id="main-content">
       <Nav />

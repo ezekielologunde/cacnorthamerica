@@ -6,6 +6,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Mail, Phone, MapPin } from "lucide-react";
 import { getLeaderBySlug } from "@/lib/leaders";
+import { setRequestLocale } from "next-intl/server";
 
 export const revalidate = 3600;
 
@@ -27,7 +28,7 @@ const CATEGORY_LABEL: Record<string, string> = {
   bible_institute: "CACNA Bible Institute",
 };
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { slug } = await params;
   const result = await getLeaderBySlug(slug);
   if (!result) return { title: "Leader — Christ Apostolic Church North America (CACNA)" };
@@ -38,8 +39,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-export default async function LeaderProfilePage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+export default async function LeaderProfilePage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
+  const { locale, slug } = await params;
+  setRequestLocale(locale);
+
   const result = await getLeaderBySlug(slug);
   if (!result) notFound();
 

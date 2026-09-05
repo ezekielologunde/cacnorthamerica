@@ -6,6 +6,7 @@ import { Church, HeartHandshake, Globe } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import type { CSSProperties } from "react";
+import { setRequestLocale } from "next-intl/server";
 
 const values = [
   { icon: Church, title: "Sound doctrine", desc: "Preaching the whole counsel of God, faithfully and without compromise." },
@@ -53,7 +54,14 @@ export const metadata = {
   alternates: { canonical: "/about" },
 };
 
-export default function AboutPage() {
+export default async function AboutPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <main id="main-content">
       <Nav />

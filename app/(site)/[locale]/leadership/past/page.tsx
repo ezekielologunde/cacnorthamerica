@@ -5,6 +5,7 @@ import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { getLeaders, slugifyLeaderName, type Leader } from "@/lib/leaders";
+import { setRequestLocale } from "next-intl/server";
 
 function initials(name: string) {
   return name.replace(/^(Pastor|Prophet|Evangelist|Mrs\.?|Mr\.?|Dr\.?)\s+/i, "")
@@ -27,7 +28,14 @@ const SECTIONS: { category: Leader["category"]; label: string }[] = [
   { category: "past_treasurer", label: "Past General Treasurers" },
 ];
 
-export default async function PastLeadersPage() {
+export default async function PastLeadersPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   const leaders = await getLeaders(["past_president", "past_superintendent", "past_evangelist", "past_secretary", "past_treasurer"]);
 
   return (

@@ -4,6 +4,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { ZoneDirectory } from "@/components/zones/ZoneDirectory";
 import { NearbyChurchFinder } from "@/components/zones/NearbyChurchFinder";
 import { getLeaders } from "@/lib/leaders";
+import { setRequestLocale } from "next-intl/server";
 
 export const revalidate = 3600;
 
@@ -13,7 +14,14 @@ export const metadata = {
   alternates: { canonical: "/zones" },
 };
 
-export default async function ZonesPage() {
+export default async function ZonesPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   const leaders = await getLeaders(["zonal_superintendent", "dcc_superintendent"]);
 
   return (

@@ -3,6 +3,7 @@
 export const revalidate = 60;
 
 import dynamic from "next/dynamic";
+import { setRequestLocale } from "next-intl/server";
 import { Nav } from "@/components/navigation/Nav";
 import { Hero } from "@/components/sections/Hero";
 import { HomepageAnnouncements } from "@/components/ui/HomepageAnnouncements";
@@ -50,7 +51,14 @@ const faqJsonLd = {
   ],
 };
 
-export default async function Home() {
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   const service = createServiceClient();
   const { data: announcements } = await service
     .from("announcements")

@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getLeaders, getLeaderRoles, slugifyLeaderName, type Leader } from "@/lib/leaders";
 import { CAC_WORLDWIDE, CAC_ANOSIKE_EUROPE } from "@/lib/global";
+import { setRequestLocale } from "next-intl/server";
 
 export const revalidate = 3600;
 
@@ -40,7 +41,14 @@ const gradients = [
   "linear-gradient(135deg,var(--ink),var(--red-deep))",
 ];
 
-export default async function LeadershipPage() {
+export default async function LeadershipPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   const leaders = await getLeaders(["cacna_regional", "global_hq"]);
   const regional = leaders.filter((l) => l.category === "cacna_regional");
   const globalHq = leaders.filter((l) => l.category === "global_hq");

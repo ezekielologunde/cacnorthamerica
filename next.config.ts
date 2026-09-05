@@ -60,29 +60,36 @@ const nextConfig: NextConfig = {
   },
 
   async redirects() {
+    // Destinations point at the default (English) locale explicitly --
+    // these are old, indexed URLs with no locale segment of their own, so
+    // there's no request-derived locale to preserve the way next-intl's
+    // middleware does for in-app navigation.
     return [
-      { source: "/leadership-meet-our-pastors", destination: "/leadership", permanent: true },
-      { source: "/leadership-meet-our-pastors/", destination: "/leadership", permanent: true },
-      { source: "/online-connect-to-our-services", destination: "/online", permanent: true },
-      { source: "/online-connect-to-our-services/", destination: "/online", permanent: true },
-      { source: "/dccs", destination: "/zones", permanent: true },
-      { source: "/dccs/", destination: "/zones", permanent: true },
-      { source: "/events", destination: "/calendar", permanent: true },
-      { source: "/events/", destination: "/calendar", permanent: true },
-      { source: "/media", destination: "/online", permanent: true },
-      { source: "/media/", destination: "/online", permanent: true },
-      { source: "/global", destination: "/leadership#global-family", permanent: true },
-      { source: "/global/", destination: "/leadership#global-family", permanent: true },
+      { source: "/leadership-meet-our-pastors", destination: "/en/leadership", permanent: true },
+      { source: "/leadership-meet-our-pastors/", destination: "/en/leadership", permanent: true },
+      { source: "/online-connect-to-our-services", destination: "/en/online", permanent: true },
+      { source: "/online-connect-to-our-services/", destination: "/en/online", permanent: true },
+      { source: "/dccs", destination: "/en/zones", permanent: true },
+      { source: "/dccs/", destination: "/en/zones", permanent: true },
+      { source: "/events", destination: "/en/calendar", permanent: true },
+      { source: "/events/", destination: "/en/calendar", permanent: true },
+      { source: "/media", destination: "/en/online", permanent: true },
+      { source: "/media/", destination: "/en/online", permanent: true },
+      { source: "/global", destination: "/en/leadership#global-family", permanent: true },
+      { source: "/global/", destination: "/en/leadership#global-family", permanent: true },
     ];
   },
 
   async rewrites() {
     return {
       beforeFiles: [
+        // middleware.ts explicitly passes this host+path combination through
+        // untouched (before next-intl would otherwise redirect "/" -> "/en"
+        // first and break this match) -- see its own comment for why.
         {
           source: "/",
           has: [{ type: "host" as const, value: "blog.cacnorthamerica.com" }],
-          destination: "/blog",
+          destination: "/en/blog",
         },
       ],
       afterFiles: [],

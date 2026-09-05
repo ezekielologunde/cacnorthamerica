@@ -4,6 +4,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { getLeaders } from "@/lib/leaders";
 import { GraduationCap } from "lucide-react";
+import { setRequestLocale } from "next-intl/server";
 
 export const revalidate = 3600;
 
@@ -26,7 +27,14 @@ const gradients = [
   "linear-gradient(135deg,var(--red-deep),var(--blue))",
 ];
 
-export default async function BibleInstitutePage() {
+export default async function BibleInstitutePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   const faculty = await getLeaders(["bible_institute"]);
 
   return (
