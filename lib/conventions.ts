@@ -22,6 +22,10 @@ export interface ConventionYear {
   endIso: string;
   /** Only known/confirmed for the current convention — future years don't have one yet. */
   theme?: string;
+  /** Overrides CONVENTION_VENUE for a year that didn't meet at the usual
+   *  site — e.g. 2020's virtual, COVID-era convention. Every other year
+   *  meets at CAC Village and leaves this unset. */
+  venue?: string;
   /** Only set once a real registration link exists for that year. An
    *  internal path (e.g. "/events/cacna-2027/register") renders as a normal
    *  same-site link (see hasExternalRegistrationUrl); an absolute URL opens
@@ -51,6 +55,10 @@ export const conventionYears: ConventionYear[] = [
   {
     year: 2020, startIso: "2020-07-15", endIso: "2020-07-17",
     theme: "God in the Administration of Man",
+    // Held via Zoom due to the COVID-19 pandemic -- the one year that
+    // wasn't at CAC Village (confirmed against Convention's own
+    // lib/content/convention.ts during the Phase B data reconciliation).
+    venue: "Virtual (Zoom Video Conference) — held online due to the COVID-19 pandemic",
     href: "/archive",
   },
   {
@@ -87,16 +95,37 @@ export const conventionYears: ConventionYear[] = [
     endIso: "2027-07-17",
     // Internal now that registration lives on this site (see
     // app/events/cacna-2027/register) — Nav's isExternalHref() picks this up
-    // automatically. Registration itself doesn't open until October 2026
-    // (no pricingTiers set yet); the register page shows a "not open yet"
-    // state until pricing is added here.
+    // automatically.
     registrationUrl: "/events/cacna-2027/register",
+    // Ported from Convention's lib/content/convention.ts during the Phase B
+    // data reconciliation -- fees carried over from 2026 verbatim (the
+    // owner's explicit choice, 2026-07-21, while aware these aren't
+    // confirmed 2027 numbers). Originally meant to open 2026-10-01, but the
+    // owner chose to open registration early instead (2026-07-23).
+    pricingTiers: [
+      { category: "adult", priceCents: 12500, startsOn: "2026-07-23", endsOn: "2027-01-31" },
+      { category: "adult", priceCents: 15000, startsOn: "2027-02-01", endsOn: "2027-04-30" },
+      { category: "adult", priceCents: 20000, startsOn: "2027-05-01", endsOn: "2027-07-10" },
+      { category: "adult", priceCents: 25000, startsOn: "2027-07-11", endsOn: "2027-07-17" },
+      { category: "young_adult", priceCents: 10000, startsOn: "2026-07-23", endsOn: "2027-01-31" },
+      { category: "young_adult", priceCents: 12500, startsOn: "2027-02-01", endsOn: "2027-04-30" },
+      { category: "young_adult", priceCents: 15000, startsOn: "2027-05-01", endsOn: "2027-07-10" },
+      { category: "young_adult", priceCents: 15000, startsOn: "2027-07-11", endsOn: "2027-07-17" },
+      { category: "child", priceCents: 0, startsOn: "2026-07-23", endsOn: "2027-07-17" },
+    ],
     href: "/events/cacna-2027",
   },
   { year: 2028, startIso: "2028-07-10", endIso: "2028-07-15", href: "/events/cacna-2028" },
   { year: 2029, startIso: "2029-07-09", endIso: "2029-07-14", href: "/events/cacna-2029" },
   { year: 2030, startIso: "2030-07-15", endIso: "2030-07-20", href: "/events/cacna-2030" },
 ];
+
+/** The venue to display for a given year -- almost always CONVENTION_VENUE,
+ *  except a year with its own `venue` override (currently only 2020,
+ *  virtual due to COVID). */
+export function venueFor(cy: ConventionYear): string {
+  return cy.venue ?? CONVENTION_VENUE;
+}
 
 /** True only when `registrationUrl` is set AND points off-site — an
  *  internal path like "/convention/register" should render as a normal
@@ -264,6 +293,13 @@ export function registrationIsOpen(cy: ConventionYear): boolean {
 // Detailed schedule (real per-session data, where it exists)
 // ---------------------------------------------------------------------------
 
+/** Which crowd a session targets -- ported from Convention's own
+ *  lib/content/convention.ts (the two evolved independently but describe the
+ *  exact same 2026 program; Convention's version had this field, CACNA's
+ *  didn't). "all" covers general/ministers sessions everyone attends;
+ *  breakout sessions instead list every group they run in parallel for. */
+export type ScheduleAudience = "all" | "youth" | "adult" | "children";
+
 export interface ScheduleSession {
   dayIso: string;
   startsAt: string;
@@ -272,6 +308,7 @@ export interface ScheduleSession {
   ministerName?: string;
   ministerTitle?: string;
   track: "general" | "ministers" | "breakout";
+  audience: ScheduleAudience[];
 }
 
 /** Real, session-by-session detail for years that have it transcribed (only
@@ -279,28 +316,28 @@ export interface ScheduleSession {
  *  back to the generic sessionsFor() pattern above. */
 const DETAILED_SCHEDULE: Record<number, ScheduleSession[]> = {
   2026: [
-    { dayIso: "2026-07-13", startsAt: "09:00", endsAt: "10:00", title: "Daily General Opening Session — Praise/Worship and Prayer", track: "general" },
-    { dayIso: "2026-07-13", startsAt: "10:00", endsAt: "11:30", title: "Registration", track: "general" },
-    { dayIso: "2026-07-13", startsAt: "11:45", endsAt: "13:15", title: "Registration", track: "general" },
-    { dayIso: "2026-07-13", startsAt: "17:00", endsAt: "19:00", title: "Ministers Prayer Night", ministerName: "Prophet H. Oladeji", ministerTitle: "Gen. Evangelist, CAC Nigeria & Overseas", track: "ministers" },
-    { dayIso: "2026-07-14", startsAt: "10:00", endsAt: "11:30", title: "Ministers' Session 1 — Transformative Power of The Word", ministerName: "Pastor T. A. O. Agbeja", ministerTitle: "Regional Supt. Latunde Region", track: "ministers" },
-    { dayIso: "2026-07-14", startsAt: "11:45", endsAt: "13:15", title: "Ministers' Session 2 — Divine Guide For Our Living", ministerName: "Pastor Simeon Oladokun", ministerTitle: "Regional Supt. Anosike Region", track: "ministers" },
-    { dayIso: "2026-07-14", startsAt: "13:15", endsAt: "15:30", title: "Lunch Time", track: "general" },
-    { dayIso: "2026-07-14", startsAt: "15:30", endsAt: "17:00", title: "Ministers' Session 3 — The Perfect Encourager In Time of Tries, Tribulations and Challenges", ministerName: "Right Rev. Prof. Dapo F. Asaju", ministerTitle: "Bishop of Ijesha Diocese", track: "ministers" },
-    { dayIso: "2026-07-14", startsAt: "17:00", endsAt: "19:00", title: "Revival Night", ministerName: "Prophet H. Oladeji", ministerTitle: "Gen. Evangelist, CAC Nigeria & Overseas", track: "general" },
-    { dayIso: "2026-07-15", startsAt: "10:00", endsAt: "11:30", title: "Ministers' Session 4", ministerName: "Pastor S. O. Oladele", ministerTitle: "President, CAC Nigeria & Overseas", track: "ministers" },
-    { dayIso: "2026-07-15", startsAt: "11:45", endsAt: "13:15", title: "Break Out #1 — CACMWF, CACMA, CACNAGWA, Youth/Young Adult, Children", track: "breakout" },
-    { dayIso: "2026-07-15", startsAt: "15:30", endsAt: "17:00", title: "Break Out #2 — CACMWF, CACMA, CACNAGWA, Youth/Young Adult, Children", track: "breakout" },
-    { dayIso: "2026-07-15", startsAt: "17:00", endsAt: "19:00", title: "Revival Night", ministerName: "Prophet H. Oladeji", ministerTitle: "Gen. Evangelist, CAC Nigeria & Overseas", track: "general" },
-    { dayIso: "2026-07-16", startsAt: "09:00", endsAt: "11:00", title: "Sunday School General Session for All", track: "general" },
-    { dayIso: "2026-07-16", startsAt: "11:15", endsAt: "12:45", title: "Business Group General Session for All", track: "general" },
-    { dayIso: "2026-07-16", startsAt: "13:00", endsAt: "14:15", title: "Break Out #3 — CACMWF, CACMA, CACNAGWA, Youth/Young Adult, Children", track: "breakout" },
-    { dayIso: "2026-07-16", startsAt: "14:15", endsAt: "19:00", title: "Picnic, Sports & Games", track: "general" },
-    { dayIso: "2026-07-16", startsAt: "19:00", endsAt: "21:00", title: "Praise Night", track: "general" },
-    { dayIso: "2026-07-17", startsAt: "10:00", endsAt: "14:00", title: "Convention Program", track: "general" },
-    { dayIso: "2026-07-17", startsAt: "14:00", endsAt: "17:00", title: "Ordination Service", track: "general" },
-    { dayIso: "2026-07-17", startsAt: "17:00", endsAt: "19:00", title: "Impartation Night", ministerName: "Prophet H. Oladeji", ministerTitle: "Gen. Evangelist, CAC Nigeria & Overseas", track: "general" },
-    { dayIso: "2026-07-18", startsAt: "09:00", endsAt: "10:00", title: "Holy Communion and Closing Service", ministerName: "Pastor S. O. Oladele", ministerTitle: "President, CAC Nigeria & Overseas", track: "general" },
+    { dayIso: "2026-07-13", startsAt: "09:00", endsAt: "10:00", title: "Daily General Opening Session — Praise/Worship and Prayer", track: "general", audience: ["all"] },
+    { dayIso: "2026-07-13", startsAt: "10:00", endsAt: "11:30", title: "Registration", track: "general", audience: ["all"] },
+    { dayIso: "2026-07-13", startsAt: "11:45", endsAt: "13:15", title: "Registration", track: "general", audience: ["all"] },
+    { dayIso: "2026-07-13", startsAt: "17:00", endsAt: "19:00", title: "Ministers Prayer Night", ministerName: "Prophet H. Oladeji", ministerTitle: "Gen. Evangelist, CAC Nigeria & Overseas", track: "ministers", audience: ["adult"] },
+    { dayIso: "2026-07-14", startsAt: "10:00", endsAt: "11:30", title: "Ministers' Session 1 — Transformative Power of The Word", ministerName: "Pastor T. A. O. Agbeja", ministerTitle: "Regional Supt. Latunde Region", track: "ministers", audience: ["adult"] },
+    { dayIso: "2026-07-14", startsAt: "11:45", endsAt: "13:15", title: "Ministers' Session 2 — Divine Guide For Our Living", ministerName: "Pastor Simeon Oladokun", ministerTitle: "Regional Supt. Anosike Region", track: "ministers", audience: ["adult"] },
+    { dayIso: "2026-07-14", startsAt: "13:15", endsAt: "15:30", title: "Lunch Time", track: "general", audience: ["all"] },
+    { dayIso: "2026-07-14", startsAt: "15:30", endsAt: "17:00", title: "Ministers' Session 3 — The Perfect Encourager In Time of Tries, Tribulations and Challenges", ministerName: "Right Rev. Prof. Dapo F. Asaju", ministerTitle: "Bishop of Ijesha Diocese", track: "ministers", audience: ["adult"] },
+    { dayIso: "2026-07-14", startsAt: "17:00", endsAt: "19:00", title: "Revival Night", ministerName: "Prophet H. Oladeji", ministerTitle: "Gen. Evangelist, CAC Nigeria & Overseas", track: "general", audience: ["all"] },
+    { dayIso: "2026-07-15", startsAt: "10:00", endsAt: "11:30", title: "Ministers' Session 4", ministerName: "Pastor S. O. Oladele", ministerTitle: "President, CAC Nigeria & Overseas", track: "ministers", audience: ["adult"] },
+    { dayIso: "2026-07-15", startsAt: "11:45", endsAt: "13:15", title: "Break Out #1 — CACMWF, CACMA, CACNAGWA, Youth/Young Adult, Children", track: "breakout", audience: ["youth", "adult", "children"] },
+    { dayIso: "2026-07-15", startsAt: "15:30", endsAt: "17:00", title: "Break Out #2 — CACMWF, CACMA, CACNAGWA, Youth/Young Adult, Children", track: "breakout", audience: ["youth", "adult", "children"] },
+    { dayIso: "2026-07-15", startsAt: "17:00", endsAt: "19:00", title: "Revival Night", ministerName: "Prophet H. Oladeji", ministerTitle: "Gen. Evangelist, CAC Nigeria & Overseas", track: "general", audience: ["all"] },
+    { dayIso: "2026-07-16", startsAt: "09:00", endsAt: "11:00", title: "Sunday School General Session for All", track: "general", audience: ["all"] },
+    { dayIso: "2026-07-16", startsAt: "11:15", endsAt: "12:45", title: "Business Group General Session for All", track: "general", audience: ["all"] },
+    { dayIso: "2026-07-16", startsAt: "13:00", endsAt: "14:15", title: "Break Out #3 — CACMWF, CACMA, CACNAGWA, Youth/Young Adult, Children", track: "breakout", audience: ["youth", "adult", "children"] },
+    { dayIso: "2026-07-16", startsAt: "14:15", endsAt: "19:00", title: "Picnic, Sports & Games", track: "general", audience: ["all"] },
+    { dayIso: "2026-07-16", startsAt: "19:00", endsAt: "21:00", title: "Praise Night", track: "general", audience: ["all"] },
+    { dayIso: "2026-07-17", startsAt: "10:00", endsAt: "14:00", title: "Convention Program", track: "general", audience: ["all"] },
+    { dayIso: "2026-07-17", startsAt: "14:00", endsAt: "17:00", title: "Ordination Service", track: "general", audience: ["all"] },
+    { dayIso: "2026-07-17", startsAt: "17:00", endsAt: "19:00", title: "Impartation Night", ministerName: "Prophet H. Oladeji", ministerTitle: "Gen. Evangelist, CAC Nigeria & Overseas", track: "general", audience: ["all"] },
+    { dayIso: "2026-07-18", startsAt: "09:00", endsAt: "10:00", title: "Holy Communion and Closing Service", ministerName: "Pastor S. O. Oladele", ministerTitle: "President, CAC Nigeria & Overseas", track: "general", audience: ["all"] },
   ],
 };
 

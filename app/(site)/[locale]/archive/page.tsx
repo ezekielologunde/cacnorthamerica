@@ -69,7 +69,10 @@ export default async function ArchivePage({
                   <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--ink)", margin: 0 }}>
                     {cy.year}{cy.theme ? ` — “${cy.theme}”` : ""}
                   </h2>
-                  <p style={{ fontSize: 14, color: "var(--ink-soft)", margin: "6px 0 0" }}>{dateRangeLabel(cy)}</p>
+                  <p style={{ fontSize: 14, color: "var(--ink-soft)", margin: "6px 0 0" }}>
+                    {dateRangeLabel(cy)}
+                    {cy.venue ? ` · ${cy.venue}` : ""}
+                  </p>
                   {feesByCategory.size > 0 && (
                     <div style={{ marginTop: 16, borderTop: "1px solid var(--line)", paddingTop: 14, display: "flex", flexWrap: "wrap", gap: "6px 24px" }}>
                       {(Object.keys(CATEGORY_LABEL) as RegistrantCategory[]).map((cat) => {

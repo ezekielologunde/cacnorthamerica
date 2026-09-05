@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getStripeClient } from "@/lib/stripe";
 import { logToSheet } from "@/lib/sheetsWebhook";
+import { unchunkFromMetadata, decodeSummary, type RegistrationSummary } from "@/lib/checkoutSummary";
 
 function requireEnv(name: string): string {
   const value = process.env[name];
@@ -38,21 +39,23 @@ export async function POST(request: Request) {
       const lineDescriptions = (full.line_items?.data ?? []).map((li) => li.description ?? "");
 
       if (kind === "registration") {
-        let freeNames: string[] = [];
-        try {
-          const free = JSON.parse(session.metadata?.free_registrants || "[]") as { n: string; c: string }[];
-          freeNames = free.map((r) => `${r.n} (${r.c})`);
-        } catch {
-          // Malformed/missing metadata -- fall back to just the paid line items.
-        }
+        // The full registration -- including free/comp registrants Stripe
+        // never saw as line items -- travels in the `d` metadata (see
+        // lib/checkoutSummary.ts, ported from the Convention site). Fall
+        // back to Stripe's own line-item descriptions only if that's
+        // somehow missing, so a log row still gets written.
+        const encoded = unchunkFromMetadata(session.metadata, "d");
+        const summary: RegistrationSummary | null = encoded ? decodeSummary(encoded) : null;
 
-        logToSheet(`Registration — CACNA ${session.metadata?.convention_year ?? ""}`, {
-          "Registration Type": session.metadata?.registration_type ?? "",
-          "Church Name": session.metadata?.church_name ?? "",
-          "Contact Name": session.metadata?.contact_name ?? "",
-          "Contact Email": contactEmail,
-          "Contact Phone": session.metadata?.contact_phone ?? "",
-          "Registrants": [...lineDescriptions, ...freeNames].join("; "),
+        logToSheet(`Registration — CACNA ${summary?.year ?? session.metadata?.convention_year ?? ""}`, {
+          "Registration Type": summary?.registrationType ?? "",
+          "Church Name": summary?.churchName ?? "",
+          "Contact Name": summary?.contactName ?? "",
+          "Contact Email": contactEmail || summary?.contactEmail || "",
+          "Contact Phone": summary?.contactPhone ?? "",
+          "Registrants": summary
+            ? summary.registrants.map((r) => `${r.n} (${r.c})`).join("; ")
+            : lineDescriptions.join("; "),
           "Total": totalDollars,
           "Stripe Session": session.id,
         });

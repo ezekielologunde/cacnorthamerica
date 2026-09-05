@@ -14,8 +14,17 @@ Related: [[Project]] · [[Features]] · [[Architecture]] · [[Decisions]]
 
 Phase A (bilingual routing foundation) is done: every public route moved
 under `app/(site)/[locale]/`, Nav/Footer are genuinely bilingual, the site
-builds and prerenders cleanly at both `/en/...` and `/yo/...`. Still
-pending, roughly in order:
+builds and prerenders cleanly at both `/en/...` and `/yo/...`.
+
+Phase B (data reconciliation) is also done, stacked on Phase A's branch:
+`lib/conventions.ts` now carries 2027's real pricing tiers and the 2020
+virtual-convention venue override (both diffed field-by-field against
+Convention's `lib/content/convention.ts` -- see [[Decisions]]), schedule
+sessions carry the same `audience` targeting Convention's data had, and the
+register flow has the staff-passcode-gated Complimentary tab and a
+check-in QR on the confirmation page, both ported from Convention and
+verified end-to-end against the local dev server. Still pending, roughly
+in order:
 
 - **Real Yoruba translations** for every page beyond Nav/Footer --
   `messages/yo.json` is honest English-placeholder content everywhere else
@@ -40,16 +49,7 @@ pending, roughly in order:
   as a new page (no CACNA equivalent exists).
 - **Port `/plan-your-visit`** and a human-readable `/sitemap` page -- the
   two genuine gaps with zero CACNA equivalent.
-- **Reconcile `lib/conventions.ts` against Convention's own
-  `lib/content/convention.ts`** field-by-field (editions/pricing/schedule)
-  -- both evolved independently from the same real-world facts and may
-  disagree on a date or price; don't silently pick one without checking.
-- Two behavior improvements from Convention's own recent Supabase-removal
-  rewrite haven't been ported into this repo's register/checkout flow yet:
-  a server-checked staff passcode gating the Complimentary registration
-  path (right now nothing here gates it), and a check-in QR code shown on
-  the registration confirmation page.
-- Branding cleanup once the above lands: the stale `FooterExperience`
+- Branding cleanup: the stale `FooterExperience`
   "Annual Convention" link (already fixed to point internally, see
   [[Changelog]]) was the main one; still worth a pass over `lib/site.ts`'s
   JSON-LD and `ROUTES`/sitemap coverage once new routes exist.

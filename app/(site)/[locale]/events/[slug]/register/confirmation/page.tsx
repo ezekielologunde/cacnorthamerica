@@ -3,9 +3,19 @@ import Link from "next/link";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
+import { QrCode } from "@/components/register/QrCode";
 import { getStripeClient } from "@/lib/stripe";
-import { conventionYears, type ConventionYear } from "@/lib/conventions";
+import { SITE_URL } from "@/lib/site";
+import { renderQrCodeSvg } from "@/lib/qr";
+import { decodeSummary } from "@/lib/checkoutSummary";
+import { conventionYears, type ConventionYear, type RegistrantCategory } from "@/lib/conventions";
 import { setRequestLocale } from "next-intl/server";
+
+const CATEGORY_LABEL: Record<RegistrantCategory, string> = {
+  adult: "Adult",
+  young_adult: "Young Adult",
+  child: "Child",
+};
 
 function findYear(slug: string): ConventionYear | undefined {
   const match = /^cacna-(\d{4})$/.exec(slug);
@@ -18,7 +28,7 @@ export default async function RegisterConfirmationPage({
   searchParams,
 }: {
   params: Promise<{ locale: string; slug: string }>;
-  searchParams: Promise<{ session_id?: string; status?: string }>;
+  searchParams: Promise<{ session_id?: string; status?: string; d?: string }>;
 }) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
@@ -26,34 +36,24 @@ export default async function RegisterConfirmationPage({
   const cy = findYear(slug);
   if (!cy) notFound();
 
-  const { session_id: sessionId, status } = await searchParams;
+  const { session_id: sessionId, status, d: encoded } = await searchParams;
 
-  let contactEmail: string | null = null;
-  let totalCents: number | null = null;
-  let registrants: string[] = [];
-  let notFoundSession = false;
+  // Without a database, the registration's own details travel in the `d`
+  // query param (see lib/checkoutSummary.ts) rather than being looked up by
+  // an id -- a missing or undecodable value means a stale/bad link.
+  const summary = encoded ? decodeSummary(encoded) : null;
 
-  if (sessionId) {
+  let isPaid = status === "free";
+  if (summary && sessionId && !isPaid) {
     try {
-      const stripe = getStripeClient();
-      const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: ["line_items"] });
-      contactEmail = session.customer_details?.email ?? session.customer_email ?? null;
-      totalCents = session.amount_total ?? 0;
-      const paidNames = (session.line_items?.data ?? []).map((li) => li.description ?? "").filter(Boolean);
-      let freeNames: string[] = [];
-      try {
-        const free = JSON.parse((session.metadata?.free_registrants as string) || "[]") as { n: string; c: string }[];
-        freeNames = free.map((r) => `${r.n} (${r.c})`);
-      } catch {
-        // Malformed/missing metadata -- show just the paid line items.
-      }
-      registrants = [...paidNames, ...freeNames];
+      const session = await getStripeClient().checkout.sessions.retrieve(sessionId);
+      isPaid = session.payment_status === "paid";
     } catch {
-      notFoundSession = true;
+      isPaid = false;
     }
   }
 
-  if (notFoundSession) {
+  if (!summary) {
     return (
       <main id="main-content">
         <Nav heroDark />
@@ -71,7 +71,14 @@ export default async function RegisterConfirmationPage({
     );
   }
 
-  const showDetails = Boolean(sessionId) || status === "free";
+  // Re-encode the same query string this page was reached with, so the QR
+  // code opens this exact confirmation again on whatever device scans it --
+  // the self-contained "no login, no lookup needed" check-in proof staff use
+  // at the door.
+  const confirmationUrl = status === "free"
+    ? `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?status=free&d=${encoded}`
+    : `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?session_id=${sessionId}&d=${encoded}`;
+  const qrSvg = isPaid ? await renderQrCodeSvg(confirmationUrl) : null;
 
   return (
     <main id="main-content">
@@ -85,24 +92,33 @@ export default async function RegisterConfirmationPage({
           We&apos;ve received your registration. A confirmation email is on its way.
         </p>
 
-        {showDetails && (
-          <div style={{ maxWidth: 460, margin: "0 auto", textAlign: "left", background: "rgba(245,246,250,.06)", border: "1px solid rgba(245,246,250,.14)", borderRadius: 18, padding: "24px 26px" }}>
-            {contactEmail && <p style={{ fontSize: 13.5, color: "rgba(245,246,250,.6)", margin: "0 0 12px" }}>{contactEmail}</p>}
-            {registrants.length > 0 && (
-              <ul style={{ margin: "0 0 16px", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8 }}>
-                {registrants.map((name, i) => (
-                  <li key={i} style={{ fontSize: 14.5, color: "var(--cream)" }}>{name}</li>
-                ))}
-              </ul>
-            )}
-            {totalCents !== null && (
-              <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid rgba(245,246,250,.14)", paddingTop: 14 }}>
-                <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)" }}>Paid</span>
-                <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "#fff" }}>${(totalCents / 100).toFixed(2)}</span>
-              </div>
-            )}
+        <div style={{ maxWidth: 460, margin: "0 auto", textAlign: "left", background: "rgba(245,246,250,.06)", border: "1px solid rgba(245,246,250,.14)", borderRadius: 18, padding: "24px 26px" }}>
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
+            <div style={{ minWidth: 0 }}>
+              {summary.churchName && (
+                <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 16, color: "#fff", margin: "0 0 4px" }}>{summary.churchName}</p>
+              )}
+              <p style={{ fontSize: 13.5, color: "rgba(245,246,250,.6)", margin: 0 }}>{summary.contactEmail}</p>
+            </div>
+            {qrSvg && <QrCode svg={qrSvg} label="Check-in QR code" />}
           </div>
-        )}
+          <ul style={{ margin: "16px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8 }}>
+            {summary.registrants.map((r, i) => (
+              <li key={i} style={{ display: "flex", justifyContent: "space-between", fontSize: 14.5 }}>
+                <span style={{ color: "var(--cream)" }}>{r.n}</span>
+                <span style={{ color: "rgba(245,246,250,.6)" }}>{CATEGORY_LABEL[r.c] ?? "Adult"}</span>
+              </li>
+            ))}
+          </ul>
+          <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid rgba(245,246,250,.14)", marginTop: 16, paddingTop: 14 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)" }}>
+              {summary.isComplimentary ? "Complimentary" : isPaid ? "Paid" : "Pending"}
+            </span>
+            <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "#fff" }}>
+              ${(summary.totalAmountCents / 100).toFixed(2)}
+            </span>
+          </div>
+        </div>
 
         <div style={{ marginTop: 36 }}>
           <Link href={cy.href} className="press" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(245,246,250,.09)", color: "var(--cream)", fontWeight: 700, fontSize: 14.5, padding: "14px 26px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(245,246,250,.2)" }}>
