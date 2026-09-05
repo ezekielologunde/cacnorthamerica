@@ -43,8 +43,10 @@ export const ROUTES: { path: string; priority: number }[] = [
   { path: "/zones", priority: 0.7 },
   { path: "/ministries", priority: 0.7 },
   { path: "/bible-institute", priority: 0.6 },
+  { path: "/statement-of-faith", priority: 0.5 },
   { path: "/online", priority: 0.9 },
   { path: "/giving", priority: 0.8 },
+  { path: "/store", priority: 0.5 },
   { path: "/watchwords", priority: 0.5 },
   ...conventionYears.map((cy) => ({ path: cy.href, priority: cy.year === 2026 ? 0.75 : 0.5 })),
   { path: "/events/pilgrimage-2026", priority: 0.7 },
@@ -54,6 +56,18 @@ export const ROUTES: { path: string; priority: number }[] = [
   { path: "/blog", priority: 0.6 },
   { path: "/gallery", priority: 0.6 },
   { path: "/archive", priority: 0.5 },
+  { path: "/plan-your-visit", priority: 0.6 },
+  { path: "/sitemap", priority: 0.3 },
+  // Sub-ministry pages -- were missing from this list entirely despite
+  // being live routes (found during the Phase F branding-cleanup pass,
+  // 2026-09).
+  { path: "/cacma", priority: 0.5 },
+  { path: "/youth", priority: 0.5 },
+  { path: "/christian-education", priority: 0.5 },
+  { path: "/good-women", priority: 0.5 },
+  { path: "/ministers-wives", priority: 0.5 },
+  { path: "/business-group", priority: 0.5 },
+  { path: "/children", priority: 0.5 },
   { path: "/contact", priority: 0.9 },
 ];
 

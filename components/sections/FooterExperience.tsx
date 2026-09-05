@@ -182,6 +182,7 @@ export function FooterExperience() {
             <Link href={withLocale('/statement-of-faith', locale)} style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>{t('statementOfFaith')}</Link>
             <Link href={withLocale('/leadership/past', locale)} style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>{t('pastLeaders')}</Link>
             <Link href={withLocale('/contact', locale)} style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>{t('contact')}</Link>
+            <Link href={withLocale('/sitemap', locale)} style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>{t('sitemap')}</Link>
             <BackToTop label={t('backToTop')} />
           </div>
         </div>

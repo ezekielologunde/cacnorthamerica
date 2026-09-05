@@ -8,9 +8,18 @@ import { PRAYER_LINE } from "@/lib/prayerLine";
 import { Video } from "lucide-react";
 import { archiveEntries } from "@/lib/archive";
 import { ArchiveBrowser } from "@/components/media/ArchiveBrowser";
-import { setRequestLocale } from "next-intl/server";
+import { currentOrNextConvention, getConventionState } from "@/lib/conventions";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 const YOUTUBE_URL = "https://youtube.com/@cacnorthamericalatunderegi1330";
+const YOUTUBE_LIVE_URL = "https://www.youtube.com/@cacnorthamericalatunderegi1330/live";
+// The channel's running "ANNUAL PROGRAM" playlist -- ported from the
+// Convention site's /live page during the Phase C content merge (2026-09).
+// Unlike the single-video featured player above (whichever one video the
+// YouTube Data API currently reports live), this aggregates every session
+// uploaded during convention week into one continuously-updating embed --
+// shown only while the convention is actually underway.
+const CONVENTION_SESSIONS_PLAYLIST_ID = "PLhXt6OVepbyjadJt8WufxY-5Mt5OAjsSf";
 
 const platforms = [
   { name: "YouTube", desc: "The Annual Convention & message replays", href: YOUTUBE_URL },
@@ -40,9 +49,12 @@ export default async function OnlinePage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const t = await getTranslations("Live");
 
   const [live, pastSermons] = await Promise.all([getLiveStream(), getSermons(9)]);
   const featured = live ?? pastSermons[0];
+  const cy = currentOrNextConvention();
+  const conventionIsLive = getConventionState(cy) === "live";
   return (
     <main id="main-content" style={{ background: "#0C0E13", minHeight: "100vh" }}>
       <Nav dark />
@@ -91,6 +103,35 @@ export default async function OnlinePage({
           </a>
         </Reveal>
       </section>
+
+      {/* Convention week: every session, as they're uploaded */}
+      {conventionIsLive && (
+        <section style={{ padding: "0 clamp(20px,5vw,64px) 56px" }}>
+          <Reveal>
+            <div style={{ maxWidth: 900, margin: "0 auto", borderRadius: 28, overflow: "hidden", boxShadow: "0 40px 80px rgba(0,0,0,.5)", border: "1px solid rgba(253,200,65,.3)" }}>
+              <div style={{ background: "#161B22", padding: "18px 26px", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+                <div>
+                  <span style={{ fontSize: 12, fontWeight: 800, color: "var(--gold)", letterSpacing: "1px" }}>● CONVENTION {cy.year} · LIVE THIS WEEK</span>
+                  <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(20px,2.6vw,28px)", color: "#fff", margin: "6px 0 0" }}>Every session, as it happens.</h2>
+                </div>
+                <a href={YOUTUBE_LIVE_URL} target="_blank" rel="noopener noreferrer" className="press" style={{ flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 8, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 14, padding: "12px 22px", borderRadius: 999, textDecoration: "none" }}>
+                  {t("watchLiveCta")} →
+                </a>
+              </div>
+              <div style={{ position: "relative", width: "100%", paddingBottom: "56.25%" }}>
+                <iframe
+                  src={`https://www.youtube.com/embed/videoseries?list=${CONVENTION_SESSIONS_PLAYLIST_ID}`}
+                  title="CACNA Annual Convention — full session playlist"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  loading="lazy"
+                  style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
+                />
+              </div>
+            </div>
+          </Reveal>
+        </section>
+      )}
 
       {/* Featured player — latest streamed message */}
       {featured && (

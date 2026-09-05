@@ -27,7 +27,8 @@ donor project. See [[Changelog]].
 - **Public site**: home, about, ministries, leadership, events, blog,
   gallery, giving/store, contact, zone/church directory ("Find a Church Near
   You"), Bible Institute, Christian Education, CACMA, Good Women, Ministers'
-  Wives, Youth & Young Adult, Business Group, watchwords, statement of faith.
+  Wives, Youth & Young Adult, Business Group, Children's Ministry,
+  watchwords, statement of faith, plan-your-visit, sitemap.
 - **Admin console** (`/admin`): announcements, blog, events, gallery,
   newsletter, orders, admin users — gated behind Supabase Auth, requires
   `SUPABASE_SERVICE_ROLE_KEY`.

@@ -36,6 +36,32 @@ Convention site's already-working next-intl configuration (always-prefixed
 `NextIntlClientProvider`). `/admin` and `/api` stay outside it entirely,
 matching how Convention itself exempted its own admin/auth routes.
 
+## Phases C-F content merge: verify before porting, don't pad real lists
+
+For each of the 5 "overlapping" pages, checked what CACNA already had
+before writing anything -- two (`/giving`, `/blog`) turned out to already
+fully cover Convention's content (identical Village Pay Off account
+numbers; a more detailed existing blog post on the Convention Chairman's
+tenure than Convention's own terse version) and needed no changes at all.
+Only genuine gaps got new content: `/contact`'s Convention Committee block,
+`/about`'s Convention-institution section and the real 1976 founding fact,
+and `/online`'s convention-week playlist embed (additive to, not replacing,
+the existing single-video live-check).
+
+While transcribing Convention's `/plan-your-visit` source data (hotels,
+nearby essentials, rules), an early draft padded the "nearby essentials"
+list with plausible-sounding but unverified business names to round it out
+to a nicer-looking list -- caught and corrected before committing, replaced
+with the actual 17 real, sourced entries from Convention's own
+`nearby-essentials.ts`. Worth remembering: transcription work is exactly
+where fabrication creeps in silently, since a summary of a source file can
+read as "close enough" when it's actually incomplete.
+
+The 30-member Convention & Conference Committee roster was deliberately
+kept off the public `/contact` page -- only the 3-person contact block
+(chairman/secretary/general inquiries) was ported, matching the scope
+Convention's own `/contact` page used for the same content.
+
 ## Phase B data reconciliation: port real facts forward, flag real conflicts
 
 Diffing `lib/conventions.ts` against Convention's `lib/content/convention.ts`

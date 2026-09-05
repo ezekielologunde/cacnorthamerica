@@ -5,7 +5,7 @@ import { RevealText } from "@/components/ui/RevealText";
 import { DepartmentDirectory, type Department } from "@/components/ministries/DepartmentDirectory";
 import Link from "next/link";
 import Image from "next/image";
-import { Music, Landmark, Sparkles, HandHeart, Video, Wrench, Globe, ShieldCheck, BookOpen, Users2 } from "lucide-react";
+import { Music, Landmark, Sparkles, HandHeart, Video, Wrench, Globe, ShieldCheck, BookOpen, Users2, Smile } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { setRequestLocale } from "next-intl/server";
 
@@ -130,6 +130,7 @@ const ministries: Ministry[] = [
   { name: "Ministers' Wives Conference", desc: "A fellowship for the wives of CACNA's ministers, gathered in prayer and mutual support for those who shepherd alongside their husbands.", icon: HandHeart, gradient: "linear-gradient(140deg,var(--red),var(--red-deep))", href: "/ministers-wives", cta: "Meet the fellowship" },
   { name: "Business Group Fellowship", desc: "A platform for interaction, mentorship, and support among CAC members who are business-inclined — supporting projects and programs of the Church.", icon: Wrench, gradient: "linear-gradient(140deg,#1B4332,#2D6A4F)", href: "/business-group", cta: "Meet the fellowship" },
   { name: "Youth & Young Adult", desc: "The history of the Youth Department dates back to the 1930s when Nigerian and white Apostolic from Britain were still in alliance.", icon: Sparkles, gradient: "linear-gradient(140deg,var(--red-deep),var(--red))", href: "/youth", cta: "Meet the ministry" },
+  { name: "Children's Ministry", desc: "A dedicated program for children during the Annual Convention — worship, teaching, and fun, at every session.", icon: Smile, gradient: "linear-gradient(140deg,var(--gold),var(--red-deep))", href: "/children", cta: "Meet the ministry" },
 ];
 
 export default async function MinistriesPage({

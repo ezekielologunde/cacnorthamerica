@@ -346,17 +346,35 @@ export function getDetailedSchedule(year: number): ScheduleSession[] | null {
 }
 
 // ---------------------------------------------------------------------------
-// Store (merch) — no real catalog yet; add real products here (with a real
-// id/slug/priceCents/sizes) once one exists, following registrationUrl's
-// "empty means not live" convention.
+// Store (merch + materials) — apparel categories have no real catalog yet;
+// add real products there (with a real id/slug/priceCents/sizes) once one
+// exists, following registrationUrl's "empty means not live" convention.
+// christian_education is a real, live catalog -- ported from Convention's
+// lib/content/store-items.ts during the Phase G data merge (2026-09),
+// verified directly against cacnachristianeducation.com/shop.
 // ---------------------------------------------------------------------------
 
 export interface StoreProduct {
   id: string;
   name: string;
-  category: "convention" | "good_women" | "youth";
+  category: "convention" | "good_women" | "youth" | "christian_education";
   priceCents: number;
   sizes: string[];
+  /** Real product photo only — omit entirely rather than fabricate one. */
+  imageSrc?: string;
 }
 
-export const storeProducts: StoreProduct[] = [];
+export const storeProducts: StoreProduct[] = [
+  { id: "ce-2026-youth-young-adults-lesson", name: "2026 Youth & Young Adults Teenagers Sunday School Lesson", category: "christian_education", priceCents: 1600, sizes: [], imageSrc: "/photos/store/store-2026-youth-young-adults-lesson.jpg" },
+  { id: "ce-2026-pre-teen-lesson", name: "2026 Pre-Teen Sunday School Lesson", category: "christian_education", priceCents: 1600, sizes: [], imageSrc: "/photos/store/store-2026-pre-teen-lesson.jpg" },
+  { id: "ce-2026-elementary-lesson", name: "2026 Elementary Sunday School Lesson", category: "christian_education", priceCents: 1600, sizes: [], imageSrc: "/photos/store/store-2026-elementary-lesson.jpg" },
+  { id: "ce-2026-unified-bible-study-manual", name: "2026 Unified Bible Study Manual", category: "christian_education", priceCents: 1800, sizes: [], imageSrc: "/photos/store/store-2026-unified-bible-study-manual.jpg" },
+  { id: "ce-2026-omi-iye-naa", name: "2026 Ọmi Ìyè Náà Ìwé Atọ́nisọ́nà Fún Àdúrà Ojoojúmọ́", category: "christian_education", priceCents: 2000, sizes: [], imageSrc: "/photos/store/store-2026-omi-iye-naa.jpg" },
+  { id: "ce-2026-living-water-devotional", name: "2026 Living Water Prayer and Bible Devotional", category: "christian_education", priceCents: 2000, sizes: [], imageSrc: "/photos/store/store-2026-living-water-devotional.jpg" },
+  { id: "ce-2026-eko-ile-eko-akekoo", name: "2026 Àwọn Ẹ̀kọ́ Ilé Ẹ̀kọ́ Ọjọ́ Ìsimi tí Akẹ́kọ̀ọ́", category: "christian_education", priceCents: 1800, sizes: [], imageSrc: "/photos/store/store-2026-eko-ile-eko-akekoo.jpg" },
+  { id: "ce-2026-eko-ile-eko-oluko", name: "2026 Àwọn Ẹ̀kọ́ Ilé Ẹ̀kọ́ Ọjọ́ Ìsimi tí Olùkọ́", category: "christian_education", priceCents: 2000, sizes: [], imageSrc: "/photos/store/store-2026-eko-ile-eko-oluko.jpg" },
+  { id: "ce-2026-sunday-school-student-copy", name: "2026 Sunday School Student's Copy", category: "christian_education", priceCents: 1800, sizes: [], imageSrc: "/photos/store/store-2026-sunday-school-student-copy.jpg" },
+  { id: "ce-2026-sunday-school-teacher-copy", name: "2026 Sunday School Teacher's Copy", category: "christian_education", priceCents: 2000, sizes: [], imageSrc: "/photos/store/store-2026-sunday-school-teacher-copy.jpg" },
+  { id: "ce-2025-2026-unified-bible-study-manual", name: "2025–2026 Unified Bible Study Manual", category: "christian_education", priceCents: 1800, sizes: [], imageSrc: "/photos/store/store-2025-2026-unified-bible-study-manual.jpg" },
+  { id: "ce-2025-elementary-manual", name: "2025 Elementary Manual — Children & Godly Leadership", category: "christian_education", priceCents: 1600, sizes: [], imageSrc: "/photos/store/store-2025-elementary-manual.jpg" },
+];

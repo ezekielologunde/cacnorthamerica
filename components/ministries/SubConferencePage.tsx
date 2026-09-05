@@ -3,8 +3,12 @@ import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 export type ExecutiveMember = { name: string; title: string };
+
+export type AgendaItem = { time?: string; event: string; speaker?: string };
+export type ScheduleBlock = { dayLabel: string; timeRange?: string; agenda: AgendaItem[] };
 
 export type SubConferencePageProps = {
   kicker: string;
@@ -21,11 +25,17 @@ export type SubConferencePageProps = {
    *  clergy), so the label doesn't misrepresent who these people are. */
   executiveLabel?: string;
   historyParagraphs?: string[];
+  /** Day-by-day convention schedule for this ministry — ported from
+   *  Convention's own per-ministry program pages during the Phase D content
+   *  merge (2026-09). Rendered as its own section, right before the honest
+   *  note / CTA. */
+  schedule?: ScheduleBlock[];
+  scheduleYear?: number;
   note?: string;
   relatedLink?: { href: string; label: string };
 };
 
-export function SubConferencePage({
+export async function SubConferencePage({
   kicker,
   headingLines,
   intro,
@@ -34,11 +44,15 @@ export function SubConferencePage({
   leaderNames,
   highlight,
   executive,
-  executiveLabel = "Executive Committee",
+  executiveLabel,
   historyParagraphs,
+  schedule,
+  scheduleYear,
   note,
   relatedLink,
 }: SubConferencePageProps) {
+  const t = await getTranslations("SubMinistry");
+  const resolvedExecutiveLabel = executiveLabel ?? t("executiveHeading");
   return (
     <main id="main-content">
       <Nav heroDark />
@@ -126,7 +140,7 @@ export function SubConferencePage({
         <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
           <div style={{ maxWidth: 1000, margin: "0 auto" }}>
             <Reveal style={{ textAlign: "center", marginBottom: 36 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>{executiveLabel}</span>
+              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>{resolvedExecutiveLabel}</span>
             </Reveal>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 14 }}>
               {executive.map((m, i) => (
@@ -134,6 +148,45 @@ export function SubConferencePage({
                   <div style={{ height: "100%", borderRadius: 16, padding: "18px 20px", background: "var(--paper)", border: "1px solid var(--line)" }}>
                     <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 15.5, color: "var(--ink)", lineHeight: 1.3, marginBottom: 4 }}>{m.name}</div>
                     <div style={{ fontSize: 13, color: "var(--ink-soft)" }}>{m.title}</div>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Convention schedule */}
+      {schedule && schedule.length > 0 && (
+        <section style={{ background: "var(--paper)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+          <div style={{ maxWidth: 780, margin: "0 auto" }}>
+            <Reveal style={{ textAlign: "center", marginBottom: 40 }}>
+              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>
+                {scheduleYear ? `${scheduleYear} Convention Schedule` : "Convention Schedule"}
+              </span>
+            </Reveal>
+            <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+              {schedule.map((block, i) => (
+                <Reveal key={`${block.dayLabel}-${i}`} delay={i * 60}>
+                  <div>
+                    <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: 10, marginBottom: 14 }}>
+                      <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "var(--ink)", margin: 0 }}>{block.dayLabel}</h3>
+                      {block.timeRange && <span style={{ fontSize: 13, fontWeight: 600, color: "var(--red)" }}>{block.timeRange}</span>}
+                    </div>
+                    <ol style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 0, borderLeft: "2px solid var(--line)" }}>
+                      {block.agenda.map((item, j) => (
+                        <li key={j} style={{ position: "relative", padding: "0 0 16px 22px" }}>
+                          <span aria-hidden style={{ position: "absolute", left: -5, top: 4, width: 8, height: 8, borderRadius: "50%", background: "var(--red)" }} />
+                          {item.time && (
+                            <div style={{ fontSize: 12, fontWeight: 700, color: "var(--ink-soft)", marginBottom: 2 }}>{item.time}</div>
+                          )}
+                          <div style={{ fontSize: 15, fontWeight: 600, color: "var(--ink)", lineHeight: 1.4 }}>{item.event}</div>
+                          {item.speaker && (
+                            <div style={{ fontSize: 13, color: "var(--ink-soft)", marginTop: 2 }}>{item.speaker}</div>
+                          )}
+                        </li>
+                      ))}
+                    </ol>
                   </div>
                 </Reveal>
               ))}

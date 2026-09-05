@@ -7,7 +7,7 @@ import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { POSTS, type BlogPost, badgeTextColor, CATEGORY_COLOR, CATEGORY_ACCENT } from "@/lib/blog";
 import { specialEvents } from "@/lib/events";
 import { getApprovedCacWorldNews, type CacWorldNewsItem } from "@/lib/cacWorldNews";
-import { GIVING_CAMPAIGNS, type GivingCampaign } from "@/lib/giving";
+import { GIVING_CAMPAIGNS, localizeCampaign, type GivingCampaign } from "@/lib/giving";
 import { currentOrNextConvention, dateRangeLabel, hasExternalRegistrationUrl } from "@/lib/conventions";
 import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
 import Link from "next/link";
@@ -379,7 +379,7 @@ export default async function BlogPage({
   // Deterministic per-calendar-day rotation — same campaign for every visitor
   // on a given day, changes daily, no client-side layout shift.
   const dayOfYear = Math.floor((Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) - Date.UTC(now.getUTCFullYear(), 0, 0)) / 86400000);
-  const givingCampaign = GIVING_CAMPAIGNS[dayOfYear % GIVING_CAMPAIGNS.length];
+  const givingCampaign = localizeCampaign(GIVING_CAMPAIGNS[dayOfYear % GIVING_CAMPAIGNS.length], locale);
   const cy = currentOrNextConvention();
 
   return (

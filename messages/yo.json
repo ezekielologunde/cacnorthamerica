@@ -72,6 +72,192 @@
     "statementOfFaith": "Statement of Faith",
     "pastLeaders": "Past Leaders",
     "contact": "Kàn Sí Wa",
+    "sitemap": "Sitemap",
     "backToTop": "Back to top"
+  },
+  "Register": {
+    "_translationStatus": "Real Yoruba, carried over from the Convention site's own already-reviewed messages/yo.json where the concept matched exactly (register.form field labels). Headings/copy specific to CACNA's own phrasing not covered here stay English placeholders in the page itself.",
+    "heroHeading": "Forúkọsílẹ̀ fún Àpéjọ CACNA {year}",
+    "guidelinesHeading": "Àwọn Ìtọ́nisọ́nà Ìforúkọsílẹ̀",
+    "paymentOptionsHeading": "Àwọn Ọ̀nà Sísanwó",
+    "individualTab": "Ẹnìkọ̀ọ̀kan",
+    "groupTab": "Ìjọ / Ẹgbẹ́",
+    "complimentaryTab": "Ọ̀fẹ́",
+    "churchName": "Orúkọ Ìjọ",
+    "addRegistrant": "Ṣafikun Olùforúkọsílẹ̀ mìíràn",
+    "removeRegistrant": "Yọ Kúrò",
+    "fullName": "Orúkọ Kíkún",
+    "category": "Ẹ̀ka",
+    "categoryAdult": "Àgbà (30+)",
+    "categoryYoungAdult": "Ọ̀dọ́mọdé Àgbà (20-29)",
+    "categoryChild": "Ọmọdé (1-19) — Ọ̀fẹ́",
+    "contactName": "Orúkọ Olùbánisọ̀rọ̀",
+    "contactEmail": "Ímeèlì",
+    "contactPhone": "Fóònù (kì í ṣe dandan)",
+    "staffPasscode": "Ọ̀rọ̀ìpamọ́ òṣìṣẹ́",
+    "submit": "Tẹ̀síwájú sí Ìsanwó",
+    "submitComplimentary": "Fi Ìforúkọsílẹ̀ Ọ̀fẹ́ Ránṣẹ́",
+    "submitting": "Ń fi ránṣẹ́…"
+  },
+  "Contact": {
+    "chairman": "Alága Àpéjọ",
+    "secretary": "Akọ̀wé Àpéjọ",
+    "generalInquiries": "Ìbéèrè gbogbogbò"
+  },
+  "PlanYourVisit": {
+    "title": "Ṣe Ètò Ìbẹ̀wò Rẹ",
+    "travelHeading": "Bí a ṣe lè dé ibẹ̀",
+    "hotelsHeading": "Àwọn Hotẹ́ẹ̀lì",
+    "packingHeading": "Àtòjọ Ìmúra",
+    "nearbyHeading": "Àwọn Ohun Pàtàkì Nítòsí",
+    "rememberHeading": "Rántí",
+    "rulesListHeading": "Àwọn Òfin",
+    "categoryFood": "Oúnjẹ",
+    "categoryGroceriesPharmacy": "Ọjà àti Ilé Ìṣègùn",
+    "categoryGas": "Epo"
+  },
+  "Sitemap": {
+    "title": "Àwòrán Ojú-Òpó Wẹ́ẹ̀bù",
+    "subtitle": "Gbogbo ojú-ìwé tí ó wà ní ojú-òpó wẹ́ẹ̀bù yìí, ní ibì kan náà."
+  },
+  "Children": {
+    "coordinatorLabel": "Alábòójútó Ètò",
+    "morningLabel": "Àárọ̀",
+    "afternoonLabel": "Ọ̀sán"
+  },
+  "Store": {
+    "title": "Ilé Ìtajà",
+    "apparelHeading": "Aṣọ àti Ọjà",
+    "conventionApparel": "Aṣọ Àpéjọ",
+    "goodWomenApparel": "Aṣọ Ẹgbẹ́ Àwọn Ìyá Rere",
+    "youthApparel": "Aṣọ T àwọn Ọ̀dọ́",
+    "materialsHeading": "Àwọn Ohun Èlò Ẹ̀kọ́ Kristẹ́ni",
+    "addCta": "Fi kún",
+    "cartHeading": "Kẹ̀kẹ́ Rẹ",
+    "emptyCart": "Kẹ̀kẹ́ rẹ ṣófo.",
+    "emptyCartHint": "Fi ohun kan kún un lókè láti bẹ̀rẹ̀.",
+    "removeCta": "Yọ kúrò",
+    "totalLabel": "Àpapọ̀",
+    "nameLabel": "Orúkọ Kíkún",
+    "emailLabel": "Àdírẹ́sì Ímeèlì",
+    "checkoutCta": "Sanwó",
+    "checkingOutCta": "Ń tọ́ka sí ìsanwó…",
+    "checkoutError": "Àṣìṣe kan ṣẹlẹ̀ nígbà ìbẹ̀rẹ̀ ìsanwó. Jọ̀wọ́ gbìyànjú lẹ́ẹ̀kan sí i."
+  },
+  "Live": {
+    "watchLiveCta": "Wo Ìtànkálẹ̀ Ààyè lórí YouTube"
+  },
+  "SubMinistry": {
+    "_translationStatus": "Real Yoruba -- the Convention site's GoodWomen/MinistersWives/BusinessGroup namespaces each translate their own 'executive heading' concept to this exact same phrase, despite slightly different English wording (Committee/Members/Officers), so it's safe as one shared default here.",
+    "executiveHeading": "Àwọn Olórí Ìgbìmọ̀"
+  },
+  "About": {
+    "biblicallyBasedHeading": "Tí Ó Dá Lórí Bíbélì",
+    "kingdomFocusedHeading": "Tí Ó Kọ́ Sí Ìjọba Ọlọ́run"
+  },
+  "Give": {
+    "title": "Ẹ̀bùn"
+  },
+  "OfficerTitle": {
+    "_translationStatus": "Drafted by Claude (2026-09-05), not carried over from Convention's own reviewed yo.json -- these titles don't appear there. The site owner is a Yoruba speaker and has agreed to review/correct this draft directly rather than waiting on a separate reviewer.",
+    "leader": "Aṣáájú",
+    "womenLeader": "Aṣáájú Àwọn Obìnrin",
+    "secretary": "Akọ̀wé",
+    "chaplain": "Àlùfáà Àdúrà",
+    "financialSecretary": "Akọ̀wé Ìṣúná",
+    "chairperson": "Alága",
+    "executiveMember": "Ọmọ Ìgbìmọ̀",
+    "chairman": "Alága",
+    "viceChairman": "Igbákejì Alága",
+    "assistantSecretary": "Igbákejì Akọ̀wé",
+    "treasurer": "Olùṣọ́wó",
+    "pro": "P.R.O",
+    "assistantPro": "Igbákejì P.R.O"
+  },
+  "Cacma": {
+    "_translationStatus": "Drafted by Claude (2026-09-05), pending review by the site owner (a Yoruba speaker) -- this is CACNA-specific prose with no equivalent in Convention's own reviewed yo.json.",
+    "kicker": "CACMA",
+    "headingLine1": "Ń gbé sókè",
+    "headingLine2": "ọwọ́ Mósè.",
+    "intro": "Ẹgbẹ́ Àwọn Ọkùnrin Ẹkùn Latunde ti CAC — àwọn ọkùnrin CACNA, tí wọ́n kójọ láti ṣe àtìlẹ́yìn fún àwọn òjíṣẹ́ ìjọ, àwọn ilé-ẹ̀kọ́ ìdálẹ́kọ̀ọ́ Bíbélì rẹ̀, àti iṣẹ́ rẹ̀ tí ń tẹ̀síwájú.",
+    "leaderLabel": "Tí A Dárúkọ Ní Àpéjọ 2026",
+    "highlightLabel": "Àdírẹ́sì Alága Àpéjọ 2026",
+    "note": "Ìdánimọ̀ kíkún ti CACMA — àkòrí àpéjọ 2026 àti ìgbìmọ̀ olùdarí rẹ̀ lọ́wọ́lọ́wọ́ — kò tíì jáde ní ojú-òpó wẹ́ẹ̀bù méjèèjì CACNA. A óò ṣàtúnṣe ojú-ìwé yìí ní kété tí ìsọfúnni náà bá dé; wo ojú-ìwé Àwọn Iṣẹ́-Ìsìn fún ìtàn ìpìlẹ̀ṣẹ̀ CACMA nínú Ìjọ Aposteli Kristi.",
+    "relatedLinkLabel": "Ka Ìtàn CACMA"
+  },
+  "ChristianEducation": {
+    "_translationStatus": "Drafted by Claude (2026-09-05), pending review by the site owner (a Yoruba speaker) -- this is CACNA-specific prose with no equivalent in Convention's own reviewed yo.json.",
+    "kicker": "Ẹ̀ka Ẹ̀kọ́ Kristẹ́ni",
+    "headingLine1": "Fidimulẹ̀ sínú",
+    "headingLine2": "Ilé-Ẹ̀kọ́ Ọjọ́ Ìsinmi.",
+    "intro": "CACNA-CED — ìsọji ẹ̀mí àti ìdásí ọkàn fún ayé, nípasẹ̀ ẹ̀kọ́ tí ó dá lórí Ìwé Mímọ́, láti ìgbà àkọ́kọ́ tí ìjọ ti wà.",
+    "theme": "Bíbélì: Agbára Alágbára Fún Ìjọ",
+    "leaderLabel": "Aṣíwájú",
+    "highlightLabel": "Ìpàdé CED Àpéjọ 2026 — láti Àdírẹ́sì Ìkíni Rere Pastor Sam Olu Falade",
+    "history1": "Hébérù 4:12 ni ìpìlẹ̀ àkòrí ọdún yìí — ìgbàgbọ́ pé Ìwé Mímọ́ kì í ṣe ọ̀rọ̀ tí kò yí padà, bí kò ṣe agbára tí ó wà láàyè tí ó sì ń ṣiṣẹ́ nínú ìgbésí ayé Ìjọ.",
+    "history2": "Pastor Dr. Gabriel Dada ni ó dá Ẹ̀ka Ẹ̀kọ́ Kristẹ́ni ti Ẹkùn Latunde sílẹ̀, ó sì ṣe alága rẹ̀ títí di oṣù January 2015, nígbà tí wọ́n gbé e lọ sí Nàìjíríà láti ọwọ́ àṣẹ iṣẹ́ ìsìn náà. Pastor Gbenga Famojuro, D.Min ti jẹ́ alága ẹ̀ka náà láti ọdún 2015. Ní ọdún 2020, ẹ̀ka náà dá ilé ìtẹ̀wé tirẹ̀ sílẹ̀ ní U.S.A. (CAC Latunde Region CED Printing Press Inc.) láti tẹ ìwé Ilé-Ẹ̀kọ́ Ọjọ́ Ìsinmi, ìwé àtọ́nisọ́nà ìkẹ́kọ̀ọ́ Bíbélì, àti àwọn ìwé àdúrà ojoojúmọ́ jáde — Living Water àti Omi Ìyè — lábẹ́ àbójútó Ẹ̀ka Ilé-Ẹ̀kọ́ Ọjọ́ Ìsinmi kárí ayé ní Nàìjíríà.",
+    "history3": "Láti ọdún 2024, ẹ̀ka náà tún ti ń ṣe Àyẹ̀wò Ìdánwò Ilé-Ẹ̀kọ́ Ọjọ́ Ìsinmi jákèjádò Àwọn Àgbègbè àti DCC ti Ẹkùn Latunde — láti dán àti fún ẹ̀kọ́ Ilé-Ẹ̀kọ́ Ọjọ́ Ìsinmi lókun nípasẹ̀ ìdánwò lórí ẹ̀rọ ayélujára. Iye àwọn tí ó kópa pọ̀ sí i láti Àgbègbè/DCC mẹ́sàn-án àti akẹ́kọ̀ọ́ ọgbọ̀n ní ọdún àkọ́kọ́ rẹ̀ sí Àgbègbè/DCC mẹ́rìnlá àti akẹ́kọ̀ọ́ àádọ́ta ní ọdún kejì (2025–2026), ìlosíwájú ìdá ọgọ́ta-lé-mẹ́fà nínú ọgọ́rùn-ún (66%).",
+    "executiveLabel": "Àwọn Agbọ̀rọ̀sọ Ìpàdé CED Àpéjọ 2026",
+    "note": "Fún ìtàn kíkún ẹ̀ka náà kárí ayé — láti ìpìlẹ̀ṣẹ̀ Ilé-Ẹ̀kọ́ Ọjọ́ Ìsinmi ní àwọn ọdún 1780 títí dé ẹgbẹ́ Ẹ̀kọ́ Kristẹ́ni tí CACNA ní fúnra rẹ̀ — wo ojú-ìwé Àwọn Iṣẹ́-Ìsìn.",
+    "relatedLinkLabel": "Ka Ìtàn Kíkún àti Àwọn Ọmọ Ẹgbẹ́"
+  },
+  "GoodWomen": {
+    "_translationStatus": "Drafted by Claude (2026-09-05), pending review by the site owner (a Yoruba speaker) -- this is CACNA-specific prose with no equivalent in Convention's own reviewed yo.json.",
+    "kicker": "Ẹgbẹ́ Àwọn Ìyá Rere",
+    "headingLine1": "Ń sìn pẹ̀lú",
+    "headingLine2": "ọwọ́ ṣíṣí.",
+    "intro": "Ẹgbẹ́ Àwọn Ìyá Rere ti Ẹkùn Latunde CAC — tí ń darí ìdílé nínú àdúrà, ìtọ́jú àlejò, àti ọ̀wọ́n-ọkàn ní gbogbo àpéjọ.",
+    "leaderLabel": "Aṣáájú",
+    "highlightLabel": "Àdírẹ́sì Ìkíni Àpéjọ 2026",
+    "relatedLinkLabel": "Àpéjọ Àwọn Ìyàwó Ìjọ"
+  },
+  "MinistersWives": {
+    "_translationStatus": "Drafted by Claude (2026-09-05), pending review by the site owner (a Yoruba speaker) -- this is CACNA-specific prose with no equivalent in Convention's own reviewed yo.json.",
+    "kicker": "Àpéjọ Àwọn Ìyàwó Ìjọ",
+    "headingLine1": "Dúró tì",
+    "headingLine2": "àwọn tí ń dárí ọ̀dọ̀.",
+    "intro": "Àpéjọ Àwọn Ìyàwó Ìjọ ti Ẹkùn Latunde CAC — ìdàpọ̀ fún àwọn ìyàwó àwọn òjíṣẹ́ CACNA, tí wọ́n kójọ nínú àdúrà àti àtìlẹ́yìn fún ara wọn.",
+    "leaderLabel": "Alága",
+    "relatedLinkLabel": "Ẹgbẹ́ Àwọn Ìyá Rere"
+  },
+  "BusinessGroup": {
+    "_translationStatus": "Drafted by Claude (2026-09-05), pending review by the site owner (a Yoruba speaker) -- this is CACNA-specific prose with no equivalent in Convention's own reviewed yo.json.",
+    "kicker": "Àpéjọ Ẹgbẹ́ Òwò",
+    "headingLine1": "Ọ́fíìsì wa ni",
+    "headingLine2": "pápá ìṣẹ́ ìjíhìnrere.",
+    "intro": "Àpéjọ Ẹgbẹ́ Òwò CACNA (CACBGF) — pẹpẹ fún ìbánisọ̀rọ̀, ìtọ́ni, àti àtìlẹ́yìn láàrin àwọn ọmọ ìjọ CAC tí ọkàn wọn wà nínú òwò.",
+    "leaderLabel": "Àwọn Alámòjútó",
+    "highlightLabel": "Ètò-Ọrọ̀-Ajé Ìjọba Ọlọ́run — Diutarónómì 8:18",
+    "history1": "Àṣẹ Ìjọ ni ó ṣe ìfilọ́lẹ̀ Àpéjọ Ẹgbẹ́ Òwò CAC (CACBGF) ní ọ̀nà tí ó tọ́ ní ọjọ́ Ajé, ọjọ́ kẹrin oṣù Karùn-ún, ọdún 2026, ní Ikeji-Arakeji, Ìpínlẹ̀ Osun. A dá Àpéjọ Ẹgbẹ́ Òwò CAC sílẹ̀ láti ṣe àtìlẹ́yìn fún àwọn iṣẹ́ àti ètò Ìjọ àti láti jẹ́ pẹpẹ fún ìbánisọ̀rọ̀, ìtọ́ni, àti àtìlẹ́yìn fún àwọn ọmọ Ìjọ wa tí ọkàn wọn wà nínú òwò. Kì í ṣe ẹgbẹ́ tí ń ṣe òfin, ẹgbẹ́ ìkápá, tàbí Àṣẹ nínú Ìjọ.",
+    "relatedLinkLabel": "Ka Ìtàn Ìpilẹ̀ṣẹ̀"
+  },
+  "Youth": {
+    "_translationStatus": "Drafted by Claude (2026-09-05), pending review by the site owner (a Yoruba speaker) -- this is CACNA-specific prose with no equivalent in Convention's own reviewed yo.json.",
+    "kicker": "Àwọn Ọ̀dọ́ àti Ọ̀dọ́ Àgbàlagbà",
+    "heroHeading1": "Ní Ìsopọ̀ Pẹ̀lú Òtítọ́.",
+    "heroHeading2": "Ń Sìn Pẹ̀lú Ayọ̀.",
+    "heroBody": "Ń tọ́ àwọn ọ̀dọ́ dàgbà tí ó dá lórí Kristi tí wọ́n sì dára jùlọ fún ìmúṣẹ pípé nípasẹ̀ ẹ̀kọ́, ìdàgbàsókè ẹ̀mí, ìjíhìnrere tuntun, àti ìjọsìn tẹ̀mí.",
+    "followCta": "Tẹ̀lé @cacnayyam",
+    "journeyWithUsCta": "Bá Wa Rìn",
+    "conventionThemeLabel": "Àkòrí Àpéjọ 2026",
+    "coordinatorLabel": "Alámòjútó Ẹkùn",
+    "visionLabel": "Ìran Wa",
+    "visionBody": "Àwọn Ọ̀dọ́ tí ó dá lórí Kristi fún ìmúṣẹ nínú ìgbésí ayé àti iṣẹ́ ìránṣẹ́.",
+    "missionLabel": "Ète Wa",
+    "valuesLabel": "Ìlànà Wa",
+    "valuesBody": "Àwọn ìlànà àti ohun tí ó ṣe pàtàkì jùlọ fún wa ni a fi hàn nípasẹ̀ àdúrà — ìgbésí ayé àdúrà tí ó munadoko ṣì jẹ́ ìlànà pàtàkì jùlọ fún wa.",
+    "historyKicker": "Ibi tí a ti wá",
+    "historyHeading": "Ìtàn Ẹ̀ka Àwọn Ọ̀dọ́",
+    "historyBody": "Ìjọ Aposteli Kristi ti gba àkópọ̀ àti ìdàpọ̀ àwọn olókìkí àti àwọn ọ̀dọ́ rẹ̀ láàyè láti ìgbà àkọ́kọ́ rẹ̀. Gẹ́gẹ́ bí àwọn ẹgbẹ́ tí kò sí nínú òfin ìpìlẹ̀ṣẹ̀ tí àwọn ọ̀dọ́kùnrin àti ọ̀dọ́binrin pẹ̀lú ìtara fún Ọlọ́run dá sílẹ̀, wọ́n ń ṣiṣẹ́ nínú Ìjọ lábẹ́ àbójútó àti ìdarí gidi ti Àṣẹ Ìjọ.",
+    "programsKicker": "Àwọn Ètò Pàtàkì",
+    "programsHeading": "Ibi tí a ti ń wo, kọ́ẹ̀kọ́, tí a sì ń gbàdúrà.",
+    "momentsKicker": "Àwọn Àkókò",
+    "momentsHeading": "Ìgbésí ayé láàrin àwọn ọ̀dọ́ CACNA.",
+    "mealHeading": "Àpéjọ YYAM",
+    "mealSubheading": "Ìbéèrè Oúnjẹ 2026",
+    "mealBody": "Dá orúkọ rẹ sílẹ̀ fún oúnjẹ nígbà Àpéjọ, July 14–17, 2026 ní 14051 Stahley Road, Blue Ridge Summit, PA 17214.",
+    "mealQuestionsLead": "Ìbéèrè? Fi í-meèlì ránṣẹ́ sí",
+    "ctaHeading": "Bá wa rìn.",
+    "ctaBody": "Tẹ̀lé wa fún àwọn ètò, àdúrà, àti ìsọfúnni láti ọ̀dọ̀ àwọn ọ̀dọ́ àti ọ̀dọ́ àgbàlagbà CACNA."
   }
 }

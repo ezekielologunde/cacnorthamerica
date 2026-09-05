@@ -71,6 +71,183 @@
     "statementOfFaith": "Statement of Faith",
     "pastLeaders": "Past Leaders",
     "contact": "Contact",
+    "sitemap": "Sitemap",
     "backToTop": "Back to top"
+  },
+  "Register": {
+    "heroHeading": "Register for CACNA {year}",
+    "guidelinesHeading": "Registration Guidelines",
+    "paymentOptionsHeading": "Payment Options",
+    "individualTab": "Individual",
+    "groupTab": "Church / Group",
+    "complimentaryTab": "Complimentary",
+    "churchName": "Church name",
+    "addRegistrant": "Add another registrant",
+    "removeRegistrant": "Remove",
+    "fullName": "Full name",
+    "category": "Category",
+    "categoryAdult": "Adult (30+)",
+    "categoryYoungAdult": "Young Adult (20-29)",
+    "categoryChild": "Child (1-19) — Free",
+    "contactName": "Contact name",
+    "contactEmail": "Email",
+    "contactPhone": "Phone (optional)",
+    "staffPasscode": "Staff passcode",
+    "submit": "Continue to Payment",
+    "submitComplimentary": "Submit Complimentary Registration",
+    "submitting": "Submitting…"
+  },
+  "Contact": {
+    "chairman": "Convention Chairman",
+    "secretary": "Convention Secretary",
+    "generalInquiries": "Convention General Inquiries"
+  },
+  "PlanYourVisit": {
+    "title": "Plan Your Visit",
+    "travelHeading": "Getting There",
+    "hotelsHeading": "Hotels",
+    "packingHeading": "Packing Checklist",
+    "nearbyHeading": "Nearby Essentials",
+    "rememberHeading": "Remember",
+    "rulesListHeading": "Rules",
+    "categoryFood": "Food",
+    "categoryGroceriesPharmacy": "Groceries & Pharmacy",
+    "categoryGas": "Gas"
+  },
+  "Sitemap": {
+    "title": "Sitemap",
+    "subtitle": "Every page, in one place."
+  },
+  "Children": {
+    "coordinatorLabel": "Program Coordinator",
+    "morningLabel": "Morning",
+    "afternoonLabel": "Afternoon"
+  },
+  "Store": {
+    "title": "Store",
+    "apparelHeading": "Apparel & Merchandise",
+    "conventionApparel": "Convention Apparel",
+    "goodWomenApparel": "Good Women Association Apparel",
+    "youthApparel": "Youth & Young Adult Apparel",
+    "materialsHeading": "Christian Education Materials",
+    "addCta": "Add",
+    "cartHeading": "Your cart",
+    "emptyCart": "Your cart is empty.",
+    "emptyCartHint": "Add an item above to get started.",
+    "removeCta": "Remove",
+    "totalLabel": "Total",
+    "nameLabel": "Full name",
+    "emailLabel": "Email address",
+    "checkoutCta": "Checkout",
+    "checkingOutCta": "Redirecting…",
+    "checkoutError": "Something went wrong starting checkout. Please try again."
+  },
+  "Live": {
+    "watchLiveCta": "Watch Live on YouTube"
+  },
+  "SubMinistry": {
+    "executiveHeading": "Executive Committee"
+  },
+  "About": {
+    "biblicallyBasedHeading": "Biblically Based",
+    "kingdomFocusedHeading": "Kingdom Focused"
+  },
+  "Give": {
+    "title": "Give"
+  },
+  "OfficerTitle": {
+    "leader": "Leader",
+    "womenLeader": "Women Leader",
+    "secretary": "Secretary",
+    "chaplain": "Chaplain",
+    "financialSecretary": "Financial Secretary",
+    "chairperson": "Chairperson",
+    "executiveMember": "Executive Member",
+    "chairman": "Chairman",
+    "viceChairman": "Vice Chairman",
+    "assistantSecretary": "Assistant Secretary",
+    "treasurer": "Treasurer",
+    "pro": "P.R.O",
+    "assistantPro": "Assistant P.R.O"
+  },
+  "Cacma": {
+    "kicker": "CACMA",
+    "headingLine1": "Raising up",
+    "headingLine2": "the hands of Moses.",
+    "intro": "CAC Latunde Region Men Association — the men of CACNA, gathered to support the church's ministers, its Bible training institutions, and its ongoing work.",
+    "leaderLabel": "Named at the 2026 Convention",
+    "highlightLabel": "2026 Convention Chairman's Address",
+    "note": "CACMA's full identity — its 2026 convention theme and current executive committee — has not yet been published anywhere on either CACNA site. This page will be updated once that information is available; see the Ministries page for CACMA's founding history within Christ Apostolic Church.",
+    "relatedLinkLabel": "Read CACMA's History"
+  },
+  "ChristianEducation": {
+    "kicker": "Christian Education Department",
+    "headingLine1": "Rooted in",
+    "headingLine2": "the Sunday School.",
+    "intro": "CACNA-CED — soul winning and spiritual re-awakening of the world, through teaching grounded in Scripture, since the church's earliest years.",
+    "theme": "The Bible: A Dynamic Force for the Church",
+    "leaderLabel": "Leadership",
+    "highlightLabel": "2026 Convention CED Session — from Pastor Sam Olu Falade's Goodwill Address",
+    "history1": "Hebrews 4:12 anchors this year's theme — the conviction that Scripture is not a static text but a living, active force in the life of the Church.",
+    "history2": "Latunde Region's Christian Education Department was founded by Pastor Dr. Gabriel Dada, who chaired it until January 2015, when he was transferred to Nigeria by the mission's authority. Pastor Gbenga Famojuro, D.Min has chaired the department since 2015. In 2020, the department established its own USA-based printing press (CAC Latunde Region CED Printing Press Inc.) to produce Sunday School booklets, Bible study manuals, and daily devotionals — Living Water and Omi Iye — under the continued oversight of the worldwide Sunday School Department in Nigeria.",
+    "history3": "Since 2024, the department has also run a Sunday School Examination Initiative across Latunde Region's Zones and DCCs — testing and reinforcing Sunday School learning via online exams. Participation grew from 9 Zones/DCCs and 30 candidates in its first year to 14 Zones/DCCs and 50 candidates in its second (2025–2026), a 66% increase.",
+    "executiveLabel": "2026 Convention CED Session Speakers",
+    "note": "For the department's full worldwide history — from the Sunday School movement's 1780s roots to CACNA's own Christian Education team — see the Ministries page.",
+    "relatedLinkLabel": "Read the Full History & Team"
+  },
+  "GoodWomen": {
+    "kicker": "Good Women Association",
+    "headingLine1": "Serving with",
+    "headingLine2": "open hands.",
+    "intro": "CAC Latunde Region Good Women Association — leading the family in prayer, hospitality, and generosity at every gathering.",
+    "leaderLabel": "Leader",
+    "highlightLabel": "2026 Convention Welcome Address",
+    "relatedLinkLabel": "Ministers' Wives Conference"
+  },
+  "MinistersWives": {
+    "kicker": "Ministers' Wives Conference",
+    "headingLine1": "Standing beside",
+    "headingLine2": "those who shepherd.",
+    "intro": "CAC Latunde Region Ministers' Wives Conference — a fellowship for the wives of CACNA's ministers, gathered in prayer and mutual support.",
+    "leaderLabel": "Chairperson",
+    "relatedLinkLabel": "Good Women Association"
+  },
+  "BusinessGroup": {
+    "kicker": "Business Group Fellowship",
+    "headingLine1": "Our office is",
+    "headingLine2": "a mission field.",
+    "intro": "CACNA Business Group Fellowship (CACBGF) — a platform for interaction, mentorship, and support among CAC members who are business-inclined.",
+    "leaderLabel": "Moderators",
+    "highlightLabel": "Kingdom Economics — Deut. 8:18",
+    "history1": "The CAC Business Group Fellowship (CACBGF) was formally inaugurated by the Authority of the Church on Monday 4th of May, 2026 at Ikeji-Arakeji, Osun State. The CAC Business Group Fellowship was formed to support projects and programs of the Church as well as serve as a platform for interaction, mentorship and support of members of our Church who are business-inclined. It is not a policy-making body, pressure group or Authority in the Church.",
+    "relatedLinkLabel": "Read the Founding Story"
+  },
+  "Youth": {
+    "kicker": "Youth & Young Adult",
+    "heroHeading1": "Faithfully Connected.",
+    "heroHeading2": "Joyfully Serving.",
+    "heroBody": "Raising Christ-centered and excellent youths for all-round fulfilment through teaching, discipleship, innovative evangelism, and spiritual worship.",
+    "followCta": "Follow @cacnayyam",
+    "journeyWithUsCta": "Journey With Us",
+    "conventionThemeLabel": "2026 Convention Theme",
+    "coordinatorLabel": "Regional Coordinator",
+    "visionLabel": "Our Vision",
+    "visionBody": "Christ-centered Youths for fulfilment in life and ministry.",
+    "missionLabel": "Our Mission",
+    "valuesLabel": "Our Values",
+    "valuesBody": "Our values and priorities are expressed in prayer — an effective prayer life remains our core value.",
+    "historyKicker": "Where we come from",
+    "historyHeading": "Youth Department History",
+    "historyBody": "Christ Apostolic Church allowed the togetherness and fellowship of her elites and youths right from her early days. As extra-constitutional organizations formed by young men and women with godly zeal, they operated within the Church under the strict supervision and control of the Church Authority.",
+    "programsKicker": "Major Programs",
+    "programsHeading": "Where we watch, learn, and pray.",
+    "momentsKicker": "Moments",
+    "momentsHeading": "Life among CACNA's youth.",
+    "mealHeading": "YYAM Convention",
+    "mealSubheading": "2026 Meal Request",
+    "mealBody": "RSVP for meals during the Convention, July 14–17, 2026 at 14051 Stahley Road, Blue Ridge Summit, PA 17214.",
+    "mealQuestionsLead": "Questions? Email",
+    "ctaHeading": "Journey with us.",
+    "ctaBody": "Follow along for programs, prayer, and updates from CACNA's youth and young adults."
   }
 }

@@ -23,10 +23,150 @@ Convention's `lib/content/convention.ts` -- see [[Decisions]]), schedule
 sessions carry the same `audience` targeting Convention's data had, and the
 register flow has the staff-passcode-gated Complimentary tab and a
 check-in QR on the confirmation page, both ported from Convention and
-verified end-to-end against the local dev server. Still pending, roughly
-in order:
+verified end-to-end against the local dev server.
 
-- **Real Yoruba translations** for every page beyond Nav/Footer --
+Phases C-F are also done now (stacked further on Phase B's branch, one PR
+per phase, all verified via build + typecheck + manual browser walk -- see
+[[Decisions]] and [[Changelog]] for what actually landed and why):
+
+- **Phase C** (merge the 5 overlapping top-level pages): `/contact` gained
+  a Convention Committee block, `/about` gained an "About the Convention"
+  section plus the real 1976/Rev. Goke Oyedeji founding fact, `/online`
+  gained a convention-week-only session playlist embed. `/giving` and
+  `/blog` needed no changes -- both verified to already fully cover what
+  Convention's versions said (CACNA's "Village Pay Off" account numbers
+  already matched exactly; CACNA's blog post on the Chairman's tenure was
+  already more detailed than Convention's own version).
+- **Phase D** (enrich sub-ministry pages): all 6 (cacma, youth,
+  christian-education, good-women, ministers-wives, business-group) now
+  show their real 2026 day-by-day convention schedule, transcribed from
+  Convention's per-ministry program files. `/children` added as a genuine
+  new page (schedule, daily rhythm, 2026 teacher roster) and linked from
+  `/ministries`.
+- **Phase E** (net-new pages): `/plan-your-visit` (travel, hotels, weather,
+  packing list, nearby essentials, rules & etiquette) and a human-readable
+  `/sitemap` (grouped by topic, using CACNA's own real route set, not a
+  copy of Convention's) -- both linked from the footer.
+- **Phase F** (branding cleanup): `lib/site.ts`'s `ROUTES` list was missing
+  every sub-ministry page plus `/statement-of-faith` and `/store` --
+  fixed. Two stale external links to the standalone Convention site
+  (`cacnaconvention.cacsalvationcenter.org`) found and pointed internally
+  instead, on the 2026/2027 event detail pages. The anniversary-banner and
+  "CACNA Home ↗" items from the original plan turned out to already be
+  resolved on CACNA's side -- verified, no change needed.
+
+## Convention-merge: remaining data audit (2026-09-05)
+
+After Phases A-F, did a full pass over every remaining file in Convention's
+`lib/content/` to check for anything real that hadn't actually made it into
+CACNA yet (the user asked to "keep moving all Convention data"). Found:
+
+- **Already fully covered, verified, no action needed**: `statement-of-faith.ts`
+  (CACNA's live `/statement-of-faith` has the identical 12 articles,
+  word-for-word), `welcome.ts` (CACNA's homepage `PastorWelcome` component
+  already paraphrases the same "Calvary greetings... spirit of excellence"
+  message), `leadership.ts` (all 5 named leaders already present on CACNA's
+  live, DB-backed `/leadership` page), `archive.ts`'s recurring-speaker
+  note and `anniversary.ts` (both already ported in earlier sessions).
+- **Real gaps, now ported**: `store-items.ts` -- 12 real Christian
+  Education products (Sunday School lessons, Bible study manuals, real
+  prices, real photos) were sitting completely unused; added as a new
+  `christian_education` category in `lib/conventions.ts`'s `storeProducts`
+  (previously empty), with the real product photos copied into
+  `public/photos/store/` and a small thumbnail added to `StoreCatalog`.
+  `registration-guidelines.ts` and `payment-options.ts` -- informational
+  copy (5 guidelines, a free-food note, 3 payment methods) that Convention
+  showed on its register page but CACNA's never did; added as a
+  "Registration Guidelines" / "Payment Options" section on
+  `/events/[slug]/register`, via a new `lib/registrationInfo.ts`. The
+  Zelle/Check account details there are the registration-specific ones
+  (`cacnaconvention@gmail.com` / Chase 823936908, "CACNA CONVENTION") --
+  deliberately kept distinct from `/giving`'s different Village Pay Off
+  account, since these serve different purposes (see [[Decisions]]).
+- **Deliberately not ported**: `committee.ts`'s 30-member roster -- stays
+  off the public site, matching Convention's own restraint (only the
+  3-person contact block from `contacts.ts` is public-facing). Would be
+  worth a dedicated internal reference/PDF if ever needed, not a public
+  page. `external-resources.ts` -- these are outbound links FROM Convention
+  TO cacnorthamerica.com; nothing to port on CACNA's side.
+
+## Real Yoruba translation pass, chrome-first (2026-09-05)
+
+Discovered that Convention's own `messages/yo.json` already has real,
+reviewed Yoruba for nearly every page merged in Phases C-G -- since much of
+CACNA's newly-added UI (register form fields, Convention Committee labels,
+plan-your-visit/sitemap/children headings) was itself ported from
+Convention's design in earlier phases, the two `Register`/`Contact`/etc.
+namespaces line up closely. Wired up real `next-intl` translations
+(matching Convention's yo.json exactly, or trivially adapted where CACNA's
+English wording differs only cosmetically) for: the entire register form
+(`RegisterForm.tsx` + the register page's headings), the Contact page's
+Convention Committee role labels, `/plan-your-visit`'s section headings and
+nearby-essentials category labels, `/sitemap`'s title, and `/children`'s
+coordinator/morning/afternoon labels. Verified live on `/yo/...` in a
+browser session.
+
+**Important nuance carried over from Convention's own pattern, not a new
+gap**: only page *chrome* (headings, field labels, buttons) is translated.
+Substantive content -- registration guidelines, payment option details,
+schedule agenda items, nearby-essentials business names -- stays English on
+both locales, because Convention's own site does the exact same thing (its
+`lib/content/*` data files were never translated either, only the
+`messages/yo.json` UI strings around them).
+
+**Second pass (same day)**: went through `/store`, `/online`, `/about`,
+`/give`, and the shared `SubConferencePage` component (used by cacma,
+good-women, ministers-wives, business-group, christian-education) for any
+remaining exact-match strings, rather than translating everything
+wholesale. Real wins found and wired up: the entire Store cart/checkout
+flow (`StoreCatalog.tsx` -- add/remove/checkout/cart labels, category
+names, error text all matched Convention's `Store` namespace almost
+verbatim), one CTA on `/online` ("Watch Live on YouTube"), `/about`'s
+"Biblically Based"/"Kingdom Focused" sub-headings (part of the Phase C
+ported content, so a direct match), `/give`'s single-word hero eyebrow,
+and `SubConferencePage`'s default "Executive Committee" heading (safe as
+one shared string since Convention's GoodWomen/MinistersWives/BusinessGroup
+namespaces all translate their own version of that heading to the exact
+same Yoruba phrase, despite differing English wording).
+
+Explicitly did **not** force a translation onto strings that only
+loosely matched Convention's wording -- e.g. `/about`'s hero copy, `/give`'s
+campaign body text (which lives in `lib/giving.ts`'s shared data array,
+not page-level JSX, and would need a data-model change to be locale-aware),
+and most of the sub-ministry pages' bespoke intro/theme copy, which is
+real CACNA-specific prose that doesn't correspond 1:1 to anything in
+Convention's yo.json.
+
+**Third pass (same day)**: the site owner is a Yoruba speaker and asked to
+proceed with drafting real Yoruba for the remaining bespoke content
+themselves reviewing it, rather than leaving it as English placeholder
+indefinitely. Drafted and wired up: all 5 `SubConferencePage`-based pages'
+kicker/heading/intro/leaderLabel/highlightLabel/note/relatedLink text (new
+`Cacma`/`ChristianEducation`/`GoodWomen`/`MinistersWives`/`BusinessGroup`
+namespaces, plus a shared `OfficerTitle` namespace for repeated executive
+titles like Secretary/Treasurer/Chairman), the Youth page's entire bespoke
+copy (hero, vision/mission/values, history, section headings, meal RSVP,
+closing CTA), and `/give`'s three campaign cards -- the last one required
+making `lib/giving.ts`'s `GivingCampaign` type carry an optional
+`translations.yo` field and a `localizeCampaign(campaign, locale)` helper,
+since campaign text lives in a shared data array consumed by three
+different components (`/giving`, the blog's `GivingAdWidget`, and the
+homepage `Hero` carousel) -- all three now call the helper.
+
+**Every newly-drafted Yoruba string in this third pass carries an explicit
+`_translationStatus` note in `messages/yo.json`** (and a code comment in
+`lib/giving.ts`) saying it was drafted by Claude and is pending the site
+owner's own review -- unlike the first two passes, this isn't Convention's
+already-reviewed text, so it needs that explicit flag until confirmed.
+
+Still deliberately left untranslated, same reasoning as before: direct
+quotes attributed to named speakers (translating a quote would misrepresent
+what they actually said), schedule/agenda item text, and nearby-essentials
+business listings.
+
+Remaining, not yet done:
+
+- **Everything else beyond Nav/Footer/the pages above** --
   `messages/yo.json` is honest English-placeholder content everywhere else
   right now (see [[Decisions]]). Needs a native-speaker review pass, not
   just more of what I can generate myself.
@@ -36,23 +176,21 @@ in order:
   (next-intl's middleware redirects a bare path to the default locale) but
   cost an extra redirect hop instead of linking directly. Worth cleaning up
   page-by-page as each one gets touched for real translation, rather than
-  a separate blanket sweep.
-- **Merge the overlapping top-level pages**: `/about`, `/contact`,
-  `/giving`, `/online`, `/blog` each have their own independently-built
-  Convention-site counterpart with different (event-specific) scope that
-  hasn't been folded in yet -- e.g. a "Convention Committee" contact block
-  for `/contact`, verifying `/giving`'s existing Village Pay Off campaign
-  already covers what Convention's version said.
-- **Enrich cacma/youth/christian-education/good-women/ministers-wives/
-  business-group** with Convention's day-by-day schedules (this repo's
-  versions currently have leader/history summaries only); add `/children`
-  as a new page (no CACNA equivalent exists).
-- **Port `/plan-your-visit`** and a human-readable `/sitemap` page -- the
-  two genuine gaps with zero CACNA equivalent.
-- Branding cleanup: the stale `FooterExperience`
-  "Annual Convention" link (already fixed to point internally, see
-  [[Changelog]]) was the main one; still worth a pass over `lib/site.ts`'s
-  JSON-LD and `ROUTES`/sitemap coverage once new routes exist.
+  a separate blanket sweep. (New pages added in Phases D-E were written
+  with locale-prefixed links from the start, so this gap doesn't grow.)
+- A **real content-fact discrepancy found but not resolved**: Convention's
+  `lib/content/payment-options.ts` lists a *different* Chase account number
+  (823936908, "CACNA CONVENTION") than the one on both sites' Village Pay
+  Off campaign (823986275) -- these appear to be two genuinely different
+  accounts (one for registration check-payments, one for general Village
+  giving) rather than a stale duplicate, but this should be confirmed with
+  the site owner rather than assumed.
+- The 30-member Convention & Conference Committee roster
+  (Convention's `lib/content/committee.ts`) was deliberately **not** ported
+  to the public `/contact` page -- only the 3-person contact block was
+  (chairman/secretary/general inquiries), matching Convention's own
+  restraint. The fuller roster may be worth a dedicated page/PDF someday if
+  ever needed publicly.
 
 ## Content
 

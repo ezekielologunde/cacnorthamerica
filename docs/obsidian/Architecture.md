@@ -18,8 +18,9 @@ app/
                       about, ministries, leadership, events, blog, gallery,
                       giving, zones, calendar, bible-institute,
                       christian-education, cacma, good-women,
-                      ministers-wives, youth, business-group, watchwords,
-                      statement-of-faith, online, contact, archive, store
+                      ministers-wives, youth, business-group, children,
+                      watchwords, statement-of-faith, online, contact,
+                      archive, store, plan-your-visit, sitemap
   admin/(protected)/ Admin console pages, gated by proxy.ts -- NOT under
                       [locale]; stays English-only, unaffected by i18n
   admin/login/       Supabase Auth login
