@@ -124,5 +124,38 @@
     "coordinatorLabel": "Alábòójútó Ètò",
     "morningLabel": "Àárọ̀",
     "afternoonLabel": "Ọ̀sán"
+  },
+  "Store": {
+    "title": "Ilé Ìtajà",
+    "apparelHeading": "Aṣọ àti Ọjà",
+    "conventionApparel": "Aṣọ Àpéjọ",
+    "goodWomenApparel": "Aṣọ Ẹgbẹ́ Àwọn Ìyá Rere",
+    "youthApparel": "Aṣọ T àwọn Ọ̀dọ́",
+    "materialsHeading": "Àwọn Ohun Èlò Ẹ̀kọ́ Kristẹ́ni",
+    "addCta": "Fi kún",
+    "cartHeading": "Kẹ̀kẹ́ Rẹ",
+    "emptyCart": "Kẹ̀kẹ́ rẹ ṣófo.",
+    "emptyCartHint": "Fi ohun kan kún un lókè láti bẹ̀rẹ̀.",
+    "removeCta": "Yọ kúrò",
+    "totalLabel": "Àpapọ̀",
+    "nameLabel": "Orúkọ Kíkún",
+    "emailLabel": "Àdírẹ́sì Ímeèlì",
+    "checkoutCta": "Sanwó",
+    "checkingOutCta": "Ń tọ́ka sí ìsanwó…",
+    "checkoutError": "Àṣìṣe kan ṣẹlẹ̀ nígbà ìbẹ̀rẹ̀ ìsanwó. Jọ̀wọ́ gbìyànjú lẹ́ẹ̀kan sí i."
+  },
+  "Live": {
+    "watchLiveCta": "Wo Ìtànkálẹ̀ Ààyè lórí YouTube"
+  },
+  "SubMinistry": {
+    "_translationStatus": "Real Yoruba -- the Convention site's GoodWomen/MinistersWives/BusinessGroup namespaces each translate their own 'executive heading' concept to this exact same phrase, despite slightly different English wording (Committee/Members/Officers), so it's safe as one shared default here.",
+    "executiveHeading": "Àwọn Olórí Ìgbìmọ̀"
+  },
+  "About": {
+    "biblicallyBasedHeading": "Tí Ó Dá Lórí Bíbélì",
+    "kingdomFocusedHeading": "Tí Ó Kọ́ Sí Ìjọba Ọlọ́run"
+  },
+  "Give": {
+    "title": "Ẹ̀bùn"
   }
 }

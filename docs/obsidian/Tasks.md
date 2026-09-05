@@ -114,17 +114,37 @@ both locales, because Convention's own site does the exact same thing (its
 `lib/content/*` data files were never translated either, only the
 `messages/yo.json` UI strings around them).
 
+**Second pass (same day)**: went through `/store`, `/online`, `/about`,
+`/give`, and the shared `SubConferencePage` component (used by cacma,
+good-women, ministers-wives, business-group, christian-education) for any
+remaining exact-match strings, rather than translating everything
+wholesale. Real wins found and wired up: the entire Store cart/checkout
+flow (`StoreCatalog.tsx` -- add/remove/checkout/cart labels, category
+names, error text all matched Convention's `Store` namespace almost
+verbatim), one CTA on `/online` ("Watch Live on YouTube"), `/about`'s
+"Biblically Based"/"Kingdom Focused" sub-headings (part of the Phase C
+ported content, so a direct match), `/give`'s single-word hero eyebrow,
+and `SubConferencePage`'s default "Executive Committee" heading (safe as
+one shared string since Convention's GoodWomen/MinistersWives/BusinessGroup
+namespaces all translate their own version of that heading to the exact
+same Yoruba phrase, despite differing English wording).
+
+Explicitly did **not** force a translation onto strings that only
+loosely matched Convention's wording -- e.g. `/about`'s hero copy, `/give`'s
+campaign body text (which lives in `lib/giving.ts`'s shared data array,
+not page-level JSX, and would need a data-model change to be locale-aware),
+and most of the sub-ministry pages' bespoke intro/theme copy, which is
+real CACNA-specific prose that doesn't correspond 1:1 to anything in
+Convention's yo.json.
+
 Remaining, not yet done:
 
-- **Real Yoruba for the 6 sub-ministry pages, `/about`, `/give`, `/online`,
-  and `/store`** -- Convention has matching namespaces (`Cacma`,
-  `GoodWomen`, `MinistersWives`, `ChristianEducation`, `BusinessGroup`,
-  `Youth`, `About`, `Give`, `Live`, `Store`) with real reviewed Yoruba, but
-  these pages' English copy diverges from Convention's more than the ones
-  just done (different framing, CACNA-specific facts woven throughout),
-  so translating them safely needs more careful per-string comparison
-  than the mechanical 1:1 swaps done this round. Worth doing next, using
-  the same "only translate where the concept matches exactly" discipline.
+- **Real Yoruba for the sub-ministry pages' bespoke copy** (kicker/intro/
+  theme/leader text passed as props to `SubConferencePage`, plus the Youth
+  page's own bespoke sections) and **`/give`'s campaign body text** -- the
+  latter needs `lib/giving.ts`'s `GivingCampaign` type to become
+  locale-aware (or a parallel Yoruba data set) before it can be translated
+  at all, which is a real structural change, not just a string swap.
 - **Everything else beyond Nav/Footer/the pages above** --
   `messages/yo.json` is honest English-placeholder content everywhere else
   right now (see [[Decisions]]). Needs a native-speaker review pass, not

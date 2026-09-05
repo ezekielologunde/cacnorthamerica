@@ -3,6 +3,7 @@ import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 export type ExecutiveMember = { name: string; title: string };
 
@@ -34,7 +35,7 @@ export type SubConferencePageProps = {
   relatedLink?: { href: string; label: string };
 };
 
-export function SubConferencePage({
+export async function SubConferencePage({
   kicker,
   headingLines,
   intro,
@@ -43,13 +44,15 @@ export function SubConferencePage({
   leaderNames,
   highlight,
   executive,
-  executiveLabel = "Executive Committee",
+  executiveLabel,
   historyParagraphs,
   schedule,
   scheduleYear,
   note,
   relatedLink,
 }: SubConferencePageProps) {
+  const t = await getTranslations("SubMinistry");
+  const resolvedExecutiveLabel = executiveLabel ?? t("executiveHeading");
   return (
     <main id="main-content">
       <Nav heroDark />
@@ -137,7 +140,7 @@ export function SubConferencePage({
         <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
           <div style={{ maxWidth: 1000, margin: "0 auto" }}>
             <Reveal style={{ textAlign: "center", marginBottom: 36 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>{executiveLabel}</span>
+              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>{resolvedExecutiveLabel}</span>
             </Reveal>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 14 }}>
               {executive.map((m, i) => (

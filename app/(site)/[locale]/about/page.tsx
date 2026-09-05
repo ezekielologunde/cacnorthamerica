@@ -6,7 +6,7 @@ import { Church, HeartHandshake, Globe } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import type { CSSProperties } from "react";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 const values = [
   { icon: Church, title: "Sound doctrine", desc: "Preaching the whole counsel of God, faithfully and without compromise." },
@@ -61,6 +61,7 @@ export default async function AboutPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const t = await getTranslations("About");
 
   return (
     <main id="main-content">
@@ -294,7 +295,7 @@ export default async function AboutPage({
           <div className="r2" style={{ gap: 20 }}>
             <Reveal delay={100}>
               <div style={{ background: "var(--cream)", border: "1px solid var(--line)", borderRadius: 20, padding: "26px 26px 28px", height: "100%" }}>
-                <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "var(--ink)", margin: "0 0 14px" }}>Biblically Based</h3>
+                <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "var(--ink)", margin: "0 0 14px" }}>{t("biblicallyBasedHeading")}</h3>
                 <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
                   {[
                     "Affirmation of a minimal set of doctrinal beliefs.",
@@ -308,7 +309,7 @@ export default async function AboutPage({
             </Reveal>
             <Reveal delay={160}>
               <div style={{ background: "var(--cream)", border: "1px solid var(--line)", borderRadius: 20, padding: "26px 26px 28px", height: "100%" }}>
-                <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "var(--ink)", margin: "0 0 14px" }}>Kingdom Focused</h3>
+                <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "var(--ink)", margin: "0 0 14px" }}>{t("kingdomFocusedHeading")}</h3>
                 <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
                   {[
                     "A focus on evangelism and church administration.",

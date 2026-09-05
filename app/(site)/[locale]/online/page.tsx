@@ -9,7 +9,7 @@ import { Video } from "lucide-react";
 import { archiveEntries } from "@/lib/archive";
 import { ArchiveBrowser } from "@/components/media/ArchiveBrowser";
 import { currentOrNextConvention, getConventionState } from "@/lib/conventions";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 const YOUTUBE_URL = "https://youtube.com/@cacnorthamericalatunderegi1330";
 const YOUTUBE_LIVE_URL = "https://www.youtube.com/@cacnorthamericalatunderegi1330/live";
@@ -49,6 +49,7 @@ export default async function OnlinePage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const t = await getTranslations("Live");
 
   const [live, pastSermons] = await Promise.all([getLiveStream(), getSermons(9)]);
   const featured = live ?? pastSermons[0];
@@ -114,7 +115,7 @@ export default async function OnlinePage({
                   <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(20px,2.6vw,28px)", color: "#fff", margin: "6px 0 0" }}>Every session, as it happens.</h2>
                 </div>
                 <a href={YOUTUBE_LIVE_URL} target="_blank" rel="noopener noreferrer" className="press" style={{ flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 8, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 14, padding: "12px 22px", borderRadius: 999, textDecoration: "none" }}>
-                  Watch Live →
+                  {t("watchLiveCta")} →
                 </a>
               </div>
               <div style={{ position: "relative", width: "100%", paddingBottom: "56.25%" }}>

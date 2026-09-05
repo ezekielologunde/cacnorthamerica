@@ -2,6 +2,7 @@
 
 import { useMemo, useState, type CSSProperties, type FormEvent } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import type { StoreProduct } from "@/lib/conventions";
 
 type CartLine = { productId: string; name: string; unitPriceCents: number; size: string | null; quantity: number };
@@ -23,6 +24,7 @@ function formatPrice(cents: number) {
 }
 
 export function StoreCatalog({ categories }: { categories: { key: string; label: string; products: StoreProduct[] }[] }) {
+  const t = useTranslations("Store");
   const [cart, setCart] = useState<CartLine[]>([]);
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
@@ -64,13 +66,13 @@ export function StoreCatalog({ categories }: { categories: { key: string; label:
       });
       const data = await response.json().catch(() => null);
       if (!response.ok || !data?.checkoutUrl) {
-        setErrorMessage(typeof data?.error === "string" ? data.error : "Something went wrong. Please try again.");
+        setErrorMessage(typeof data?.error === "string" ? data.error : t("checkoutError"));
         setStatus("error");
         return;
       }
       window.location.href = data.checkoutUrl;
     } catch {
-      setErrorMessage("Something went wrong. Please try again.");
+      setErrorMessage(t("checkoutError"));
       setStatus("error");
     }
   }
@@ -110,7 +112,7 @@ export function StoreCatalog({ categories }: { categories: { key: string; label:
                     className="press"
                     style={{ background: "var(--ink)", color: "#fff", fontWeight: 700, fontSize: 13.5, padding: "10px 18px", borderRadius: 999, border: "none", cursor: "pointer" }}
                   >
-                    Add
+                    {t("addCta")}
                   </button>
                 </div>
               </div>
@@ -120,9 +122,9 @@ export function StoreCatalog({ categories }: { categories: { key: string; label:
       ))}
 
       <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, padding: "24px 26px" }}>
-        <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 17, color: "var(--ink)", margin: "0 0 14px" }}>Your cart</h3>
+        <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 17, color: "var(--ink)", margin: "0 0 14px" }}>{t("cartHeading")}</h3>
         {cart.length === 0 ? (
-          <p style={{ fontSize: 14.5, color: "var(--ink-soft)", margin: 0 }}>Your cart is empty. Add an item above to get started.</p>
+          <p style={{ fontSize: 14.5, color: "var(--ink-soft)", margin: 0 }}>{t("emptyCart")} {t("emptyCartHint")}</p>
         ) : (
           <>
             <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
@@ -133,24 +135,24 @@ export function StoreCatalog({ categories }: { categories: { key: string; label:
                     <span style={{ color: "var(--ink)" }}>{line.name}{line.size ? ` — ${line.size}` : ""} × {line.quantity}</span>
                     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                       <span style={{ color: "var(--ink-soft)" }}>{formatPrice(line.unitPriceCents * line.quantity)}</span>
-                      <button type="button" onClick={() => removeLine(key)} style={{ background: "none", border: "none", color: "var(--red)", fontWeight: 700, fontSize: 12.5, cursor: "pointer" }}>Remove</button>
+                      <button type="button" onClick={() => removeLine(key)} style={{ background: "none", border: "none", color: "var(--red)", fontWeight: 700, fontSize: 12.5, cursor: "pointer" }}>{t("removeCta")}</button>
                     </div>
                   </div>
                 );
               })}
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid var(--line)", paddingTop: 14, marginBottom: 20 }}>
-              <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", color: "var(--ink-soft)" }}>Total</span>
+              <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", color: "var(--ink-soft)" }}>{t("totalLabel")}</span>
               <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 19, color: "var(--ink)" }}>{formatPrice(total)}</span>
             </div>
 
             <form onSubmit={handleCheckout}>
               <div style={{ marginBottom: 12 }}>
-                <label style={labelStyle}>Full name <span style={{ color: "var(--red)" }}>*</span></label>
+                <label style={labelStyle}>{t("nameLabel")} <span style={{ color: "var(--red)" }}>*</span></label>
                 <input className="field-input" style={inputStyle} value={contactName} onChange={(e) => setContactName(e.target.value)} required autoComplete="name" />
               </div>
               <div style={{ marginBottom: 16 }}>
-                <label style={labelStyle}>Email <span style={{ color: "var(--red)" }}>*</span></label>
+                <label style={labelStyle}>{t("emailLabel")} <span style={{ color: "var(--red)" }}>*</span></label>
                 <input className="field-input" style={inputStyle} type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} required autoComplete="email" />
               </div>
               {status === "error" && errorMessage && (
@@ -162,7 +164,7 @@ export function StoreCatalog({ categories }: { categories: { key: string; label:
                 className="btn-sheen press"
                 style={{ width: "100%", padding: "15px 24px", borderRadius: 999, background: status === "loading" ? "var(--line)" : "linear-gradient(100deg,var(--red-deep),var(--red))", color: "#fff", fontWeight: 800, fontSize: 15.5, border: "none", cursor: status === "loading" ? "not-allowed" : "pointer" }}
               >
-                {status === "loading" ? "Redirecting…" : "Checkout"}
+                {status === "loading" ? t("checkingOutCta") : t("checkoutCta")}
               </button>
             </form>
           </>

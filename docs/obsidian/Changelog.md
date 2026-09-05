@@ -10,6 +10,20 @@ tags: [project/cacnorthamerica]
 
 Related: [[Project]] · [[Decisions]] · [[Features]]
 
+## 2026-09-05 — More real Yoruba: store, online, about, give, sub-ministry chrome
+
+Second translation pass, same day. The entire Store cart/checkout flow
+(`StoreCatalog.tsx`) is now genuinely bilingual -- add/remove/checkout
+labels, cart headings, category names, and error text all matched
+Convention's `Store` namespace almost verbatim. Also wired up: one CTA on
+`/online`, `/about`'s "Biblically Based"/"Kingdom Focused" sub-headings,
+`/give`'s hero eyebrow, and `SubConferencePage`'s shared "Executive
+Committee" default heading (now an async component so it can call
+`getTranslations`). Deliberately left the sub-ministry pages' bespoke
+intro/theme copy and `/give`'s campaign body text (in `lib/giving.ts`,
+not page-level JSX) untranslated -- neither has a safe 1:1 match without
+either rewriting real content or restructuring the data model.
+
 ## 2026-09-05 — Real Yoruba translations: register, contact, plan-your-visit, sitemap, children
 
 Discovered Convention's `messages/yo.json` already has real, reviewed
