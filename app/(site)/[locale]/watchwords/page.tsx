@@ -3,6 +3,7 @@ import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import { CURRENT_WATCHWORD, PAST_WATCHWORDS } from "@/lib/watchwords";
+import { setRequestLocale } from "next-intl/server";
 
 export const metadata = {
   title: "Watchwords Since 1989 — Christ Apostolic Church North America (CACNA)",
@@ -11,7 +12,14 @@ export const metadata = {
   alternates: { canonical: "/watchwords" },
 };
 
-export default function WatchwordsPage() {
+export default async function WatchwordsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <main id="main-content">
       <Nav heroDark />

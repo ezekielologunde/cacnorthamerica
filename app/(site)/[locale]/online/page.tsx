@@ -8,6 +8,7 @@ import { PRAYER_LINE } from "@/lib/prayerLine";
 import { Video } from "lucide-react";
 import { archiveEntries } from "@/lib/archive";
 import { ArchiveBrowser } from "@/components/media/ArchiveBrowser";
+import { setRequestLocale } from "next-intl/server";
 
 const YOUTUBE_URL = "https://youtube.com/@cacnorthamericalatunderegi1330";
 
@@ -32,7 +33,14 @@ export const metadata = {
   alternates: { canonical: "/online" },
 };
 
-export default async function OnlinePage() {
+export default async function OnlinePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   const [live, pastSermons] = await Promise.all([getLiveStream(), getSermons(9)]);
   const featured = live ?? pastSermons[0];
   return (

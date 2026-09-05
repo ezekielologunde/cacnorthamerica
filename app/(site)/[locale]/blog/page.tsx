@@ -14,6 +14,7 @@ import Link from "next/link";
 import { Clock, Calendar, ArrowRight, Globe2, Landmark, Sparkles, Archive, BookHeart } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { SITE_URL } from "@/lib/site";
+import { setRequestLocale } from "next-intl/server";
 
 export const revalidate = 3600;
 
@@ -346,7 +347,14 @@ function CacWorldTeaserWidget({ item }: { item: CacWorldNewsItem }) {
   );
 }
 
-export default async function BlogPage() {
+export default async function BlogPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!

@@ -5,6 +5,7 @@ import { IconBadge } from "@/components/ui/IconBadge";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { Phone, Mail, Landmark, Send } from "lucide-react";
 import { GIVING_CAMPAIGNS, type GivingCampaign } from "@/lib/giving";
+import { setRequestLocale } from "next-intl/server";
 
 export const metadata = {
   title: "Giving — Christ Apostolic Church North America (CACNA)",
@@ -66,7 +67,14 @@ function CampaignCard({ campaign, scheme }: { campaign: GivingCampaign; scheme: 
   );
 }
 
-export default function GivingPage() {
+export default async function GivingPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <main id="main-content">
       <Nav />

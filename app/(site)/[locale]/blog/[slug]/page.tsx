@@ -12,6 +12,7 @@ import type { BlogPost } from "@/lib/blog";
 import { SITE_URL } from "@/lib/site";
 import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
+import { setRequestLocale } from "next-intl/server";
 
 function makePublicClient() {
   return createClient(
@@ -75,7 +76,7 @@ async function resolvePost(slug: string): Promise<BlogPost | null> {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
   const post = await resolvePost(slug);
@@ -317,9 +318,11 @@ function SidebarPostCard({ post }: { post: BlogPost }) {
 export default async function BlogSlugPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }) {
-  const { slug } = await params;
+  const { locale, slug } = await params;
+  setRequestLocale(locale);
+
   const post = await resolvePost(slug);
   if (!post) notFound();
 

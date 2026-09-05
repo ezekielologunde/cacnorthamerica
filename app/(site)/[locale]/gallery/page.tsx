@@ -3,6 +3,7 @@ import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Gallery } from "@/components/sections/Gallery";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
+import { setRequestLocale } from "next-intl/server";
 
 export const metadata = {
   title: "Gallery — Christ Apostolic Church North America (CACNA)",
@@ -11,7 +12,14 @@ export const metadata = {
   alternates: { canonical: "/gallery" },
 };
 
-export default function GalleryPage() {
+export default async function GalleryPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <main id="main-content">
       <Nav />

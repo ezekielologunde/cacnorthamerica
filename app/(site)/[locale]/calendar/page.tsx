@@ -9,6 +9,7 @@ import { CalendarPlus, Download, Circle, ArrowDown, Users, BookOpen, GraduationC
 import { specialEvents, annualMoments, googleCalUrl, icsDataUri, splitByDate, type ChurchEvent } from "@/lib/events";
 import { SITE, SITE_URL } from "@/lib/site";
 import { conventionYears, currentOrNextConvention, dateRangeLabel, CONVENTION_VENUE_SHORT } from "@/lib/conventions";
+import { setRequestLocale } from "next-intl/server";
 
 const MOMENT_ICONS: Record<string, typeof Users> = {
   "cacna-convention": Users,
@@ -90,7 +91,14 @@ function AddToCalendar({ ev, dark = false }: { ev: ChurchEvent; dark?: boolean }
   );
 }
 
-export default async function CalendarPage() {
+export default async function CalendarPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   const { data: dbRows } = await createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
