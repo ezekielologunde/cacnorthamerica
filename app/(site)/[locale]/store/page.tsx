@@ -3,6 +3,9 @@ import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import { StoreCatalog } from "@/components/store/StoreCatalog";
+import { StorePhotoCarousel } from "@/components/store/StorePhotoCarousel";
+import { StoreNews } from "@/components/store/StoreNews";
+import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
 import { storeProducts } from "@/lib/conventions";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
@@ -49,8 +52,11 @@ export default async function StorePage({
         </div>
       </section>
 
+      <StorePhotoCarousel products={storeProducts} />
+
       <section style={{ background: "var(--cream)", padding: "clamp(48px,6vw,72px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+        <div style={{ maxWidth: 1180, margin: "0 auto" }}>
+          <ConventionAdWidget />
           {hasAnyProducts ? (
             <StoreCatalog categories={categories} />
           ) : (
@@ -62,6 +68,8 @@ export default async function StorePage({
           )}
         </div>
       </section>
+
+      <StoreNews />
 
       <FooterExperience />
     </main>
