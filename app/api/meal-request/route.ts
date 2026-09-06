@@ -1,12 +1,7 @@
 import { NextResponse } from "next/server";
 import { logToSheet } from "@/lib/sheetsWebhook";
 import { rateLimit } from "@/lib/rateLimit";
-
-export type MealSlot =
-  | "tue_lunch" | "tue_dinner"
-  | "wed_lunch" | "wed_dinner"
-  | "thu_lunch" | "thu_dinner"
-  | "fri_lunch" | "fri_dinner";
+import { sendMealRequestConfirmationEmail, type MealSlot } from "@/lib/mealRequestEmail";
 
 type MealRequestBody = {
   firstName: string;
@@ -94,6 +89,16 @@ export async function POST(request: Request) {
     "DCC / Zone": body.dccZone,
     "Meals": body.meals.join(", "),
     "Allergies": body.allergies || "",
+  });
+
+  await sendMealRequestConfirmationEmail({
+    firstName: body.firstName,
+    lastName: body.lastName,
+    email: body.email,
+    churchName: body.churchName,
+    dccZone: body.dccZone,
+    meals: body.meals,
+    allergies: body.allergies,
   });
 
   return NextResponse.json({ ok: true });

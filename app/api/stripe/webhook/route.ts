@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { getStripeClient } from "@/lib/stripe";
 import { logToSheet } from "@/lib/sheetsWebhook";
 import { unchunkFromMetadata, decodeSummary, type RegistrationSummary } from "@/lib/checkoutSummary";
+import { sendRegistrationConfirmationEmail } from "@/lib/registrationEmail";
+import { sendStoreOrderConfirmationEmail } from "@/lib/storeOrderEmail";
+import { SITE_URL } from "@/lib/site";
 
 function requireEnv(name: string): string {
   const value = process.env[name];
@@ -59,6 +62,19 @@ export async function POST(request: Request) {
           "Total": totalDollars,
           "Stripe Session": session.id,
         });
+
+        // Stripe's own customer_details email is more authoritative than
+        // whatever the registrant originally typed into the form (matches
+        // the "Contact Email" fallback above) -- send the confirmation
+        // there, falling back to the summary's email if Stripe somehow
+        // didn't capture one.
+        if (summary) {
+          const emailTo = contactEmail || summary.contactEmail;
+          if (emailTo) {
+            const confirmationUrl = `${SITE_URL}/events/cacna-${summary.year}/register/confirmation?session_id=${session.id}&d=${encoded}`;
+            await sendRegistrationConfirmationEmail({ ...summary, contactEmail: emailTo }, confirmationUrl, true);
+          }
+        }
       } else if (kind === "store_order") {
         const itemsSummary = (full.line_items?.data ?? [])
           .map((li) => `${li.description ?? ""} × ${li.quantity ?? 1}`)
@@ -70,6 +86,13 @@ export async function POST(request: Request) {
           "Items": itemsSummary,
           "Total": totalDollars,
           "Stripe Session": session.id,
+        });
+
+        await sendStoreOrderConfirmationEmail({
+          contactName: session.metadata?.contact_name ?? "",
+          contactEmail,
+          items: (full.line_items?.data ?? []).map((li) => `${li.description ?? ""} × ${li.quantity ?? 1}`),
+          totalLabel: totalDollars,
         });
       } else {
         console.error("Stripe checkout.session.completed event with unrecognized metadata.kind", {

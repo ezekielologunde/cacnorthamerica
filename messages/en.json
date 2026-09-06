@@ -276,8 +276,8 @@
     "momentsKicker": "Moments",
     "momentsHeading": "Life among CACNA's youth.",
     "mealHeading": "YYAM Convention",
-    "mealSubheading": "2026 Meal Request",
-    "mealBody": "RSVP for meals during the Convention, July 14–17, 2026 at 14051 Stahley Road, Blue Ridge Summit, PA 17214.",
+    "mealSubheading": "{year} Meal Request",
+    "mealBody": "RSVP for meals during the Convention, {dates} at {venue}.",
     "mealQuestionsLead": "Questions? Email",
     "ctaHeading": "Journey with us.",
     "ctaBody": "Follow along for programs, prayer, and updates from CACNA's youth and young adults."

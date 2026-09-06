@@ -5,6 +5,7 @@ import { rateLimit } from "@/lib/rateLimit";
 import { SITE_URL } from "@/lib/site";
 import { currentOrNextConvention, activePricing, priceForCategory, type RegistrantCategory } from "@/lib/conventions";
 import { encodeSummary, chunkForMetadata, type RegistrationSummary } from "@/lib/checkoutSummary";
+import { sendRegistrationConfirmationEmail } from "@/lib/registrationEmail";
 
 type RegisterRequestBody = {
   registrationType: "individual" | "group";
@@ -155,9 +156,9 @@ export async function POST(request: Request) {
       "Stripe Session": "",
       "Status": isComplimentary ? "complimentary" : "paid",
     });
-    return NextResponse.json({
-      checkoutUrl: `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?status=free&d=${encoded}`,
-    });
+    const checkoutUrl = `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?status=free&d=${encoded}`;
+    await sendRegistrationConfirmationEmail(summary, checkoutUrl, true);
+    return NextResponse.json({ checkoutUrl });
   }
 
   const stripe = getStripeClient();
