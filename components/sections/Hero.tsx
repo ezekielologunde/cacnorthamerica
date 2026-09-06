@@ -252,11 +252,17 @@ export function Hero() {
               {slide.eyebrow}
             </span>
 
+            {/* 800 is Bricolage Grotesque's max available weight (its
+                variable axis tops out there too) -- font-weight can't push
+                any bolder, so the extra heft comes from a text-stroke
+                thickening the glyph edges plus a tighter double shadow for
+                sharper contrast against the video. */}
             <h1 style={{
               fontFamily: "var(--font-display)", fontWeight: 800,
-              fontSize: "clamp(52px,9vw,116px)", lineHeight: 0.96, letterSpacing: "-0.03em",
+              fontSize: "clamp(52px,9vw,116px)", lineHeight: 0.96, letterSpacing: "-0.035em",
               margin: "24px 0 0", color: "#fff", textWrap: "balance",
-              textShadow: "0 6px 32px rgba(0,0,0,.45)",
+              WebkitTextStroke: "1px rgba(255,255,255,.6)",
+              textShadow: "0 2px 10px rgba(0,0,0,.65), 0 14px 40px rgba(0,0,0,.5)",
             }}>
               {slide.title}
             </h1>

@@ -15,6 +15,14 @@ export function AnniversaryCelebration() {
 
   return (
     <section style={{ position: "relative", overflow: "hidden", background: "var(--gradient-band)", padding: "clamp(72px,9vw,120px) clamp(20px,5vw,64px)" }}>
+      {/* This used to be a per-slide hero background (the anniversary slide,
+          before the hero moved to one persistent video for every slide) --
+          featured here full-bleed instead of shrunk into the photo marquee. */}
+      <div aria-hidden style={{
+        position: "absolute", inset: 0,
+        backgroundImage: "url(/images/cac-gathering-crowd.jpg)", backgroundSize: "cover", backgroundPosition: "center",
+      }} />
+      <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg,rgba(10,11,18,.92) 0%,rgba(28,30,46,.85) 55%,rgba(10,11,18,.92) 100%)" }} />
       <div aria-hidden style={{ position: "absolute", top: -120, right: -100, width: 640, height: 560, background: "radial-gradient(circle,rgba(253,200,65,.22),transparent 65%)", pointerEvents: "none" }} />
       <div aria-hidden style={{ position: "absolute", bottom: -140, left: -100, width: 420, height: 420, borderRadius: "50%", background: "rgba(255,255,255,.03)", pointerEvents: "none" }} />
 

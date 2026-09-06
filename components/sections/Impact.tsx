@@ -12,6 +12,15 @@ export function Impact() {
       background: "var(--gradient-hero)",
       padding: "80px clamp(20px,5vw,64px)",
     }}>
+      {/* This used to be a per-slide hero background (the giving-campaign
+          slide, before the hero moved to one persistent video for every
+          slide) -- featured here full-bleed instead of shrunk into the
+          photo marquee. */}
+      <div aria-hidden style={{
+        position: "absolute", inset: 0,
+        backgroundImage: "url(/images/giving-offering.jpg)", backgroundSize: "cover", backgroundPosition: "center",
+      }} />
+      <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg,rgba(45,66,201,.9) 0%,rgba(31,47,150,.85) 55%,rgba(18,26,82,.92) 100%)" }} />
       {/* Decorative drifting glow */}
       <div style={{ position: "absolute", inset: "-15%", background: "radial-gradient(circle at 70% 50%,rgba(45,66,201,.35),transparent 60%)", pointerEvents: "none", animation: "gradient-drift 14s ease-in-out infinite", willChange: "transform" }} />
       <div style={{ position: "absolute", top: -40, right: -40, width: 300, height: 300, borderRadius: "50%", background: "rgba(255,255,255,.04)", pointerEvents: "none" }} />
