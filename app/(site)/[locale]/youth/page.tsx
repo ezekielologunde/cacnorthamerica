@@ -7,6 +7,7 @@ import { InstagramIcon } from "@/components/ui/SocialIcons";
 import { MealRequestForm } from "@/components/youth/MealRequestForm";
 import { PhotoStrip } from "@/components/ministries/PhotoStrip";
 import { mainGalleryPhotos } from "@/lib/mainGalleryPhotos";
+import { currentOrNextConvention, dateRangeLabel, CONVENTION_VENUE } from "@/lib/conventions";
 import Link from "next/link";
 import { Compass, Target, HandHeart, BookOpen, Users, Mic2, Sparkles } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -97,6 +98,7 @@ export default async function YouthPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("Youth");
+  const nextCy = currentOrNextConvention();
 
   const pillars = [
     { icon: pillarIcons[0], label: t("visionLabel"), body: t("visionBody") },
@@ -292,17 +294,19 @@ export default async function YouthPage({
         </div>
       </section>
 
-      {/* 2026 CACNA YYAM Convention meal RSVP -- a separate, address-and-dates
-          distinct youth event from the main Annual Convention. */}
+      {/* CACNA YYAM Convention meal RSVP -- a separate, address-and-dates
+          distinct youth event from the main Annual Convention. Year/dates/
+          venue come from whatever convention is current or next, so this
+          section doesn't quietly keep saying a past year's dates. */}
       <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 700, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 32 }}>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>{t("mealHeading")}</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,4vw,42px)", letterSpacing: "-.8px", color: "var(--ink)", margin: "12px 0 14px", lineHeight: 1.05 }}>
-              {t("mealSubheading")}
+              {t("mealSubheading", { year: nextCy.year })}
             </h2>
             <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.7 }}>
-              {t("mealBody")} {t("mealQuestionsLead")} <a href="mailto:cacnayyam@outlook.com" style={{ color: "var(--red)" }}>cacnayyam@outlook.com</a>.
+              {t("mealBody", { dates: dateRangeLabel(nextCy), venue: CONVENTION_VENUE })} {t("mealQuestionsLead")} <a href="mailto:cacnayyam@outlook.com" style={{ color: "var(--red)" }}>cacnayyam@outlook.com</a>.
             </p>
           </Reveal>
           <Reveal delay={80}>

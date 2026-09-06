@@ -3,6 +3,7 @@ import { Resend } from "resend";
 import { createServiceClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rateLimit";
 import { escapeHtml } from "@/lib/html";
+import { sendContactAutoReply } from "@/lib/contactReplyEmail";
 
 const FROM = "CACNA <noreply@cacnorthamerica.com>";
 const TO   = "info@cacnorthamerica.com";
@@ -93,6 +94,19 @@ export async function POST(req: Request) {
   // Only use email as replyTo if it's a valid address
   const replyToRaw = fields.email || fields["Email"] || "";
   const replyTo = EMAIL_RE.test(replyToRaw.trim()) ? replyToRaw.trim() : undefined;
+
+  // Auto-reply to the submitter — a courtesy confirmation on top of the
+  // staff notification below, fire-and-forget so a failure here never
+  // affects this route's response. Only sent when we have a real address
+  // to reply to.
+  if (replyTo) {
+    sendContactAutoReply({
+      name: fields.name || fields["Name"] || "there",
+      email: replyTo,
+      subject: fields.subject || fields["Subject"] || formName,
+      message: fields.message || fields["Message"] || "",
+    }).catch((e) => console.error("[contact] auto-reply failed:", e));
+  }
 
   try {
     const resend = new Resend(key);

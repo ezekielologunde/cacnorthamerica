@@ -3,6 +3,7 @@ import { getStripeClient } from "@/lib/stripe";
 import { logToSheet } from "@/lib/sheetsWebhook";
 import { unchunkFromMetadata, decodeSummary, type RegistrationSummary } from "@/lib/checkoutSummary";
 import { sendRegistrationConfirmationEmail } from "@/lib/registrationEmail";
+import { sendStoreOrderConfirmationEmail } from "@/lib/storeOrderEmail";
 import { SITE_URL } from "@/lib/site";
 
 function requireEnv(name: string): string {
@@ -85,6 +86,13 @@ export async function POST(request: Request) {
           "Items": itemsSummary,
           "Total": totalDollars,
           "Stripe Session": session.id,
+        });
+
+        await sendStoreOrderConfirmationEmail({
+          contactName: session.metadata?.contact_name ?? "",
+          contactEmail,
+          items: (full.line_items?.data ?? []).map((li) => `${li.description ?? ""} × ${li.quantity ?? 1}`),
+          totalLabel: totalDollars,
         });
       } else {
         console.error("Stripe checkout.session.completed event with unrecognized metadata.kind", {

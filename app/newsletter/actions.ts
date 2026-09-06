@@ -5,6 +5,7 @@ import { Resend } from "resend";
 import { headers } from "next/headers";
 import { rateLimit } from "@/lib/rateLimit";
 import { SITE_URL } from "@/lib/site";
+import { logToSheet } from "@/lib/sheetsWebhook";
 
 export type SubscribeState = { ok: boolean; message: string } | null;
 
@@ -74,6 +75,8 @@ export async function subscribeAction(
     console.error("Newsletter subscribe error:", error.message);
     return { ok: false, message: "Something went wrong. Please try again." };
   }
+
+  logToSheet("Newsletter Signup", { "Email": email, "Name": name ?? "" });
 
   // Send welcome email — fire-and-forget, never blocks the response
   const apiKey = process.env.RESEND_API_KEY;

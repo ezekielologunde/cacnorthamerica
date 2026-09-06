@@ -286,8 +286,8 @@
     "momentsKicker": "Àwọn Àkókò",
     "momentsHeading": "Ìgbésí ayé láàrin àwọn ọ̀dọ́ CACNA.",
     "mealHeading": "Àpéjọ YYAM",
-    "mealSubheading": "Ìbéèrè Oúnjẹ 2026",
-    "mealBody": "Dá orúkọ rẹ sílẹ̀ fún oúnjẹ nígbà Àpéjọ, July 14–17, 2026 ní 14051 Stahley Road, Blue Ridge Summit, PA 17214.",
+    "mealSubheading": "Ìbéèrè Oúnjẹ {year}",
+    "mealBody": "Dá orúkọ rẹ sílẹ̀ fún oúnjẹ nígbà Àpéjọ, {dates} ní {venue}.",
     "mealQuestionsLead": "Ìbéèrè? Fi í-meèlì ránṣẹ́ sí",
     "ctaHeading": "Bá wa rìn.",
     "ctaBody": "Tẹ̀lé wa fún àwọn ètò, àdúrà, àti ìsọfúnni láti ọ̀dọ̀ àwọn ọ̀dọ́ àti ọ̀dọ́ àgbàlagbà CACNA."
