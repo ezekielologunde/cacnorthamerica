@@ -13,7 +13,9 @@ import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
 import Link from "next/link";
 import { Clock, Calendar, ArrowRight, Globe2, Landmark, Sparkles, Archive, BookHeart } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
+import { routing } from "@/i18n/routing";
 import { setRequestLocale } from "next-intl/server";
 
 export const revalidate = 3600;
@@ -43,12 +45,20 @@ function dbPostToBlogPost(p: DbBlogRow): BlogPost {
   };
 }
 
-export const metadata = {
-  title: "Blog & News — Christ Apostolic Church North America (CACNA)",
-  description:
-    "Devotionals, ministry updates, and reflections from across CACNA — written for the body, by the body.",
-  alternates: { canonical: "/blog" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/blog`]));
+  return {
+    title: "Blog & News — Christ Apostolic Church North America (CACNA)",
+    description:
+      "Devotionals, ministry updates, and reflections from across CACNA — written for the body, by the body.",
+    alternates: { canonical: `${SITE_URL}/${locale}/blog`, languages },
+  };
+}
 
 const WHATSAPP_SHARE = (title: string, slug: string) =>
   `https://wa.me/?text=${encodeURIComponent(`${title} — ${SITE_URL}/blog/${slug}`)}`;

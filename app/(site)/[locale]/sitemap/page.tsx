@@ -4,12 +4,23 @@ import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { currentOrNextConvention } from "@/lib/conventions";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site";
+import { routing } from "@/i18n/routing";
 
-export const metadata = {
-  title: "Sitemap — Christ Apostolic Church North America (CACNA)",
-  description: "Every public page on the CACNA website, grouped for easy browsing.",
-  alternates: { canonical: "/sitemap" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/sitemap`]));
+  return {
+    title: "Sitemap — Christ Apostolic Church North America (CACNA)",
+    description: "Every public page on the CACNA website, grouped for easy browsing.",
+    alternates: { canonical: `${SITE_URL}/${locale}/sitemap`, languages },
+  };
+}
 
 export default async function SitemapPage({
   params,

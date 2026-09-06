@@ -1,16 +1,27 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import { conventionYears, isConventionPast, dateRangeLabel, type RegistrantCategory } from "@/lib/conventions";
 import { setRequestLocale } from "next-intl/server";
+import { SITE_URL } from "@/lib/site";
+import { routing } from "@/i18n/routing";
 
-export const metadata = {
-  title: "Past Conventions — CACNA Annual Convention Archive",
-  description: "Every past CACNA Annual Convention — themes, dates, and registration fees where recorded.",
-  alternates: { canonical: "/archive" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/archive`]));
+  return {
+    title: "Past Conventions — CACNA Annual Convention Archive",
+    description: "Every past CACNA Annual Convention — themes, dates, and registration fees where recorded.",
+    alternates: { canonical: `${SITE_URL}/${locale}/archive`, languages },
+  };
+}
 
 const CATEGORY_LABEL: Record<RegistrantCategory, string> = {
   adult: "Adults", young_adult: "Young Adults", child: "Children",

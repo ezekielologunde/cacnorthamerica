@@ -9,13 +9,24 @@ import {
   nearbyEssentials, remember, rules, rulesAttribution, type NearbyEssential,
 } from "@/lib/planYourVisit";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site";
+import { routing } from "@/i18n/routing";
 
-export const metadata = {
-  title: "Plan Your Visit — Christ Apostolic Church North America (CACNA)",
-  description:
-    "Everything you need to plan your trip to the CACNA Annual Convention at CAC Village — travel, hotels, weather, what to pack, nearby essentials, and convention etiquette.",
-  alternates: { canonical: "/plan-your-visit" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/plan-your-visit`]));
+  return {
+    title: "Plan Your Visit — Christ Apostolic Church North America (CACNA)",
+    description:
+      "Everything you need to plan your trip to the CACNA Annual Convention at CAC Village — travel, hotels, weather, what to pack, nearby essentials, and convention etiquette.",
+    alternates: { canonical: `${SITE_URL}/${locale}/plan-your-visit`, languages },
+  };
+}
 
 function groupByArea(items: NearbyEssential[]) {
   const areas: string[] = [];
