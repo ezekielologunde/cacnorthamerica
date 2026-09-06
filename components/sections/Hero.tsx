@@ -219,7 +219,7 @@ export function Hero() {
       <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 200, zIndex: 1, background: "linear-gradient(to bottom,transparent,rgba(0,0,0,.7))" }} />
 
       {/* Slide content */}
-      <div style={{ position: "relative", zIndex: 2, maxWidth: 820, margin: "0 auto", width: "100%", textAlign: "center" }}>
+      <div style={{ position: "relative", zIndex: 2, maxWidth: 960, margin: "0 auto", width: "100%", textAlign: "center" }}>
         {/* mode="wait" previously blocked each new slide's enter animation
             on the outgoing slide's exit animation fully resolving -- with a
             7s auto-advance interval running indefinitely, that coordination
@@ -254,14 +254,15 @@ export function Hero() {
 
             <h1 style={{
               fontFamily: "var(--font-display)", fontWeight: 800,
-              fontSize: "clamp(44px,7.5vw,92px)", lineHeight: 0.98, letterSpacing: "-0.03em",
+              fontSize: "clamp(52px,9vw,116px)", lineHeight: 0.96, letterSpacing: "-0.03em",
               margin: "24px 0 0", color: "#fff", textWrap: "balance",
+              textShadow: "0 6px 32px rgba(0,0,0,.45)",
             }}>
               {slide.title}
             </h1>
 
             <p style={{
-              fontSize: "clamp(15px,1.4vw,18px)", lineHeight: 1.65,
+              fontSize: "clamp(16px,1.6vw,20px)", lineHeight: 1.65,
               color: "rgba(255,255,255,.78)", maxWidth: 520, margin: "18px auto 0",
               textWrap: "pretty",
             }}>
