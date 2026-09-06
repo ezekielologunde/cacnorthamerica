@@ -35,30 +35,32 @@ export async function WatchOnline() {
         </Reveal>
 
         <div style={{ display: "grid", gridTemplateColumns: thumbnails.length ? "1.6fr 1fr" : "1fr", gap: 28, alignItems: "start" }}>
-          <Reveal delay={80}>
-            <VideoFacade videoId={featured.id} title={featured.title} live={!!live} />
-          </Reveal>
+          {/* Functional content, not decorative -- no scroll-triggered
+              Reveal here. This section's height (tall grid + the featured
+              video's own 16:9 block) could push whileInView's intersection
+              check past the point it ever fires, leaving the video/thumbs
+              stuck at opacity 0 with nothing else on the page hinting why. */}
+          <VideoFacade videoId={featured.id} title={featured.title} live={!!live} />
 
           {thumbnails.length > 0 && (
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              {thumbnails.map((s, i) => (
-                <Reveal key={s.id} delay={120 + i * 70}>
-                  <a
-                    href={`https://www.youtube.com/watch?v=${s.id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ display: "flex", gap: 12, alignItems: "center", textDecoration: "none", padding: 8, borderRadius: 14, transition: "background .2s" }}
-                    className="watch-thumb-link"
-                  >
-                    <img src={`https://i.ytimg.com/vi/${s.id}/mqdefault.jpg`} alt="" width={112} height={63} loading="lazy" style={{ width: 112, height: 63, borderRadius: 10, objectFit: "cover", flexShrink: 0 }} />
-                    <div style={{ minWidth: 0 }}>
-                      <div style={{ fontSize: 13.5, fontWeight: 700, color: "#fff", lineHeight: 1.35, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                        {s.title}
-                      </div>
-                      <div style={{ fontSize: 12, color: "rgba(245,246,250,.5)", marginTop: 4 }}>{formatSermonDate(s.published)}</div>
+              {thumbnails.map((s) => (
+                <a
+                  key={s.id}
+                  href={`https://www.youtube.com/watch?v=${s.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ display: "flex", gap: 12, alignItems: "center", textDecoration: "none", padding: 8, borderRadius: 14, transition: "background .2s" }}
+                  className="watch-thumb-link"
+                >
+                  <img src={`https://i.ytimg.com/vi/${s.id}/mqdefault.jpg`} alt="" width={112} height={63} loading="lazy" style={{ width: 112, height: 63, borderRadius: 10, objectFit: "cover", flexShrink: 0 }} />
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: 13.5, fontWeight: 700, color: "#fff", lineHeight: 1.35, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                      {s.title}
                     </div>
-                  </a>
-                </Reveal>
+                    <div style={{ fontSize: 12, color: "rgba(245,246,250,.5)", marginTop: 4 }}>{formatSermonDate(s.published)}</div>
+                  </div>
+                </a>
               ))}
             </div>
           )}
