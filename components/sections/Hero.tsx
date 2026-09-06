@@ -14,7 +14,7 @@ import { GIVING_CAMPAIGNS, localizeCampaign } from "@/lib/giving";
 
 type SlideBg =
   | { type: "photo"; src: string; alt: string }
-  | { type: "video"; src: string; poster: string; alt: string }
+  | { type: "youtube"; videoId: string; poster: string; alt: string }
   | { type: "gradient"; value: string };
 type SlideKind = "Welcome" | "Event" | "Ad" | "News";
 
@@ -64,7 +64,7 @@ function useSlides(): Slide[] {
         { label: "Watch Online", href: "/online" },
         { label: "Find a Zone", href: "/zones" },
       ],
-      bg: { type: "video", src: "/videos/welcome-hero.mp4", poster: "/images/cac-congregation-worship.jpg", alt: "CACNA congregation in worship" },
+      bg: { type: "youtube", videoId: "54KgNQo6cws", poster: "/images/cac-congregation-worship.jpg", alt: "CACNA congregation in worship" },
     });
 
     const { cy: featuredCy, state } = conventionToFeature();
@@ -82,7 +82,7 @@ function useSlides(): Slide[] {
       cta: showRecap
         ? { label: "Read the Closing Message", href: recapPost ? (recapPost.href ?? `/blog/${recapPost.slug}`) : featuredCy.href }
         : { label: "Event Details", href: nextCy.href },
-      bg: { type: "video", src: "/videos/convention-hero.mp4", poster: "/images/cac-youth-convention.jpg", alt: "CACNA youth at a past Annual Convention" },
+      bg: { type: "youtube", videoId: "SFXZsCZPD0I", poster: "/images/cac-youth-convention.jpg", alt: "CACNA youth at a past Annual Convention" },
     });
 
     const anniversary = specialEvents.find((e) => e.id === "cacna-50th-anniversary-2026");
@@ -193,28 +193,39 @@ export function Hero() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.9, ease: "easeInOut" }}
             style={{
-              position: "absolute", inset: 0,
+              position: "absolute", inset: 0, overflow: "hidden",
               ...(slide.bg.type === "photo"
                 ? { backgroundImage: `url(${slide.bg.src})`, backgroundSize: "cover", backgroundPosition: "center" }
-                : slide.bg.type === "video"
+                : slide.bg.type === "youtube"
                 ? { backgroundImage: `url(${slide.bg.poster})`, backgroundSize: "cover", backgroundPosition: "center" }
                 : slide.bg.type === "gradient"
                 ? { background: slide.bg.value }
                 : {}),
             }}
           >
-            {slide.bg.type === "video" && !reduce && (
-              <video
-                key={slide.bg.src}
-                autoPlay
-                muted
-                loop
-                playsInline
-                poster={slide.bg.poster}
-                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
-              >
-                <source src={slide.bg.src} type="video/mp4" />
-              </video>
+            {slide.bg.type === "youtube" && !reduce && (
+              // Oversized + centered so a 16:9 embed covers the frame at any
+              // aspect ratio (the standard "video background" crop trick) --
+              // same math a scaled/centered <video style="object-fit:cover">
+              // would do natively, done by hand since an <iframe> has no
+              // object-fit. `pointer-events: none` keeps it purely decorative
+              // (aria-hidden is already set on this block's parent), and the
+              // div's own backgroundImage (the poster, set above) is what
+              // actually paints for reduced-motion visitors -- this iframe
+              // only ever renders on top of it.
+              <iframe
+                key={slide.bg.videoId}
+                src={`https://www.youtube-nocookie.com/embed/${slide.bg.videoId}?autoplay=1&mute=1&loop=1&playlist=${slide.bg.videoId}&controls=0&showinfo=0&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1`}
+                title={slide.bg.alt}
+                allow="autoplay; encrypted-media"
+                style={{
+                  position: "absolute", top: "50%", left: "50%",
+                  width: "177.78vh", height: "56.25vw",
+                  minWidth: "100%", minHeight: "100%",
+                  transform: "translate(-50%,-50%)",
+                  border: "none", pointerEvents: "none",
+                }}
+              />
             )}
           </motion.div>
         </AnimatePresence>
