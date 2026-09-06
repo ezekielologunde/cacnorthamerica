@@ -77,6 +77,10 @@ export default async function Home({
       <Nav heroDark />
       {announcements && announcements.length > 0 && <HomepageAnnouncements announcements={announcements} />}
       <Hero />
+      {/* Right after the hero's video, while the visitor is still in a
+          "watching CACNA" mindset — a stronger visual follow-through than
+          waiting until after five text-heavy sections. */}
+      <PhotoMarquee />
       <AnniversaryCelebration />
       <PastorWelcome />
       <Watchword />
@@ -84,7 +88,6 @@ export default async function Home({
       <UpcomingPrograms />
       <LatestNews />
       <OurMinistries />
-      <PhotoMarquee />
       <Impact />
       <GlobalChurches />
       <PlanVisit />
