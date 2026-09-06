@@ -88,7 +88,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://unpkg.com" />
         {/* Preload hero background so the browser fetches it before CSS is parsed */}
-        <link rel="preload" as="image" href="https://img.youtube.com/vi/RX1NjOYtDxo/maxresdefault.jpg" />
+        <link rel="preload" as="image" href="https://img.youtube.com/vi/SFXZsCZPD0I/maxresdefault.jpg" />
       </head>
       <body>
         <SkipToContent />
