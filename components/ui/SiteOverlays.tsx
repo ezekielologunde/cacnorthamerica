@@ -84,13 +84,13 @@ export function SiteOverlays({ bannerAnn }: { bannerAnn?: BannerAnn | null }) {
             padding: '0 clamp(16px,4vw,48px)', gap: 16,
           }}
         >
-          <span style={{ color: bannerAnn.text_color, fontSize: 17, fontWeight: 800, flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <span style={{ color: bannerAnn.text_color, fontSize: 'clamp(13px,3.6vw,17px)', fontWeight: 800, flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {bannerAnn.title}
           </span>
           {bannerAnn.cta_text && bannerAnn.cta_url && (
             <a
               href={bannerAnn.cta_url}
-              style={{ color: bannerAnn.text_color, fontSize: 16, fontWeight: 800, textDecoration: 'underline', whiteSpace: 'nowrap', flexShrink: 0, opacity: 0.9 }}
+              style={{ color: bannerAnn.text_color, fontSize: 'clamp(12.5px,3.2vw,16px)', fontWeight: 800, textDecoration: 'underline', whiteSpace: 'nowrap', flexShrink: 0, opacity: 0.9 }}
             >
               {bannerAnn.cta_text} →
             </a>
@@ -98,7 +98,7 @@ export function SiteOverlays({ bannerAnn }: { bannerAnn?: BannerAnn | null }) {
           <button
             onClick={dismissDbBar}
             aria-label="Dismiss announcement"
-            style={{ background: 'none', border: 'none', color: bannerAnn.text_color, cursor: 'pointer', fontSize: 26, lineHeight: 1, padding: '0 0 0 8px', flexShrink: 0, opacity: 0.5 }}
+            style={{ background: 'none', border: 'none', color: bannerAnn.text_color, cursor: 'pointer', fontSize: 'clamp(20px,5vw,26px)', lineHeight: 1, padding: '0 0 0 8px', flexShrink: 0, opacity: 0.5 }}
           >
             ×
           </button>
@@ -122,12 +122,12 @@ export function SiteOverlays({ bannerAnn }: { bannerAnn?: BannerAnn | null }) {
         >
           <div aria-hidden style={{ width: 10, height: 10, borderRadius: '50%', background: 'var(--gold)', flexShrink: 0 }} />
           <div key={currentBarEvent.id} style={{ display: 'flex', alignItems: 'center', gap: 14, flex: 1, minWidth: 0, animation: 'barFade .5s ease' }}>
-            <span style={{ color: 'rgba(245,246,250,.9)', fontSize: 17, fontWeight: 800, flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <span style={{ color: 'rgba(245,246,250,.9)', fontSize: 'clamp(13px,3.6vw,17px)', fontWeight: 800, flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {currentBarEvent.navLabel ?? currentBarEvent.title} · {currentBarEvent.dateLabel}
             </span>
             <Link
               href={currentBarEvent.href!}
-              style={{ color: 'var(--gold)', fontSize: 16, fontWeight: 800, textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0 }}
+              style={{ color: 'var(--gold)', fontSize: 'clamp(12.5px,3.2vw,16px)', fontWeight: 800, textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0 }}
             >
               Learn more →
             </Link>
@@ -135,7 +135,7 @@ export function SiteOverlays({ bannerAnn }: { bannerAnn?: BannerAnn | null }) {
           <button
             onClick={dismissBar}
             aria-label="Dismiss announcement"
-            style={{ background: 'none', border: 'none', color: 'rgba(245,246,250,.4)', cursor: 'pointer', fontSize: 26, lineHeight: 1, padding: '0 0 0 8px', flexShrink: 0 }}
+            style={{ background: 'none', border: 'none', color: 'rgba(245,246,250,.4)', cursor: 'pointer', fontSize: 'clamp(20px,5vw,26px)', lineHeight: 1, padding: '0 0 0 8px', flexShrink: 0 }}
           >
             ×
           </button>
