@@ -3,13 +3,24 @@ import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import Link from "next/link";
 import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site";
+import { routing } from "@/i18n/routing";
 
-export const metadata = {
-  title: "Statement of Faith — Christ Apostolic Church North America (CACNA)",
-  description:
-    "What CACNA believes — the Word of God, the Trinity, Jesus Christ, the Holy Spirit, regeneration, the Church, Christian conduct, the ordinances, religious liberty, church cooperation, and the last things.",
-  alternates: { canonical: "/statement-of-faith" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/statement-of-faith`]));
+  return {
+    title: "Statement of Faith — Christ Apostolic Church North America (CACNA)",
+    description:
+      "What CACNA believes — the Word of God, the Trinity, Jesus Christ, the Holy Spirit, regeneration, the Church, Christian conduct, the ordinances, religious liberty, church cooperation, and the last things.",
+    alternates: { canonical: `${SITE_URL}/${locale}/statement-of-faith`, languages },
+  };
+}
 
 const articles = [
   {

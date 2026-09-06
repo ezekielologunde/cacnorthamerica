@@ -7,14 +7,25 @@ import Link from "next/link";
 import { getLeaders, getLeaderRoles, slugifyLeaderName, type Leader } from "@/lib/leaders";
 import { CAC_WORLDWIDE, CAC_ANOSIKE_EUROPE } from "@/lib/global";
 import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site";
+import { routing } from "@/i18n/routing";
 
 export const revalidate = 3600;
 
-export const metadata = {
-  title: "Leadership — Christ Apostolic Church North America (CACNA)",
-  description: "Meet CACNA's regional leadership — led by Regional Superintendent Pastor Dr. T.O. Agbeja — and the current leaders of Christ Apostolic Church Worldwide.",
-  alternates: { canonical: "/leadership" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/leadership`]));
+  return {
+    title: "Leadership — Christ Apostolic Church North America (CACNA)",
+    description: "Meet CACNA's regional leadership — led by Regional Superintendent Pastor Dr. T.O. Agbeja — and the current leaders of Christ Apostolic Church Worldwide.",
+    alternates: { canonical: `${SITE_URL}/${locale}/leadership`, languages },
+  };
+}
 
 /** Prose `bio` text (migrated from the old hardcoded BIOS map) stays primary.
  *  Only leaders with no bio text at all fall back to their combined role list

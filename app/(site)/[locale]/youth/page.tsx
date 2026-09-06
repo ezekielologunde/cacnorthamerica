@@ -11,13 +11,24 @@ import { currentOrNextConvention, dateRangeLabel, CONVENTION_VENUE } from "@/lib
 import Link from "next/link";
 import { Compass, Target, HandHeart, BookOpen, Users, Mic2, Sparkles } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site";
+import { routing } from "@/i18n/routing";
 
-export const metadata = {
-  title: "Youth & Young Adult — Christ Apostolic Church North America (CACNA)",
-  description:
-    "CACNA's Youth & Young Adult Ministry — vision, mission, values, history, and major programs raising Christ-centered youth across North America.",
-  alternates: { canonical: "/youth" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/youth`]));
+  return {
+    title: "Youth & Young Adult — Christ Apostolic Church North America (CACNA)",
+    description:
+      "CACNA's Youth & Young Adult Ministry — vision, mission, values, history, and major programs raising Christ-centered youth across North America.",
+    alternates: { canonical: `${SITE_URL}/${locale}/youth`, languages },
+  };
+}
 
 // Real Instagram account for CACNA's Youth & Young Adult Ministry
 // (verified 2026-07-21), distinct from the org-wide account used elsewhere

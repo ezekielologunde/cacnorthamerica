@@ -8,13 +8,24 @@ import Image from "next/image";
 import { Music, Landmark, Sparkles, HandHeart, Video, Wrench, Globe, ShieldCheck, BookOpen, Users2, Smile } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site";
+import { routing } from "@/i18n/routing";
 
-export const metadata = {
-  title: "Ministries — Christ Apostolic Church North America (CACNA)",
-  description:
-    "The departments serving every CACNA zone — Administration, Christian Education, Evangelism, Missions, Music, Welfare & Outreach, ICT, and more.",
-  alternates: { canonical: "/ministries" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/ministries`]));
+  return {
+    title: "Ministries — Christ Apostolic Church North America (CACNA)",
+    description:
+      "The departments serving every CACNA zone — Administration, Christian Education, Evangelism, Missions, Music, Welfare & Outreach, ICT, and more.",
+    alternates: { canonical: `${SITE_URL}/${locale}/ministries`, languages },
+  };
+}
 
 type Ministry = {
   name: string;

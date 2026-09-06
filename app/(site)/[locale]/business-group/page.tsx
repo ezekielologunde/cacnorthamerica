@@ -1,13 +1,24 @@
 import { SubConferencePage } from "@/components/ministries/SubConferencePage";
 import { mainGalleryPhotos } from "@/lib/mainGalleryPhotos";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site";
+import { routing } from "@/i18n/routing";
 
-export const metadata = {
-  title: "Business Group Fellowship — Christ Apostolic Church North America (CACNA)",
-  description:
-    "CACNA Business Group Fellowship (CACBGF) — inaugurated May 2026, supporting the Church's projects and mentoring members who are business-inclined.",
-  alternates: { canonical: "/business-group" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/business-group`]));
+  return {
+    title: "Business Group Fellowship — Christ Apostolic Church North America (CACNA)",
+    description:
+      "CACNA Business Group Fellowship (CACBGF) — inaugurated May 2026, supporting the Church's projects and mentoring members who are business-inclined.",
+    alternates: { canonical: `${SITE_URL}/${locale}/business-group`, languages },
+  };
+}
 
 export default async function BusinessGroupPage({
   params,

@@ -1,13 +1,24 @@
 import { SubConferencePage } from "@/components/ministries/SubConferencePage";
 import { mainGalleryPhotos } from "@/lib/mainGalleryPhotos";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site";
+import { routing } from "@/i18n/routing";
 
-export const metadata = {
-  title: "Ministers' Wives Conference — Christ Apostolic Church North America (CACNA)",
-  description:
-    "CAC Latunde Region Ministers' Wives Conference — leadership and executive committee supporting the wives of CACNA's ministers.",
-  alternates: { canonical: "/ministers-wives" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/ministers-wives`]));
+  return {
+    title: "Ministers' Wives Conference — Christ Apostolic Church North America (CACNA)",
+    description:
+      "CAC Latunde Region Ministers' Wives Conference — leadership and executive committee supporting the wives of CACNA's ministers.",
+    alternates: { canonical: `${SITE_URL}/${locale}/ministers-wives`, languages },
+  };
+}
 
 export default async function MinistersWivesPage({
   params,
