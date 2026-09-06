@@ -12,11 +12,13 @@ import { specialEvents, isEventPast } from "@/lib/events";
 import { POSTS } from "@/lib/blog";
 import { GIVING_CAMPAIGNS, localizeCampaign } from "@/lib/giving";
 
-type SlideBg =
-  | { type: "photo"; src: string; alt: string }
-  | { type: "youtube"; videoId: string; poster: string; alt: string }
-  | { type: "gradient"; value: string };
 type SlideKind = "Welcome" | "Event" | "Ad" | "News";
+
+// The hero's one persistent background -- every slide's text crossfades on
+// top of the same clip instead of each slide bringing its own photo/video/
+// gradient. Real CACNA congregation footage, general enough to sit behind
+// any slide topic (convention, giving, news, anniversary...).
+const HERO_BG_VIDEO = { videoId: "54KgNQo6cws", poster: "/images/cac-congregation-worship.jpg", alt: "CACNA congregation in worship" };
 
 interface Slide {
   key: string;
@@ -25,10 +27,9 @@ interface Slide {
   title: string;
   desc: string;
   cta: { label: string; href: string; external?: boolean };
-  bg: SlideBg;
-  /** A portrait (e.g. a person's headshot) doesn't work stretched as a
-   *  full-bleed background — shown inline in the content instead, dynamically,
-   *  while the slide falls back to a gradient backdrop. */
+  /** A portrait (e.g. a person's headshot) shown inline in the content next
+   *  to the text, since the hero background is now the one persistent video
+   *  rather than a per-slide image a portrait could substitute for. */
   inlineImage?: { src: string; alt: string };
   /** Extra navigation for the Welcome slide only — points visitors to the
    *  site's other important sections instead of a single CTA. */
@@ -64,7 +65,6 @@ function useSlides(): Slide[] {
         { label: "Watch Online", href: "/online" },
         { label: "Find a Zone", href: "/zones" },
       ],
-      bg: { type: "youtube", videoId: "54KgNQo6cws", poster: "/images/cac-congregation-worship.jpg", alt: "CACNA congregation in worship" },
     });
 
     const { cy: featuredCy, state } = conventionToFeature();
@@ -82,7 +82,6 @@ function useSlides(): Slide[] {
       cta: showRecap
         ? { label: "Read the Closing Message", href: recapPost ? (recapPost.href ?? `/blog/${recapPost.slug}`) : featuredCy.href }
         : { label: "Event Details", href: nextCy.href },
-      bg: { type: "youtube", videoId: "SFXZsCZPD0I", poster: "/images/cac-youth-convention.jpg", alt: "CACNA youth at a past Annual Convention" },
     });
 
     const anniversary = specialEvents.find((e) => e.id === "cacna-50th-anniversary-2026");
@@ -94,7 +93,6 @@ function useSlides(): Slide[] {
         title: "50th Anniversary Celebration",
         desc: `${anniversary.dateLabel} · ${anniversary.timeLabel} — five decades of ministry across North America.`,
         cta: { label: "Celebrate With Us", href: anniversary.href ?? "/calendar" },
-        bg: { type: "photo", src: "/images/cac-gathering-crowd.jpg", alt: "A gathering of the CACNA family" },
       });
     }
 
@@ -107,7 +105,6 @@ function useSlides(): Slide[] {
         title: `Israel & Egypt, ${pilgrimage.dateLabel}`,
         desc: "Flights, hotels & a private guide included · $4,549 · $500 deposit to register.",
         cta: { label: "Reserve Your Spot", href: pilgrimage.href ?? "/calendar" },
-        bg: { type: "gradient", value: "linear-gradient(135deg,#7A5A1E,#3D2C0F)" },
       });
     }
 
@@ -120,7 +117,6 @@ function useSlides(): Slide[] {
         title: givingCampaign.title,
         desc: givingCampaign.adBlurb,
         cta: { label: "Give Now", href: "/giving" },
-        bg: { type: "photo", src: "/images/giving-offering.jpg", alt: "CACNA members bringing an offering during a service" },
       });
     }
 
@@ -128,6 +124,10 @@ function useSlides(): Slide[] {
       .filter((p) => p.slug !== "cacna-2026-closing-appreciation")
       .sort((a, b) => b.dateIso.localeCompare(a.dateIso))[0];
     if (latestPost) {
+      // A portrait photo (e.g. a person's headshot) still works as the small
+      // inline circle below; a landscape photo has nowhere to go now that
+      // the hero background is the one persistent video rather than a
+      // per-slide image — it stays visible on the post's own page.
       const isPortrait = latestPost.image?.orientation === "portrait";
       slides.push({
         key: "news",
@@ -136,9 +136,6 @@ function useSlides(): Slide[] {
         title: latestPost.title,
         desc: latestPost.excerpt,
         cta: { label: "Read the Post", href: latestPost.href ?? `/blog/${latestPost.slug}` },
-        bg: latestPost.image && !isPortrait
-          ? { type: "photo", src: latestPost.image.url, alt: latestPost.image.alt }
-          : { type: "gradient", value: latestPost.accent },
         inlineImage: latestPost.image && isPortrait
           ? { src: latestPost.image.url, alt: latestPost.image.alt }
           : undefined,
@@ -183,52 +180,29 @@ export function Hero() {
         background: "#0d0a08",
       }}
     >
-      {/* Background — crossfades with the active slide */}
-      <div aria-hidden style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
-        <AnimatePresence>
-          <motion.div
-            key={slide.key}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.9, ease: "easeInOut" }}
+      {/* Persistent video background — the same clip sits behind every
+          slide; only the text content (below) crossfades between slides.
+          The poster paints immediately (and is all reduced-motion visitors
+          ever see); the iframe, oversized + centered, is the standard
+          object-fit:cover trick since an <iframe> has no native equivalent. */}
+      <div aria-hidden style={{
+        position: "absolute", inset: 0, overflow: "hidden",
+        backgroundImage: `url(${HERO_BG_VIDEO.poster})`, backgroundSize: "cover", backgroundPosition: "center",
+      }}>
+        {!reduce && (
+          <iframe
+            src={`https://www.youtube-nocookie.com/embed/${HERO_BG_VIDEO.videoId}?autoplay=1&mute=1&loop=1&playlist=${HERO_BG_VIDEO.videoId}&controls=0&showinfo=0&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1`}
+            title={HERO_BG_VIDEO.alt}
+            allow="autoplay; encrypted-media"
             style={{
-              position: "absolute", inset: 0, overflow: "hidden",
-              ...(slide.bg.type === "photo"
-                ? { backgroundImage: `url(${slide.bg.src})`, backgroundSize: "cover", backgroundPosition: "center" }
-                : slide.bg.type === "youtube"
-                ? { backgroundImage: `url(${slide.bg.poster})`, backgroundSize: "cover", backgroundPosition: "center" }
-                : slide.bg.type === "gradient"
-                ? { background: slide.bg.value }
-                : {}),
+              position: "absolute", top: "50%", left: "50%",
+              width: "177.78vh", height: "56.25vw",
+              minWidth: "100%", minHeight: "100%",
+              transform: "translate(-50%,-50%)",
+              border: "none", pointerEvents: "none",
             }}
-          >
-            {slide.bg.type === "youtube" && !reduce && (
-              // Oversized + centered so a 16:9 embed covers the frame at any
-              // aspect ratio (the standard "video background" crop trick) --
-              // same math a scaled/centered <video style="object-fit:cover">
-              // would do natively, done by hand since an <iframe> has no
-              // object-fit. `pointer-events: none` keeps it purely decorative
-              // (aria-hidden is already set on this block's parent), and the
-              // div's own backgroundImage (the poster, set above) is what
-              // actually paints for reduced-motion visitors -- this iframe
-              // only ever renders on top of it.
-              <iframe
-                key={slide.bg.videoId}
-                src={`https://www.youtube-nocookie.com/embed/${slide.bg.videoId}?autoplay=1&mute=1&loop=1&playlist=${slide.bg.videoId}&controls=0&showinfo=0&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1`}
-                title={slide.bg.alt}
-                allow="autoplay; encrypted-media"
-                style={{
-                  position: "absolute", top: "50%", left: "50%",
-                  width: "177.78vh", height: "56.25vw",
-                  minWidth: "100%", minHeight: "100%",
-                  transform: "translate(-50%,-50%)",
-                  border: "none", pointerEvents: "none",
-                }}
-              />
-            )}
-          </motion.div>
-        </AnimatePresence>
+          />
+        )}
       </div>
 
       {/* Dark shadow overlay + grain vignette */}

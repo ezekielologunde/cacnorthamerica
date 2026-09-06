@@ -93,6 +93,10 @@ export function FooterExperience() {
     {
       heading: t('whoWeAre'),
       links: [
+        // CAC North America is one region of the global Christ Apostolic
+        // Church movement headquartered in Nigeria -- linking out to the
+        // parent body's own site rather than just mentioning it in prose.
+        ['https://cacworld.org/', 'CAC World Headquarters'],
         ['/about', t('aboutCacna')],
         ['/leadership', t('leadership')],
         ['/zones', t('zonesDccs')],
@@ -142,14 +146,21 @@ export function FooterExperience() {
               {t('contactConventionCommittee')} <ArrowRight size={13} strokeWidth={2.5} aria-hidden />
             </Link>
 
-            <div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 14 }}>
               <Link href={withLocale('/events/cacna-50th-anniversary-2026', locale)} style={{
-                display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 14,
+                display: 'inline-flex', alignItems: 'center', gap: 6,
                 border: '1px solid rgba(253,200,65,.4)', borderRadius: 999, padding: '6px 14px',
                 fontSize: 11, fontWeight: 800, color: 'var(--gold)', textDecoration: 'none',
               }}>
                 {t('anniversaryBadge')}
               </Link>
+              <a href="https://cacworld.org/" target="_blank" rel="noopener noreferrer" style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                border: '1px solid rgba(245,246,250,.2)', borderRadius: 999, padding: '6px 14px',
+                fontSize: 11, fontWeight: 800, color: 'rgba(245,246,250,.8)', textDecoration: 'none',
+              }}>
+                CAC Worldwide ↗
+              </a>
             </div>
 
             <p style={{ fontSize: 14, color: 'rgba(245,246,250,.55)', margin: '16px 0 20px', lineHeight: 1.7, maxWidth: 260 }}>
