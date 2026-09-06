@@ -90,7 +90,7 @@ export async function generateMetadata({
     openGraph: {
       title: post.title,
       description: post.excerpt,
-      url: `${SITE_URL}/blog/${post.slug}`,
+      url: `${SITE_URL}/${locale}/blog/${post.slug}`,
       type: "article",
       publishedTime: post.dateIso,
     },
