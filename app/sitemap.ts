@@ -15,14 +15,27 @@ const WEEKLY = new Set([
 
 /** Every public route lives under /<locale>/... (see i18n/routing.ts) — a
  *  bare, unprefixed URL just 307s to the default locale. Declaring the
- *  locale-prefixed URLs directly (with hreflang alternates between them)
- *  avoids that redirect hop and is the only way the /yo pages get listed
- *  for search engines at all; they had no sitemap presence previously. */
+ *  locale-prefixed URL(s) directly avoids that redirect hop.
+ *
+ *  hasYo controls whether a /yo entry is listed at all. Most routes render
+ *  hardcoded English JSX with no translation call, so their /yo page is
+ *  byte-for-byte identical to /en -- listing both (as this used to do
+ *  unconditionally) tells search engines two distinct localized pages
+ *  exist when they don't, a duplicate-content problem rather than better
+ *  i18n coverage. Only routes with a substantially-translated
+ *  messages/yo.json namespace (verified 2026-09-06 against messages/en.json,
+ *  see lib/site.ts's ROUTES comment) get hasYo: true and a hreflang
+ *  alternate between the two; everything else lists /en only, with no
+ *  alternate implying a Yoruba version exists. */
 function localizedEntry(
   path: string,
+  hasYo: boolean,
   rest: Omit<MetadataRoute.Sitemap[number], "url" | "alternates">
 ): MetadataRoute.Sitemap[number][] {
   const suffix = path === "/" ? "" : path;
+  if (!hasYo) {
+    return [{ url: `${SITE_URL}/en${suffix}`, ...rest }];
+  }
   const languages = Object.fromEntries(
     routing.locales.map((locale) => [locale, `${SITE_URL}/${locale}${suffix}`])
   );
@@ -35,14 +48,15 @@ function localizedEntry(
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date();
-  const staticRoutes: MetadataRoute.Sitemap = ROUTES.flatMap(({ path, priority }) =>
-    localizedEntry(path, { lastModified, changeFrequency: WEEKLY.has(path) ? "weekly" : "monthly", priority })
+  const staticRoutes: MetadataRoute.Sitemap = ROUTES.flatMap(({ path, priority, yo }) =>
+    localizedEntry(path, yo ?? false, { lastModified, changeFrequency: WEEKLY.has(path) ? "weekly" : "monthly", priority })
   );
 
-  // Static blog posts (source of truth for the current blog)
+  // Static blog posts (source of truth for the current blog) -- the blog
+  // itself has no Yoruba translation (see ROUTES), so neither do posts.
   const staticBlogSlugs = new Set(POSTS.map((p) => p.slug));
   const staticBlogRoutes: MetadataRoute.Sitemap = POSTS.flatMap((post) =>
-    localizedEntry(`/blog/${post.slug}`, { lastModified: new Date(post.dateIso), changeFrequency: "monthly", priority: 0.55 })
+    localizedEntry(`/blog/${post.slug}`, false, { lastModified: new Date(post.dateIso), changeFrequency: "monthly", priority: 0.55 })
   );
 
   // Dynamic blog posts from Supabase (deduped against static set)
@@ -57,7 +71,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     dynamicBlogRoutes = (posts ?? [])
       .filter((p) => !staticBlogSlugs.has(p.slug))
       .flatMap((p) =>
-        localizedEntry(`/blog/${p.slug}`, { lastModified: new Date(p.updated_at ?? Date.now()), changeFrequency: "monthly", priority: 0.6 })
+        localizedEntry(`/blog/${p.slug}`, false, { lastModified: new Date(p.updated_at ?? Date.now()), changeFrequency: "monthly", priority: 0.6 })
       );
   } catch {
     // Non-fatal: Supabase unavailable at build time is acceptable
