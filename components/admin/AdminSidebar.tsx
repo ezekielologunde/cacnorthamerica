@@ -47,6 +47,11 @@ const NAV = [
     icon: "M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207",
   },
   {
+    href: "/admin/operations",
+    label: "Operations",
+    icon: "M9 7h6m0 10v-3m-3 3v-6m-3 6v-9m12 9V4a2 2 0 00-2-2H5a2 2 0 00-2 2v16a2 2 0 002 2h14a2 2 0 002-2z",
+  },
+  {
     href: "/admin/admins",
     label: "Manage Admins",
     icon: "M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z",
