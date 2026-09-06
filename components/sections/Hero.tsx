@@ -21,9 +21,12 @@ type SlideKind = "Welcome" | "Event" | "Ad" | "News";
 // This was previously the channel's "current livestream" video id, which
 // silently broke: outside of an active broadcast that id just shows a
 // static "Live stream offline" placeholder, with no error or console
-// signal. This id is a fixed, always-available upload instead, so it never
-// goes "offline" regardless of whether anything is currently streaming.
-const HERO_BG_VIDEO = { videoId: "RX1NjOYtDxo", poster: "/images/cac-congregation-worship.jpg", alt: "CACNA congregation in worship" };
+// signal. This id is a fixed upload from the real CACNA North America
+// channel instead (Revival Night, 2026 Convention Day 5), so it never goes
+// "offline" regardless of whether anything is currently streaming. Starts
+// at 3:32, where the congregation is standing in worship rather than the
+// stream's dead air before the program begins.
+const HERO_BG_VIDEO = { videoId: "SFXZsCZPD0I", start: 212, poster: "/images/cac-congregation-worship.jpg", alt: "CACNA congregation in worship" };
 
 interface Slide {
   key: string;
@@ -196,7 +199,7 @@ export function Hero() {
       }}>
         {!reduce && (
           <iframe
-            src={`https://www.youtube-nocookie.com/embed/${HERO_BG_VIDEO.videoId}?autoplay=1&mute=1&loop=1&playlist=${HERO_BG_VIDEO.videoId}&controls=0&showinfo=0&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1`}
+            src={`https://www.youtube-nocookie.com/embed/${HERO_BG_VIDEO.videoId}?autoplay=1&mute=1&loop=1&playlist=${HERO_BG_VIDEO.videoId}&start=${HERO_BG_VIDEO.start}&controls=0&showinfo=0&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1`}
             title={HERO_BG_VIDEO.alt}
             allow="autoplay; encrypted-media"
             style={{
