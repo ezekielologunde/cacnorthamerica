@@ -5,6 +5,7 @@ import { IconBadge } from "@/components/ui/IconBadge";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { Phone, Mail, Landmark, Send } from "lucide-react";
 import { GIVING_CAMPAIGNS, localizeCampaign, type GivingCampaign } from "@/lib/giving";
+import { GivingForm } from "@/components/giving/GivingForm";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
@@ -19,7 +20,7 @@ export async function generateMetadata({
   const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/giving`]));
   return {
     title: "Giving — Christ Apostolic Church North America (CACNA)",
-    description: "Ways to give to CACNA — the CAC Centenary Building Project, the CAC Village Pay Off, and the Hope For All Initiative — with real account details for Zelle, wire, and check.",
+    description: "Give online by card, or use real account details for Zelle, wire, and check — the CAC Centenary Building Project, the CAC Village Pay Off, and the Hope For All Initiative.",
     alternates: { canonical: `${SITE_URL}/${locale}/giving`, languages },
   };
 }
@@ -120,6 +121,15 @@ export default async function GivingPage({
         </div>
       </section>
 
+      {/* Give online */}
+      <section style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(48px,6vw,72px)" }}>
+        <div style={{ maxWidth: 980, margin: "0 auto" }}>
+          <Reveal>
+            <GivingForm campaigns={[centenary, villagePayoff, hopeForAll]} />
+          </Reveal>
+        </div>
+      </section>
+
       {/* Photo */}
       <section style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(48px,6vw,72px)" }}>
         <div style={{ maxWidth: 980, margin: "0 auto" }}>
@@ -150,9 +160,9 @@ export default async function GivingPage({
       <section style={{ background: "var(--cream-2)", padding: "clamp(40px,5vw,72px) clamp(20px,5vw,64px) clamp(64px,8vw,100px)" }}>
         <div style={{ maxWidth: 760, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 36 }}>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3vw,40px)", letterSpacing: "-1px", color: "var(--ink)", margin: 0 }}>Ways to give</h2>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3vw,40px)", letterSpacing: "-1px", color: "var(--ink)", margin: 0 }}>Other ways to give</h2>
             <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.7, margin: "14px auto 0", maxWidth: 560 }}>
-              Online giving isn&apos;t set up yet for CACNA directly — reach out and we&apos;ll point you to the right option, or connect you with a member church near you.
+              Prefer Zelle, wire, or check? Use the account details above. Have a question, or want to connect with a member church near you? Reach out.
             </p>
           </Reveal>
           <div className="r2" style={{ gap: 18 }}>

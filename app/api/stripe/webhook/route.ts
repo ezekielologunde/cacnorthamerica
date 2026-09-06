@@ -4,6 +4,7 @@ import { logToSheet } from "@/lib/sheetsWebhook";
 import { unchunkFromMetadata, decodeSummary, type RegistrationSummary } from "@/lib/checkoutSummary";
 import { sendRegistrationConfirmationEmail } from "@/lib/registrationEmail";
 import { sendStoreOrderConfirmationEmail } from "@/lib/storeOrderEmail";
+import { sendGivingConfirmationEmail } from "@/lib/givingEmail";
 import { SITE_URL } from "@/lib/site";
 
 function requireEnv(name: string): string {
@@ -92,6 +93,23 @@ export async function POST(request: Request) {
           contactName: session.metadata?.contact_name ?? "",
           contactEmail,
           items: (full.line_items?.data ?? []).map((li) => `${li.description ?? ""} × ${li.quantity ?? 1}`),
+          totalLabel: totalDollars,
+        });
+      } else if (kind === "giving") {
+        const campaignTitle = session.metadata?.campaign_title ?? "";
+
+        logToSheet("Giving", {
+          "Campaign": campaignTitle,
+          "Contact Name": session.metadata?.contact_name ?? "",
+          "Contact Email": contactEmail,
+          "Total": totalDollars,
+          "Stripe Session": session.id,
+        });
+
+        await sendGivingConfirmationEmail({
+          contactName: session.metadata?.contact_name ?? "",
+          contactEmail,
+          campaignTitle,
           totalLabel: totalDollars,
         });
       } else {
