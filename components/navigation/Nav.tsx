@@ -175,11 +175,15 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
         ref={navRef}
         style={{
           position: 'fixed', top: 'var(--bar-h, 0px)', left: 0, right: 0, zIndex: 100,
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           padding: '13px clamp(20px,5vw,64px)',
           transition: 'background .4s, box-shadow .4s',
         }}
       >
+        {/* Content is centered to the same 1240px column as FooterExperience
+            and the page body, so the bar's logo/links align with the rest of
+            the site instead of hugging the viewport edges on wide screens --
+            the <nav> itself stays full-bleed for its background/border. */}
+        <div style={{ maxWidth: 1240, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         {/* Logo */}
         <Link href={`/${locale}`} style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', color: barInk, flexShrink: 0, transition: 'color .4s' }}>
           <Image src="/images/logo.png" alt={t('logoAlt')} width={42} height={42} style={{ borderRadius: 12, objectFit: 'cover', flexShrink: 0 }} />
@@ -284,6 +288,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
             >
               <Search size={16} strokeWidth={2} />
             </button>
+            <span aria-hidden style={{ width: 1, height: 20, background: lightBar ? 'rgba(245,246,250,.25)' : 'var(--line)', flexShrink: 0 }} />
             <Link
               href={withLocale('/giving', locale)}
               style={{
@@ -306,6 +311,9 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
             >
               {t('store')}
             </Link>
+            {conventionOpen && (
+              <span aria-hidden style={{ width: 1, height: 20, background: lightBar ? 'rgba(245,246,250,.25)' : 'var(--line)', flexShrink: 0 }} />
+            )}
             {conventionOpen && (
               isExternalHref(conventionCtaHref) ? (
                 <a
@@ -356,6 +364,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
           <span style={{ display: 'block', width: 24, height: 2, background: 'currentColor', borderRadius: 2, transition: 'opacity .25s', opacity: open ? 0 : 1 }} />
           <span style={{ display: 'block', width: 24, height: 2, background: 'currentColor', borderRadius: 2, transition: 'transform .25s', transform: open ? 'translateY(-7px) rotate(-45deg)' : 'none' }} />
         </button>
+        </div>
 
         {/* Persistent accent strip along the bottom of the bar — only shown
             once the bar itself has a background to sit under (see hasSolidBg). */}
