@@ -2,14 +2,18 @@ import { googleReviews, REVIEW_AVERAGE, REVIEW_COUNT } from "@/lib/reviews";
 import { conventionYears } from "@/lib/conventions";
 
 // The real custom domain (cacnorthamerica.com) still serves an old,
-// unrelated WordPress build. cacna.cacsalvationcenter.org is the intended
+// unrelated WordPress build. cacna.cacsalvationcenter.org was the intended
 // canonical domain (a subdomain of the sibling church site, so all CAC
-// family sites share one domain for SEO) — but as of 2026-09-06 it isn't
-// actually attached to this Vercel project yet (confirmed via the Vercel
-// API: only the project's own *.vercel.app domains are configured). Until
-// someone adds it in Vercel's dashboard (Settings → Domains) and points its
-// DNS there, this default doesn't correspond to a reachable site.
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cacna.cacsalvationcenter.org";
+// family sites share one domain for SEO), but as of 2026-09-06 it isn't
+// actually attached to this Vercel project (confirmed via the Vercel API:
+// only the project's own *.vercel.app domains are configured), and adding
+// it as a redirect target broke the admin password-reset flow (Supabase's
+// redirect allow-list doesn't include it, so the email link silently went
+// nowhere). Defaulting to the project's real *.vercel.app domain instead
+// -- update this (and NEXT_PUBLIC_SITE_URL in Vercel, and Supabase's
+// redirect allow-list) once cacna.cacsalvationcenter.org is actually wired
+// up, or once cacnorthamerica.com is repointed at this build.
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cacnorthamerica.vercel.app";
 
 export const SITE = {
   name: "Christ Apostolic Church North America",
