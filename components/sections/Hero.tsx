@@ -12,7 +12,10 @@ import { specialEvents, isEventPast } from "@/lib/events";
 import { POSTS } from "@/lib/blog";
 import { GIVING_CAMPAIGNS, localizeCampaign } from "@/lib/giving";
 
-type SlideBg = { type: "photo"; src: string; alt: string } | { type: "gradient"; value: string };
+type SlideBg =
+  | { type: "photo"; src: string; alt: string }
+  | { type: "video"; src: string; poster: string; alt: string }
+  | { type: "gradient"; value: string };
 type SlideKind = "Welcome" | "Event" | "Ad" | "News";
 
 interface Slide {
@@ -61,7 +64,7 @@ function useSlides(): Slide[] {
         { label: "Watch Online", href: "/online" },
         { label: "Find a Zone", href: "/zones" },
       ],
-      bg: { type: "photo", src: "/images/cac-congregation-worship.jpg", alt: "CACNA congregation in worship" },
+      bg: { type: "video", src: "/videos/welcome-hero.mp4", poster: "/images/cac-congregation-worship.jpg", alt: "CACNA congregation in worship" },
     });
 
     const { cy: featuredCy, state } = conventionToFeature();
@@ -79,7 +82,7 @@ function useSlides(): Slide[] {
       cta: showRecap
         ? { label: "Read the Closing Message", href: recapPost ? (recapPost.href ?? `/blog/${recapPost.slug}`) : featuredCy.href }
         : { label: "Event Details", href: nextCy.href },
-      bg: { type: "photo", src: "/images/cac-youth-convention.jpg", alt: "CACNA youth at a past Annual Convention" },
+      bg: { type: "video", src: "/videos/convention-hero.mp4", poster: "/images/cac-youth-convention.jpg", alt: "CACNA youth at a past Annual Convention" },
     });
 
     const anniversary = specialEvents.find((e) => e.id === "cacna-50th-anniversary-2026");
@@ -146,14 +149,6 @@ function useSlides(): Slide[] {
   }, [locale]);
 }
 
-const BG_WORDS = [
-  { w: "GRACE",     l: 4,  delay: 0,   dur: 22, sz: 48, o: 0.05  },
-  { w: "FAITH",     l: 77, delay: 1,   dur: 28, sz: 30, o: 0.04  },
-  { w: "HOPE",      l: 21, delay: 2,   dur: 18, sz: 62, o: 0.055 },
-  { w: "LOVE",      l: 63, delay: 0.5, dur: 24, sz: 38, o: 0.045 },
-  { w: "FAMILY",    l: 53, delay: 1.2, dur: 32, sz: 18, o: 0.04  },
-] as const;
-
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
@@ -201,9 +196,25 @@ export function Hero() {
               position: "absolute", inset: 0,
               ...(slide.bg.type === "photo"
                 ? { backgroundImage: `url(${slide.bg.src})`, backgroundSize: "cover", backgroundPosition: "center" }
-                : { background: slide.bg.value }),
+                : slide.bg.type === "gradient"
+                ? { background: slide.bg.value }
+                : {}),
             }}
-          />
+          >
+            {slide.bg.type === "video" && (
+              <video
+                key={slide.bg.src}
+                autoPlay
+                muted
+                loop
+                playsInline
+                poster={slide.bg.poster}
+                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+              >
+                <source src={slide.bg.src} type="video/mp4" />
+              </video>
+            )}
+          </motion.div>
         </AnimatePresence>
       </div>
 
@@ -211,23 +222,6 @@ export function Hero() {
       <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(135deg,rgba(0,0,0,.8) 0%,rgba(0,0,0,.56) 55%,rgba(0,0,0,.4) 100%)" }} />
       <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "radial-gradient(120% 80% at 50% 0%,transparent 50%,rgba(0,0,0,.45) 100%)" }} />
       <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 200, zIndex: 1, background: "linear-gradient(to bottom,transparent,rgba(0,0,0,.7))" }} />
-
-      {/* Floating ambient words — decorative, not slide-dependent */}
-      {!reduce && (
-        <div aria-hidden style={{ position: "absolute", inset: 0, zIndex: 1, overflow: "hidden", pointerEvents: "none" }}>
-          {BG_WORDS.map(({ w, l, delay, dur, sz, o }) => (
-            <motion.span
-              key={w}
-              initial={{ y: "110vh" }}
-              animate={{ y: "-110vh" }}
-              transition={{ duration: dur, delay, repeat: Infinity, ease: "linear" }}
-              style={{ position: "absolute", left: `${l}%`, top: 0, fontFamily: "var(--font-display)", fontWeight: 800, fontSize: sz, color: `rgba(255,255,255,${o})`, letterSpacing: "-0.02em", userSelect: "none", whiteSpace: "nowrap" }}
-            >
-              {w}
-            </motion.span>
-          ))}
-        </div>
-      )}
 
       {/* Slide content */}
       <div style={{ position: "relative", zIndex: 2, maxWidth: 820, margin: "0 auto", width: "100%", textAlign: "center" }}>
