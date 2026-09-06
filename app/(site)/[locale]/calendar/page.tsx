@@ -10,6 +10,8 @@ import { specialEvents, annualMoments, googleCalUrl, icsDataUri, splitByDate, ty
 import { SITE, SITE_URL } from "@/lib/site";
 import { conventionYears, currentOrNextConvention, dateRangeLabel, CONVENTION_VENUE_SHORT } from "@/lib/conventions";
 import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { routing } from "@/i18n/routing";
 
 const MOMENT_ICONS: Record<string, typeof Users> = {
   "cacna-convention": Users,
@@ -20,12 +22,20 @@ const MOMENT_ICONS: Record<string, typeof Users> = {
 
 export const revalidate = 3600;
 
-export const metadata = {
-  title: "Calendar & Events — Christ Apostolic Church North America (CACNA)",
-  description:
-    "CACNA's annual rhythm and special events — the Annual Convention, Ministers Retreat, Sunday School Rally, and more. Save any of them to Google, Apple, or Outlook.",
-  alternates: { canonical: "/calendar" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/calendar`]));
+  return {
+    title: "Calendar & Events — Christ Apostolic Church North America (CACNA)",
+    description:
+      "CACNA's annual rhythm and special events — the Annual Convention, Ministers Retreat, Sunday School Rally, and more. Save any of them to Google, Apple, or Outlook.",
+    alternates: { canonical: `${SITE_URL}/${locale}/calendar`, languages },
+  };
+}
 
 const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
 

@@ -7,15 +7,25 @@ import { BookOpen, Users, Podium, HandHeart, ArrowLeft, CalendarPlus, Download, 
 import { specialEvents, googleCalUrl, icsDataUri, isEventPast } from "@/lib/events";
 import { SITE, SITE_URL, breadcrumbJsonLd } from "@/lib/site";
 import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { routing } from "@/i18n/routing";
 
 export const revalidate = 3600;
 
-export const metadata = {
-  title: "2027 Ministers Retreat — CAC North America",
-  description:
-    "CAC North America's 2027 Ministers Retreat, on Zoom, March 22–26, 2027 — a time of refreshing, renewal & equipping.",
-  alternates: { canonical: "/events/ministers-retreat-2027" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/events/ministers-retreat-2027`]));
+  return {
+    title: "2027 Ministers Retreat — CAC North America",
+    description:
+      "CAC North America's 2027 Ministers Retreat, on Zoom, March 22–26, 2027 — a time of refreshing, renewal & equipping.",
+    alternates: { canonical: `${SITE_URL}/${locale}/events/ministers-retreat-2027`, languages },
+  };
+}
 
 const ev = specialEvents.find((e) => e.id === "ministers-retreat-2027")!;
 

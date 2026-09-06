@@ -6,12 +6,23 @@ import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import { getDetailedSchedule, CONVENTION_VENUE } from "@/lib/conventions";
 import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site";
+import { routing } from "@/i18n/routing";
 
-export const metadata = {
-  title: "2026 Schedule — CACNA Annual Convention",
-  description: "The full day-by-day schedule from the CACNA 2026 Annual Convention at CAC Village, Blue Ridge Summit, PA — kept as an archive record.",
-  alternates: { canonical: "/events/cacna-2026/schedule" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/events/cacna-2026/schedule`]));
+  return {
+    title: "2026 Schedule — CACNA Annual Convention",
+    description: "The full day-by-day schedule from the CACNA 2026 Annual Convention at CAC Village, Blue Ridge Summit, PA — kept as an archive record.",
+    alternates: { canonical: `${SITE_URL}/${locale}/events/cacna-2026/schedule`, languages },
+  };
+}
 
 const DAY_NAMES: Record<string, string> = {
   "2026-07-13": "Mon · Jul 13", "2026-07-14": "Tue · Jul 14", "2026-07-15": "Wed · Jul 15",

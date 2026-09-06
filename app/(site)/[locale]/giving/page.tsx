@@ -6,12 +6,23 @@ import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { Phone, Mail, Landmark, Send } from "lucide-react";
 import { GIVING_CAMPAIGNS, localizeCampaign, type GivingCampaign } from "@/lib/giving";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site";
+import { routing } from "@/i18n/routing";
 
-export const metadata = {
-  title: "Giving — Christ Apostolic Church North America (CACNA)",
-  description: "Ways to give to CACNA — the CAC Centenary Building Project, the CAC Village Pay Off, and the Hope For All Initiative — with real account details for Zelle, wire, and check.",
-  alternates: { canonical: "/giving" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/giving`]));
+  return {
+    title: "Giving — Christ Apostolic Church North America (CACNA)",
+    description: "Ways to give to CACNA — the CAC Centenary Building Project, the CAC Village Pay Off, and the Hope For All Initiative — with real account details for Zelle, wire, and check.",
+    alternates: { canonical: `${SITE_URL}/${locale}/giving`, languages },
+  };
+}
 
 const accountIcon = (label: string) => (label.toLowerCase().includes("zelle") ? Send : Landmark);
 

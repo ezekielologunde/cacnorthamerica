@@ -8,15 +8,25 @@ import { MapPin, Flame, Waves, Landmark, Eye, ArrowLeft, CalendarPlus, Download,
 import { specialEvents, googleCalUrl, icsDataUri, isEventPast } from "@/lib/events";
 import { SITE, SITE_URL, breadcrumbJsonLd } from "@/lib/site";
 import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { routing } from "@/i18n/routing";
 
 export const revalidate = 3600;
 
-export const metadata = {
-  title: "Holy Land Pilgrimage 2026 — CACNA Latunde Region",
-  description:
-    "CACNA Latunde Region Pilgrimage to Israel & Egypt, November 2–12, 2026. Led by Pastor Dr. H.O. Ilufoye & L/Evang. Bola Mustapha. From JFK, $4,549.",
-  alternates: { canonical: "/events/pilgrimage-2026" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/events/pilgrimage-2026`]));
+  return {
+    title: "Holy Land Pilgrimage 2026 — CACNA Latunde Region",
+    description:
+      "CACNA Latunde Region Pilgrimage to Israel & Egypt, November 2–12, 2026. Led by Pastor Dr. H.O. Ilufoye & L/Evang. Bola Mustapha. From JFK, $4,549.",
+    alternates: { canonical: `${SITE_URL}/${locale}/events/pilgrimage-2026`, languages },
+  };
+}
 
 const ev = specialEvents.find((e) => e.id === "holy-land-pilgrimage-2026")!;
 
