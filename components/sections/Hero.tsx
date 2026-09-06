@@ -212,7 +212,15 @@ export function Hero() {
 
       {/* Slide content */}
       <div style={{ position: "relative", zIndex: 2, maxWidth: 820, margin: "0 auto", width: "100%", textAlign: "center" }}>
-        <AnimatePresence mode="wait">
+        {/* mode="wait" previously blocked each new slide's enter animation
+            on the outgoing slide's exit animation fully resolving -- with a
+            7s auto-advance interval running indefinitely, that coordination
+            occasionally got stuck, leaving the slide permanently at its
+            initial opacity: 0 (confirmed live: the h1's parent motion.div
+            stuck invisible while the background kept playing). Default
+            (sync) mode animates the incoming slide in immediately instead
+            of waiting on a promise that isn't guaranteed to resolve. */}
+        <AnimatePresence>
           <motion.div
             key={slide.key}
             initial={{ opacity: 0, y: reduce ? 0 : 18 }}
@@ -238,7 +246,7 @@ export function Hero() {
 
             <h1 style={{
               fontFamily: "var(--font-display)", fontWeight: 800,
-              fontSize: "clamp(38px,6vw,76px)", lineHeight: 1.0, letterSpacing: "-0.03em",
+              fontSize: "clamp(44px,7.5vw,92px)", lineHeight: 0.98, letterSpacing: "-0.03em",
               margin: "24px 0 0", color: "#fff", textWrap: "balance",
             }}>
               {slide.title}
