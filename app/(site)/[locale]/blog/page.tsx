@@ -365,9 +365,12 @@ export default async function BlogPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
+  // db.schema: "cacna" -- see lib/supabase/server.ts's comment; without it
+  // this silently hits cac-salvation-center's own project instead.
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    { db: { schema: "cacna" } }
   );
   const { data: dbRows } = await supabase
     .from("blog_posts")

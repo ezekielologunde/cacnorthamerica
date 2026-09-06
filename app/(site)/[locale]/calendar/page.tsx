@@ -109,9 +109,12 @@ export default async function CalendarPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
+  // db.schema: "cacna" -- see lib/supabase/server.ts's comment; without it
+  // this silently hits cac-salvation-center's own project instead.
   const { data: dbRows } = await createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    { db: { schema: "cacna" } }
   )
     .from("events")
     .select("id, title, description, event_date, end_date, location, event_url")
