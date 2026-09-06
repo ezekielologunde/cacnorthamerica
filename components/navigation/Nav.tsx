@@ -13,6 +13,9 @@ interface NavItem {
   label: string;
   href?: string;
   dropdown?: { href: string; label: string; desc: string; external?: boolean }[];
+  /** Renders the dropdown panel as a 2-column grid instead of a single
+   *  stack — for menus with enough items that one column would run long. */
+  layout?: 'grid';
 }
 
 const isExternalHref = (href: string) => href.startsWith('http');
@@ -70,8 +73,22 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
         { href: withLocale('/about', locale), label: t('aboutCacna'), desc: t('aboutCacnaDesc') },
         { href: withLocale('/leadership', locale), label: t('leadership'), desc: t('leadershipDesc') },
         { href: withLocale('/zones', locale), label: t('zonesDccs'), desc: t('zonesDccsDesc') },
-        { href: withLocale('/ministries', locale), label: t('ministries'), desc: t('ministriesDesc') },
         { href: withLocale('/bible-institute', locale), label: t('bibleInstitute'), desc: t('bibleInstituteDesc') },
+      ],
+    },
+    {
+      label: t('ministries'),
+      href: withLocale('/ministries', locale),
+      layout: 'grid',
+      dropdown: [
+        { href: withLocale('/cacma', locale), label: t('cacma'), desc: t('cacmaDesc') },
+        { href: withLocale('/youth', locale), label: t('youth'), desc: t('youthDesc') },
+        { href: withLocale('/christian-education', locale), label: t('christianEducation'), desc: t('christianEducationDesc') },
+        { href: withLocale('/good-women', locale), label: t('goodWomen'), desc: t('goodWomenDesc') },
+        { href: withLocale('/ministers-wives', locale), label: t('ministersWives'), desc: t('ministersWivesDesc') },
+        { href: withLocale('/business-group', locale), label: t('businessGroup'), desc: t('businessGroupDesc') },
+        { href: withLocale('/children', locale), label: t('children'), desc: t('childrenDesc') },
+        { href: withLocale('/ministries', locale), label: t('seeAllMinistries'), desc: t('ministriesDesc') },
       ],
     },
     {
@@ -208,7 +225,10 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                         borderRadius: 16, padding: 8,
                         boxShadow: '0 20px 50px rgba(18,20,30,.16)',
                         border: `1px solid ${dark ? 'rgba(255,255,255,.1)' : 'var(--line)'}`,
-                        minWidth: 200,
+                        minWidth: item.layout === 'grid' ? 440 : 200,
+                        ...(item.layout === 'grid'
+                          ? { display: 'grid' as const, gridTemplateColumns: '1fr 1fr', gap: 2 }
+                          : {}),
                       }}>
                         {item.dropdown.map(d => {
                           const itemStyle: CSSProperties = {
