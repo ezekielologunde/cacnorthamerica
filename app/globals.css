@@ -206,10 +206,14 @@ html.lenis body { height: auto; }
   }
 }
 
-/* ── Nav responsive ── */
+/* ── Nav responsive ──
+ * 768px (tablet-portrait) left the desktop bar visible at "small laptop"
+ * widths (e.g. 1024-1180px) where its un-wrapped items no longer fit,
+ * overflowing past the edge. The mobile menu already handles every item
+ * cleanly, so it now takes over earlier instead of the bar clipping. */
 .nav-desktop { display: flex; }
 .nav-hbg     { display: none; flex-direction: column; }
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
   .nav-desktop { display: none; }
   .nav-hbg     { display: flex; }
 }

@@ -212,7 +212,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                     fontSize: 14.5, fontWeight: active ? 700 : 600,
                     color: active ? barAccent : barInk,
                     textDecoration: 'none', transition: 'color .4s, border-color .4s',
-                    padding: '7px 10px 5px', borderRadius: 8,
+                    padding: '7px 10px 5px', borderRadius: 8, whiteSpace: 'nowrap',
                     borderBottom: `2px solid ${active ? 'var(--red)' : 'transparent'}`,
                   }}>
                     {item.label}
@@ -267,7 +267,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
               <Link key={item.label} href={item.href!} style={{
                 fontSize: 14.5, fontWeight: active ? 700 : 600,
                 color: active ? barAccent : barInk,
-                textDecoration: 'none', padding: '7px 10px 5px', borderRadius: 8,
+                textDecoration: 'none', padding: '7px 10px 5px', borderRadius: 8, whiteSpace: 'nowrap',
                 borderBottom: `2px solid ${active ? 'var(--red)' : 'transparent'}`,
                 transition: 'color .4s, border-color .4s',
               }}>
@@ -289,12 +289,18 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
               <Search size={16} strokeWidth={2} />
             </button>
             <span aria-hidden style={{ width: 1, height: 20, background: lightBar ? 'rgba(245,246,250,.25)' : 'var(--line)', flexShrink: 0 }} />
+            {/* Give and Store share one pill style -- previously Give was a
+                plain text link next to Store's outlined pill next to
+                Convention's gradient CTA, three different visual weights in
+                a row. Now there's exactly one strong CTA (Convention). */}
             <Link
               href={withLocale('/giving', locale)}
               style={{
-                fontSize: 14.5, fontWeight: 600, color: barInk,
-                textDecoration: 'none', whiteSpace: 'nowrap',
-                transition: 'color .4s',
+                display: 'inline-flex', alignItems: 'center',
+                border: `1.5px solid ${lightBar ? 'rgba(245,246,250,.4)' : 'var(--ink)'}`,
+                color: barInk, fontWeight: 700, fontSize: 13.5,
+                padding: '8px 16px', borderRadius: 999, textDecoration: 'none',
+                transition: 'color .4s, border-color .4s', whiteSpace: 'nowrap',
               }}
             >
               {t('give')}
