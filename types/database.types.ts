@@ -1,3 +1,10 @@
+// Schema key renamed public -> cacna (2026-09-06): CACNA's own Supabase
+// project no longer exists; this now models the isolated "cacna" schema in
+// the shared cac-salvation-center project (see lib/supabase/server.ts and
+// lib/supabase/client.ts, which pass db.schema:"cacna"). supabase-js infers
+// the schema type param from the runtime db.schema string, so this key must
+// match it exactly or every .from() call across the admin panel breaks.
+// Table shapes are otherwise unchanged from the original generated types.
 export type Json =
   | string
   | number
@@ -12,7 +19,7 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
-  public: {
+  cacna: {
     Tables: {
       admin_profiles: {
         Row: {
@@ -681,7 +688,7 @@ export type Database = {
 
 type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
 
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "cacna">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
@@ -797,7 +804,7 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  public: {
+  cacna: {
     Enums: {},
   },
 } as const
