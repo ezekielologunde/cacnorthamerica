@@ -81,39 +81,37 @@ export function StoreCatalog({ categories }: { categories: { key: string; label:
     <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
       {categories.filter((c) => c.products.length > 0).map((category) => (
         <div key={category.key}>
-          <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "var(--ink)", marginBottom: 14 }}>{category.label}</h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--ink)", marginBottom: 18 }}>{category.label}</h3>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(240px,1fr))", gap: 22 }}>
             {category.products.map((product) => (
-              <div key={product.id} style={{ display: "flex", flexWrap: "wrap", gap: 14, justifyContent: "space-between", alignItems: "center", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 16, padding: "16px 20px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                  {product.imageSrc && (
-                    <div style={{ position: "relative", width: 52, height: 52, borderRadius: 10, overflow: "hidden", flexShrink: 0, border: "1px solid var(--line)" }}>
-                      <Image src={product.imageSrc} alt={product.name} fill style={{ objectFit: "cover" }} sizes="52px" />
-                    </div>
-                  )}
-                  <div>
-                    <div style={{ fontWeight: 700, fontSize: 15, color: "var(--ink)" }}>{product.name}</div>
-                    <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 16, color: "var(--red)", marginTop: 2 }}>{formatPrice(product.priceCents)}</div>
+              <div key={product.id} className="card-lift" style={{ display: "flex", flexDirection: "column", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, overflow: "hidden", boxShadow: "0 8px 22px rgba(18,20,30,.10)" }}>
+                {product.imageSrc && (
+                  <div style={{ position: "relative", width: "100%", height: 200, flexShrink: 0, background: "var(--cream)" }}>
+                    <Image src={product.imageSrc} alt={product.name} fill style={{ objectFit: "cover" }} sizes="(max-width:700px) 100vw, 33vw" />
                   </div>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  {product.sizes.length > 0 && (
-                    <select
-                      value={selections[product.id] ?? product.sizes[0]}
-                      onChange={(e) => setSelections((s) => ({ ...s, [product.id]: e.target.value }))}
-                      style={{ ...inputStyle, width: "auto", padding: "8px 10px", cursor: "pointer" }}
+                )}
+                <div style={{ display: "flex", flexDirection: "column", flex: 1, padding: "18px 20px 20px" }}>
+                  <div style={{ fontWeight: 700, fontSize: 15.5, color: "var(--ink)", lineHeight: 1.3 }}>{product.name}</div>
+                  <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 19, color: "var(--red)", marginTop: 6 }}>{formatPrice(product.priceCents)}</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: "auto", paddingTop: 16 }}>
+                    {product.sizes.length > 0 && (
+                      <select
+                        value={selections[product.id] ?? product.sizes[0]}
+                        onChange={(e) => setSelections((s) => ({ ...s, [product.id]: e.target.value }))}
+                        style={{ ...inputStyle, width: "auto", padding: "8px 10px", cursor: "pointer" }}
+                      >
+                        {product.sizes.map((s) => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => addToCart(product)}
+                      className="press"
+                      style={{ flex: 1, background: "var(--ink)", color: "#fff", fontWeight: 700, fontSize: 13.5, padding: "10px 18px", borderRadius: 999, border: "none", cursor: "pointer" }}
                     >
-                      {product.sizes.map((s) => <option key={s} value={s}>{s}</option>)}
-                    </select>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => addToCart(product)}
-                    className="press"
-                    style={{ background: "var(--ink)", color: "#fff", fontWeight: 700, fontSize: 13.5, padding: "10px 18px", borderRadius: 999, border: "none", cursor: "pointer" }}
-                  >
-                    {t("addCta")}
-                  </button>
+                      {t("addCta")}
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -121,7 +119,7 @@ export function StoreCatalog({ categories }: { categories: { key: string; label:
         </div>
       ))}
 
-      <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, padding: "24px 26px" }}>
+      <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, padding: "24px 26px", maxWidth: 460, marginLeft: "auto" }}>
         <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 17, color: "var(--ink)", margin: "0 0 14px" }}>{t("cartHeading")}</h3>
         {cart.length === 0 ? (
           <p style={{ fontSize: 14.5, color: "var(--ink-soft)", margin: 0 }}>{t("emptyCart")} {t("emptyCartHint")}</p>
