@@ -253,8 +253,8 @@ export function Hero() {
 
             <h1 style={{
               fontFamily: "var(--font-display)", fontWeight: 800,
-              fontSize: "clamp(32px,4.6vw,58px)", lineHeight: 1.05, letterSpacing: "-0.02em",
-              margin: "22px 0 0", color: "#fff", textWrap: "balance",
+              fontSize: "clamp(38px,6vw,76px)", lineHeight: 1.0, letterSpacing: "-0.03em",
+              margin: "24px 0 0", color: "#fff", textWrap: "balance",
             }}>
               {slide.title}
             </h1>
