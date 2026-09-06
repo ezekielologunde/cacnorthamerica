@@ -49,6 +49,12 @@ export default async function RegisterPage({ params }: { params: Promise<{ local
   const tiers = activePricing(cy);
   const isOpen = tiers.length > 0;
   const adultPrice = tiers.find((t) => t.category === "adult")?.priceCents;
+  // Child is always free regardless of the active tier window (the same
+  // unconditional rule app/api/register/route.ts applies server-side) --
+  // baked in here so the form's live total matches what checkout will
+  // actually charge.
+  const priceMap: Partial<Record<"adult" | "young_adult" | "child", number>> = { child: 0 };
+  for (const tier of tiers) priceMap[tier.category] = tier.priceCents;
 
   // Full fee ladder -- every tier for this year, not just today's active
   // one, so visitors can see the whole early-bird schedule at a glance.
@@ -143,7 +149,7 @@ export default async function RegisterPage({ params }: { params: Promise<{ local
       <section style={{ background: "var(--paper)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 640, margin: "0 auto" }}>
           {isOpen ? (
-            <RegisterForm year={cy.year} />
+            <RegisterForm year={cy.year} priceMap={priceMap} />
           ) : (
             <div style={{ textAlign: "center", background: "var(--cream)", border: "1px solid var(--line)", borderRadius: 20, padding: "clamp(32px,5vw,48px)" }}>
               <Sparkles size={28} strokeWidth={2} color="var(--gold)" aria-hidden style={{ marginBottom: 16 }} />
