@@ -5,7 +5,12 @@
 // installed (see package.json), so this stays a plain template-literal
 // builder like everything else in this file's family.
 
-export const EMAIL_FROM = "CACNA <noreply@cacnorthamerica.com>";
+// cacnorthamerica.com isn't a verified Resend sending domain yet (DNS
+// verification pending) -- sending from the already-verified
+// cacsalvationcenter.org in the meantime so confirmation emails actually go
+// out. Switch this back to noreply@cacnorthamerica.com once that domain
+// verifies in Resend.
+export const EMAIL_FROM = "CACNA <noreply@cacsalvationcenter.org>";
 
 /** Every string here is inserted as raw HTML -- callers must run any
  *  user-supplied value through lib/html.ts's escapeHtml() themselves before
