@@ -154,9 +154,29 @@ function useSlides(): Slide[] {
   }, [locale]);
 }
 
+/** Mobile browsers apply much stricter iframe-autoplay policies than
+ *  desktop -- confirmed live: this same embed that plays fine at desktop
+ *  widths renders as a plain black frame on a mobile viewport/user-agent,
+ *  with no thumbnail, no error, nothing to recover from. Skipping the
+ *  video below 640px and showing the poster photo instead (same idea as
+ *  the reduced-motion fallback) is more reliable than gambling on
+ *  autoplay support. */
+function useIsNarrowViewport(breakpoint: number): boolean {
+  const [narrow, setNarrow] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${breakpoint}px)`);
+    setNarrow(mql.matches);
+    const onChange = (e: MediaQueryListEvent) => setNarrow(e.matches);
+    mql.addEventListener("change", onChange);
+    return () => mql.removeEventListener("change", onChange);
+  }, [breakpoint]);
+  return narrow;
+}
+
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
+  const narrow = useIsNarrowViewport(640);
   const slides = useSlides();
 
   const [index, setIndex] = useState(0);
@@ -197,7 +217,7 @@ export function Hero() {
         position: "absolute", inset: 0, overflow: "hidden",
         backgroundImage: `url(${HERO_BG_VIDEO.poster})`, backgroundSize: "cover", backgroundPosition: "center",
       }}>
-        {!reduce && (
+        {!reduce && !narrow && (
           <iframe
             src={`https://www.youtube-nocookie.com/embed/${HERO_BG_VIDEO.videoId}?autoplay=1&mute=1&loop=1&playlist=${HERO_BG_VIDEO.videoId}&start=${HERO_BG_VIDEO.start}&controls=0&showinfo=0&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1`}
             title={HERO_BG_VIDEO.alt}
@@ -225,10 +245,17 @@ export function Hero() {
             7s auto-advance interval running indefinitely, that coordination
             occasionally got stuck, leaving the slide permanently at its
             initial opacity: 0 (confirmed live: the h1's parent motion.div
-            stuck invisible while the background kept playing). Default
-            (sync) mode animates the incoming slide in immediately instead
-            of waiting on a promise that isn't guaranteed to resolve. */}
-        <AnimatePresence>
+            stuck invisible while the background kept playing). "popLayout"
+            animates the incoming slide in immediately instead of waiting on
+            a promise that isn't guaranteed to resolve (unlike "wait"), and
+            -- unlike the default "sync" -- pulls the outgoing slide out of
+            document flow for its exit animation instead of leaving both
+            slides stacked in flow at once, which on mobile (where the
+            larger headline wraps to more lines) inflated this header to
+            ~2900px tall for the ~0.5s crossfade and broke the video
+            background's vh/vw-based cover sizing (it assumes the header is
+            ~100vh, not 3.5x that). */}
+        <AnimatePresence mode="popLayout">
           <motion.div
             key={slide.key}
             initial={{ opacity: 0, y: reduce ? 0 : 18 }}
@@ -310,8 +337,12 @@ export function Hero() {
       {/* Carousel arrows */}
       {slides.length > 1 && (
         <>
+          {/* Hidden below 640px (.hide-sm) -- the larger headline runs edge-
+              to-edge on narrow screens and was colliding with these fixed-
+              position arrows. The dots below plus the 7s auto-advance still
+              cover navigation on mobile. */}
           <button
-            type="button" onClick={() => goTo(index - 1)} aria-label="Previous slide" className="press"
+            type="button" onClick={() => goTo(index - 1)} aria-label="Previous slide" className="press hide-sm"
             style={{
               position: "absolute", left: "clamp(10px,3vw,28px)", top: "50%", transform: "translateY(-50%)", zIndex: 3,
               width: 44, height: 44, borderRadius: 999, background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.2)",
@@ -321,7 +352,7 @@ export function Hero() {
             <ChevronLeft size={22} strokeWidth={2} color="#fff" aria-hidden />
           </button>
           <button
-            type="button" onClick={() => goTo(index + 1)} aria-label="Next slide" className="press"
+            type="button" onClick={() => goTo(index + 1)} aria-label="Next slide" className="press hide-sm"
             style={{
               position: "absolute", right: "clamp(10px,3vw,28px)", top: "50%", transform: "translateY(-50%)", zIndex: 3,
               width: 44, height: 44, borderRadius: 999, background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.2)",
