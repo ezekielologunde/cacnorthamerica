@@ -10,15 +10,25 @@ import { CalendarPlus, Download } from "lucide-react";
 import { SITE, SITE_URL, breadcrumbJsonLd } from "@/lib/site";
 import { conventionYears, conventionChurchEvent } from "@/lib/conventions";
 import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { routing } from "@/i18n/routing";
 
 export const revalidate = 3600;
 
-export const metadata = {
-  title: "CACNA 2026 Annual Convention — Christ Apostolic Church North America",
-  description:
-    "Join CACNA member churches at the 2026 National Convention — July 13–18 at CAC Village, Blue Ridge Summit, PA. Theme: “The Bible: God’s Message to Man.” Six days of worship, the Word, and the whole CAC family in one place.",
-  alternates: { canonical: "/events/cacna-2026" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/events/cacna-2026`]));
+  return {
+    title: "CACNA 2026 Annual Convention — Christ Apostolic Church North America",
+    description:
+      "Join CACNA member churches at the 2026 National Convention — July 13–18 at CAC Village, Blue Ridge Summit, PA. Theme: “The Bible: God’s Message to Man.” Six days of worship, the Word, and the whole CAC family in one place.",
+    alternates: { canonical: `${SITE_URL}/${locale}/events/cacna-2026`, languages },
+  };
+}
 
 const cy2026 = conventionYears.find((cy) => cy.year === 2026)!;
 const ev = conventionChurchEvent(cy2026);

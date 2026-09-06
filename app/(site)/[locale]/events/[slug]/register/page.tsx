@@ -9,6 +9,8 @@ import { RegisterForm } from "@/components/register/RegisterForm";
 import { CONVENTION_VENUE, conventionYears, dateRangeLabel, activePricing, type ConventionYear } from "@/lib/conventions";
 import { registrationGuidelines, paymentOptions } from "@/lib/registrationInfo";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { SITE_URL } from "@/lib/site";
+import { routing } from "@/i18n/routing";
 
 export const revalidate = 3600;
 
@@ -28,13 +30,14 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }) {
-  const { slug } = await params;
+  const { locale, slug } = await params;
   const cy = findYear(slug);
   if (!cy) return {};
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/events/cacna-${cy.year}/register`]));
   return {
     title: `Register — CACNA ${cy.year} Annual Convention`,
     description: `Register for the CACNA ${cy.year} Annual Convention, ${dateRangeLabel(cy)} at ${CONVENTION_VENUE}.`,
-    alternates: { canonical: `/events/cacna-${cy.year}/register` },
+    alternates: { canonical: `${SITE_URL}/${locale}/events/cacna-${cy.year}/register`, languages },
   };
 }
 
