@@ -16,9 +16,14 @@ type SlideKind = "Welcome" | "Event" | "Ad" | "News";
 
 // The hero's one persistent background -- every slide's text crossfades on
 // top of the same clip instead of each slide bringing its own photo/video/
-// gradient. Real CACNA congregation footage, general enough to sit behind
-// any slide topic (convention, giving, news, anniversary...).
-const HERO_BG_VIDEO = { videoId: "54KgNQo6cws", poster: "/images/cac-congregation-worship.jpg", alt: "CACNA congregation in worship" };
+// gradient.
+//
+// This was previously the channel's "current livestream" video id, which
+// silently broke: outside of an active broadcast that id just shows a
+// static "Live stream offline" placeholder, with no error or console
+// signal. This id is a fixed, always-available upload instead, so it never
+// goes "offline" regardless of whether anything is currently streaming.
+const HERO_BG_VIDEO = { videoId: "RX1NjOYtDxo", poster: "/images/cac-congregation-worship.jpg", alt: "CACNA congregation in worship" };
 
 interface Slide {
   key: string;
