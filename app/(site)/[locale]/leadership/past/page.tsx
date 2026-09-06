@@ -6,6 +6,9 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { getLeaders, slugifyLeaderName, type Leader } from "@/lib/leaders";
 import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site";
+import { routing } from "@/i18n/routing";
 
 function initials(name: string) {
   return name.replace(/^(Pastor|Prophet|Evangelist|Mrs\.?|Mr\.?|Dr\.?)\s+/i, "")
@@ -14,11 +17,19 @@ function initials(name: string) {
 
 export const revalidate = 3600;
 
-export const metadata = {
-  title: "Past Leaders — Christ Apostolic Church North America (CACNA)",
-  description: "The past Presidents, General Superintendents, and General Evangelists of Christ Apostolic Church Worldwide.",
-  alternates: { canonical: "/leadership/past" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/leadership/past`]));
+  return {
+    title: "Past Leaders — Christ Apostolic Church North America (CACNA)",
+    description: "The past Presidents, General Superintendents, and General Evangelists of Christ Apostolic Church Worldwide.",
+    alternates: { canonical: `${SITE_URL}/${locale}/leadership/past`, languages },
+  };
+}
 
 const SECTIONS: { category: Leader["category"]; label: string }[] = [
   { category: "past_president", label: "Past Presidents" },

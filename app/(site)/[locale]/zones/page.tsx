@@ -5,14 +5,25 @@ import { ZoneDirectory } from "@/components/zones/ZoneDirectory";
 import { NearbyChurchFinder } from "@/components/zones/NearbyChurchFinder";
 import { getLeaders } from "@/lib/leaders";
 import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site";
+import { routing } from "@/i18n/routing";
 
 export const revalidate = 3600;
 
-export const metadata = {
-  title: "Zones & DCCs — Christ Apostolic Church North America (CACNA)",
-  description: "Find your CACNA Zone or DCC and its Superintendent — filter or search the full directory of leaders shepherding member churches across the United States, Canada, and South America.",
-  alternates: { canonical: "/zones" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/zones`]));
+  return {
+    title: "Zones & DCCs — Christ Apostolic Church North America (CACNA)",
+    description: "Find your CACNA Zone or DCC and its Superintendent — filter or search the full directory of leaders shepherding member churches across the United States, Canada, and South America.",
+    alternates: { canonical: `${SITE_URL}/${locale}/zones`, languages },
+  };
+}
 
 export default async function ZonesPage({
   params,

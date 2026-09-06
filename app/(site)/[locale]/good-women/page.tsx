@@ -1,13 +1,24 @@
 import { SubConferencePage } from "@/components/ministries/SubConferencePage";
 import { mainGalleryPhotos } from "@/lib/mainGalleryPhotos";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site";
+import { routing } from "@/i18n/routing";
 
-export const metadata = {
-  title: "Good Women Association — Christ Apostolic Church North America (CACNA)",
-  description:
-    "CAC Latunde Region Good Women Association — leadership, executive committee, and the department's signature free-food initiative at the Annual Convention.",
-  alternates: { canonical: "/good-women" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/good-women`]));
+  return {
+    title: "Good Women Association — Christ Apostolic Church North America (CACNA)",
+    description:
+      "CAC Latunde Region Good Women Association — leadership, executive committee, and the department's signature free-food initiative at the Annual Convention.",
+    alternates: { canonical: `${SITE_URL}/${locale}/good-women`, languages },
+  };
+}
 
 export default async function GoodWomenPage({
   params,

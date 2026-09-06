@@ -4,13 +4,24 @@ import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import Link from "next/link";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site";
+import { routing } from "@/i18n/routing";
 
-export const metadata = {
-  title: "Children's Ministry — Christ Apostolic Church North America (CACNA)",
-  description:
-    "CACNA's Children's Ministry at the Annual Convention — daily schedule, teachers, and God's Message to Children (Mark 10:14).",
-  alternates: { canonical: "/children" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/children`]));
+  return {
+    title: "Children's Ministry — Christ Apostolic Church North America (CACNA)",
+    description:
+      "CACNA's Children's Ministry at the Annual Convention — daily schedule, teachers, and God's Message to Children (Mark 10:14).",
+    alternates: { canonical: `${SITE_URL}/${locale}/children`, languages },
+  };
+}
 
 // Ported from the Convention site's lib/content/children-convention.ts
 // during the Phase D content merge (2026-09) -- this is a genuine net-new
