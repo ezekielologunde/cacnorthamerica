@@ -88,7 +88,21 @@
     "pastLeaders": "Past Leaders",
     "contact": "Kàn Sí Wa",
     "sitemap": "Sitemap",
-    "backToTop": "Back to top"
+    "backToTop": "Back to top",
+    "attendHeading": "Attend",
+    "programsHeading": "Programs",
+    "connectHeading": "Connect",
+    "contactHeading": "Contact",
+    "register": "Register",
+    "schedule": "Schedule",
+    "planYourVisit": "Plan Your Visit",
+    "store": "Store",
+    "news": "News",
+    "archive": "Archive",
+    "contactConventionCommittee": "Contact the Convention Committee",
+    "anniversaryBadge": "50th Anniversary · 1976–2026",
+    "registerNowCta": "Register Now",
+    "aboutConvention": "About the Convention"
   },
   "Register": {
     "_translationStatus": "Real Yoruba, carried over from the Convention site's own already-reviewed messages/yo.json where the concept matched exactly (register.form field labels). Headings/copy specific to CACNA's own phrasing not covered here stay English placeholders in the page itself.",

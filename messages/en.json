@@ -87,7 +87,21 @@
     "pastLeaders": "Past Leaders",
     "contact": "Contact",
     "sitemap": "Sitemap",
-    "backToTop": "Back to top"
+    "backToTop": "Back to top",
+    "attendHeading": "Attend",
+    "programsHeading": "Programs",
+    "connectHeading": "Connect",
+    "contactHeading": "Contact",
+    "register": "Register",
+    "schedule": "Schedule",
+    "planYourVisit": "Plan Your Visit",
+    "store": "Store",
+    "news": "News",
+    "archive": "Archive",
+    "contactConventionCommittee": "Contact the Convention Committee",
+    "anniversaryBadge": "50th Anniversary · 1976–2026",
+    "registerNowCta": "Register Now",
+    "aboutConvention": "About the Convention"
   },
   "Register": {
     "heroHeading": "Register for CACNA {year}",
