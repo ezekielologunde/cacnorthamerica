@@ -38,10 +38,18 @@ export interface Leader {
   person_key: string | null;
 }
 
+// db.schema: "cacna" -- see lib/supabase/server.ts's comment. This file
+// builds its own client instead of using that shared factory (no cookies
+// needed for a public read), but still has to target the same isolated
+// schema or every query here silently hits cac-salvation-center's own
+// project instead (which has no "leaders" table at all) -- this was the
+// actual cause of Pastor Agbeja's photo (and every /leadership page) going
+// blank after the Supabase migration, found 2026-09-06.
 function client() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    { db: { schema: "cacna" } }
   );
 }
 

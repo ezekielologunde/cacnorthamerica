@@ -9,10 +9,14 @@ export interface CacWorldNewsItem {
   publishedAt: string | null;
 }
 
+// db.schema: "cacna" -- see lib/leaders.ts's comment (same bug, same fix):
+// without this, every query here silently hits cac-salvation-center's own
+// project instead of the isolated cacna schema.
 function anonClient() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    { db: { schema: "cacna" } },
   );
 }
 
