@@ -255,3 +255,11 @@ for them may be a gap.
 No test runner/config (`jest`, `vitest`, `playwright`, etc.) appears in
 `package.json`. Confirm this is intentional for a content site before
 adding CI test requirements.
+
+## Homepage hero + nav follow-ups (2026-09-05)
+
+The hero/nav redesign (see [[Changelog]] and `docs/superpowers/specs/2026-09-05-homepage-hero-nav-redesign-design.md`) is implemented, but real video files still need to be supplied by the site owner at `public/videos/welcome-hero.mp4` and `public/videos/convention-hero.mp4` -- until then, the Welcome/Convention hero slides show their poster image, same as before this change visually.
+
+Also surfaced during that conversation, not yet started:
+- Two calendar events to add to `lib/events.ts`'s `specialEvents`: the HOPE Annual Summit (Sept 12, 2026) and the CACMA Latunde Region prayer/fasting meeting (real Zoom details already provided).
+- Connecting the registration flow's Google Sheets logging (`lib/sheetsWebhook.ts`) to the site owner's own Google account/spreadsheet, and confirming the Zelle/payment details shown on the register page are correct.
