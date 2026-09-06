@@ -196,12 +196,14 @@ export function Hero() {
               position: "absolute", inset: 0,
               ...(slide.bg.type === "photo"
                 ? { backgroundImage: `url(${slide.bg.src})`, backgroundSize: "cover", backgroundPosition: "center" }
+                : slide.bg.type === "video"
+                ? { backgroundImage: `url(${slide.bg.poster})`, backgroundSize: "cover", backgroundPosition: "center" }
                 : slide.bg.type === "gradient"
                 ? { background: slide.bg.value }
                 : {}),
             }}
           >
-            {slide.bg.type === "video" && (
+            {slide.bg.type === "video" && !reduce && (
               <video
                 key={slide.bg.src}
                 autoPlay
