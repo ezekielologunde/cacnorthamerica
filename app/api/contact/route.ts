@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { createServiceClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rateLimit";
+import { escapeHtml } from "@/lib/html";
 
 const FROM = "CACNA <noreply@cacnorthamerica.com>";
 const TO   = "info@cacnorthamerica.com";
@@ -10,15 +11,6 @@ const ALLOWED_FORM_PREFIXES = ["Contact —", "Contact Form"];
 const MAX_FIELD_LENGTH = 10_000;
 const MAX_FIELDS = 20;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#x27;");
-}
 
 function buildHtml(rows: [string, string][]): string {
   const trs = rows
