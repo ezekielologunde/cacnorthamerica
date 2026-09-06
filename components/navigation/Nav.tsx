@@ -13,6 +13,9 @@ interface NavItem {
   label: string;
   href?: string;
   dropdown?: { href: string; label: string; desc: string; external?: boolean }[];
+  /** Renders the dropdown panel as a 2-column grid instead of a single
+   *  stack — for menus with enough items that one column would run long. */
+  layout?: 'grid';
 }
 
 const isExternalHref = (href: string) => href.startsWith('http');
@@ -70,8 +73,22 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
         { href: withLocale('/about', locale), label: t('aboutCacna'), desc: t('aboutCacnaDesc') },
         { href: withLocale('/leadership', locale), label: t('leadership'), desc: t('leadershipDesc') },
         { href: withLocale('/zones', locale), label: t('zonesDccs'), desc: t('zonesDccsDesc') },
-        { href: withLocale('/ministries', locale), label: t('ministries'), desc: t('ministriesDesc') },
         { href: withLocale('/bible-institute', locale), label: t('bibleInstitute'), desc: t('bibleInstituteDesc') },
+      ],
+    },
+    {
+      label: t('ministries'),
+      href: withLocale('/ministries', locale),
+      layout: 'grid',
+      dropdown: [
+        { href: withLocale('/cacma', locale), label: t('cacma'), desc: t('cacmaDesc') },
+        { href: withLocale('/youth', locale), label: t('youth'), desc: t('youthDesc') },
+        { href: withLocale('/christian-education', locale), label: t('christianEducation'), desc: t('christianEducationDesc') },
+        { href: withLocale('/good-women', locale), label: t('goodWomen'), desc: t('goodWomenDesc') },
+        { href: withLocale('/ministers-wives', locale), label: t('ministersWives'), desc: t('ministersWivesDesc') },
+        { href: withLocale('/business-group', locale), label: t('businessGroup'), desc: t('businessGroupDesc') },
+        { href: withLocale('/children', locale), label: t('children'), desc: t('childrenDesc') },
+        { href: withLocale('/ministries', locale), label: t('seeAllMinistries'), desc: t('ministriesDesc') },
       ],
     },
     {
@@ -108,9 +125,9 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
       const isScrolled = window.scrollY > 36;
       setScrolled(isScrolled);
       nav.style.background = open
-        ? dark ? 'rgba(12,14,19,.97)' : 'rgba(245,246,250,.97)'
+        ? dark ? 'rgba(12,14,19,.97)' : 'rgba(255,255,255,.98)'
         : isScrolled
-        ? dark ? 'rgba(12,14,19,.85)' : 'rgba(245,246,250,.92)'
+        ? dark ? 'rgba(12,14,19,.85)' : 'rgba(255,255,255,.96)'
         : 'transparent';
       nav.style.boxShadow = isScrolled && !open
         ? dark ? '0 6px 24px rgba(0,0,0,.4)' : '0 6px 24px rgba(18,20,30,.08)'
@@ -147,6 +164,11 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
   const lightBar = dark || (heroDark && !scrolled && !open);
   const barInk = lightBar ? 'var(--cream)' : 'var(--ink)';
   const barAccent = lightBar ? 'var(--gold)' : 'var(--red)';
+  // Whenever the bar actually has a background underneath it (i.e. whenever
+  // it isn't sitting transparent over a dark hero), show the accent strip
+  // along its bottom edge — matches the reference nav's persistent red
+  // underline, which only makes sense once there's a bar to underline.
+  const hasSolidBg = open || scrolled || !heroDark;
 
   return (
     <>
@@ -186,8 +208,9 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                     display: 'flex', alignItems: 'center', gap: 5,
                     fontSize: 14.5, fontWeight: active ? 700 : 600,
                     color: active ? barAccent : barInk,
-                    textDecoration: 'none', transition: 'color .4s',
-                    padding: '7px 10px', borderRadius: 8,
+                    textDecoration: 'none', transition: 'color .4s, border-color .4s',
+                    padding: '7px 10px 5px', borderRadius: 8,
+                    borderBottom: `2px solid ${active ? 'var(--red)' : 'transparent'}`,
                   }}>
                     {item.label}
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform .2s' }}>
@@ -208,7 +231,10 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                         borderRadius: 16, padding: 8,
                         boxShadow: '0 20px 50px rgba(18,20,30,.16)',
                         border: `1px solid ${dark ? 'rgba(255,255,255,.1)' : 'var(--line)'}`,
-                        minWidth: 200,
+                        minWidth: item.layout === 'grid' ? 440 : 200,
+                        ...(item.layout === 'grid'
+                          ? { display: 'grid' as const, gridTemplateColumns: '1fr 1fr', gap: 2 }
+                          : {}),
                       }}>
                         {item.dropdown.map(d => {
                           const itemStyle: CSSProperties = {
@@ -238,8 +264,9 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
               <Link key={item.label} href={item.href!} style={{
                 fontSize: 14.5, fontWeight: active ? 700 : 600,
                 color: active ? barAccent : barInk,
-                textDecoration: 'none', padding: '7px 10px', borderRadius: 8,
-                transition: 'color .4s',
+                textDecoration: 'none', padding: '7px 10px 5px', borderRadius: 8,
+                borderBottom: `2px solid ${active ? 'var(--red)' : 'transparent'}`,
+                transition: 'color .4s, border-color .4s',
               }}>
                 {item.label}
               </Link>
@@ -256,6 +283,18 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
             >
               <Search size={16} strokeWidth={2} />
             </button>
+            <Link
+              href={withLocale('/store', locale)}
+              style={{
+                display: 'inline-flex', alignItems: 'center',
+                border: `1.5px solid ${lightBar ? 'rgba(245,246,250,.4)' : 'var(--ink)'}`,
+                color: barInk, fontWeight: 700, fontSize: 13.5,
+                padding: '8px 16px', borderRadius: 999, textDecoration: 'none',
+                transition: 'color .4s, border-color .4s', whiteSpace: 'nowrap',
+              }}
+            >
+              {t('store')}
+            </Link>
             {conventionOpen && (
               isExternalHref(conventionCtaHref) ? (
                 <a
@@ -306,13 +345,22 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
           <span style={{ display: 'block', width: 24, height: 2, background: 'currentColor', borderRadius: 2, transition: 'opacity .25s', opacity: open ? 0 : 1 }} />
           <span style={{ display: 'block', width: 24, height: 2, background: 'currentColor', borderRadius: 2, transition: 'transform .25s', transform: open ? 'translateY(-7px) rotate(-45deg)' : 'none' }} />
         </button>
+
+        {/* Persistent accent strip along the bottom of the bar — only shown
+            once the bar itself has a background to sit under (see hasSolidBg). */}
+        <div aria-hidden style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0,
+          height: 3, background: 'linear-gradient(90deg,var(--red-deep),var(--red))',
+          opacity: hasSolidBg && !dark ? 1 : 0, transition: 'opacity .4s',
+          pointerEvents: 'none',
+        }} />
       </nav>
 
       {/* Mobile overlay */}
       {open && (
         <div style={{
           position: 'fixed', inset: 0, zIndex: 99,
-          background: dark ? 'rgba(12,14,19,.97)' : 'rgba(245,246,250,.97)',
+          background: dark ? 'rgba(12,14,19,.97)' : 'rgba(255,255,255,.98)',
           backdropFilter: 'blur(14px)',
           display: 'flex', flexDirection: 'column',
           padding: '110px 32px 48px',
@@ -380,6 +428,18 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 32 }}>
+            <Link
+              href={withLocale('/store', locale)}
+              onClick={() => setOpen(false)}
+              className="press"
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                border: `1.5px solid ${ink}`, color: ink, fontWeight: 700, fontSize: 15,
+                padding: '14px 24px', borderRadius: 999, textDecoration: 'none',
+              }}
+            >
+              {t('store')}
+            </Link>
             {conventionOpen && (
               isExternalHref(conventionCtaHref) ? (
                 <a

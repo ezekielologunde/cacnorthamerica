@@ -12,7 +12,10 @@ import { specialEvents, isEventPast } from "@/lib/events";
 import { POSTS } from "@/lib/blog";
 import { GIVING_CAMPAIGNS, localizeCampaign } from "@/lib/giving";
 
-type SlideBg = { type: "photo"; src: string; alt: string } | { type: "gradient"; value: string };
+type SlideBg =
+  | { type: "photo"; src: string; alt: string }
+  | { type: "youtube"; videoId: string; poster: string; alt: string }
+  | { type: "gradient"; value: string };
 type SlideKind = "Welcome" | "Event" | "Ad" | "News";
 
 interface Slide {
@@ -61,7 +64,7 @@ function useSlides(): Slide[] {
         { label: "Watch Online", href: "/online" },
         { label: "Find a Zone", href: "/zones" },
       ],
-      bg: { type: "photo", src: "/images/cac-congregation-worship.jpg", alt: "CACNA congregation in worship" },
+      bg: { type: "youtube", videoId: "54KgNQo6cws", poster: "/images/cac-congregation-worship.jpg", alt: "CACNA congregation in worship" },
     });
 
     const { cy: featuredCy, state } = conventionToFeature();
@@ -79,7 +82,7 @@ function useSlides(): Slide[] {
       cta: showRecap
         ? { label: "Read the Closing Message", href: recapPost ? (recapPost.href ?? `/blog/${recapPost.slug}`) : featuredCy.href }
         : { label: "Event Details", href: nextCy.href },
-      bg: { type: "photo", src: "/images/cac-youth-convention.jpg", alt: "CACNA youth at a past Annual Convention" },
+      bg: { type: "youtube", videoId: "SFXZsCZPD0I", poster: "/images/cac-youth-convention.jpg", alt: "CACNA youth at a past Annual Convention" },
     });
 
     const anniversary = specialEvents.find((e) => e.id === "cacna-50th-anniversary-2026");
@@ -146,14 +149,6 @@ function useSlides(): Slide[] {
   }, [locale]);
 }
 
-const BG_WORDS = [
-  { w: "GRACE",     l: 4,  delay: 0,   dur: 22, sz: 48, o: 0.05  },
-  { w: "FAITH",     l: 77, delay: 1,   dur: 28, sz: 30, o: 0.04  },
-  { w: "HOPE",      l: 21, delay: 2,   dur: 18, sz: 62, o: 0.055 },
-  { w: "LOVE",      l: 63, delay: 0.5, dur: 24, sz: 38, o: 0.045 },
-  { w: "FAMILY",    l: 53, delay: 1.2, dur: 32, sz: 18, o: 0.04  },
-] as const;
-
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
@@ -198,12 +193,41 @@ export function Hero() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.9, ease: "easeInOut" }}
             style={{
-              position: "absolute", inset: 0,
+              position: "absolute", inset: 0, overflow: "hidden",
               ...(slide.bg.type === "photo"
                 ? { backgroundImage: `url(${slide.bg.src})`, backgroundSize: "cover", backgroundPosition: "center" }
-                : { background: slide.bg.value }),
+                : slide.bg.type === "youtube"
+                ? { backgroundImage: `url(${slide.bg.poster})`, backgroundSize: "cover", backgroundPosition: "center" }
+                : slide.bg.type === "gradient"
+                ? { background: slide.bg.value }
+                : {}),
             }}
-          />
+          >
+            {slide.bg.type === "youtube" && !reduce && (
+              // Oversized + centered so a 16:9 embed covers the frame at any
+              // aspect ratio (the standard "video background" crop trick) --
+              // same math a scaled/centered <video style="object-fit:cover">
+              // would do natively, done by hand since an <iframe> has no
+              // object-fit. `pointer-events: none` keeps it purely decorative
+              // (aria-hidden is already set on this block's parent), and the
+              // div's own backgroundImage (the poster, set above) is what
+              // actually paints for reduced-motion visitors -- this iframe
+              // only ever renders on top of it.
+              <iframe
+                key={slide.bg.videoId}
+                src={`https://www.youtube-nocookie.com/embed/${slide.bg.videoId}?autoplay=1&mute=1&loop=1&playlist=${slide.bg.videoId}&controls=0&showinfo=0&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1`}
+                title={slide.bg.alt}
+                allow="autoplay; encrypted-media"
+                style={{
+                  position: "absolute", top: "50%", left: "50%",
+                  width: "177.78vh", height: "56.25vw",
+                  minWidth: "100%", minHeight: "100%",
+                  transform: "translate(-50%,-50%)",
+                  border: "none", pointerEvents: "none",
+                }}
+              />
+            )}
+          </motion.div>
         </AnimatePresence>
       </div>
 
@@ -211,23 +235,6 @@ export function Hero() {
       <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(135deg,rgba(0,0,0,.8) 0%,rgba(0,0,0,.56) 55%,rgba(0,0,0,.4) 100%)" }} />
       <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "radial-gradient(120% 80% at 50% 0%,transparent 50%,rgba(0,0,0,.45) 100%)" }} />
       <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 200, zIndex: 1, background: "linear-gradient(to bottom,transparent,rgba(0,0,0,.7))" }} />
-
-      {/* Floating ambient words — decorative, not slide-dependent */}
-      {!reduce && (
-        <div aria-hidden style={{ position: "absolute", inset: 0, zIndex: 1, overflow: "hidden", pointerEvents: "none" }}>
-          {BG_WORDS.map(({ w, l, delay, dur, sz, o }) => (
-            <motion.span
-              key={w}
-              initial={{ y: "110vh" }}
-              animate={{ y: "-110vh" }}
-              transition={{ duration: dur, delay, repeat: Infinity, ease: "linear" }}
-              style={{ position: "absolute", left: `${l}%`, top: 0, fontFamily: "var(--font-display)", fontWeight: 800, fontSize: sz, color: `rgba(255,255,255,${o})`, letterSpacing: "-0.02em", userSelect: "none", whiteSpace: "nowrap" }}
-            >
-              {w}
-            </motion.span>
-          ))}
-        </div>
-      )}
 
       {/* Slide content */}
       <div style={{ position: "relative", zIndex: 2, maxWidth: 820, margin: "0 auto", width: "100%", textAlign: "center" }}>
@@ -257,8 +264,8 @@ export function Hero() {
 
             <h1 style={{
               fontFamily: "var(--font-display)", fontWeight: 800,
-              fontSize: "clamp(32px,4.6vw,58px)", lineHeight: 1.05, letterSpacing: "-0.02em",
-              margin: "22px 0 0", color: "#fff", textWrap: "balance",
+              fontSize: "clamp(38px,6vw,76px)", lineHeight: 1.0, letterSpacing: "-0.03em",
+              margin: "24px 0 0", color: "#fff", textWrap: "balance",
             }}>
               {slide.title}
             </h1>

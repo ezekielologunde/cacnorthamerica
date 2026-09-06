@@ -322,7 +322,7 @@ export default function ContactPageClient() {
       </section>
 
       {/* Convention Committee leadership */}
-      <section style={{ background: "var(--cream-2)", padding: "56px clamp(20px,5vw,64px)" }}>
+      <section id="convention-committee" style={{ background: "var(--cream-2)", padding: "56px clamp(20px,5vw,64px)", scrollMarginTop: 90 }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 32 }}>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Annual Convention</span>

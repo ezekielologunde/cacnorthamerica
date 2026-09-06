@@ -81,13 +81,15 @@ export async function POST(req: Request) {
   // Save to Supabase — fire-and-forget
   saveToSupabase(formName, fields).catch((e) => console.error("[contact] Supabase save failed:", e));
 
-  // Log to Google Sheets — fire-and-forget
+  // Log to Google Sheets — fire-and-forget. See lib/sheetsWebhook.ts for
+  // why SHEETS_WEBHOOK_SECRET is sent alongside every payload.
   const hook = process.env.SHEETS_WEBHOOK;
   if (hook) {
+    const secret = process.env.SHEETS_WEBHOOK_SECRET;
     fetch(hook, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ formName, ...fields }),
+      body: JSON.stringify({ formName, ...(secret ? { secret } : {}), ...fields }),
     }).catch((e) => console.error("[contact] Sheets webhook failed:", e));
   }
 

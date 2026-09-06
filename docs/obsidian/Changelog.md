@@ -10,6 +10,10 @@ tags: [project/cacnorthamerica]
 
 Related: [[Project]] · [[Decisions]] · [[Features]]
 
+## 2026-09-05 — Homepage hero video background + Ministries nav mega-menu
+
+Implemented the approved design (see `docs/superpowers/specs/2026-09-05-homepage-hero-nav-redesign-design.md`). The Welcome and Convention hero slides now use a `video` background (poster-fallback, since no real video file has been supplied yet -- `public/videos/welcome-hero.mp4` and `public/videos/convention-hero.mp4` are placeholders for the site owner to fill in); the other 4 slides are unchanged. Removed the floating ambient background words (GRACE/FAITH/HOPE/LOVE/FAMILY) since the video already supplies motion. Added a "Ministries" mega-menu to the primary nav (2-column grid, text-only) linking all 6 sub-ministry pages plus `/children`, so content added during the Convention merge is finally discoverable from the nav bar instead of only `/ministries` or the footer; removed the now-redundant `/ministries` link from the "Who We Are" dropdown.
+
 ## 2026-09-05 — Phase H: final data-completeness audit, two real gaps fixed
 
 Ran a full audit of every remaining Convention data source before deciding
