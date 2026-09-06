@@ -10,6 +10,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { POSTS, getPost, badgeTextColor } from "@/lib/blog";
 import type { BlogPost } from "@/lib/blog";
 import { SITE_URL } from "@/lib/site";
+import { routing } from "@/i18n/routing";
 import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { setRequestLocale } from "next-intl/server";
@@ -78,13 +79,14 @@ export async function generateMetadata({
 }: {
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { locale, slug } = await params;
   const post = await resolvePost(slug);
   if (!post) return { title: "Not Found" };
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/blog/${post.slug}`]));
   return {
     title: `${post.title} — CACNA`,
     description: post.excerpt,
-    alternates: { canonical: `/blog/${post.slug}` },
+    alternates: { canonical: `${SITE_URL}/${locale}/blog/${post.slug}`, languages },
     openGraph: {
       title: post.title,
       description: post.excerpt,

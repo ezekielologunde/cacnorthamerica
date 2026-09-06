@@ -1,16 +1,27 @@
+import type { Metadata } from "next";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Gallery } from "@/components/sections/Gallery";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import { setRequestLocale } from "next-intl/server";
+import { SITE_URL } from "@/lib/site";
+import { routing } from "@/i18n/routing";
 
-export const metadata = {
-  title: "Gallery — Christ Apostolic Church North America (CACNA)",
-  description:
-    "Moments of worship, fellowship, and celebration from across CACNA's member churches and the Annual Convention.",
-  alternates: { canonical: "/gallery" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/gallery`]));
+  return {
+    title: "Gallery — Christ Apostolic Church North America (CACNA)",
+    description:
+      "Moments of worship, fellowship, and celebration from across CACNA's member churches and the Annual Convention.",
+    alternates: { canonical: `${SITE_URL}/${locale}/gallery`, languages },
+  };
+}
 
 export default async function GalleryPage({
   params,

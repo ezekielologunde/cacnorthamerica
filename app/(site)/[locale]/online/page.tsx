@@ -10,6 +10,9 @@ import { archiveEntries } from "@/lib/archive";
 import { ArchiveBrowser } from "@/components/media/ArchiveBrowser";
 import { currentOrNextConvention, getConventionState } from "@/lib/conventions";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site";
+import { routing } from "@/i18n/routing";
 
 const YOUTUBE_URL = "https://youtube.com/@cacnorthamericalatunderegi1330";
 const YOUTUBE_LIVE_URL = "https://www.youtube.com/@cacnorthamericalatunderegi1330/live";
@@ -36,11 +39,19 @@ const schedule = [
   { day: "July", name: "CACNA Annual Convention", time: "CAC Village, PA", type: "Streamed on YouTube & Zoom" },
 ];
 
-export const metadata = {
-  title: "Watch Online — Christ Apostolic Church North America (CACNA)",
-  description: "Watch CACNA's Annual Convention and message replays online, and browse the full media archive back to 2022 — on YouTube, with Zoom available during the convention.",
-  alternates: { canonical: "/online" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/online`]));
+  return {
+    title: "Watch Online — Christ Apostolic Church North America (CACNA)",
+    description: "Watch CACNA's Annual Convention and message replays online, and browse the full media archive back to 2022 — on YouTube, with Zoom available during the convention.",
+    alternates: { canonical: `${SITE_URL}/${locale}/online`, languages },
+  };
+}
 
 export default async function OnlinePage({
   params,

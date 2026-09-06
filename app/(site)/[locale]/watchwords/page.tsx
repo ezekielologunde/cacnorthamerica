@@ -4,13 +4,24 @@ import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import { CURRENT_WATCHWORD, PAST_WATCHWORDS } from "@/lib/watchwords";
 import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site";
+import { routing } from "@/i18n/routing";
 
-export const metadata = {
-  title: "Watchwords Since 1989 — Christ Apostolic Church North America (CACNA)",
-  description:
-    "Every CACNA annual Watchword on record, from 1989 to today — a scripture verse the church carries as its theme each year.",
-  alternates: { canonical: "/watchwords" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/watchwords`]));
+  return {
+    title: "Watchwords Since 1989 — Christ Apostolic Church North America (CACNA)",
+    description:
+      "Every CACNA annual Watchword on record, from 1989 to today — a scripture verse the church carries as its theme each year.",
+    alternates: { canonical: `${SITE_URL}/${locale}/watchwords`, languages },
+  };
+}
 
 export default async function WatchwordsPage({
   params,

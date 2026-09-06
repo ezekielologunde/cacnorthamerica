@@ -8,12 +8,23 @@ import { StoreNews } from "@/components/store/StoreNews";
 import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
 import { storeProducts } from "@/lib/conventions";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site";
+import { routing } from "@/i18n/routing";
 
-export const metadata = {
-  title: "Store — CACNA Convention Apparel & Christian Education Materials",
-  description: "Convention, Good Women, and Youth & Young Adult apparel, plus real Sunday School lessons and Bible study manuals from CACNA's Christian Education Department — checkout securely with Stripe.",
-  alternates: { canonical: "/store" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/store`]));
+  return {
+    title: "Store — CACNA Convention Apparel & Christian Education Materials",
+    description: "Convention, Good Women, and Youth & Young Adult apparel, plus real Sunday School lessons and Bible study manuals from CACNA's Christian Education Department — checkout securely with Stripe.",
+    alternates: { canonical: `${SITE_URL}/${locale}/store`, languages },
+  };
+}
 
 export default async function StorePage({
   params,
