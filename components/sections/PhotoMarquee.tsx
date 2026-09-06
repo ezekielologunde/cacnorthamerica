@@ -16,6 +16,11 @@ const PHOTOS: { src: string; alt: string }[] = [
   { src: "/images/cac-graduation-group.jpg", alt: "A CACNA graduation ceremony group photo" },
   { src: "/images/convention-children-03.jpg", alt: "The Children's Department in an indoor session at the 2025 CACNA Convention" },
   { src: "/images/convention-2025-04.jpg", alt: "Pastors gathered at the pulpit during the 2025 CACNA Convention" },
+  // These two used to be per-slide hero backgrounds (anniversary, giving)
+  // before the hero moved to one persistent video for every slide -- given
+  // a home here instead of dropping them from the homepage entirely.
+  { src: "/images/cac-gathering-crowd.jpg", alt: "A gathering of the CACNA family" },
+  { src: "/images/giving-offering.jpg", alt: "CACNA members bringing an offering during a service" },
 ];
 
 function Track({ ariaHidden }: { ariaHidden?: boolean }) {
