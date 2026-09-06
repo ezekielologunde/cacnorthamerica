@@ -101,7 +101,6 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
         { href: withLocale('/gallery', locale), label: t('gallery'), desc: t('galleryDesc') },
       ],
     },
-    { label: t('give'), href: withLocale('/giving', locale) },
     { label: t('contact'), href: withLocale('/contact', locale) },
   ];
   const [open, setOpen] = useState(false);
@@ -273,8 +272,10 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
             );
           })}
 
-          {/* Search + Watch Online group */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginLeft: 8 }}>
+          {/* Search, Give, Store, Register — spaced out as their own cluster
+              rather than packed tight, so each reads as its own control
+              instead of a run-on row (matches the reference nav). */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 18, marginLeft: 16 }}>
             <button
               onClick={() => setSearchOpen(true)}
               aria-label={t("search")}
@@ -283,6 +284,16 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
             >
               <Search size={16} strokeWidth={2} />
             </button>
+            <Link
+              href={withLocale('/giving', locale)}
+              style={{
+                fontSize: 14.5, fontWeight: 600, color: barInk,
+                textDecoration: 'none', whiteSpace: 'nowrap',
+                transition: 'color .4s',
+              }}
+            >
+              {t('give')}
+            </Link>
             <Link
               href={withLocale('/store', locale)}
               style={{
@@ -428,6 +439,18 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 32 }}>
+            <Link
+              href={withLocale('/giving', locale)}
+              onClick={() => setOpen(false)}
+              className="press"
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                border: `1.5px solid ${dark ? 'rgba(245,246,250,.2)' : 'var(--line)'}`, color: ink, fontWeight: 700, fontSize: 15,
+                padding: '14px 24px', borderRadius: 999, textDecoration: 'none',
+              }}
+            >
+              {t('give')}
+            </Link>
             <Link
               href={withLocale('/store', locale)}
               onClick={() => setOpen(false)}
