@@ -4,8 +4,9 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rateLimit";
 import { escapeHtml } from "@/lib/html";
 import { sendContactAutoReply } from "@/lib/contactReplyEmail";
+import { EMAIL_FROM } from "@/lib/email";
 
-const FROM = "CACNA <noreply@cacnorthamerica.com>";
+const FROM = EMAIL_FROM;
 const TO   = "info@cacnorthamerica.com";
 
 const ALLOWED_FORM_PREFIXES = ["Contact —", "Contact Form"];
