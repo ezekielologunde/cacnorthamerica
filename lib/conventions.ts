@@ -70,8 +70,11 @@ export const conventionYears: ConventionYear[] = [
     year: 2026,
     startIso: "2026-07-13",
     endIso: "2026-07-18",
+    // No registrationUrl: the convention has concluded, and
+    // cacnaconvention.cacsalvationcenter.org -- the domain this used to
+    // point at -- was never actually wired up (confirmed 404, 2026-09-07).
+    // Matches the 2020/2024 archived entries, which also have none.
     theme: "The Bible: God’s Message to Man",
-    registrationUrl: "https://cacnaconvention.cacsalvationcenter.org/archive",
     // Archival record of what 2026 actually cost — this convention has
     // already happened, so this only ever surfaces on the archive page, not
     // a live /register flow (getOpenPricing() below only reads pricingTiers

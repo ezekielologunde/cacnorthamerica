@@ -32,7 +32,11 @@ export async function generateMetadata({
 
 const cy2026 = conventionYears.find((cy) => cy.year === 2026)!;
 const ev = conventionChurchEvent(cy2026);
-const CACNA_REG = cy2026.registrationUrl!;
+// The 2026 convention has concluded and never had a real external
+// registration link wired up (see lib/conventions.ts). Kept optional here
+// so the JSON-LD offer and the (already isPast-gated) CTA buttons below
+// disappear cleanly instead of pointing at a dead URL.
+const CACNA_REG = cy2026.registrationUrl;
 
 const THEME = "The Bible: God’s Message to Man";
 
@@ -58,7 +62,7 @@ export default async function CACNA2026Page({
     url: `${SITE_URL}/events/cacna-2026`,
     location: { "@type": "Place", name: "CAC Village", address: { "@type": "PostalAddress", streetAddress: "14051 Stahley Rd", addressLocality: "Blue Ridge Summit", addressRegion: "PA", postalCode: "17214", addressCountry: "US" } },
     organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },
-    offers: { "@type": "Offer", url: CACNA_REG, availability: "https://schema.org/InStock" },
+    ...(CACNA_REG ? { offers: { "@type": "Offer" as const, url: CACNA_REG, availability: "https://schema.org/InStock" } } : {}),
   };
   return (
     <main id="main-content">
@@ -125,7 +129,7 @@ export default async function CACNA2026Page({
             </p>
           </Reveal>
 
-          {!isPast && (
+          {!isPast && CACNA_REG && (
           <Reveal delay={280}>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
               <a href={CACNA_REG} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(253,200,65,.4)" }}>
@@ -227,7 +231,7 @@ export default async function CACNA2026Page({
       </section>
 
       {/* Registration CTA */}
-      {!isPast && (
+      {!isPast && CACNA_REG && (
       <section style={{ background: "var(--ink)", padding: "clamp(60px,8vw,100px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 720, margin: "0 auto", textAlign: "center" }}>
           <Reveal>
