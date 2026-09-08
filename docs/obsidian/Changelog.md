@@ -2,13 +2,17 @@
 project: cacnorthamerica
 type: changelog
 status: active
-last_updated: 2026-09-05
+last_updated: 2026-09-07
 tags: [project/cacnorthamerica]
 ---
 
 # Changelog
 
 Related: [[Project]] · [[Decisions]] · [[Features]]
+
+## 2026-09-07 — Canonical host restored to cacna.cacsalvationcenter.org
+
+`cacna.cacsalvationcenter.org` is now attached to the `cacnorthamerica` Vercel project and serving the site, so the `SITE_URL` default in `lib/site.ts` goes back to it (PR #31 had reverted it to `cacnorthamerica.vercel.app` while the subdomain was not wired up). Until this ships, every page's canonical, hreflang alternates and the sitemap declare the vercel.app host, so Google indexes vercel.app and treats the subdomain as a duplicate; Search Console on the sibling site cannot see the subdomain at all (only a `www.cacsalvationcenter.org` URL-prefix property is verified there). Added a permanent host-based redirect in `next.config.ts` from `cacnorthamerica.vercel.app` to the subdomain for every non-API path, and `.env.example` now shows the expected `NEXT_PUBLIC_SITE_URL`. The Vercel env var and the Supabase redirect allow-list still have to be updated by hand: see [[Tasks]].
 
 ## 2026-09-05 — Homepage hero video background + Ministries nav mega-menu
 
