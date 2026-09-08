@@ -68,6 +68,25 @@ const nextConfig: NextConfig = {
     // there's no request-derived locale to preserve the way next-intl's
     // middleware does for in-app navigation.
     return [
+      // cacnorthamerica.vercel.app was the declared canonical host until
+      // cacna.cacsalvationcenter.org was attached (September 2026), so Google
+      // has it indexed. Send every page there to the subdomain so there is one
+      // canonical host. API routes are left alone: Stripe webhooks and other
+      // server-to-server callers may still be configured against the old host
+      // and do not follow redirects. Preview deployments use other hostnames
+      // (and are noindex on Vercel anyway), so they are unaffected.
+      {
+        source: "/",
+        has: [{ type: "host" as const, value: "cacnorthamerica.vercel.app" }],
+        destination: "https://cacna.cacsalvationcenter.org/",
+        permanent: true,
+      },
+      {
+        source: "/:path((?!api/|_next/).*)",
+        has: [{ type: "host" as const, value: "cacnorthamerica.vercel.app" }],
+        destination: "https://cacna.cacsalvationcenter.org/:path",
+        permanent: true,
+      },
       { source: "/leadership-meet-our-pastors", destination: "/en/leadership", permanent: true },
       { source: "/leadership-meet-our-pastors/", destination: "/en/leadership", permanent: true },
       { source: "/online-connect-to-our-services", destination: "/en/online", permanent: true },

@@ -2,13 +2,21 @@
 project: cacnorthamerica
 type: changelog
 status: active
-last_updated: 2026-09-05
+last_updated: 2026-09-07
 tags: [project/cacnorthamerica]
 ---
 
 # Changelog
 
 Related: [[Project]] · [[Decisions]] · [[Features]]
+
+## 2026-09-07 — Canonical host restored to cacna.cacsalvationcenter.org
+
+`cacna.cacsalvationcenter.org` is now attached to the `cacnorthamerica` Vercel project and serving the site, so the `SITE_URL` default in `lib/site.ts` goes back to it (PR #31 had reverted it to `cacnorthamerica.vercel.app` while the subdomain was not wired up). Until this ships, every page's canonical, hreflang alternates and the sitemap declare the vercel.app host, so Google indexes vercel.app and treats the subdomain as a duplicate; Search Console on the sibling site cannot see the subdomain at all (only a `www.cacsalvationcenter.org` URL-prefix property is verified there). Added a permanent host-based redirect in `next.config.ts` from `cacnorthamerica.vercel.app` to the subdomain for every non-API path, and `.env.example` now shows the expected `NEXT_PUBLIC_SITE_URL`. The Vercel env var and the Supabase redirect allow-list still have to be updated by hand: see [[Tasks]].
+
+## 2026-09-07 — Dead cacnaconvention.org link removed from the 2026 convention data
+
+Found while cross-checking dead links on the sibling church site: `cacnaconvention.org` (the vendor page used for 2026 registration payments — a different domain from `cacna-convention.vercel.app`) returns "403 Access forbidden!" to a normal browser, not just bots. `lib/conventions.ts`'s 2026 entry no longer has a `registrationUrl` — matches the 2020/2024 archived entries, which also have none, since the convention is over and there's nothing to register for. `app/(site)/[locale]/events/cacna-2026/page.tsx`'s `CACNA_REG` is now `cy2026.registrationUrl` (no longer non-null-asserted): the JSON-LD `Offer` is omitted entirely when it's undefined instead of citing a dead URL, and the two CTA buttons (already correctly hidden once the event is past) are now also guarded on `CACNA_REG` being set, not just on `!isPast`. The parallel dead link on the sibling site (`cacnaconvention.org` hardcoded in its own blog CTA and its own `/events/cacna-2026` page) is fixed there directly.
 
 ## 2026-09-05 — Homepage hero video background + Ministries nav mega-menu
 

@@ -2,7 +2,7 @@
 project: cacnorthamerica
 type: decisions
 status: active
-last_updated: 2026-09-05
+last_updated: 2026-09-07
 tags: [project/cacnorthamerica]
 ---
 
@@ -152,6 +152,8 @@ Commits `e352201` and `7e0daf1` fixed the site's declared canonical domain
 was found pointing at the wrong site — worth knowing if the production
 domain changes again, since it's declared in multiple places
 (`next.config.ts`/env, `app/sitemap.ts`, `app/robots.ts`, `public/llms.txt`).
+
+Update 2026-09-07: PR #31 had temporarily reverted the `SITE_URL` default to `cacnorthamerica.vercel.app` because the subdomain was not yet attached to the Vercel project and Supabase's redirect allow-list did not include it. The subdomain is attached now, so the default is `https://cacna.cacsalvationcenter.org` again and `next.config.ts` permanently redirects `cacnorthamerica.vercel.app` to it (API routes excepted, so webhooks configured against the old host keep working). The rule going forward: the code default, `NEXT_PUBLIC_SITE_URL` in Vercel, and the Supabase redirect allow-list must all name the same host, because the env var overrides the default and the allow-list gates the password-reset link.
 
 ## `llms.txt` for LLM crawlers
 

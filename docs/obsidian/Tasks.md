@@ -2,7 +2,7 @@
 project: cacnorthamerica
 type: tasks
 status: active
-last_updated: 2026-09-05
+last_updated: 2026-09-07
 tags: [project/cacnorthamerica]
 ---
 
@@ -263,3 +263,12 @@ The hero/nav redesign (see [[Changelog]] and `docs/superpowers/specs/2026-09-05-
 Also surfaced during that conversation, not yet started:
 - Two calendar events to add to `lib/events.ts`'s `specialEvents`: the HOPE Annual Summit (Sept 12, 2026) and the CACMA Latunde Region prayer/fasting meeting (real Zoom details already provided).
 - Connecting the registration flow's Google Sheets logging (`lib/sheetsWebhook.ts`) to the site owner's own Google account/spreadsheet, and confirming the Zelle/payment details shown on the register page are correct.
+
+## Canonical host cutover (2026-09-07)
+
+Code now defaults `SITE_URL` to `https://cacna.cacsalvationcenter.org` and redirects `cacnorthamerica.vercel.app` to it, but settings outside the repo still point at the old host and override the code:
+
+- **Vercel**: set `NEXT_PUBLIC_SITE_URL=https://cacna.cacsalvationcenter.org` on the `cacnorthamerica` project (Production) and redeploy. While it is still `https://cacnorthamerica.vercel.app`, canonicals, hreflang and the sitemap keep declaring vercel.app regardless of the code default.
+- **Supabase** (project `kaevsmyzjlmjjlwdtfbw`, shared with the sibling church site): add `https://cacna.cacsalvationcenter.org/**` under Auth -> URL Configuration -> Redirect URLs, or the admin password-reset email link goes nowhere (the failure that prompted PR #31).
+- **Search Console**: the subdomain is only covered once the `cacsalvationcenter.org` Domain property is verified (TXT record at Bluehost, where that domain's DNS lives). After that, submit `https://cacna.cacsalvationcenter.org/sitemap.xml`.
+- Local `.env.local` files still carry the vercel.app value; update them so `next dev` matches production.

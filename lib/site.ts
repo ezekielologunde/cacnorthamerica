@@ -1,19 +1,19 @@
 import { googleReviews, REVIEW_AVERAGE, REVIEW_COUNT } from "@/lib/reviews";
 import { conventionYears } from "@/lib/conventions";
 
-// The real custom domain (cacnorthamerica.com) still serves an old,
-// unrelated WordPress build. cacna.cacsalvationcenter.org was the intended
-// canonical domain (a subdomain of the sibling church site, so all CAC
-// family sites share one domain for SEO), but as of 2026-09-06 it isn't
-// actually attached to this Vercel project (confirmed via the Vercel API:
-// only the project's own *.vercel.app domains are configured), and adding
-// it as a redirect target broke the admin password-reset flow (Supabase's
-// redirect allow-list doesn't include it, so the email link silently went
-// nowhere). Defaulting to the project's real *.vercel.app domain instead
-// -- update this (and NEXT_PUBLIC_SITE_URL in Vercel, and Supabase's
-// redirect allow-list) once cacna.cacsalvationcenter.org is actually wired
-// up, or once cacnorthamerica.com is repointed at this build.
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cacnorthamerica.vercel.app";
+// Canonical host. cacna.cacsalvationcenter.org is a subdomain of the sibling
+// church site, so the whole CAC family shares one domain for SEO. It was
+// attached to the cacnorthamerica Vercel project in September 2026 (before
+// that the default had to fall back to the project's *.vercel.app domain,
+// see PR #31). Three places must agree on this value, or canonicals,
+// hreflang and the sitemap point Google at the wrong host:
+//   1. this default,
+//   2. NEXT_PUBLIC_SITE_URL in the Vercel project (it overrides this default),
+//   3. Supabase Auth -> URL Configuration -> Redirect URLs (password-reset
+//      emails link to SITE_URL; a host missing from that allow-list makes
+//      the link silently go nowhere).
+// cacnorthamerica.com still serves an old, unrelated WordPress build.
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cacna.cacsalvationcenter.org";
 
 export const SITE = {
   name: "Christ Apostolic Church North America",
