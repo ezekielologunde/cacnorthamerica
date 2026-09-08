@@ -264,11 +264,11 @@ Also surfaced during that conversation, not yet started:
 - Two calendar events to add to `lib/events.ts`'s `specialEvents`: the HOPE Annual Summit (Sept 12, 2026) and the CACMA Latunde Region prayer/fasting meeting (real Zoom details already provided).
 - Connecting the registration flow's Google Sheets logging (`lib/sheetsWebhook.ts`) to the site owner's own Google account/spreadsheet, and confirming the Zelle/payment details shown on the register page are correct.
 
-## Canonical host cutover (2026-09-07)
+## Canonical host cutover (2026-09-07, Vercel env done 2026-09-08)
 
-Code now defaults `SITE_URL` to `https://cacna.cacsalvationcenter.org` and redirects `cacnorthamerica.vercel.app` to it, but settings outside the repo still point at the old host and override the code:
+Code defaults `SITE_URL` to `https://cacna.cacsalvationcenter.org` and redirects `cacnorthamerica.vercel.app` to it. Settings outside the repo:
 
-- **Vercel**: set `NEXT_PUBLIC_SITE_URL=https://cacna.cacsalvationcenter.org` on the `cacnorthamerica` project (Production) and redeploy. While it is still `https://cacnorthamerica.vercel.app`, canonicals, hreflang and the sitemap keep declaring vercel.app regardless of the code default.
-- **Supabase** (project `kaevsmyzjlmjjlwdtfbw`, shared with the sibling church site): add `https://cacna.cacsalvationcenter.org/**` under Auth -> URL Configuration -> Redirect URLs, or the admin password-reset email link goes nowhere (the failure that prompted PR #31).
-- **Search Console**: the subdomain is only covered once the `cacsalvationcenter.org` Domain property is verified (TXT record at Bluehost, where that domain's DNS lives). After that, submit `https://cacna.cacsalvationcenter.org/sitemap.xml`.
+- ~~**Vercel**: set `NEXT_PUBLIC_SITE_URL`...~~ — **done 2026-09-08**: set to `https://cacna.cacsalvationcenter.org` on the `cacnorthamerica` project (Production) via `vercel env`, then `vercel redeploy` on the current production deployment so it picked up the new value. Verified live: canonical, hreflang, and `sitemap.xml` on the subdomain all now cite `cacna.cacsalvationcenter.org`, not vercel.app.
+- **Supabase** (project `kaevsmyzjlmjjlwdtfbw`, shared with the sibling church site): add `https://cacna.cacsalvationcenter.org/**` under Auth -> URL Configuration -> Redirect URLs, or the admin password-reset email link goes nowhere (the failure that prompted PR #31). Still outstanding — needs the Supabase dashboard.
+- **Search Console**: the subdomain is only covered once the `cacsalvationcenter.org` Domain property is verified (TXT record at Bluehost, where that domain's DNS lives). After that, submit `https://cacna.cacsalvationcenter.org/sitemap.xml`. Still outstanding.
 - Local `.env.local` files still carry the vercel.app value; update them so `next dev` matches production.
