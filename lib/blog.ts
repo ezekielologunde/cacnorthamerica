@@ -459,6 +459,25 @@ const RAW_POSTS: Omit<BlogPost, "categoryColor" | "accent">[] = [
       "\"A church without the Bible loses power; a Christian without the Bible loses direction,\" he closed. \"Do not merely carry it — believe it. Do not merely quote it — obey it. Do not merely admire it — live by it. 'But be doers of the word, and not hearers only, deceiving yourselves'\" (James 1:22).",
     ],
   },
+  {
+    slug: "purity-and-restitution",
+    title: "Purity and Restitution",
+    excerpt:
+      "Lesson 29 of the CAC Unified Bible Study Manual, on Numbers 5 — what it means to stay clean before God, and what to do the moment we aren't: confession, restitution, and the God who makes both possible.",
+    date: "September 10, 2026",
+    dateIso: "2026-09-10",
+    category: "Reflection",
+    readTime: "3 min read",
+    body: [
+      '_"Know ye not that your body is the temple of the Holy Ghost which is in you, which ye have of God, and ye are not your own? For ye are bought with a price."_ — 1 Corinthians 6:19–20',
+      "Numbers 5 is not the easiest chapter to preach from. It opens with instructions for removing the ceremonially unclean from the camp, moves through a law of confession and restitution, and closes with a difficult test for a husband's jealousy. Read together, the chapter is doing one thing: showing a community how to stay clean before God, and what to do the moment it isn't. That is what Lesson 29 of the Unified Bible Study Manual sets before us — **purity and restitution**, held together as two sides of the same call.",
+      "**Purity is not the absence of a body but of contamination.** In the opening verses, anyone unclean — the leper, the one with a discharge, the one defiled by contact with the dead — had to be put outside the camp until they were clean again (vv. 1–4). The instruction was not cruelty; it was protection. A camp that ignored what was unclean in its midst would not stay a place where God's presence could dwell. The same is true of a life, or a church: what we tolerate in our midst determines what kind of dwelling place we remain.",
+      "**Restitution is what purity looks like after a failure.** Verses 5 through 10 give the process for someone who has sinned against another person, and in doing so sinned against the Lord: confess it plainly, repay what was taken in full, add a fifth to it, and bring an offering. Confession alone was never enough — restitution had to reach both directions, to the person wronged **and** to God (v. 8). Sin is not settled by feeling sorry. It is settled by making it right.",
+      "The chapter's second half is harder to sit with — the test God prescribes when a husband suspects his wife of unfaithfulness (vv. 11–31). Read in its own context, it is an act of restraint: rather than let jealousy decide a woman's fate, the law hands the matter to God alone, publicly, through a process no husband could manipulate. Whatever we make of its details today, its intent matches the rest of the chapter — **God cares how His people handle accusation, suspicion, and guilt** — and He does not leave that to human temper.",
+      "The study leaves us with questions worth carrying past this week. _How can you embrace purity, and why does it matter to you personally?_ (1 John 3:3) _What would restitution look like in the relationship you've been avoiding_ — the apology not yet made, the debt not yet repaid? (Hebrews 12:14; vv. 6–7). Numbers 5 will not let purity stay an abstract idea. It insists on a person, a debt, a conversation you have been putting off.",
+      "Paul's words to the Corinthians are the New Testament echo of this whole chapter: **your body is the temple of the Holy Spirit; you are not your own; you were bought with a price** (1 Corinthians 6:19–20). Purity is not a rule kept for its own sake — it is the natural posture of someone who knows they belong to Someone else. And when we fail, the way back is never hiding. It is confession, restitution, and a return to the God who is faithful to forgive (1 Thessalonians 4:7; 1 Corinthians 4:2). **Let your yes be yes and your no be no — and where you have wronged someone, go and make it right.**",
+    ],
+  },
 ];
 
 export const CATEGORY_COLOR: Record<PostCategory, string> = {
