@@ -90,6 +90,15 @@ export const specialEvents: ChurchEvent[] = [
     href: "/events/ministers-retreat-2027", navLabel: "Ministers Retreat",
   },
   {
+    id: "beyond-the-swipe-2026",
+    title: "Beyond the Swipe: Rediscovering Real Connections",
+    desc: "CAC House of Praise's L.E.D. Singles Ministry hosted an evening of meaningful conversation, food, and community for singles and couples in the DMV.",
+    dateLabel: "September 5, 2026", timeLabel: "Doors 5:30 PM · CAC House of Praise, Hyattsville, MD", month: "SEP", day: "05",
+    startLocal: "20260905T173000", endLocal: "20260905T210000",
+    location: "4909 Edmonston Rd, Hyattsville, MD 20781",
+    href: "/events/beyond-the-swipe-2026", navLabel: "Beyond the Swipe",
+  },
+  {
     id: "holy-land-pilgrimage-2026",
     title: "Holy Land Pilgrimage 2026",
     desc: "CACNA Latunde Region Pilgrimage to Israel & Egypt, November 2–12, 2026. Package includes round-trip flights from JFK, 8 nights accommodation (7 in Israel + 1 in St. Catherine, Egypt), daily meals, private guide, group coach, and Pilgrimage Certificate. Price $4,549 · $500 deposit to register · $2,000 second payment due Oct 31. Contact: info@cacnapilgrimage.org | @cacnapilgrimage",
