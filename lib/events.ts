@@ -66,10 +66,19 @@ export const specialEvents: ChurchEvent[] = [
   {
     id: "cacna-50th-anniversary-2026",
     title: "CAC North America 50th Anniversary Celebration",
-    desc: "Christ Apostolic Church North America celebrates 50 years since its founding in 1976, at CAC Village — the same grounds that host the Annual Convention.",
+    desc: "Christ Apostolic Church, North & South America (Latunde Region) celebrates 50 years since its founding in 1976, at CAC Village — the same grounds that host the Annual Convention.",
     dateLabel: "October 10, 2026", timeLabel: "11:00 AM · CAC Village, PA", month: "OCT", day: "10",
     startLocal: "20261010T110000", endLocal: "20261010T170000",
     href: "/events/cacna-50th-anniversary-2026", navLabel: "50th Anniversary",
+  },
+  {
+    id: "hope-for-all-summit-2026",
+    title: "Hope For All Initiative — Annual Summit",
+    desc: "Theme: Church Growth Through Empowerment and Welfare. Speakers include Pastor T.A.O. Agbeja (PhD), Regional Superintendent, CAC Latunde Region; Pastor S.O. Oladele, President, CAC Nigeria & Overseas; and Pastor R.O. Adeagbo (PhD), HFA Program Director, with guest speakers Pastor Olufemi Olaluwoye, Modupe Joseph Otusanya, and Pastor (Dr.) Praise Agampa. On Zoom.",
+    dateLabel: "September 12, 2026", timeLabel: "10:00 AM – 2:00 PM ET · On Zoom", month: "SEP", day: "12",
+    startLocal: "20260912T100000", endLocal: "20260912T140000",
+    location: "Zoom Meeting ID 898 8274 9924, Passcode HOPE4ALL",
+    href: "/events/hope-for-all-summit-2026", navLabel: "Hope For All Summit",
   },
   {
     id: "ministers-retreat-2027",

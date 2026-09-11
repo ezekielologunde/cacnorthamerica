@@ -90,7 +90,7 @@ export default async function Cacna50thAnniversaryPage({
 
           <Reveal>
             <div style={{ fontSize: 13, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 14 }}>
-              CAC North America · Est. 1976
+              CAC North &amp; South America, Latunde Region · Est. 1976
             </div>
           </Reveal>
 
