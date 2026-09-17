@@ -13,20 +13,13 @@ import { Compass, Target, HandHeart, BookOpen, Users, Mic2, Sparkles } from "luc
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
-import { routing } from "@/i18n/routing";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
-  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/youth`]));
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Youth & Young Adult — Christ Apostolic Church North America (CACNA)",
     description:
       "CACNA's Youth & Young Adult Ministry — vision, mission, values, history, and major programs raising Christ-centered youth across North America.",
-    alternates: { canonical: `${SITE_URL}/${locale}/youth`, languages },
+    alternates: { canonical: `${SITE_URL}/youth` },
   };
 }
 

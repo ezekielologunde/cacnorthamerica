@@ -63,10 +63,6 @@ const nextConfig: NextConfig = {
   },
 
   async redirects() {
-    // Destinations point at the default (English) locale explicitly --
-    // these are old, indexed URLs with no locale segment of their own, so
-    // there's no request-derived locale to preserve the way next-intl's
-    // middleware does for in-app navigation.
     return [
       // cacnorthamerica.vercel.app was the declared canonical host until
       // cacna.cacsalvationcenter.org was attached (September 2026), so Google
@@ -87,31 +83,52 @@ const nextConfig: NextConfig = {
         destination: "https://cacna.cacsalvationcenter.org/:path",
         permanent: true,
       },
-      { source: "/leadership-meet-our-pastors", destination: "/en/leadership", permanent: true },
-      { source: "/leadership-meet-our-pastors/", destination: "/en/leadership", permanent: true },
-      { source: "/online-connect-to-our-services", destination: "/en/online", permanent: true },
-      { source: "/online-connect-to-our-services/", destination: "/en/online", permanent: true },
-      { source: "/dccs", destination: "/en/zones", permanent: true },
-      { source: "/dccs/", destination: "/en/zones", permanent: true },
-      { source: "/events", destination: "/en/calendar", permanent: true },
-      { source: "/events/", destination: "/en/calendar", permanent: true },
-      { source: "/media", destination: "/en/online", permanent: true },
-      { source: "/media/", destination: "/en/online", permanent: true },
-      { source: "/global", destination: "/en/leadership#global-family", permanent: true },
-      { source: "/global/", destination: "/en/leadership#global-family", permanent: true },
+      { source: "/leadership-meet-our-pastors", destination: "/leadership", permanent: true },
+      { source: "/leadership-meet-our-pastors/", destination: "/leadership", permanent: true },
+      { source: "/online-connect-to-our-services", destination: "/online", permanent: true },
+      { source: "/online-connect-to-our-services/", destination: "/online", permanent: true },
+      { source: "/dccs", destination: "/zones", permanent: true },
+      { source: "/dccs/", destination: "/zones", permanent: true },
+      { source: "/events", destination: "/calendar", permanent: true },
+      { source: "/events/", destination: "/calendar", permanent: true },
+      { source: "/media", destination: "/online", permanent: true },
+      { source: "/media/", destination: "/online", permanent: true },
+      { source: "/global", destination: "/leadership#global-family", permanent: true },
+      { source: "/global/", destination: "/leadership#global-family", permanent: true },
+
+      // The Yoruba locale was retired (2026-09) -- most /yo pages were
+      // untranslated near-duplicates of their English counterparts, which
+      // Search Console was flagging as duplicate content with a canonical
+      // mismatch. Google still has a batch of /yo/... URLs indexed, so send
+      // them to their English equivalent instead of letting them 404.
+      { source: "/yo", destination: "/", permanent: true },
+      { source: "/yo/:path*", destination: "/:path*", permanent: true },
+
+      // These individual leader-bio pages predate "Past Leaders" becoming a
+      // photo gallery (see app/(site)/[locale]/leadership/past/page.tsx) --
+      // nothing on the live site links to them anymore, but Search Console
+      // still has them indexed as 404s from the old site structure.
+      { source: "/leadership/samuel-kayode-abiara", destination: "/leadership/past", permanent: true },
+      { source: "/leadership/jacob-o-alokan", destination: "/leadership/past", permanent: true },
+      { source: "/leadership/m-o-agbaje", destination: "/leadership/past", permanent: true },
+      { source: "/leadership/timothy-adelani", destination: "/leadership/past", permanent: true },
+      { source: "/leadership/s-batholomew-odusona", destination: "/leadership/past", permanent: true },
+      { source: "/leadership/j-a-sanya", destination: "/leadership/past", permanent: true },
+      { source: "/leadership/j-a-medaiyese", destination: "/leadership/past", permanent: true },
+      { source: "/leadership/gabriel-o-olaoye", destination: "/leadership/past", permanent: true },
     ];
   },
 
   async rewrites() {
     return {
       beforeFiles: [
-        // middleware.ts explicitly passes this host+path combination through
-        // untouched (before next-intl would otherwise redirect "/" -> "/en"
-        // first and break this match) -- see its own comment for why.
+        // proxy.ts explicitly passes this host+path combination through
+        // untouched so this rewrite -- not next-intl's routing -- is what
+        // resolves the blog subdomain's root path. See its own comment.
         {
           source: "/",
           has: [{ type: "host" as const, value: "blog.cacnorthamerica.com" }],
-          destination: "/en/blog",
+          destination: "/blog",
         },
       ],
       afterFiles: [],

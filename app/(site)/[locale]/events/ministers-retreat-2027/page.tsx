@@ -8,22 +8,15 @@ import { specialEvents, googleCalUrl, icsDataUri, isEventPast } from "@/lib/even
 import { SITE, SITE_URL, breadcrumbJsonLd } from "@/lib/site";
 import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
-import { routing } from "@/i18n/routing";
 
 export const revalidate = 3600;
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
-  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/events/ministers-retreat-2027`]));
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "2027 Ministers Retreat — CAC North America",
     description:
       "CAC North America's 2027 Ministers Retreat, on Zoom, March 22–26, 2027 — a time of refreshing, renewal & equipping.",
-    alternates: { canonical: `${SITE_URL}/${locale}/events/ministers-retreat-2027`, languages },
+    alternates: { canonical: `${SITE_URL}/events/ministers-retreat-2027` },
   };
 }
 

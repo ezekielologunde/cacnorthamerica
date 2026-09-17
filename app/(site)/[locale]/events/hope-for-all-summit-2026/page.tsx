@@ -8,22 +8,15 @@ import { specialEvents, googleCalUrl, icsDataUri, isEventPast } from "@/lib/even
 import { SITE, SITE_URL, breadcrumbJsonLd } from "@/lib/site";
 import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
-import { routing } from "@/i18n/routing";
 
 export const revalidate = 3600;
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
-  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/events/hope-for-all-summit-2026`]));
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Hope For All Initiative — Annual Summit | CAC North America",
     description:
       "Hope For All Initiative 2026 Summit — Church Growth Through Empowerment and Welfare. Saturday, September 12, 2026, 10:00 AM to 2:00 PM ET, on Zoom.",
-    alternates: { canonical: `${SITE_URL}/${locale}/events/hope-for-all-summit-2026`, languages },
+    alternates: { canonical: `${SITE_URL}/events/hope-for-all-summit-2026` },
   };
 }
 

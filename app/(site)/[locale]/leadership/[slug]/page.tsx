@@ -8,7 +8,6 @@ import { ArrowLeft, Mail, Phone, MapPin } from "lucide-react";
 import { getLeaderBySlug } from "@/lib/leaders";
 import { setRequestLocale } from "next-intl/server";
 import { SITE_URL } from "@/lib/site";
-import { routing } from "@/i18n/routing";
 
 export const revalidate = 3600;
 
@@ -31,14 +30,13 @@ const CATEGORY_LABEL: Record<string, string> = {
 };
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }) {
-  const { locale, slug } = await params;
+  const { slug } = await params;
   const result = await getLeaderBySlug(slug);
   if (!result) return { title: "Leader — Christ Apostolic Church North America (CACNA)" };
-  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/leadership/${slug}`]));
   return {
     title: `${result.leader.full_name} — Christ Apostolic Church North America (CACNA)`,
     description: result.leader.bio ?? `${result.leader.title} — Christ Apostolic Church North America.`,
-    alternates: { canonical: `${SITE_URL}/${locale}/leadership/${slug}`, languages },
+    alternates: { canonical: `${SITE_URL}/leadership/${slug}` },
   };
 }
 

@@ -17,7 +17,6 @@ import {
   type ConventionYear,
 } from "@/lib/conventions";
 import { setRequestLocale } from "next-intl/server";
-import { routing } from "@/i18n/routing";
 
 export const revalidate = 3600;
 
@@ -40,14 +39,13 @@ function findYear(slug: string): ConventionYear | undefined {
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }) {
-  const { locale, slug } = await params;
+  const { slug } = await params;
   const cy = findYear(slug);
   if (!cy) return {};
-  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/events/cacna-${cy.year}`]));
   return {
     title: `CACNA ${cy.year} Annual Convention — Christ Apostolic Church North America`,
     description: `Save the date: the CACNA ${cy.year} National Convention runs ${dateRangeLabel(cy)} at ${CONVENTION_VENUE}. Full schedule and registration details are announced closer to the date.`,
-    alternates: { canonical: `${SITE_URL}/${locale}/events/cacna-${cy.year}`, languages },
+    alternates: { canonical: `${SITE_URL}/events/cacna-${cy.year}` },
   };
 }
 

@@ -9,7 +9,6 @@ import type { CSSProperties } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
-import { routing } from "@/i18n/routing";
 
 const values = [
   { icon: Church, title: "Sound doctrine", desc: "Preaching the whole counsel of God, faithfully and without compromise." },
@@ -51,17 +50,11 @@ function HomeCard({ h }: { h: Home }) {
     : <Link href={h.href} className="card-lift" style={homeCardStyle}>{content}</Link>;
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
-  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/about`]));
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "About Us — Christ Apostolic Church North America (CACNA)",
     description: "The story of CACNA — the corporate regional family of Christ Apostolic Church across the United States, Canada, and South America, organized into 24 Zones & DCCs, part of a global movement born in Nigeria in 1918.",
-    alternates: { canonical: `${SITE_URL}/${locale}/about`, languages },
+    alternates: { canonical: `${SITE_URL}/about` },
   };
 }
 

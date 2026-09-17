@@ -9,22 +9,15 @@ import { specialEvents, isEventPast } from "@/lib/events";
 import { SITE, SITE_URL, breadcrumbJsonLd } from "@/lib/site";
 import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
-import { routing } from "@/i18n/routing";
 
 export const revalidate = 3600;
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
-  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/events/beyond-the-swipe-2026`]));
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Beyond the Swipe: Rediscovering Real Connections | CAC North America",
     description:
       "CAC House of Praise's L.E.D. Singles Ministry hosted Beyond the Swipe on September 5, 2026 — an evening of real conversation, food, and community in the DMV.",
-    alternates: { canonical: `${SITE_URL}/${locale}/events/beyond-the-swipe-2026`, languages },
+    alternates: { canonical: `${SITE_URL}/events/beyond-the-swipe-2026` },
   };
 }
 

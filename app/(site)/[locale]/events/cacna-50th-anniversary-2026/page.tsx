@@ -8,22 +8,15 @@ import { specialEvents, googleCalUrl, icsDataUri, isEventPast } from "@/lib/even
 import { SITE, SITE_URL, breadcrumbJsonLd } from "@/lib/site";
 import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
-import { routing } from "@/i18n/routing";
 
 export const revalidate = 3600;
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
-  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/events/cacna-50th-anniversary-2026`]));
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "50th Anniversary Celebration — CAC North America",
     description:
       "Christ Apostolic Church North America celebrates 50 years since its founding in 1976 — October 10, 2026, at CAC Village, Blue Ridge Summit, PA. RSVP to help with planning.",
-    alternates: { canonical: `${SITE_URL}/${locale}/events/cacna-50th-anniversary-2026`, languages },
+    alternates: { canonical: `${SITE_URL}/events/cacna-50th-anniversary-2026` },
   };
 }
 

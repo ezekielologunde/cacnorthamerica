@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { Reveal } from '@/components/ui/Reveal';
 import { InstagramIcon, YoutubeIcon } from '@/components/ui/SocialIcons';
 import { haptic } from '@/lib/haptics';
@@ -16,9 +16,6 @@ const socials = [
 ];
 
 const isExternalHref = (href: string) => href.startsWith('http');
-function withLocale(href: string, locale: string): string {
-  return isExternalHref(href) ? href : `/${locale}${href}`;
-}
 
 // Whichever convention is current/next, same source Nav.tsx uses for its
 // own CTA -- the "Annual Convention" footer link used to hardcode an
@@ -46,7 +43,6 @@ function BackToTop({ label }: { label: string }) {
 }
 
 export function FooterExperience() {
-  const locale = useLocale();
   const t = useTranslations('Footer');
   const tNav = useTranslations('Nav');
 
@@ -138,7 +134,7 @@ export function FooterExperience() {
               </div>
             </div>
 
-            <Link href={withLocale('/contact#convention-committee', locale)} className="press" style={{
+            <Link href={'/contact#convention-committee'} className="press" style={{
               display: 'inline-flex', alignItems: 'center', gap: 7, marginTop: 18,
               background: 'linear-gradient(135deg,var(--red),var(--red-deep))', color: '#fff',
               fontWeight: 700, fontSize: 13, padding: '11px 16px', borderRadius: 999, textDecoration: 'none',
@@ -147,7 +143,7 @@ export function FooterExperience() {
             </Link>
 
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 14 }}>
-              <Link href={withLocale('/events/cacna-50th-anniversary-2026', locale)} style={{
+              <Link href={'/events/cacna-50th-anniversary-2026'} style={{
                 display: 'inline-flex', alignItems: 'center', gap: 6,
                 border: '1px solid rgba(253,200,65,.4)', borderRadius: 999, padding: '6px 14px',
                 fontSize: 11, fontWeight: 800, color: 'var(--gold)', textDecoration: 'none',
@@ -173,7 +169,7 @@ export function FooterExperience() {
                   {t('registerNowCta')} <ArrowRight size={13} strokeWidth={2.5} aria-hidden />
                 </a>
               ) : (
-                <Link href={withLocale(conventionHref, locale)} {...registerCtaProps}>
+                <Link href={conventionHref} {...registerCtaProps}>
                   {t('registerNowCta')} <ArrowRight size={13} strokeWidth={2.5} aria-hidden />
                 </Link>
               )}
@@ -196,7 +192,7 @@ export function FooterExperience() {
                   isExternalHref(href) ? (
                     <a key={href} href={href} target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(245,246,250,.65)', textDecoration: 'none' }}>{label}</a>
                   ) : (
-                    <Link key={href} href={withLocale(href, locale)} style={{ color: 'rgba(245,246,250,.65)', textDecoration: 'none' }}>{label}</Link>
+                    <Link key={href} href={href} style={{ color: 'rgba(245,246,250,.65)', textDecoration: 'none' }}>{label}</Link>
                   )
                 ))}
               </div>
@@ -207,7 +203,7 @@ export function FooterExperience() {
           <div>
             <div style={{ fontWeight: 800, fontSize: 12, textTransform: 'uppercase', letterSpacing: '1.8px', color: 'rgba(245,246,250,.4)', marginBottom: 18 }}>{t('contactHeading')}</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 14 }}>
-              <Link href={withLocale('/contact', locale)} style={{ color: 'rgba(245,246,250,.65)', textDecoration: 'none' }}>{t('contact')}</Link>
+              <Link href={'/contact'} style={{ color: 'rgba(245,246,250,.65)', textDecoration: 'none' }}>{t('contact')}</Link>
               <a href="tel:+13054690346" style={{ display: 'flex', alignItems: 'center', gap: 9, color: 'rgba(245,246,250,.65)', textDecoration: 'none' }}>
                 <Phone size={14} strokeWidth={2} style={{ flexShrink: 0 }} aria-hidden /> (305) 469-0346
               </a>
@@ -241,11 +237,11 @@ export function FooterExperience() {
         <div style={{ maxWidth: 1240, margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 16, padding: '24px 0 28px', fontSize: 12.5, color: 'rgba(245,246,250,.3)', borderTop: '1px solid rgba(245,246,250,.1)' }}>
           <span>{t('copyright')}</span>
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px 20px' }}>
-            <Link href={withLocale('/about#tenets', locale)} style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>{t('ourTenets')}</Link>
-            <Link href={withLocale('/statement-of-faith', locale)} style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>{t('statementOfFaith')}</Link>
-            <Link href={withLocale('/leadership/past', locale)} style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>{t('pastLeaders')}</Link>
-            <Link href={withLocale('/contact', locale)} style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>{t('contact')}</Link>
-            <Link href={withLocale('/sitemap', locale)} style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>{t('sitemap')}</Link>
+            <Link href={'/about#tenets'} style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>{t('ourTenets')}</Link>
+            <Link href={'/statement-of-faith'} style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>{t('statementOfFaith')}</Link>
+            <Link href={'/leadership/past'} style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>{t('pastLeaders')}</Link>
+            <Link href={'/contact'} style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>{t('contact')}</Link>
+            <Link href={'/sitemap'} style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>{t('sitemap')}</Link>
             <BackToTop label={t('backToTop')} />
           </div>
         </div>

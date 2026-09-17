@@ -36,22 +36,10 @@ export const SITE = {
   ],
 } as const;
 
-/** Public routes for the sitemap (path, priority, whether a real Yoruba
- *  translation exists). `yo: true` only for routes whose page actually
- *  calls getTranslations()/useTranslations() with a namespace that's
- *  substantially translated in messages/yo.json (verified 2026-09-06 by
- *  diffing every key against messages/en.json) -- most routes render
- *  hardcoded English JSX with no translation call at all, so their /yo
- *  page is byte-for-byte identical to /en. Telling search engines those
- *  are two distinct localized pages (the previous behavior) is a
- *  duplicate-content problem, not a feature; omitted here means the
- *  sitemap lists only /en for that route, with no hreflang alternate
- *  implying a Yoruba version exists. /online and /giving each have
- *  exactly one translated string (an eyebrow label) out of an otherwise
- *  fully English page -- not enough to count as localized. */
-export const ROUTES: { path: string; priority: number; yo?: boolean }[] = [
+/** Public routes for the sitemap (path, priority). */
+export const ROUTES: { path: string; priority: number }[] = [
   { path: "/", priority: 1 },
-  { path: "/about", priority: 0.8, yo: true },
+  { path: "/about", priority: 0.8 },
   { path: "/leadership", priority: 0.7 },
   { path: "/leadership/past", priority: 0.5 },
   { path: "/zones", priority: 0.7 },
@@ -60,7 +48,7 @@ export const ROUTES: { path: string; priority: number; yo?: boolean }[] = [
   { path: "/statement-of-faith", priority: 0.5 },
   { path: "/online", priority: 0.9 },
   { path: "/giving", priority: 0.8 },
-  { path: "/store", priority: 0.5, yo: true },
+  { path: "/store", priority: 0.5 },
   { path: "/watchwords", priority: 0.5 },
   ...conventionYears.map((cy) => ({ path: cy.href, priority: cy.year === 2026 ? 0.75 : 0.5 })),
   { path: "/events/pilgrimage-2026", priority: 0.7 },
@@ -70,19 +58,19 @@ export const ROUTES: { path: string; priority: number; yo?: boolean }[] = [
   { path: "/blog", priority: 0.6 },
   { path: "/gallery", priority: 0.6 },
   { path: "/archive", priority: 0.5 },
-  { path: "/plan-your-visit", priority: 0.6, yo: true },
-  { path: "/sitemap", priority: 0.3, yo: true },
+  { path: "/plan-your-visit", priority: 0.6 },
+  { path: "/sitemap", priority: 0.3 },
   // Sub-ministry pages -- were missing from this list entirely despite
   // being live routes (found during the Phase F branding-cleanup pass,
   // 2026-09).
-  { path: "/cacma", priority: 0.5, yo: true },
-  { path: "/youth", priority: 0.5, yo: true },
-  { path: "/christian-education", priority: 0.5, yo: true },
-  { path: "/good-women", priority: 0.5, yo: true },
-  { path: "/ministers-wives", priority: 0.5, yo: true },
-  { path: "/business-group", priority: 0.5, yo: true },
-  { path: "/children", priority: 0.5, yo: true },
-  { path: "/contact", priority: 0.9, yo: true },
+  { path: "/cacma", priority: 0.5 },
+  { path: "/youth", priority: 0.5 },
+  { path: "/christian-education", priority: 0.5 },
+  { path: "/good-women", priority: 0.5 },
+  { path: "/ministers-wives", priority: 0.5 },
+  { path: "/business-group", priority: 0.5 },
+  { path: "/children", priority: 0.5 },
+  { path: "/contact", priority: 0.9 },
 ];
 
 /** schema.org structured data (@graph: Church + WebSite) for rich results,
@@ -106,7 +94,7 @@ export function churchJsonLd() {
         email: SITE.email,
         priceRange: "Free",
         isAccessibleForFree: true,
-        knowsLanguage: ["en", "yo"],
+        knowsLanguage: ["en"],
         areaServed: ["United States", "Canada", "South America"],
         hasMap: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`,
         geo: { "@type": "GeoCoordinates", latitude: 39.7454, longitude: -77.4894 },

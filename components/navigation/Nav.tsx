@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react';
 import { usePathname } from 'next/navigation';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { Search, CalendarDays } from 'lucide-react';
 import { haptic } from '@/lib/haptics';
 import { SearchModal } from '@/components/ui/SearchModal';
@@ -22,18 +22,9 @@ const isExternalHref = (href: string) => href.startsWith('http');
 
 // Whichever convention is current/next — once this year's dates pass, the
 // nav's "Register" CTA automatically points at the next confirmed year.
-// Locale-independent business logic (which year is "next"), so this stays
-// at module scope; only the hrefs built from it get locale-prefixed inside
-// the component, where the active locale is actually known.
 const nextConvention = currentOrNextConvention();
 const conventionCtaHref = nextConvention.registrationUrl ?? nextConvention.href;
 
-// Prefixes an internal path with the active locale; external (http/https)
-// links pass through untouched. Every href in `navItems` below goes through
-// this before being rendered.
-function withLocale(href: string, locale: string): string {
-  return isExternalHref(href) ? href : `/${locale}${href}`;
-}
 
 interface NavProps {
   dark?: boolean;
@@ -44,64 +35,59 @@ interface NavProps {
 export function Nav({ dark = false, heroDark = false }: NavProps) {
   const navRef = useRef<HTMLElement>(null);
   const pathname = usePathname();
-  const locale = useLocale();
   const t = useTranslations('Nav');
-  // `pathname` (from next/navigation) already includes the locale segment
-  // (e.g. "/en/about"), matching the locale-prefixed hrefs `navItems` below
-  // carries -- so the `pathname === item.href` active-link checks further
-  // down need no extra stripping/prefixing of their own.
   const conventionCtaLabel = t('conventionCta', { year: nextConvention.year });
   const navItems: NavItem[] = [
     {
       label: t('eventsConvention'),
-      href: withLocale(nextConvention.href, locale),
+      href: nextConvention.href,
       dropdown: [
         {
-          href: withLocale(conventionCtaHref, locale),
+          href: conventionCtaHref,
           label: conventionCtaLabel,
           desc: nextConvention.registrationUrl ? t('conventionCtaDescOpen') : t('conventionCtaDescComingSoon'),
           external: isExternalHref(conventionCtaHref),
         },
-        { href: withLocale('/calendar', locale), label: t('calendarEvents'), desc: t('calendarEventsDesc') },
-        { href: withLocale('/archive', locale), label: t('pastConventions'), desc: t('pastConventionsDesc') },
+        { href: '/calendar', label: t('calendarEvents'), desc: t('calendarEventsDesc') },
+        { href: '/archive', label: t('pastConventions'), desc: t('pastConventionsDesc') },
       ],
     },
     {
       label: t('whoWeAre'),
-      href: withLocale('/about', locale),
+      href: '/about',
       dropdown: [
-        { href: withLocale('/about', locale), label: t('aboutCacna'), desc: t('aboutCacnaDesc') },
-        { href: withLocale('/leadership', locale), label: t('leadership'), desc: t('leadershipDesc') },
-        { href: withLocale('/zones', locale), label: t('zonesDccs'), desc: t('zonesDccsDesc') },
-        { href: withLocale('/bible-institute', locale), label: t('bibleInstitute'), desc: t('bibleInstituteDesc') },
+        { href: '/about', label: t('aboutCacna'), desc: t('aboutCacnaDesc') },
+        { href: '/leadership', label: t('leadership'), desc: t('leadershipDesc') },
+        { href: '/zones', label: t('zonesDccs'), desc: t('zonesDccsDesc') },
+        { href: '/bible-institute', label: t('bibleInstitute'), desc: t('bibleInstituteDesc') },
       ],
     },
     {
       label: t('ministries'),
-      href: withLocale('/ministries', locale),
+      href: '/ministries',
       layout: 'grid',
       dropdown: [
-        { href: withLocale('/cacma', locale), label: t('cacma'), desc: t('cacmaDesc') },
-        { href: withLocale('/youth', locale), label: t('youth'), desc: t('youthDesc') },
-        { href: withLocale('/christian-education', locale), label: t('christianEducation'), desc: t('christianEducationDesc') },
-        { href: withLocale('/good-women', locale), label: t('goodWomen'), desc: t('goodWomenDesc') },
-        { href: withLocale('/ministers-wives', locale), label: t('ministersWives'), desc: t('ministersWivesDesc') },
-        { href: withLocale('/business-group', locale), label: t('businessGroup'), desc: t('businessGroupDesc') },
-        { href: withLocale('/children', locale), label: t('children'), desc: t('childrenDesc') },
-        { href: withLocale('/ministries', locale), label: t('seeAllMinistries'), desc: t('ministriesDesc') },
+        { href: '/cacma', label: t('cacma'), desc: t('cacmaDesc') },
+        { href: '/youth', label: t('youth'), desc: t('youthDesc') },
+        { href: '/christian-education', label: t('christianEducation'), desc: t('christianEducationDesc') },
+        { href: '/good-women', label: t('goodWomen'), desc: t('goodWomenDesc') },
+        { href: '/ministers-wives', label: t('ministersWives'), desc: t('ministersWivesDesc') },
+        { href: '/business-group', label: t('businessGroup'), desc: t('businessGroupDesc') },
+        { href: '/children', label: t('children'), desc: t('childrenDesc') },
+        { href: '/ministries', label: t('seeAllMinistries'), desc: t('ministriesDesc') },
       ],
     },
     {
       label: t('media'),
-      href: withLocale('/blog', locale),
+      href: '/blog',
       dropdown: [
-        { href: withLocale('/online', locale), label: t('watchOnline'), desc: t('watchOnlineDesc') },
-        { href: withLocale('/blog', locale), label: t('blogNews'), desc: t('blogNewsDesc') },
-        { href: withLocale('/watchwords', locale), label: t('watchwords'), desc: t('watchwordsDesc') },
-        { href: withLocale('/gallery', locale), label: t('gallery'), desc: t('galleryDesc') },
+        { href: '/online', label: t('watchOnline'), desc: t('watchOnlineDesc') },
+        { href: '/blog', label: t('blogNews'), desc: t('blogNewsDesc') },
+        { href: '/watchwords', label: t('watchwords'), desc: t('watchwordsDesc') },
+        { href: '/gallery', label: t('gallery'), desc: t('galleryDesc') },
       ],
     },
-    { label: t('contact'), href: withLocale('/contact', locale) },
+    { label: t('contact'), href: '/contact' },
   ];
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -185,7 +171,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
             the <nav> itself stays full-bleed for its background/border. */}
         <div style={{ maxWidth: 1240, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         {/* Logo */}
-        <Link href={`/${locale}`} style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', color: barInk, flexShrink: 0, transition: 'color .4s' }}>
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', color: barInk, flexShrink: 0, transition: 'color .4s' }}>
           <Image src="/images/logo.png" alt={t('logoAlt')} width={42} height={42} style={{ borderRadius: 12, objectFit: 'cover', flexShrink: 0 }} />
           <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
             <span style={{ fontSize: 10, letterSpacing: '2.5px', textTransform: 'uppercase', color: barAccent, fontWeight: 700, transition: 'color .4s' }}>{t('orgKicker')}</span>
@@ -294,7 +280,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                 Convention's gradient CTA, three different visual weights in
                 a row. Now there's exactly one strong CTA (Convention). */}
             <Link
-              href={withLocale('/giving', locale)}
+              href={'/giving'}
               style={{
                 display: 'inline-flex', alignItems: 'center',
                 border: `1.5px solid ${lightBar ? 'rgba(245,246,250,.4)' : 'var(--ink)'}`,
@@ -306,7 +292,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
               {t('give')}
             </Link>
             <Link
-              href={withLocale('/store', locale)}
+              href={'/store'}
               style={{
                 display: 'inline-flex', alignItems: 'center',
                 border: `1.5px solid ${lightBar ? 'rgba(245,246,250,.4)' : 'var(--ink)'}`,
@@ -455,7 +441,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 32 }}>
             <Link
-              href={withLocale('/giving', locale)}
+              href={'/giving'}
               onClick={() => setOpen(false)}
               className="press"
               style={{
@@ -467,7 +453,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
               {t('give')}
             </Link>
             <Link
-              href={withLocale('/store', locale)}
+              href={'/store'}
               onClick={() => setOpen(false)}
               className="press"
               style={{

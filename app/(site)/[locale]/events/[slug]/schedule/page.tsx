@@ -8,7 +8,6 @@ import { RevealText } from "@/components/ui/RevealText";
 import { conventionYears, sessionsFor, getDetailedSchedule, dateRangeLabel, CONVENTION_VENUE, type ConventionYear } from "@/lib/conventions";
 import { setRequestLocale } from "next-intl/server";
 import { SITE_URL } from "@/lib/site";
-import { routing } from "@/i18n/routing";
 
 export const revalidate = 3600;
 
@@ -29,14 +28,13 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }) {
-  const { locale, slug } = await params;
+  const { slug } = await params;
   const cy = findYear(slug);
   if (!cy) return {};
-  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/events/cacna-${cy.year}/schedule`]));
   return {
     title: `Schedule — CACNA ${cy.year} Annual Convention`,
     description: `The day-by-day schedule for the CACNA ${cy.year} Annual Convention at ${CONVENTION_VENUE}.`,
-    alternates: { canonical: `${SITE_URL}/${locale}/events/cacna-${cy.year}/schedule`, languages },
+    alternates: { canonical: `${SITE_URL}/events/cacna-${cy.year}/schedule` },
   };
 }
 

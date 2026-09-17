@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { useRef, useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { useLocale } from "next-intl";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
@@ -10,7 +9,7 @@ import { haptic } from "@/lib/haptics";
 import { conventionToFeature, currentOrNextConvention, dateRangeLabel, CONVENTION_VENUE_SHORT } from "@/lib/conventions";
 import { specialEvents, isEventPast } from "@/lib/events";
 import { POSTS } from "@/lib/blog";
-import { GIVING_CAMPAIGNS, localizeCampaign } from "@/lib/giving";
+import { GIVING_CAMPAIGNS } from "@/lib/giving";
 
 type SlideKind = "Welcome" | "Event" | "Ad" | "News";
 
@@ -57,7 +56,6 @@ const KIND_COLOR: Record<SlideKind, string> = {
  *  upcoming events, a real giving campaign, and the latest real post.
  *  Slides for events that have already passed simply don't get built. */
 function useSlides(): Slide[] {
-  const locale = useLocale();
   return useMemo(() => {
     const slides: Slide[] = [];
 
@@ -116,7 +114,7 @@ function useSlides(): Slide[] {
       });
     }
 
-    const givingCampaign = GIVING_CAMPAIGNS[0] ? localizeCampaign(GIVING_CAMPAIGNS[0], locale) : undefined;
+    const givingCampaign = GIVING_CAMPAIGNS[0];
     if (givingCampaign) {
       slides.push({
         key: "giving",
@@ -151,7 +149,7 @@ function useSlides(): Slide[] {
     }
 
     return slides;
-  }, [locale]);
+  }, []);
 }
 
 /** Mobile browsers apply much stricter iframe-autoplay policies than

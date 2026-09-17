@@ -3,20 +3,13 @@ import { mainGalleryPhotos } from "@/lib/mainGalleryPhotos";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
-import { routing } from "@/i18n/routing";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
-  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/christian-education`]));
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Christian Education Department — Christ Apostolic Church North America (CACNA)",
     description:
       "CACNA-CED, the Christian Education Department — 2026 Convention theme, moderator, and a department rooted in the Sunday School movement.",
-    alternates: { canonical: `${SITE_URL}/${locale}/christian-education`, languages },
+    alternates: { canonical: `${SITE_URL}/christian-education` },
   };
 }
 
