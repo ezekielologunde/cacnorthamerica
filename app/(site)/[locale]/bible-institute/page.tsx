@@ -7,21 +7,14 @@ import { GraduationCap } from "lucide-react";
 import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
-import { routing } from "@/i18n/routing";
 
 export const revalidate = 3600;
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
-  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/bible-institute`]));
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "CACNA Bible Institute — Christ Apostolic Church North America (CACNA)",
     description: "CACNA's ministerial training arm — meet the Chancellor, Provost, Dean, Registrar, and Lecturer leading the Bible Institute.",
-    alternates: { canonical: `${SITE_URL}/${locale}/bible-institute`, languages },
+    alternates: { canonical: `${SITE_URL}/bible-institute` },
   };
 }
 

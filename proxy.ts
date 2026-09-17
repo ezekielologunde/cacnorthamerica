@@ -45,12 +45,14 @@ export async function proxy(request: NextRequest) {
   }
 
   // The `blog.cacnorthamerica.com` subdomain's root path is rewritten to
-  // `/en/blog` by next.config.ts's `beforeFiles` rewrite -- that rewrite
-  // only matches the literal path "/", so let it through untouched here
-  // rather than having next-intl redirect "/" -> "/en" first (which would
-  // change the path before the config-level rewrite ever gets to match it,
-  // silently breaking the subdomain). Proxy/middleware runs before
-  // next.config redirects/rewrites, so this check has to happen here.
+  // `/blog` by next.config.ts's `beforeFiles` rewrite -- that rewrite only
+  // matches the literal path "/", so let it through untouched here rather
+  // than having intlMiddleware touch it first (routing is single-locale
+  // with an unprefixed default now, so it normally wouldn't, but this stays
+  // as a guard against next-intl ever changing that path before the
+  // config-level rewrite gets a chance to match it -- which would silently
+  // break the subdomain). Proxy/middleware runs before next.config
+  // redirects/rewrites, so this check has to happen here.
   const host = request.headers.get("host") ?? "";
   if (host === "blog.cacnorthamerica.com" && pathname === "/") {
     return NextResponse.next();

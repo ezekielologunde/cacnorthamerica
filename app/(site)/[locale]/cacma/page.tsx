@@ -3,20 +3,13 @@ import { mainGalleryPhotos } from "@/lib/mainGalleryPhotos";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
-import { routing } from "@/i18n/routing";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
-  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/cacma`]));
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "CACMA — Christ Apostolic Church North America (CACNA)",
     description:
       "CAC Latunde Region Men Association (CACMA) — supporting the church's ministers and its Bible training institutions since the church's earliest years.",
-    alternates: { canonical: `${SITE_URL}/${locale}/cacma`, languages },
+    alternates: { canonical: `${SITE_URL}/cacma` },
   };
 }
 

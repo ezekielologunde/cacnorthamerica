@@ -6,19 +6,12 @@ import { currentOrNextConvention } from "@/lib/conventions";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
-import { routing } from "@/i18n/routing";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
-  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/sitemap`]));
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Sitemap — Christ Apostolic Church North America (CACNA)",
     description: "Every public page on the CACNA website, grouped for easy browsing.",
-    alternates: { canonical: `${SITE_URL}/${locale}/sitemap`, languages },
+    alternates: { canonical: `${SITE_URL}/sitemap` },
   };
 }
 
@@ -110,7 +103,7 @@ export default async function SitemapPage({
               <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
                 {group.pages.map((page) => (
                   <li key={page.href}>
-                    <Link href={`/${locale}${page.href}`} style={{ fontSize: 14.5, color: "var(--ink-soft)", textDecoration: "none" }}>
+                    <Link href={page.href} style={{ fontSize: 14.5, color: "var(--ink-soft)", textDecoration: "none" }}>
                       {page.label}
                     </Link>
                   </li>

@@ -8,19 +8,12 @@ import { getDetailedSchedule, CONVENTION_VENUE } from "@/lib/conventions";
 import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
-import { routing } from "@/i18n/routing";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
-  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/events/cacna-2026/schedule`]));
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "2026 Schedule — CACNA Annual Convention",
     description: "The full day-by-day schedule from the CACNA 2026 Annual Convention at CAC Village, Blue Ridge Summit, PA — kept as an archive record.",
-    alternates: { canonical: `${SITE_URL}/${locale}/events/cacna-2026/schedule`, languages },
+    alternates: { canonical: `${SITE_URL}/events/cacna-2026/schedule` },
   };
 }
 

@@ -6,20 +6,13 @@ import Link from "next/link";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
-import { routing } from "@/i18n/routing";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
-  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/children`]));
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Children's Ministry — Christ Apostolic Church North America (CACNA)",
     description:
       "CACNA's Children's Ministry at the Annual Convention — daily schedule, teachers, and God's Message to Children (Mark 10:14).",
-    alternates: { canonical: `${SITE_URL}/${locale}/children`, languages },
+    alternates: { canonical: `${SITE_URL}/children` },
   };
 }
 

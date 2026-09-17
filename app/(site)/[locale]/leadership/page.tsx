@@ -9,21 +9,14 @@ import { CAC_WORLDWIDE, CAC_ANOSIKE_EUROPE } from "@/lib/global";
 import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
-import { routing } from "@/i18n/routing";
 
 export const revalidate = 3600;
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
-  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/leadership`]));
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Leadership — Christ Apostolic Church North America (CACNA)",
     description: "Meet CACNA's regional leadership — led by Regional Superintendent Pastor Dr. T.O. Agbeja — and the current leaders of Christ Apostolic Church Worldwide.",
-    alternates: { canonical: `${SITE_URL}/${locale}/leadership`, languages },
+    alternates: { canonical: `${SITE_URL}/leadership` },
   };
 }
 

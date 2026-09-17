@@ -7,7 +7,7 @@ import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { POSTS, type BlogPost, badgeTextColor, CATEGORY_COLOR, CATEGORY_ACCENT } from "@/lib/blog";
 import { specialEvents } from "@/lib/events";
 import { getApprovedCacWorldNews, type CacWorldNewsItem } from "@/lib/cacWorldNews";
-import { GIVING_CAMPAIGNS, localizeCampaign, type GivingCampaign } from "@/lib/giving";
+import { GIVING_CAMPAIGNS, type GivingCampaign } from "@/lib/giving";
 import { currentOrNextConvention, dateRangeLabel, hasExternalRegistrationUrl } from "@/lib/conventions";
 import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
 import Link from "next/link";
@@ -15,7 +15,6 @@ import { Clock, Calendar, ArrowRight, Globe2, Landmark, Sparkles, Archive, BookH
 import type { LucideIcon } from "lucide-react";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
-import { routing } from "@/i18n/routing";
 import { setRequestLocale } from "next-intl/server";
 
 export const revalidate = 3600;
@@ -45,18 +44,12 @@ function dbPostToBlogPost(p: DbBlogRow): BlogPost {
   };
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
-  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/blog`]));
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Blog & News — Christ Apostolic Church North America (CACNA)",
     description:
       "Devotionals, ministry updates, and reflections from across CACNA — written for the body, by the body.",
-    alternates: { canonical: `${SITE_URL}/${locale}/blog`, languages },
+    alternates: { canonical: `${SITE_URL}/blog` },
   };
 }
 
@@ -392,7 +385,7 @@ export default async function BlogPage({
   // Deterministic per-calendar-day rotation — same campaign for every visitor
   // on a given day, changes daily, no client-side layout shift.
   const dayOfYear = Math.floor((Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) - Date.UTC(now.getUTCFullYear(), 0, 0)) / 86400000);
-  const givingCampaign = localizeCampaign(GIVING_CAMPAIGNS[dayOfYear % GIVING_CAMPAIGNS.length], locale);
+  const givingCampaign = GIVING_CAMPAIGNS[dayOfYear % GIVING_CAMPAIGNS.length];
   const cy = currentOrNextConvention();
 
   return (

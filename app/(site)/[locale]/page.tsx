@@ -9,8 +9,6 @@ import { Nav } from "@/components/navigation/Nav";
 import { Hero } from "@/components/sections/Hero";
 import { HomepageAnnouncements } from "@/components/ui/HomepageAnnouncements";
 import { createServiceClient } from "@/lib/supabase/server";
-import { SITE_URL } from "@/lib/site";
-import { routing } from "@/i18n/routing";
 
 // Below-fold sections split into separate JS chunks — browser parses them
 // incrementally instead of one blocking task, cutting TBT significantly.
@@ -54,20 +52,12 @@ const faqJsonLd = {
   ],
 };
 
-// The root layout's blanket `alternates: { canonical: "/" }` resolves to
-// SITE_URL + "/" for any page that doesn't override it -- but the homepage
-// itself only ever renders at /en or /yo (bare "/" just redirects there),
-// so without this override its own canonical tag pointed at a URL that
-// isn't the one actually indexed. Also the only page-specific metadata the
-// homepage had at all; title/description/keywords previously fell back to
-// the root layout's generic site-wide defaults.
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
-  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}`]));
+// The homepage now renders directly at "/" (no locale redirect), so the
+// root layout's blanket `alternates: { canonical: "/" }` already resolves
+// correctly here -- no override needed. This is still the only page-specific
+// metadata the homepage has; title/description/keywords otherwise fall back
+// to the root layout's generic site-wide defaults.
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "CACNA — Christ Apostolic Church North America | CAC Convention & Registration",
     description:
@@ -76,7 +66,6 @@ export async function generateMetadata({
       "CACNA", "CAC Convention", "CAC Convention registration", "Christ Apostolic Church North America",
       "CAC North America", "Christ Apostolic Church convention", "CAC Village", "Blue Ridge Summit convention",
     ],
-    alternates: { canonical: `${SITE_URL}/${locale}`, languages },
   };
 }
 

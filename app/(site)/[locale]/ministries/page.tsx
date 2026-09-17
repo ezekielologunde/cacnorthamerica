@@ -10,20 +10,13 @@ import type { LucideIcon } from "lucide-react";
 import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
-import { routing } from "@/i18n/routing";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
-  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/ministries`]));
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Ministries — Christ Apostolic Church North America (CACNA)",
     description:
       "The departments serving every CACNA zone — Administration, Christian Education, Evangelism, Missions, Music, Welfare & Outreach, ICT, and more.",
-    alternates: { canonical: `${SITE_URL}/${locale}/ministries`, languages },
+    alternates: { canonical: `${SITE_URL}/ministries` },
   };
 }
 

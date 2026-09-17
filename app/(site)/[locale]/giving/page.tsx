@@ -4,24 +4,17 @@ import { Reveal } from "@/components/ui/Reveal";
 import { IconBadge } from "@/components/ui/IconBadge";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { Phone, Mail, Landmark, Send } from "lucide-react";
-import { GIVING_CAMPAIGNS, localizeCampaign, type GivingCampaign } from "@/lib/giving";
+import { GIVING_CAMPAIGNS, type GivingCampaign } from "@/lib/giving";
 import { GivingForm } from "@/components/giving/GivingForm";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
-import { routing } from "@/i18n/routing";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
-  const languages = Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}/${l}/giving`]));
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Giving — Christ Apostolic Church North America (CACNA)",
     description: "Give online by card, or use real account details for Zelle, wire, and check — the CAC Centenary Building Project, the CAC Village Pay Off, and the Hope For All Initiative.",
-    alternates: { canonical: `${SITE_URL}/${locale}/giving`, languages },
+    alternates: { canonical: `${SITE_URL}/giving` },
   };
 }
 
@@ -86,7 +79,7 @@ export default async function GivingPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("Give");
-  const [centenary, villagePayoff, hopeForAll] = GIVING_CAMPAIGNS.map((c) => localizeCampaign(c, locale));
+  const [centenary, villagePayoff, hopeForAll] = GIVING_CAMPAIGNS;
 
   return (
     <main id="main-content">
