@@ -208,3 +208,4 @@ photo marquee (`6fb8cd8`).
 - Brought Convention handoff content onto CACNA: Statement of Faith,
   gallery, department pages (`dbf0f68`)
 - Added a dedicated Youth & Young Adult page (`9ca08d1`)
+- Added the CACNA Singles Ministry Virtual Game Night (Sat Oct 31, 2026, 6:00 PM ET, Zoom, link TBA) to `specialEvents` in `lib/events.ts`; text-only, no detail page or flyer yet; end time 8:00 PM is an assumption

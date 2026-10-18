@@ -99,6 +99,15 @@ export const specialEvents: ChurchEvent[] = [
     href: "/events/beyond-the-swipe-2026", navLabel: "Beyond the Swipe",
   },
   {
+    id: "singles-virtual-game-night-2026",
+    title: "CACNA Singles Ministry Virtual Game Night",
+    desc: "An evening of games, laughter, fellowship, and networking for singles in Christ, hosted online by the CACNA Singles Ministry. Invite a friend and come ready to connect. Zoom link to be shared.",
+    dateLabel: "October 31, 2026", timeLabel: "6:00 PM ET · On Zoom", month: "OCT", day: "31",
+    startLocal: "20261031T180000", endLocal: "20261031T200000",
+    location: "Zoom — link to be shared",
+    navLabel: "Singles Game Night",
+  },
+  {
     id: "holy-land-pilgrimage-2026",
     title: "Holy Land Pilgrimage 2026",
     desc: "CACNA Latunde Region Pilgrimage to Israel & Egypt, November 2–12, 2026. Package includes round-trip flights from JFK, 8 nights accommodation (7 in Israel + 1 in St. Catherine, Egypt), daily meals, private guide, group coach, and Pilgrimage Certificate. Price $4,549 · $500 deposit to register · $2,000 second payment due Oct 31. Contact: info@cacnapilgrimage.org | @cacnapilgrimage",
