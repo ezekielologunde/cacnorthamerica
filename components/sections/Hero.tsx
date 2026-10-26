@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useRef, useState, useEffect, useMemo } from "react";
+import { useRef, useState, useEffect, useMemo, useCallback, useSyncExternalStore } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Magnetic } from "@/components/ui/Magnetic";
@@ -160,15 +160,17 @@ function useSlides(): Slide[] {
  *  the reduced-motion fallback) is more reliable than gambling on
  *  autoplay support. */
 function useIsNarrowViewport(breakpoint: number): boolean {
-  const [narrow, setNarrow] = useState(false);
-  useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${breakpoint}px)`);
-    setNarrow(mql.matches);
-    const onChange = (e: MediaQueryListEvent) => setNarrow(e.matches);
-    mql.addEventListener("change", onChange);
-    return () => mql.removeEventListener("change", onChange);
-  }, [breakpoint]);
-  return narrow;
+  const query = `(max-width: ${breakpoint}px)`;
+  const subscribe = useCallback(
+    (onChange: () => void) => {
+      const mql = window.matchMedia(query);
+      mql.addEventListener("change", onChange);
+      return () => mql.removeEventListener("change", onChange);
+    },
+    [query],
+  );
+  // Server snapshot is "not narrow" (video allowed); the real answer is read after hydration.
+  return useSyncExternalStore(subscribe, () => window.matchMedia(query).matches, () => false);
 }
 
 export function Hero() {

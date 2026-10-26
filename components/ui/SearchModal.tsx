@@ -52,13 +52,18 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
   const router = useRouter();
   const results = runSearch(query);
 
+  // Reset the search each time the modal opens. Done during render (React's documented
+  // pattern for "adjust state when a prop changes") rather than in an effect.
+  const [wasOpen, setWasOpen] = useState(open);
+  if (open !== wasOpen) {
+    setWasOpen(open);
+    if (open) { setQuery(''); setActive(0); }
+  }
+
   useEffect(() => {
-    if (open) {
-      setQuery('');
-      setActive(0);
-      const t = setTimeout(() => inputRef.current?.focus(), 60);
-      return () => clearTimeout(t);
-    }
+    if (!open) return;
+    const t = setTimeout(() => inputRef.current?.focus(), 60);
+    return () => clearTimeout(t);
   }, [open]);
 
   useEffect(() => {
@@ -73,7 +78,12 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
     return () => window.removeEventListener('keydown', handler);
   }, [open, results, active, onClose, router]);
 
-  useEffect(() => { setActive(0); }, [query]);
+  // Keep the highlighted result at the top whenever the query changes (same render-time pattern).
+  const [prevQuery, setPrevQuery] = useState(query);
+  if (query !== prevQuery) {
+    setPrevQuery(query);
+    setActive(0);
+  }
 
   if (!open) return null;
 

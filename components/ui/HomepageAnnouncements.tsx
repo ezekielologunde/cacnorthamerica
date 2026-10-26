@@ -23,6 +23,8 @@ export function HomepageAnnouncements({ announcements }: { announcements: Homepa
     for (const ann of announcements) {
       if (localStorage.getItem(`ann-home-${ann.id}`)) stored.add(ann.id);
     }
+    // Dismissals live in localStorage, which only exists after hydration.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDismissed(stored);
     setReady(true);
   }, [announcements]);

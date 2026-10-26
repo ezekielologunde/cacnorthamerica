@@ -152,7 +152,7 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--flame)" }}>What to expect</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.6vw,44px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 14px" }}>The rhythm stays the same</h2>
             <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.7, maxWidth: 640 }}>
-              CACNA's convention follows the same six-day pattern every year — only the calendar dates change. Here is what {cy.year} will look like, based on that recurring rhythm.
+              CACNA&apos;s convention follows the same six-day pattern every year — only the calendar dates change. Here is what {cy.year} will look like, based on that recurring rhythm.
             </p>
           </Reveal>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>

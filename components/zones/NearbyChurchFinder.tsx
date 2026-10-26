@@ -61,7 +61,7 @@ export function NearbyChurchFinder({ leaders }: { leaders: Leader[] }) {
           <div style={{ maxWidth: 480 }}>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--gold)" }}>Find a Church Near You</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3vw,32px)", letterSpacing: "-.5px", color: "#fff", margin: "10px 0 0", lineHeight: 1.15 }}>
-              Share your location — we'll show the closest member churches.
+              Share your location — we&apos;ll show the closest member churches.
             </h2>
             <p style={{ fontSize: 14.5, color: "rgba(245,246,250,.68)", margin: "10px 0 0", lineHeight: 1.55 }}>
               Only churches with a verified, sourced address are included — not every zone has one yet.
@@ -105,7 +105,7 @@ export function NearbyChurchFinder({ leaders }: { leaders: Leader[] }) {
         )}
         {(status === "unsupported" || status === "error") && (
           <p style={{ marginTop: 20, fontSize: 14, color: "rgba(245,246,250,.75)" }}>
-            We couldn't get your location just now. Browse every zone below instead.
+            We couldn&apos;t get your location just now. Browse every zone below instead.
           </p>
         )}
 
@@ -119,7 +119,7 @@ export function NearbyChurchFinder({ leaders }: { leaders: Leader[] }) {
             </p>
             {results.length > 0 && results[0].miles > 150 && (
               <p style={{ fontSize: 13.5, color: "rgba(245,246,250,.65)", marginBottom: 16, lineHeight: 1.5 }}>
-                Coverage is still growing — the closest verified church we have is {Math.round(results[0].miles)} miles away. Browse the full directory below in case your zone's Superintendent knows of a closer assembly not yet listed here.
+                Coverage is still growing — the closest verified church we have is {Math.round(results[0].miles)} miles away. Browse the full directory below in case your zone&apos;s Superintendent knows of a closer assembly not yet listed here.
               </p>
             )}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: 14 }}>

@@ -2,7 +2,7 @@
 project: cacnorthamerica
 type: tasks
 status: active
-last_updated: 2026-09-07
+last_updated: 2026-09-24
 tags: [project/cacnorthamerica]
 ---
 
@@ -249,6 +249,10 @@ orders, and admin users — but public pages also pull from `departments`,
 of which have an obvious admin UI in `app/admin/(protected)`. If those are
 meant to be editable without a direct SQL/Supabase-studio edit, admin pages
 for them may be a gap.
+
+## Merge and deploy the security patch (owner, 2026-09-24)
+
+Branch `chore/next-security-patch` (from `c3f22a8`, in `.claude/worktrees/next-patch-20260924`) upgrades Next.js to 16.3.6 to close a critical advisory, fixes all lint errors, and lets the CSP load YouTube thumbnails. It is not pushed or deployed. Review it, merge it, and deploy. See [[Changelog]].
 
 ## No automated test suite found
 

@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 
 export default function AdminError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
@@ -37,7 +38,7 @@ export default function AdminError({ error, reset }: { error: Error & { digest?:
         >
           Try again
         </button>
-        <a
+        <Link
           href="/admin"
           style={{
             padding: "9px 20px", borderRadius: 8,
@@ -48,7 +49,7 @@ export default function AdminError({ error, reset }: { error: Error & { digest?:
           }}
         >
           Back to dashboard
-        </a>
+        </Link>
       </div>
     </div>
   );

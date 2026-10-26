@@ -14,10 +14,13 @@ export default function AdminShell({
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
-  // Close sidebar on route change (nav tap on mobile)
-  useEffect(() => {
+  // Close sidebar on route change (nav tap on mobile). Reset during render, React's
+  // documented pattern for "adjust state when a prop changes", instead of in an effect.
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
     setOpen(false);
-  }, [pathname]);
+  }
 
   // Close sidebar when viewport grows past mobile breakpoint
   useEffect(() => {

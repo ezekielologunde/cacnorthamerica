@@ -46,7 +46,7 @@ export default async function ZonesPage({
           </Reveal>
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(16px,1.8vw,19px)", color: "rgba(245,246,250,.72)", lineHeight: 1.65, maxWidth: 620, margin: "0 auto" }}>
-              CACNA's member churches across the United States, Canada, and South America are organized into Zones and DCCs (District Church Councils), each shepherded by a Superintendent. Filter or search below, or reach out directly to the one nearest you.
+              CACNA&apos;s member churches across the United States, Canada, and South America are organized into Zones and DCCs (District Church Councils), each shepherded by a Superintendent. Filter or search below, or reach out directly to the one nearest you.
             </p>
           </Reveal>
         </div>

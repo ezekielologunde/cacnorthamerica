@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type MouseEvent } from 'react';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Search, CalendarDays } from 'lucide-react';
@@ -31,6 +31,8 @@ interface NavProps {
   /** Hero behind the nav is dark at the top of the page (so the bar needs light text until scrolled). */
   heroDark?: boolean;
 }
+
+const subscribeNever = () => () => {};
 
 export function Nav({ dark = false, heroDark = false }: NavProps) {
   const navRef = useRef<HTMLElement>(null);
@@ -94,14 +96,12 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [openMobileSection, setOpenMobileSection] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [conventionOpen, setConventionOpen] = useState(true);
-
   // Convention registration is CACNA's flagship annual CTA — keep it live in
   // the nav until the event itself has passed, then fall back to the general
   // Events page instead of an outdated "Register" prompt.
-  useEffect(() => {
-    setConventionOpen(!isConventionPast(nextConvention));
-  }, []);
+  // This depends on the viewer's clock, so the server snapshot is "open" and the real answer is
+  // read after hydration (useSyncExternalStore, no state + effect round trip).
+  const conventionOpen = useSyncExternalStore(subscribeNever, () => !isConventionPast(nextConvention), () => true);
 
   useEffect(() => {
     const nav = navRef.current;
@@ -124,7 +124,14 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
     return () => window.removeEventListener('scroll', update);
   }, [dark, open]);
 
-  useEffect(() => { setOpen(false); setOpenMobileSection(null); }, [pathname]);
+  // Close the menu on navigation. Reset during render (React's documented pattern for
+  // "adjust state when a prop changes") instead of in an effect.
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
+    setOpen(false);
+    setOpenMobileSection(null);
+  }
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : '';

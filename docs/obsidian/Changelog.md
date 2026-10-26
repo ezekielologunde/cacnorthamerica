@@ -2,13 +2,22 @@
 project: cacnorthamerica
 type: changelog
 status: active
-last_updated: 2026-09-07
+last_updated: 2026-09-24
 tags: [project/cacnorthamerica]
 ---
 
 # Changelog
 
 Related: [[Project]] · [[Decisions]] · [[Features]]
+
+## 2026-09-24: Next.js security patch, lint at zero errors, YouTube thumbnails unblocked
+
+Branch `chore/next-security-patch` (from `c3f22a8`), not yet merged or deployed.
+
+- **Security:** `next` and `eslint-config-next` 16.2.7 to 16.3.6 (unauthenticated RCE advisories GHSA-p293-qw3h-jr36 and GHSA-2xp9-vwfh-vxw4), plus `npm audit fix` for `nanoid`. `npm audit` went from 5 vulnerabilities (1 critical, 3 high, 1 moderate) to 0. Type-check and the production build pass.
+- **Bug fixed:** the CSP `img-src` in `next.config.ts` did not allow `https://i.ytimg.com`, so the YouTube thumbnails in `WatchOnline.tsx` and `VideoFacade.tsx` were blocked by the browser. It is now allowed; a thumbnail loads with no CSP violation.
+- **Lint:** 28 errors to 0 (12 unescaped apostrophes, 8 internal `<a>` links now `<Link>`, 8 `react-hooks/set-state-in-effect`). See [[Decisions]]. Seven warnings remain (six `<img>`, one unused import).
+- **Checked in a browser on the production build:** the mobile menu closes on navigation, the search modal opens focused and reopens empty, and the convention button in the menu still renders.
 
 ## 2026-09-07 — Canonical host restored to cacna.cacsalvationcenter.org
 

@@ -2,7 +2,7 @@
 project: cacnorthamerica
 type: decisions
 status: active
-last_updated: 2026-09-07
+last_updated: 2026-09-24
 tags: [project/cacnorthamerica]
 ---
 
@@ -154,6 +154,14 @@ domain changes again, since it's declared in multiple places
 (`next.config.ts`/env, `app/sitemap.ts`, `app/robots.ts`, `public/llms.txt`).
 
 Update 2026-09-07: PR #31 had temporarily reverted the `SITE_URL` default to `cacnorthamerica.vercel.app` because the subdomain was not yet attached to the Vercel project and Supabase's redirect allow-list did not include it. The subdomain is attached now, so the default is `https://cacna.cacsalvationcenter.org` again and `next.config.ts` permanently redirects `cacnorthamerica.vercel.app` to it (API routes excepted, so webhooks configured against the old host keep working). The rule going forward: the code default, `NEXT_PUBLIC_SITE_URL` in Vercel, and the Supabase redirect allow-list must all name the same host, because the env var overrides the default and the allow-list gates the password-reset link.
+
+## Reset state during render, or read an external value, instead of setting state in an effect
+
+Where state should reset when a prop changes (`Nav`, `AdminShell`, `SearchModal`) it is reset during render, React's documented "adjust state when a prop changes" pattern, instead of in an effect. Values that depend on the viewer's clock or a media query use `useSyncExternalStore` with a server snapshot, so SSR output is unchanged. Where an effect is genuinely needed (reading storage once after hydration) it keeps a targeted, explained `eslint-disable`. Do not add blanket disables.
+
+## Framework versions stay pinned exactly
+
+`next` and `eslint-config-next` are pinned to an exact version (now 16.3.6). `AGENTS.md` warns that this Next.js version has breaking changes, so framework upgrades are deliberate: run `npm audit`, read the bundled docs, then run lint, typecheck and build before bumping.
 
 ## `llms.txt` for LLM crawlers
 
