@@ -78,15 +78,25 @@ function appendRow(sheet, data) {
     return headers.indexOf(k) === -1;
   });
   if (newKeys.length > 0) {
-    sheet.getRange(1, headers.length + 1, 1, newKeys.length).setValues([newKeys]);
+    sheet.getRange(1, headers.length + 1, 1, newKeys.length).setValues([newKeys.map(plainText)]);
     headers = headers.concat(newKeys);
   }
 
   var row = headers.map(function (h) {
     if (h === "Timestamp") return new Date();
-    return data[h] !== undefined ? String(data[h]) : "";
+    return data[h] !== undefined ? plainText(String(data[h])) : "";
   });
   sheet.appendRow(row);
+}
+
+// Sheets runs any cell starting with =, +, - or @ as a formula (tab and CR
+// are used to smuggle them), so a submitted =HYPERLINK(...) or =IMAGE(...)
+// could read the other tabs' registrant details. A leading apostrophe makes
+// Sheets store the value as plain text and is hidden in the cell. The site
+// already does this in lib/sheetsWebhook.ts; this covers anything that
+// reaches the webhook another way.
+function plainText(value) {
+  return /^[=+\-@\t\r]/.test(value) ? "'" + value : value;
 }
 
 function jsonResponse(obj) {

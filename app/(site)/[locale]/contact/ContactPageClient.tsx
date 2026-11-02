@@ -7,18 +7,8 @@ import { Reveal } from "@/components/ui/Reveal";
 import { IconBadge } from "@/components/ui/IconBadge";
 import { MapPin, Phone, Mail, Clock, CheckCircle2 } from "lucide-react";
 import { submitLead, isValidEmail } from "@/lib/forms";
-
-const SUBJECTS = [
-  "General Enquiry",
-  "Find a Member Church",
-  "Zone / DCC Inquiry",
-  "Annual Convention",
-  "Prayer Request",
-  "Pastoral Care",
-  "Giving & Donations",
-  "Media & Livestream",
-  "Other",
-];
+import { HONEYPOT_FIELD } from "@/lib/spam";
+import { CONTACT_SUBJECTS as SUBJECTS } from "@/app/api/contact/fields";
 
 const MEMBERSHIP_SUBJECTS = new Set([
   "Find a Member Church",
@@ -77,6 +67,7 @@ export default function ContactPageClient() {
   const [groups, setGroups] = useState<string[]>([]);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errMsg, setErrMsg] = useState("");
+  const [honeypot, setHoneypot] = useState("");
 
   function update(k: keyof typeof BLANK_FIELDS) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
@@ -109,6 +100,7 @@ export default function ContactPageClient() {
             "State/Province": fields.state, "Zip/Post Code": fields.zip,
             "Groups": groups.join(", "),
           } : {}),
+          [HONEYPOT_FIELD]: honeypot,
         },
         `Contact — ${fields.subject || "General"}`
       );
@@ -172,6 +164,8 @@ export default function ContactPageClient() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} noValidate>
+                {/* Honeypot: bots fill every input, people never see this one. */}
+                <input type="text" name={HONEYPOT_FIELD} value={honeypot} onChange={(e) => setHoneypot(e.target.value)} tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }} />
                 <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(19px,2.5vw,26px)", color: "var(--ink)", margin: "0 0 20px", letterSpacing: "-0.4px" }}>
                   Send us a message
                 </h2>
