@@ -4,6 +4,17 @@
 .nav-logo { min-height: 44px; }
 .nav-tap { min-width: 44px; min-height: 44px; justify-content: center; }
 
+/* Phones: the logo (kicker line ~200px wide) plus search + menu buttons
+   overflowed the bar at <=375px. Tighten the kicker's tracking and let the
+   logo shrink (kicker truncates) so the menu toggle never leaves the screen. */
+@media (max-width: 400px) {
+  .nav-logo { flex-shrink: 1 !important; min-width: 0; }
+  .nav-logo-kicker {
+    letter-spacing: 1.4px !important;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+}
+
 /* ── Footer (FooterExperience) ── */
 .ft {
   background: var(--ink); color: rgba(245,246,250,.72);
@@ -120,7 +131,12 @@
   display: grid; place-items: center; width: 28px; min-height: 44px; padding: 0;
   background: none; border: 0; border-radius: 8px; cursor: pointer;
   transition: color .4s;
+  position: relative; z-index: 1; /* above the next (positioned) menu item */
 }
+/* 44px-wide hit area without widening the 28px visual: the pseudo-element
+   reaches 12px right (the 2px row gap + the next link's 10px left padding,
+   no text) and 4px left (the label link's 2px right padding + its edge). */
+.nav-dd-trigger::before { content: ''; position: absolute; inset: 0 -12px 0 -4px; }
 .nav-dd {
   --dd-bg: var(--paper); --dd-line: var(--line); --dd-hover: var(--cream-2);
   --dd-ink: var(--ink); --dd-soft: var(--ink-soft); --dd-feature: var(--red-deep);
@@ -149,6 +165,6 @@
 /* Bar-level Register CTA: only where the desktop row is collapsed but the bar
    still has room beside the logo. Phones get it in the open menu instead. */
 .nav-bar-cta { display: none; }
-@media (min-width: 560px) and (max-width: 1200px) {
+@media (min-width: 560px) and (max-width: 1480px) {
   .nav-bar-cta { display: inline-flex; }
 }

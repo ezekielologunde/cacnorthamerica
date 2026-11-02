@@ -198,7 +198,10 @@ html.lenis body { height: auto; }
  * cleanly, so it now takes over earlier instead of the bar clipping. */
 .nav-desktop { display: flex; }
 .nav-hbg     { display: none; flex-direction: column; }
-@media (max-width: 1200px) {
+/* Measured 2026-11-02: logo (252px) + full desktop row (1066px) + bar padding
+   (128px) + a Windows scrollbar (~17px) needs ~1465px; below that the row ran
+   off the right edge and hid the Register CTA. */
+@media (max-width: 1480px) {
   .nav-desktop { display: none; }
   .nav-hbg     { display: flex; }
 }

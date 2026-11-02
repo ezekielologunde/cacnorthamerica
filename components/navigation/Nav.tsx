@@ -221,7 +221,10 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
     }
     if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
     const panel = panelRefs.current[label];
-    if (!panel || !panel.contains(document.activeElement)) return;
+    // Only arrow keys pressed on a panel item move between items; ArrowDown on
+    // the trigger is handled there (it focuses the first item, which must not
+    // then be skipped as this handler sees the already-moved focus).
+    if (!panel || !panel.contains(e.target as Node)) return;
     e.preventDefault();
     const links = Array.from(panel.querySelectorAll<HTMLElement>('a'));
     const i = links.indexOf(document.activeElement as HTMLElement);
@@ -304,12 +307,14 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
             and the page body, so the bar's logo/links align with the rest of
             the site instead of hugging the viewport edges on wide screens --
             the <nav> itself stays full-bleed for its background/border. */}
-        <div style={{ maxWidth: 1240, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        {/* 1340, not 1240: the full desktop row measures ~1318px, so a 1240
+            cap made it overflow at every width (see globals.css .nav-desktop). */}
+        <div style={{ maxWidth: 1340, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         {/* Logo */}
         <Link href="/" className="nav-logo" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', color: barInk, flexShrink: 0, transition: 'color .4s' }}>
           <Image src="/images/logo.png" alt={t('logoAlt')} width={42} height={42} style={{ borderRadius: 12, objectFit: 'cover', flexShrink: 0 }} />
-          <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
-            <span style={{ fontSize: 10, letterSpacing: '2.5px', textTransform: 'uppercase', color: barAccent, fontWeight: 700, transition: 'color .4s' }}>{t('orgKicker')}</span>
+          <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1, minWidth: 0 }}>
+            <span className="nav-logo-kicker" style={{ fontSize: 10, letterSpacing: '2.5px', textTransform: 'uppercase', color: barAccent, fontWeight: 700, transition: 'color .4s' }}>{t('orgKicker')}</span>
             <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 19, letterSpacing: '-.3px', marginTop: 3 }}>{t('orgName')}</span>
           </span>
         </Link>
