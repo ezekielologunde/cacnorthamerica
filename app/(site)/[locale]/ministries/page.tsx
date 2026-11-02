@@ -116,8 +116,9 @@ const departments: Department[] = [
   },
 ];
 
-// Descriptions sourced verbatim from Christ Apostolic Church's own
-// "Our Departments" listing (2026-07-21) -- real denominational copy
+// Descriptions sourced from Christ Apostolic Church's own
+// "Our Departments" listing (2026-07-21), verbatim apart from the filler
+// trimmed from the Administration and ICT entries -- real denominational copy
 // rather than CACNA-specific paraphrase, matching this project's practice
 // of preferring authentic source text over invented marketing language.
 // Presidency is a genuine department that this list was previously missing;
@@ -126,16 +127,16 @@ const ministries: Ministry[] = [
   { name: "Presidency", desc: "The Presidency of Christ Apostolic Church administers and carries out policies formulated by the General Executive Council of the church.", icon: Landmark, gradient: "linear-gradient(140deg,var(--red-deep),var(--ink))", href: "/leadership", cta: "Meet our leadership" },
   { name: "Missions", desc: "The Missions Department of Christ Apostolic Church is responsible for taking the message of Jesus Christ to all nooks and crannies of the world.", icon: Globe, gradient: "linear-gradient(140deg,#1B4332,#2D6A4F)", href: "/contact", cta: "Get involved" },
   { name: "Evangelism, Prayer & Counselling", desc: "The principal occupant of the Evangelical Department of Christ Apostolic Church leads all evangelical efforts and prophecy of the church.", icon: HandHeart, gradient: "linear-gradient(140deg,var(--ember),var(--red-deep))", href: "#departments", cta: "Read our history" },
-  { name: "Administration", desc: "Whether you need information regarding a specific department or you want to find out more information, dive into the departments of Christ Apostolic Church.", icon: Wrench, gradient: "linear-gradient(140deg,var(--red),var(--flame))", href: "#departments", cta: "Explore departments" },
+  { name: "Administration", desc: "Information on each of the departments of Christ Apostolic Church.", icon: Wrench, gradient: "linear-gradient(140deg,var(--red),var(--flame))", href: "#departments", cta: "Explore departments" },
   { name: "Christian Education", desc: "The Christian Education Department is an established concept in Christ Apostolic Church from inception and it was established by the progenitors of the church.", icon: BookOpen, gradient: "linear-gradient(140deg,var(--flame),var(--gold))", href: "/christian-education", cta: "Meet the department" },
   { name: "Music", desc: "The Music Department of Christ Apostolic Church is the formation of choir groups and dates back to the very foundations of the church.", icon: Music, gradient: "linear-gradient(140deg,var(--gold),var(--flame))", href: "#departments", cta: "Read our history" },
-  { name: "ICT", desc: "The history of the ICT Department of Christ Apostolic Church dates back to 2003 and allows for the seamless liaison with Christ Apostolic Churches overseas.", icon: Video, gradient: "linear-gradient(140deg,var(--ink),var(--red-deep))", href: "/online", cta: "Watch online" },
+  { name: "ICT", desc: "The history of the ICT Department of Christ Apostolic Church dates back to 2003 and allows for liaison with Christ Apostolic Churches overseas.", icon: Video, gradient: "linear-gradient(140deg,var(--ink),var(--red-deep))", href: "/online", cta: "Watch online" },
   { name: "CAC Men Association", desc: "The history of CACMA at Christ Apostolic Church is narrated for the benefits of all men members of the church.", icon: ShieldCheck, gradient: "linear-gradient(140deg,var(--red-deep),var(--ink))", href: "/cacma", cta: "Meet CACMA" },
   { name: "CAC Good Women Association", desc: "The impact of the Good Women, either as members, ministers, or spouses of ministers has embellished the history of Christ Apostolic Church at all levels.", icon: Users2, gradient: "linear-gradient(140deg,var(--gold),var(--red))", href: "/good-women", cta: "Meet the department" },
   { name: "Ministers' Wives Conference", desc: "A fellowship for the wives of CACNA's ministers, gathered in prayer and mutual support for those who shepherd alongside their husbands.", icon: HandHeart, gradient: "linear-gradient(140deg,var(--red),var(--red-deep))", href: "/ministers-wives", cta: "Meet the fellowship" },
   { name: "Business Group Fellowship", desc: "A platform for interaction, mentorship, and support among CAC members who are business-inclined — supporting projects and programs of the Church.", icon: Wrench, gradient: "linear-gradient(140deg,#1B4332,#2D6A4F)", href: "/business-group", cta: "Meet the fellowship" },
   { name: "Youth & Young Adult", desc: "The history of the Youth Department dates back to the 1930s when Nigerian and white Apostolic from Britain were still in alliance.", icon: Sparkles, gradient: "linear-gradient(140deg,var(--red-deep),var(--red))", href: "/youth", cta: "Meet the ministry" },
-  { name: "Children's Ministry", desc: "A dedicated program for children during the Annual Convention — worship, teaching, and fun, at every session.", icon: Smile, gradient: "linear-gradient(140deg,var(--gold),var(--red-deep))", href: "/children", cta: "Meet the ministry" },
+  { name: "Children's Ministry", desc: "Worship and teaching for children during the Annual Convention.", icon: Smile, gradient: "linear-gradient(140deg,var(--gold),var(--red-deep))", href: "/children", cta: "Meet the ministry" },
 ];
 
 export default async function MinistriesPage({
@@ -163,7 +164,7 @@ export default async function MinistriesPage({
           </h1>
           <Reveal delay={360}>
             <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "rgba(245,246,250,.72)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto", textWrap: "pretty" }}>
-              CACNA&apos;s departments serve every member church across the United States, Canada, and South America — a place to grow, to serve, and to belong.
+              CACNA&apos;s departments serve every member church across the United States, Canada, and South America.
             </p>
           </Reveal>
         </div>
@@ -223,7 +224,7 @@ export default async function MinistriesPage({
       {/* CTA */}
       <section className="min-section" style={{ background: "var(--ink)", padding: "clamp(44px,7vw,90px) clamp(20px,5vw,64px)", textAlign: "center" }}>
         <Reveal>
-          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4.5vw,58px)", letterSpacing: "-1.2px", color: "var(--cream)", margin: "0 0 16px", lineHeight: 0.96 }}>Not sure where you fit?</h2>
+          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4.5vw,58px)", letterSpacing: "-1.2px", color: "var(--cream)", margin: "0 0 16px", lineHeight: 0.96 }}>Find where you can serve.</h2>
           <p style={{ fontSize: 17, color: "rgba(245,246,250,.6)", margin: "0 0 36px" }}>Reach out and we&apos;ll connect you with the right department or zone.</p>
           <Link href="/contact" className="btn-sheen press-lg min-cta-row-btn" style={{ display: "inline-block", minHeight: 52, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 34px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 34px rgba(200,30,58,.4)" }}>
             Fill the serve form →

@@ -24,7 +24,6 @@ export default async function CACMAPage({
 
   return (
     <SubConferencePage
-      kicker={t("kicker")}
       headingLines={[t("headingLine1"), t("headingLine2")]}
       intro={t("intro")}
       photoStrip={{ photos: mainGalleryPhotos.slice(3, 6), caption: "From the 2025 convention" }}

@@ -130,10 +130,8 @@
   },
   "PlanYourVisit": {
     "title": "Plan Your Visit",
-    "travelHeading": "Getting There",
     "hotelsHeading": "Hotels",
     "packingHeading": "Packing Checklist",
-    "nearbyHeading": "Nearby Essentials",
     "rememberHeading": "Remember",
     "rulesListHeading": "Rules",
     "categoryFood": "Food",
@@ -197,7 +195,6 @@
     "assistantPro": "Assistant P.R.O"
   },
   "Cacma": {
-    "kicker": "CACMA",
     "headingLine1": "Raising up",
     "headingLine2": "the hands of Moses.",
     "intro": "CAC Latunde Region Men Association — the men of CACNA, gathered to support the church's ministers, its Bible training institutions, and its ongoing work.",
@@ -207,7 +204,6 @@
     "relatedLinkLabel": "Read CACMA's History"
   },
   "ChristianEducation": {
-    "kicker": "Christian Education Department",
     "headingLine1": "Rooted in",
     "headingLine2": "the Sunday School.",
     "intro": "CACNA-CED — soul winning and spiritual re-awakening of the world, through teaching grounded in Scripture, since the church's earliest years.",
@@ -222,7 +218,6 @@
     "relatedLinkLabel": "Read the Full History & Team"
   },
   "GoodWomen": {
-    "kicker": "Good Women Association",
     "headingLine1": "Serving with",
     "headingLine2": "open hands.",
     "intro": "CAC Latunde Region Good Women Association — leading the family in prayer, hospitality, and generosity at every gathering.",
@@ -231,7 +226,6 @@
     "relatedLinkLabel": "Ministers' Wives Conference"
   },
   "MinistersWives": {
-    "kicker": "Ministers' Wives Conference",
     "headingLine1": "Standing beside",
     "headingLine2": "those who shepherd.",
     "intro": "CAC Latunde Region Ministers' Wives Conference — a fellowship for the wives of CACNA's ministers, gathered in prayer and mutual support.",
@@ -239,7 +233,6 @@
     "relatedLinkLabel": "Good Women Association"
   },
   "BusinessGroup": {
-    "kicker": "Business Group Fellowship",
     "headingLine1": "Our office is",
     "headingLine2": "a mission field.",
     "intro": "CACNA Business Group Fellowship (CACBGF) — a platform for interaction, mentorship, and support among CAC members who are business-inclined.",
@@ -249,12 +242,11 @@
     "relatedLinkLabel": "Read the Founding Story"
   },
   "Youth": {
-    "kicker": "Youth & Young Adult",
     "heroHeading1": "Faithfully Connected.",
     "heroHeading2": "Joyfully Serving.",
     "heroBody": "Raising Christ-centered and excellent youths for all-round fulfilment through teaching, discipleship, innovative evangelism, and spiritual worship.",
     "followCta": "Follow @cacnayyam",
-    "journeyWithUsCta": "Journey With Us",
+    "journeyWithUsCta": "Contact Us",
     "conventionThemeLabel": "2026 Convention Theme",
     "coordinatorLabel": "Regional Coordinator",
     "visionLabel": "Our Vision",
@@ -262,18 +254,14 @@
     "missionLabel": "Our Mission",
     "valuesLabel": "Our Values",
     "valuesBody": "Our values and priorities are expressed in prayer — an effective prayer life remains our core value.",
-    "historyKicker": "Where we come from",
     "historyHeading": "Youth Department History",
     "historyBody": "Christ Apostolic Church allowed the togetherness and fellowship of her elites and youths right from her early days. As extra-constitutional organizations formed by young men and women with godly zeal, they operated within the Church under the strict supervision and control of the Church Authority.",
-    "programsKicker": "Major Programs",
     "programsHeading": "Where we watch, learn, and pray.",
-    "momentsKicker": "Moments",
     "momentsHeading": "Life among CACNA's youth.",
-    "mealHeading": "YYAM Convention",
     "mealSubheading": "{year} Meal Request",
     "mealBody": "RSVP for meals during the Convention, {dates} at {venue}.",
     "mealQuestionsLead": "Questions? Email",
-    "ctaHeading": "Journey with us.",
-    "ctaBody": "Follow along for programs, prayer, and updates from CACNA's youth and young adults."
+    "ctaHeading": "Follow along.",
+    "ctaBody": "Programs, prayer, and updates from CACNA's youth and young adults."
   }
 }

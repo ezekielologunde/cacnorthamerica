@@ -119,18 +119,13 @@ export default async function YouthPage({
       <section className="min-hero" style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 90px", position: "relative", overflow: "hidden" }}>
         <div className="min-hero-glow" style={{ position: "absolute", top: -100, left: "50%", transform: "translateX(-50%)", width: 760, height: 460, background: "radial-gradient(circle,rgba(200,30,58,.3),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 16s ease-in-out infinite" }} />
         <div style={{ maxWidth: 820, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
-          <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(44px,6.5vw,88px)", letterSpacing: "-0.03em", color: "#fff", margin: "0 0 16px", lineHeight: 0.98, textWrap: "balance" }}>
+          <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(44px,6.5vw,88px)", letterSpacing: "-0.03em", color: "#fff", margin: "0 0 32px", lineHeight: 0.98, textWrap: "balance" }}>
             <RevealText immediate>{t("heroHeading1")}</RevealText>
             <br />
             <RevealText immediate delay={0.15} style={{ color: "var(--red)" }}>
               {t("heroHeading2")}
             </RevealText>
           </h1>
-          <Reveal delay={360}>
-            <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "rgba(245,246,250,.72)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto 32px", textWrap: "pretty" }}>
-              {t("heroBody")}
-            </p>
-          </Reveal>
           <Reveal delay={440}>
             <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 14 }}>
               <a

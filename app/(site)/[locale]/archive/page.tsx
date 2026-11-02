@@ -43,10 +43,7 @@ export default async function ArchivePage({
 
       <section className="mm-hero" style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 80px" }}>
         <div style={{ maxWidth: 760, margin: "0 auto", textAlign: "center" }}>
-          <Reveal>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Archive</span>
-          </Reveal>
-          <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(38px,6vw,68px)", letterSpacing: "-0.03em", color: "#fff", margin: "16px 0 0", lineHeight: 1 }}>
+          <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(38px,6vw,68px)", letterSpacing: "-0.03em", color: "#fff", margin: 0, lineHeight: 1 }}>
             <RevealText immediate>Past Conventions</RevealText>
           </h1>
           <Reveal delay={140}>

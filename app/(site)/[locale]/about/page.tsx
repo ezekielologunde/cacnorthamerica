@@ -18,18 +18,18 @@ const values = [
   { icon: Globe, title: "Ambassadors", desc: "Equipping every believer to carry the Kingdom into everyday life." },
 ];
 
-type Home = { tag: string; name: string; place: string; href: string; cta: string; external?: boolean };
+type Home = { name: string; place: string; href: string; cta: string; external?: boolean };
 
 const homes: Home[] = [
-  { tag: "Explore", name: "Our Leadership", place: "Regional officers and 24 zonal superintendents", href: "/leadership", cta: "Meet the team" },
-  { tag: "Explore", name: "Bible Institute", place: "CACNA's ministerial training arm", href: "/bible-institute", cta: "Learn more" },
-  { tag: "Explore", name: "Our Ministries", place: "Departments serving every CACNA zone", href: "/ministries", cta: "See ministries" },
-  { tag: "Explore", name: "Zones & DCCs", place: "Member churches across the U.S., Canada, and South America", href: "/zones", cta: "Find a zone" },
-  { tag: "Explore", name: "Annual Convention", place: "CAC Village, Blue Ridge Summit, PA", href: "/calendar", cta: "Upcoming events" },
-  { tag: "Explore", name: "Watch Online", place: "Services and the Convention, streamed live", href: "/online", cta: "Watch now" },
-  { tag: "Explore", name: "Giving", place: "Support CACNA's ministries and the Centenary Building Project", href: "/giving", cta: "Give now" },
-  { tag: "Explore", name: "Blog & News", place: "Stories, updates, and reflections from across CACNA", href: "/blog", cta: "Read the latest" },
-  { tag: "Explore", name: "Gallery", place: "Photos from the Convention and CACNA life", href: "/gallery", cta: "See photos" },
+  { name: "Our Leadership", place: "Regional officers and 24 zonal superintendents", href: "/leadership", cta: "Meet the team" },
+  { name: "Bible Institute", place: "CACNA's ministerial training arm", href: "/bible-institute", cta: "Learn more" },
+  { name: "Our Ministries", place: "Departments serving every CACNA zone", href: "/ministries", cta: "See ministries" },
+  { name: "Zones & DCCs", place: "Member churches across the U.S., Canada, and South America", href: "/zones", cta: "Find a zone" },
+  { name: "Annual Convention", place: "CAC Village, Blue Ridge Summit, PA", href: "/calendar", cta: "Upcoming events" },
+  { name: "Watch Online", place: "Services and the Convention, streamed live", href: "/online", cta: "Watch now" },
+  { name: "Giving", place: "Support CACNA's ministries and the Centenary Building Project", href: "/giving", cta: "Give now" },
+  { name: "Blog & News", place: "Stories, updates, and reflections from across CACNA", href: "/blog", cta: "Read the latest" },
+  { name: "Gallery", place: "Photos from the Convention and CACNA life", href: "/gallery", cta: "See photos" },
 ];
 
 const homeCardStyle: CSSProperties = {
@@ -108,19 +108,9 @@ export default async function AboutPage({
             </h2>
           </Reveal>
           <Reveal delay={100}>
-            <p style={{ fontSize: 17.5, color: "var(--ink-soft)", lineHeight: 1.8, margin: "0 0 20px" }}>
+            <p style={{ fontSize: 17.5, color: "var(--ink-soft)", lineHeight: 1.8, margin: 0 }}>
               CACNA doesn&apos;t hold its own Sunday services — it exists to connect the member churches that do. From a handful of congregations to a regional family spanning three countries, every CACNA zone has its own local church, pastor, and gathering.
             </p>
-            <p style={{ fontSize: 17.5, color: "var(--ink-soft)", lineHeight: 1.8, margin: 0 }}>
-              What ties them together is one shared mandate, one Gospel, and one shepherd — Zonal Superintendents leading local congregations, all part of a movement that stretches back to Nigeria in 1918.
-            </p>
-          </Reveal>
-          <Reveal delay={180}>
-            <div style={{ marginTop: 36 }}>
-              <Link href="/leadership" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--ink)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "16px 28px", borderRadius: 999, textDecoration: "none", boxShadow: "0 12px 28px rgba(18,20,30,.18)" }}>
-                Meet our leadership →
-              </Link>
-            </div>
           </Reveal>
         </div>
       </section>
@@ -195,15 +185,9 @@ export default async function AboutPage({
           <div className="r2" style={{ gap: 44, alignItems: "center" }}>
             <Reveal>
               <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 12 }}>Christ Apostolic Church across North America</div>
-              <p style={{ fontSize: 17, color: "var(--ink-soft)", lineHeight: 1.75, margin: "0 0 18px" }}>
-                As CAC member churches were planted across the United States, Canada, and South America, CACNA emerged to give this growing family a shared structure — <strong style={{ color: "var(--ink)" }}>24 Zones &amp; DCCs (District Church Councils)</strong>, each shepherded by a Zonal Superintendent, all under one regional leadership.
-              </p>
               <p style={{ fontSize: 17, color: "var(--ink-soft)", lineHeight: 1.75, margin: 0 }}>
                 Every July, the family gathers as one at the Annual Convention — CAC Village, Blue Ridge Summit, Pennsylvania — for six days of worship, teaching, and fellowship, onsite and online.
               </p>
-              <Link href="/leadership" style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: 24, color: "var(--red)", fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
-                Meet our leadership →
-              </Link>
             </Reveal>
             <Reveal delay={120}>
               <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 24, padding: "30px 28px", boxShadow: "0 14px 32px rgba(18,20,30,.06)" }}>
@@ -262,7 +246,7 @@ export default async function AboutPage({
                 Evangelist (later Apostle) Joseph Ayodele Babalola joined the group in October 1928, and his ministry led to the Great Revival of 1930 at Oke Ooye, Ilesa — a turning point that spread the church across Nigeria. Over time, the group took the name &ldquo;Apostolic Church,&rdquo; then &ldquo;Nigerian Apostolic Church&rdquo; (1939), then &ldquo;United Apostolic Church&rdquo; (1942), before God revealed the name it carries today: <strong style={{ color: "var(--ink)" }}>Christ Apostolic Church</strong>, registered on May 4, 1943.
               </p>
               <p style={{ fontSize: 16.5, color: "var(--ink-soft)", lineHeight: 1.8, margin: 0 }}>
-                In the decades since, the Church has planted Bible training colleges — including at Iperu and Ilesa — a theological seminary at Ijebu-Ife, and grammar schools across Nigeria, and today operates <strong style={{ color: "var(--ink)" }}>Joseph Ayo Babalola University (JABU)</strong> in Ikeji-Arakeji, Osun State. Over a little more than six decades, Christ Apostolic Church has grown from a small band of persecuted believers into a denomination with many millions of adherents across the world — CACNA is proud to carry this same heritage across the United States, Canada, and South America.
+                In the decades since, the Church has planted Bible training colleges — including at Iperu and Ilesa — a theological seminary at Ijebu-Ife, and grammar schools across Nigeria, and today operates <strong style={{ color: "var(--ink)" }}>Joseph Ayo Babalola University (JABU)</strong> in Ikeji-Arakeji, Osun State. Over a little more than six decades, Christ Apostolic Church has grown from a small band of persecuted believers into a denomination with many millions of adherents across the world.
               </p>
             </div>
           </Reveal>
@@ -350,7 +334,7 @@ export default async function AboutPage({
               The Thirteen Tenets of Faith.
             </h2>
             <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.7, maxWidth: 640, margin: "20px auto 0" }}>
-              The doctrinal foundation of the Christ Apostolic Church — what every CACNA pulpit preaches and what we live by.
+              The doctrinal foundation of the Christ Apostolic Church.
             </p>
             <Link href="/statement-of-faith" style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: 18, color: "var(--red)", fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
               Read our full Statement of Faith →
@@ -402,7 +386,6 @@ export default async function AboutPage({
               <div style={{ padding: 28 }}>
                 <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 26, lineHeight: 1.1 }}>Pastor Dr. T.O. Agbeja</div>
                 <div style={{ color: "var(--gold)", fontWeight: 700, fontSize: 14, letterSpacing: "1.5px", textTransform: "uppercase", marginTop: 8 }}>Regional Superintendent, CACNA</div>
-                <p style={{ fontSize: 14.5, lineHeight: 1.65, opacity: .82, margin: "16px 0 0" }}>Leading the CACNA family — building God’s ambassadors and welcoming every soul home.</p>
               </div>
             </Reveal>
             <Reveal delay={120} style={{ background: "linear-gradient(155deg, var(--red), var(--red-deep))", color: "var(--cream)", borderRadius: 26, padding: "clamp(32px,4vw,48px) clamp(28px,3.5vw,40px)", display: "flex", flexDirection: "column", justifyContent: "center", boxShadow: "0 18px 36px rgba(200,30,58,.26)" }}>
@@ -411,7 +394,7 @@ export default async function AboutPage({
                 24 zones &amp; DCCs.<br />One family.<br />One Gospel.
               </h3>
               <p style={{ fontSize: 15.5, lineHeight: 1.7, opacity: .92, margin: "0 0 26px" }}>
-                Alongside CACNA&apos;s national officers, Zonal Superintendents across all 24 Zones &amp; DCCs shepherd member churches spanning the United States, Canada, and South America — one regional leadership, one mandate.
+                Alongside CACNA&apos;s national officers, a Zonal Superintendent shepherds the member churches of each zone.
               </p>
               <Link href="/leadership" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, alignSelf: "flex-start", background: "var(--cream)", color: "var(--ink)", fontWeight: 700, fontSize: 15, padding: "14px 24px", borderRadius: 999, textDecoration: "none" }}>
                 Meet the full team →
@@ -424,8 +407,7 @@ export default async function AboutPage({
       {/* CTA */}
       <section style={{ background: "var(--ink)", padding: "80px clamp(20px,5vw,64px)", textAlign: "center" }}>
         <Reveal>
-          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(36px,5vw,64px)", letterSpacing: "-1.5px", color: "var(--cream)", margin: "0 0 16px", lineHeight: .95 }}>Ready to connect?</h2>
-          <p style={{ fontSize: 17, color: "rgba(245,246,250,.6)", margin: "0 0 36px" }}>Find a CACNA member church near you — onsite or online.</p>
+          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(36px,5vw,64px)", letterSpacing: "-1.5px", color: "var(--cream)", margin: "0 0 36px", lineHeight: .95 }}>Visit a church, or watch online.</h2>
           <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
             <Link href="/contact" style={{ background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(200,30,58,.4)" }}>Plan a Visit →</Link>
             <Link href="/online" style={{ background: "rgba(245,246,250,.1)", color: "var(--cream)", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(245,246,250,.2)" }}>Watch Online</Link>

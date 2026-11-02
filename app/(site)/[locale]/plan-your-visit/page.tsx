@@ -67,7 +67,7 @@ export default async function PlanYourVisitPage({
           </h1>
           <Reveal delay={200}>
             <p style={{ fontSize: "clamp(16px,1.8vw,19px)", color: "rgba(245,246,250,.72)", lineHeight: 1.7, maxWidth: 620, margin: "0 auto" }}>
-              Everything you need to get to {CONVENTION_VENUE} and make the most of your week.
+              Getting to {CONVENTION_VENUE}, where to stay, and what to bring.
             </p>
           </Reveal>
           <nav aria-label="On this page" className="ap-chips">
