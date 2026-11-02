@@ -39,6 +39,7 @@ export default async function SitemapPage({
         { label: "Ministries", href: "/ministries" },
         { label: "Bible Institute", href: "/bible-institute" },
         { label: "Statement of Faith", href: "/statement-of-faith" },
+        { label: "FAQs", href: "/faq" },
       ],
     },
     {
