@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { subscribeAction } from "@/app/newsletter/actions";
+import { HONEYPOT_FIELD } from "@/lib/spam";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -59,6 +60,7 @@ export function NewsletterForm() {
 
   return (
     <form action={action} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      <input type="text" name={HONEYPOT_FIELD} tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }} />
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
         <label htmlFor="newsletter-email" style={{
           position: "absolute", width: 1, height: 1, padding: 0, margin: -1,

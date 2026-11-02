@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Resend } from "resend";
 import { headers } from "next/headers";
 import { rateLimit } from "@/lib/rateLimit";
+import { HONEYPOT_FIELD } from "@/lib/spam";
 import { SITE_URL } from "@/lib/site";
 import { logToSheet } from "@/lib/sheetsWebhook";
 import { EMAIL_FROM } from "@/lib/email";
@@ -58,6 +59,11 @@ export async function subscribeAction(
   const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "anon";
   if (!rateLimit(ip, 5, 60_000)) {
     return { ok: false, message: "Too many requests. Please try again in a minute." };
+  }
+
+  // Honeypot: bots fill every input, people never see this one.
+  if (formData.get(HONEYPOT_FIELD)) {
+    return { ok: true, message: "You're in! Welcome to the family." };
   }
 
   const email = (formData.get("email") as string | null)?.trim().toLowerCase() ?? "";
