@@ -98,9 +98,9 @@ export default async function RegisterConfirmationPage({
           </p>
         )}
 
-        <div style={{ maxWidth: 460, margin: "0 auto", textAlign: "left", background: "rgba(245,246,250,.06)", border: "1px solid rgba(245,246,250,.14)", borderRadius: 18, padding: "24px 26px" }}>
-          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
-            <div style={{ minWidth: 0 }}>
+        <div style={{ maxWidth: 460, margin: "0 auto", textAlign: "left", background: "rgba(245,246,250,.06)", border: "1px solid rgba(245,246,250,.14)", borderRadius: 18, padding: "24px clamp(16px, 5vw, 26px)" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
+            <div style={{ minWidth: 0, flex: "1 1 160px", overflowWrap: "anywhere" }}>
               {summary.churchName && (
                 <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 16, color: "#fff", margin: "0 0 4px" }}>{summary.churchName}</p>
               )}
@@ -114,8 +114,8 @@ export default async function RegisterConfirmationPage({
               const youth = describeYouthRegistrant(r, cy.startIso);
               return (
                 <li key={i} style={{ fontSize: 14.5 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-                    <span style={{ color: "var(--cream)" }}>{r.n}</span>
+                  <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", columnGap: 12, rowGap: 2 }}>
+                    <span style={{ color: "var(--cream)", minWidth: 0, overflowWrap: "anywhere" }}>{r.n}</span>
                     <span style={{ color: "rgba(245,246,250,.6)" }}>{youth ? youth.ageGroup : (CATEGORY_LABEL[r.c] ?? "Adult")}</span>
                   </div>
                   {youth && (
