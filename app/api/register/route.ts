@@ -6,7 +6,7 @@ import { SITE_URL } from "@/lib/site";
 import { currentOrNextConvention, activePricing, priceForCategory, type RegistrantCategory } from "@/lib/conventions";
 import { encodeSummary, chunkForMetadata, fitsStripeMetadata, type RegistrationSummary } from "@/lib/checkoutSummary";
 import { sealRegistrationToken } from "@/lib/registrationToken";
-import { checkinCodesFor } from "@/lib/checkinCode";
+import { checkinCodesFor, checkinCodeSheetCell } from "@/lib/checkinCode";
 import { sendRegistrationConfirmationEmail } from "@/lib/registrationEmail";
 import { FORM_HEADER, HONEYPOT_FIELD, looksLikeSpam } from "@/lib/spam";
 import { processingFeeLineItem, processingFeeMetadata } from "@/lib/processingFee";
@@ -230,7 +230,7 @@ export async function POST(request: Request) {
       "Total": "$0.00",
       "Stripe Session": "",
       "Status": "free (email unverified)",
-      "Check-in Code": checkinCodesFor(summary).join("; "),
+      "Check-in Code": checkinCodeSheetCell(summary),
     });
     const checkoutUrl = `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?t=${token}`;
     return NextResponse.json({ checkoutUrl });

@@ -62,8 +62,11 @@ const { openRegistrationToken } = await import("../lib/registrationToken.ts");
 const { resolveRegistrationConfirmation } = await import("../lib/registrationConfirmation.ts");
 const { decodeSummary, unchunkFromMetadata, STRIPE_METADATA_MAX_KEYS } = await import("../lib/checkoutSummary.ts");
 const { sendRegistrationConfirmationEmail } = await import("../lib/registrationEmail.ts");
-const { checkinCodeFor, checkinCodesFor, isWellFormedCheckinCode } = await import("../lib/checkinCode.ts");
+const { checkinCodesFor, isWellFormedCheckinCode } = await import("../lib/checkinCode.ts");
 const lastColumn = (row) => Object.keys(row ?? {}).filter((k) => k !== "formName" && k !== "secret").at(-1);
+// The person's (escaped) name, then directly their own "Check-in code: <code>" line.
+const codeBesideName = (html, name, code) =>
+  new RegExp(`>${name}<div[^>]*>Check-in code: <span[^>]*>${code}</span>`).test(html ?? "");
 
 let failures = 0;
 function check(name, ok) {
@@ -156,12 +159,12 @@ check("free youth token renders as a free confirmation", confirmation?.isFree ==
 
 // Check-in codes: one per person, derived from the sealed ref and order, so
 // the sheet rows, the email and the confirmation page all show the same code.
-const freeCodes = [checkinCodeFor(opened?.ref ?? "", 2027, 0), checkinCodeFor(opened?.ref ?? "", 2027, 1)];
+const freeCodes = checkinCodesFor({ ref: opened?.ref ?? "", year: 2027, registrants: [{}, {}] });
 check("free youth rows: each person has their own well-formed check-in code, as the last column",
   r5?.["Check-in Code"] === freeCodes[0] && r14?.["Check-in Code"] === freeCodes[1] && freeCodes[0] !== freeCodes[1] &&
   freeCodes.every(isWellFormedCheckinCode) && lastColumn(r5) === "Check-in Code" && lastColumn(r14) === "Check-in Code");
-check("free youth email shows each person's check-in code",
-  freeHtml0.includes(`Check-in code: <span`) && freeCodes.every((c) => freeHtml0.includes(`>${c}</span>`)));
+check("free youth email shows each person's check-in code next to their name",
+  codeBesideName(freeHtml0, "Kid Age5", freeCodes[0]) && codeBesideName(freeHtml0, "Kid Age14", freeCodes[1]));
 check("free youth confirmation page derives the same codes from the sealed token",
   JSON.stringify(checkinCodesFor(confirmation?.summary ?? { ref: "", year: 0, registrants: [] })) === JSON.stringify(freeCodes));
 
@@ -285,8 +288,9 @@ check("email lists each person's age group and meals",
   paidHtml.includes("Tuesday Lunch — 7/13, Friday Dinner — 7/16") && paidHtml.includes("Meals: None"));
 check("email escapes names and allergy notes",
   paidHtml?.includes("Allergies: &lt;script&gt;alert(1)&lt;/script&gt;") && paidHtml.includes("Kid &lt;i&gt;One&lt;/i&gt;") && !paidHtml.includes("<script>"));
-check("paid email shows each person's check-in code for this ref",
-  [0, 1].every((i) => paidHtml?.includes(`>${checkinCodeFor("r", 2027, i)}</span>`)));
+const paidCodes = checkinCodesFor(emailSummary);
+check("paid email shows each person's check-in code for this ref next to their name",
+  codeBesideName(paidHtml, "Kid &lt;i&gt;One&lt;/i&gt;", paidCodes[0]) && codeBesideName(paidHtml, "Kid Two", paidCodes[1]));
 check("email shows Payment Options only when the total is over $0",
   paidHtml?.includes("Payment Options") && freeHtml !== undefined && !freeHtml.includes("Payment Options"));
 emails.length = 0;

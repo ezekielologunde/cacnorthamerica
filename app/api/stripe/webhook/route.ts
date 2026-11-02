@@ -9,7 +9,7 @@ import { SITE_URL } from "@/lib/site";
 import { splitCheckoutAmount, isProcessingFeeLine } from "@/lib/processingFee";
 import { conventionYears } from "@/lib/conventions";
 import { youthSheetName, youthSheetRows } from "@/lib/youthRegistration";
-import { checkinCodesFor } from "@/lib/checkinCode";
+import { checkinCodesFor, checkinCodeSheetCell } from "@/lib/checkinCode";
 
 // checkout.session.completed also fires for delayed methods (ACH, etc.)
 // before the money has moved; only these statuses mean the checkout is
@@ -208,8 +208,9 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
         "Total": totalDollars,
         ...feeColumns,
         "Stripe Session": sessionId,
-        // In "Registrants" order; blank in the no-summary fallback (no ref).
-        "Check-in Code": summary ? checkinCodesFor(summary).join("; ") : "",
+        // "Name: CODE" pairs in "Registrants" order; blank in the no-summary
+        // fallback (no ref).
+        "Check-in Code": summary ? checkinCodeSheetCell(summary) : "",
       }));
 
       // Stripe's own customer_details email is more authoritative than

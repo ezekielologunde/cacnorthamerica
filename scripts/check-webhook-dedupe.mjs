@@ -235,17 +235,22 @@ check("youth: the first row carries the registration's Processing Fee and Amount
   youthSessionRows.filter((r) => r !== ada).every((r) => r["Processing Fee"] === "" && r["Amount Charged"] === ""));
 
 // Check-in codes (lib/checkinCode.ts): youth rows carry each person's code
-// as the last column, the adult row carries every code in Registrants
-// order, and the paid confirmation email shows them.
-const { checkinCodeFor } = await import("../lib/checkinCode.ts");
+// as the last column, the adult row pairs every code with its person's name
+// in Registrants order, and the paid confirmation email shows each code in
+// its person's own cell.
+const { checkinCodesFor } = await import("../lib/checkinCode.ts");
 const lastColumn = (row) => Object.keys(row ?? {}).filter((k) => k !== "formName" && k !== "secret").at(-1);
-const youthCodes = [0, 1, 2].map((i) => checkinCodeFor("ref-youth", 2027, i));
+// The person's name, then directly their own "Check-in code: <code>" line.
+const codeBesideName = (html, name, code) =>
+  new RegExp(`>${name}<div[^>]*>Check-in code: <span[^>]*>${code}</span>`).test(html ?? "");
+const youthCodes = checkinCodesFor({ ref: "ref-youth", year: 2027, registrants: [{}, {}, {}] });
 const youthByName = (n) => youthRows.find((r) => r["Stripe Session"] === "cs_test_youth" && r.Name === n);
 check("youth (paid): each row carries that person's check-in code as the last column",
   ["Ada Young", "Ben Kid", "Cy Teen"].every((n, i) => youthByName(n)?.["Check-in Code"] === youthCodes[i] && lastColumn(youthByName(n)) === "Check-in Code") &&
   new Set(youthCodes).size === 3);
 const youthEmail = emailBodies.find((e) => e.html?.includes("Ada Young"));
-check("youth (paid): the confirmation email shows every person's code", youthCodes.every((c) => youthEmail?.html.includes(`>${c}</span>`)));
+check("youth (paid): the confirmation email shows every person's code next to their name",
+  ["Ada Young", "Ben Kid", "Cy Teen"].every((n, i) => codeBesideName(youthEmail?.html, n, youthCodes[i])));
 
 const adultSummary = {
   ref: "ref-adult", year: 2027, registrationType: "group", churchName: "CAC Example", contactName: "Adult One",
@@ -258,12 +263,14 @@ sessions.cs_test_adult = {
 };
 const adultRes = await deliver("cs_test_adult");
 const adultRow = allRows.find((r) => r["Stripe Session"] === "cs_test_adult");
-const adultCodes = [0, 1].map((i) => checkinCodeFor("ref-adult", 2027, i));
-check("adult (paid): the row lists every registrant's code in Registrants order, as the last column",
+const adultCodes = checkinCodesFor(adultSummary);
+check("adult (paid): the row pairs every registrant's code with their name in Registrants order, as the last column after the fee columns",
   adultRes.status === 200 && adultRow?.Registrants === "Adult One (adult); Adult Two (adult)" &&
-  adultRow["Check-in Code"] === adultCodes.join("; ") && lastColumn(adultRow) === "Check-in Code" && adultCodes[0] !== adultCodes[1]);
+  adultRow["Check-in Code"] === `Adult One: ${adultCodes[0]}; Adult Two: ${adultCodes[1]}` && lastColumn(adultRow) === "Check-in Code" &&
+  "Processing Fee" in adultRow && "Amount Charged" in adultRow && adultCodes[0] !== adultCodes[1]);
 const adultEmail = emailBodies.find((e) => e.html?.includes("Adult Two"));
-check("adult (paid): the confirmation email shows each person's code", adultCodes.every((c) => adultEmail?.html.includes(`>${c}</span>`)));
+check("adult (paid): the confirmation email shows each person's code next to their name",
+  ["Adult One", "Adult Two"].every((n, i) => codeBesideName(adultEmail?.html, n, adultCodes[i])));
 
 process.stdout.write(failures ? `\n${failures} check(s) FAILED\n` : "\nAll checks passed\n");
 process.exit(failures ? 1 : 0);
