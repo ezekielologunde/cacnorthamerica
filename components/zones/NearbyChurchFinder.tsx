@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { LocateFixed, MapPin, Navigation, Phone, Mail, Loader2 } from "lucide-react";
 import { MEMBER_CHURCHES, distanceMiles } from "@/lib/churches";
 import type { Leader } from "@/lib/leaders";
@@ -11,6 +11,27 @@ const RESULT_COUNT = 6;
 export function NearbyChurchFinder({ leaders }: { leaders: Leader[] }) {
   const [status, setStatus] = useState<Status>("idle");
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+  // "approx" = estimated from the visitor's network (no permission needed);
+  // "precise" = the browser's geolocation after they allowed it.
+  const [source, setSource] = useState<"approx" | "precise" | null>(null);
+  const [place, setPlace] = useState("");
+
+  // Show nearby churches straight away from an approximate location, so the
+  // finder works even if the visitor never grants (or can't grant) location.
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/approx-location")
+      .then((r) => (r.ok ? r.json() : {}))
+      .then((d: { lat?: number; lng?: number; city?: string; region?: string }) => {
+        if (cancelled || typeof d.lat !== "number" || typeof d.lng !== "number") return;
+        setCoords((prev) => prev ?? { lat: d.lat as number, lng: d.lng as number });
+        setSource((prev) => prev ?? "approx");
+        setPlace([d.city, d.region].filter(Boolean).join(", "));
+        setStatus((prev) => (prev === "idle" ? "done" : prev));
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
 
   const leaderByZone = useMemo(() => {
     const map = new Map<string, Leader>();
@@ -35,9 +56,12 @@ export function NearbyChurchFinder({ leaders }: { leaders: Leader[] }) {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        setSource("precise");
         setStatus("done");
       },
       (err) => {
+        // Results render whenever coords exist, so a refusal never hides an
+        // approximate lookup, whichever request finishes first.
         setStatus(err.code === err.PERMISSION_DENIED ? "denied" : "error");
       },
       { enableHighAccuracy: false, timeout: 10000, maximumAge: 5 * 60 * 1000 }
@@ -61,7 +85,7 @@ export function NearbyChurchFinder({ leaders }: { leaders: Leader[] }) {
           <div style={{ maxWidth: 480 }}>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--gold)" }}>Find a Church Near You</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3vw,32px)", letterSpacing: "-.5px", color: "#fff", margin: "10px 0 0", lineHeight: 1.15 }}>
-              Share your location — we'll show the closest member churches.
+              Find the closest member churches — we'll estimate your area, or use your exact location.
             </h2>
             <p style={{ fontSize: 14.5, color: "rgba(245,246,250,.68)", margin: "10px 0 0", lineHeight: 1.55 }}>
               Only churches with a verified, sourced address are included — not every zone has one yet.
@@ -94,7 +118,7 @@ export function NearbyChurchFinder({ leaders }: { leaders: Leader[] }) {
             ) : (
               <LocateFixed size={17} aria-hidden />
             )}
-            {status === "locating" ? "Locating…" : "Use my location"}
+            {status === "locating" ? "Locating…" : source === "approx" ? "Use my exact location" : "Use my location"}
           </button>
         </div>
 
@@ -109,7 +133,7 @@ export function NearbyChurchFinder({ leaders }: { leaders: Leader[] }) {
           </p>
         )}
 
-        {status === "done" && (
+        {coords && status !== "locating" && (
           <div style={{ marginTop: 28 }}>
             <p role="status" style={{
               position: "absolute", width: 1, height: 1, padding: 0, margin: -1,
@@ -117,6 +141,11 @@ export function NearbyChurchFinder({ leaders }: { leaders: Leader[] }) {
             }}>
               {results.length === 0 ? "No churches found." : `${results.length} church${results.length === 1 ? "" : "es"} found near you.`}
             </p>
+            {source === "approx" && (
+              <p style={{ fontSize: 13.5, color: "rgba(245,246,250,.65)", marginBottom: 16, lineHeight: 1.5 }}>
+                {place ? `Showing churches near ${place}` : "Showing churches near you"} — estimated from your network, so it may be off. Use &ldquo;Use my exact location&rdquo; for a precise result, or browse the full directory below.
+              </p>
+            )}
             {results.length > 0 && results[0].miles > 150 && (
               <p style={{ fontSize: 13.5, color: "rgba(245,246,250,.65)", marginBottom: 16, lineHeight: 1.5 }}>
                 Coverage is still growing — the closest verified church we have is {Math.round(results[0].miles)} miles away. Browse the full directory below in case your zone's Superintendent knows of a closer assembly not yet listed here.
