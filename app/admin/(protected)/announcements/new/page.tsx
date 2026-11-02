@@ -1,7 +1,10 @@
 ﻿import Link from "next/link";
+import { requireAdmin } from "@/lib/supabase/require-admin";
 import AnnouncementForm from "@/components/admin/AnnouncementForm";
 
-export default function NewAnnouncementPage() {
+export default async function NewAnnouncementPage() {
+  await requireAdmin();
+
   return (
     <div>
       <div style={{ marginBottom: 28 }}>

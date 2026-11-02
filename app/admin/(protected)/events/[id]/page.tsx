@@ -1,6 +1,6 @@
 ﻿import { notFound } from "next/navigation";
 import Link from "next/link";
-import { createServiceClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/supabase/require-admin";
 import EventForm from "@/components/admin/EventForm";
 
 type EventRow = {
@@ -15,8 +15,8 @@ type EventRow = {
 };
 
 export default async function EditEventPage({ params }: { params: Promise<{ id: string }> }) {
+  const { supabase } = await requireAdmin();
   const { id } = await params;
-  const supabase = createServiceClient();
   const result = await supabase
     .from("events")
     .select("id, title, description, event_date, end_date, location, event_url, published")

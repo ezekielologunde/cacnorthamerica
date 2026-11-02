@@ -1,6 +1,7 @@
 import { getStripeClient } from "@/lib/stripe";
 import { getAllSheets, type AllSheets } from "@/lib/sheetsRead";
 import type Stripe from "stripe";
+import { requireAdmin } from "@/lib/supabase/require-admin";
 
 export const dynamic = "force-dynamic";
 
@@ -145,6 +146,8 @@ function SheetTable({ name, rows }: { name: string; rows: AllSheets[string] }) {
 }
 
 export default async function OperationsPage() {
+  await requireAdmin();
+
   const [{ sessions, error: stripeError }, sheets] = await Promise.all([
     getRecentStripeSessions(),
     getAllSheets(),

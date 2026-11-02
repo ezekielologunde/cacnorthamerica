@@ -1,7 +1,10 @@
 ﻿import Link from "next/link";
+import { requireAdmin } from "@/lib/supabase/require-admin";
 import EventForm from "@/components/admin/EventForm";
 
-export default function NewEventPage() {
+export default async function NewEventPage() {
+  await requireAdmin();
+
   return (
     <div>
       <div style={{ marginBottom: 28 }}>

@@ -1,9 +1,9 @@
-﻿import { createServiceClient } from "@/lib/supabase/server";
+﻿import { requireAdmin } from "@/lib/supabase/require-admin";
 import Link from "next/link";
 import { addImage, removeImage, toggleImagePublished } from "./actions";
 
 export default async function GalleryAdminPage() {
-  const supabase = createServiceClient();
+  const { supabase } = await requireAdmin();
   const { data: images } = await supabase
     .from("gallery_images")
     .select("id, cloudinary_public_id, caption, alt_text, category, sort_order, published, created_at")

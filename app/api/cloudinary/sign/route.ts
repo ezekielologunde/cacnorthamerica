@@ -1,5 +1,6 @@
 import { createHash } from "crypto";
 import { createClient, createServiceClient } from "@/lib/supabase/server";
+import { validateParamsToSign } from "./validate";
 
 export async function POST(req: Request) {
   const supabase = await createClient();
@@ -18,7 +19,17 @@ export async function POST(req: Request) {
     return Response.json({ error: "Cloudinary not configured" }, { status: 503 });
   }
 
-  const paramsToSign: Record<string, string | number> = await req.json();
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return Response.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+
+  // Sign only the whitelisted, fixed-value parameter set (see ./validate.ts).
+  const checked = validateParamsToSign(body, Math.floor(Date.now() / 1000));
+  if (!checked.ok) return Response.json({ error: checked.error }, { status: 400 });
+  const paramsToSign = checked.params;
 
   const sorted = Object.keys(paramsToSign)
     .sort()

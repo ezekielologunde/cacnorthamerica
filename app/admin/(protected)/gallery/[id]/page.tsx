@@ -1,6 +1,6 @@
 ﻿import { notFound } from "next/navigation";
 import Link from "next/link";
-import { createServiceClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/supabase/require-admin";
 import GalleryImageForm from "@/components/admin/GalleryImageForm";
 
 type ImageRow = {
@@ -14,8 +14,8 @@ type ImageRow = {
 };
 
 export default async function EditGalleryImagePage({ params }: { params: Promise<{ id: string }> }) {
+  const { supabase } = await requireAdmin();
   const { id } = await params;
-  const supabase = createServiceClient();
   const { data } = await supabase
     .from("gallery_images")
     .select("id, cloudinary_public_id, caption, alt_text, category, sort_order, published")

@@ -1,13 +1,13 @@
 ﻿import { notFound } from "next/navigation";
 import Link from "next/link";
-import { createServiceClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/supabase/require-admin";
 import PostForm from "@/components/admin/PostForm";
 
 type PostRow = { id: string; title: string; slug: string; excerpt: string | null; body: string; published: boolean; image_url: string | null; image_alt: string | null };
 
 export default async function EditPostPage({ params }: { params: Promise<{ id: string }> }) {
+  const { supabase } = await requireAdmin();
   const { id } = await params;
-  const supabase = createServiceClient();
   const result = await supabase
     .from("blog_posts")
     .select("id, title, slug, excerpt, body, published, image_url, image_alt")

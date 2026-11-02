@@ -85,7 +85,10 @@ export default function PostForm({ post }: { post?: Post }) {
           callback(await res.json());
         },
         multiple: false,
+        // Must match the fixed folder/formats the sign route enforces.
         folder: "blog",
+        resourceType: "image",
+        clientAllowedFormats: ["jpg", "jpeg", "png", "webp", "gif", "heic", "avif"],
         sources: ["local", "url", "camera"],
         cropping: false,
       },
