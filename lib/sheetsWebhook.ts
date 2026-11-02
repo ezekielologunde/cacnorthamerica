@@ -15,10 +15,36 @@ export function logToSheet(formName: string, fields: Record<string, string>): vo
   const hook = process.env.SHEETS_WEBHOOK;
   if (!hook) return;
 
+  fetch(hook, sheetRequest(formName, fields)).catch((e) => console.error(`[${formName}] Sheets webhook failed:`, e));
+}
+
+/** Awaited variant of logToSheet for a caller that must know whether the row
+ *  landed (the Stripe webhook returns 500 so Stripe retries). Resolves true
+ *  when the webhook accepted the row, or when SHEETS_WEBHOOK isn't configured
+ *  (nothing to write); false on a network error or a non-2xx response.
+ *  Never throws. */
+export async function logToSheetChecked(formName: string, fields: Record<string, string>): Promise<boolean> {
+  const hook = process.env.SHEETS_WEBHOOK;
+  if (!hook) return true;
+
+  try {
+    const res = await fetch(hook, sheetRequest(formName, fields));
+    if (!res.ok) {
+      console.error(`[${formName}] Sheets webhook returned ${res.status}`);
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.error(`[${formName}] Sheets webhook failed:`, e);
+    return false;
+  }
+}
+
+function sheetRequest(formName: string, fields: Record<string, string>): RequestInit {
   const secret = process.env.SHEETS_WEBHOOK_SECRET;
-  fetch(hook, {
+  return {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ formName, ...(secret ? { secret } : {}), ...fields }),
-  }).catch((e) => console.error(`[${formName}] Sheets webhook failed:`, e));
+  };
 }

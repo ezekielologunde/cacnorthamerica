@@ -33,10 +33,12 @@ function buildHtml(input: GivingConfirmationInput): string {
 
 /** Never throws -- the payment already succeeded on Stripe's side, so a
  *  failed confirmation email shouldn't surface as an error to the webhook
- *  caller (same contract as lib/registrationEmail.ts / lib/storeOrderEmail.ts). */
-export async function sendGivingConfirmationEmail(input: GivingConfirmationInput): Promise<void> {
+ *  caller (same contract as lib/registrationEmail.ts / lib/storeOrderEmail.ts).
+ *  Resolves false when the send failed (true when sent or skipped), so the
+ *  Stripe webhook can return 500 and be retried. */
+export async function sendGivingConfirmationEmail(input: GivingConfirmationInput): Promise<boolean> {
   const key = process.env.RESEND_API_KEY;
-  if (!key || !input.contactEmail) return;
+  if (!key || !input.contactEmail) return true;
 
   try {
     const resend = new Resend(key);
@@ -48,8 +50,11 @@ export async function sendGivingConfirmationEmail(input: GivingConfirmationInput
     }, input.idempotencyKey ? { idempotencyKey: input.idempotencyKey } : undefined);
     if (error) {
       console.error("[giving email] Resend error:", error);
+      return false;
     }
+    return true;
   } catch (err) {
     console.error("[giving email] send failed:", err);
+    return false;
   }
 }

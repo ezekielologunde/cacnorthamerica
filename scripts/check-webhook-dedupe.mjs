@@ -1,0 +1,150 @@
+// Dedupe / retry checks for app/api/stripe/webhook/route.ts. No test
+// framework is installed, so this is a plain Node script:
+//
+//   node scripts/check-webhook-dedupe.mjs
+//
+// Drives the real POST handler with a fake Stripe client and a fake fetch
+// standing in for the Sheets webhook and Resend; nothing leaves the process.
+// Exits 1 if any check fails.
+import { registerHooks } from "node:module";
+import { pathToFileURL } from "node:url";
+import { existsSync } from "node:fs";
+import path from "node:path";
+
+const root = path.resolve(import.meta.dirname, "..");
+const FAKE_STRIPE_MODULE = "data:text/javascript,export const getStripeClient = () => globalThis.__fakeStripe;";
+registerHooks({
+  resolve(specifier, context, next) {
+    if (specifier === "@/lib/stripe") return { url: FAKE_STRIPE_MODULE, shortCircuit: true };
+    // next has no "exports" map, so ESM needs the file extension.
+    if (specifier === "next/server") return next("next/server.js", context);
+    let target = null;
+    if (specifier.startsWith("@/")) target = path.join(root, specifier.slice(2));
+    else if (specifier.startsWith(".") && context.parentURL?.startsWith("file:") && !path.extname(specifier)) {
+      target = path.join(path.dirname(new URL(context.parentURL).pathname.replace(/^\/(\w:)/, "$1")), specifier);
+    }
+    if (target && !path.extname(target) && existsSync(`${target}.ts`)) {
+      return next(pathToFileURL(`${target}.ts`).href, context);
+    }
+    return next(specifier, context);
+  },
+});
+
+const SHEETS_URL = "https://sheets.invalid/hook";
+process.env.STRIPE_WEBHOOK_SECRET = "whsec_check_script_only";
+process.env.SHEETS_WEBHOOK = SHEETS_URL;
+process.env.RESEND_API_KEY = "re_check_script_only";
+delete process.env.SHEETS_WEBHOOK_SECRET;
+console.error = () => {}; // the handler logs every simulated failure
+
+// Fake Stripe: signature check just parses the body; retrieve is slow enough
+// that two deliveries started together overlap.
+const sessions = {};
+globalThis.__fakeStripe = {
+  webhooks: { constructEvent: (body) => JSON.parse(body) },
+  checkout: {
+    sessions: {
+      retrieve: async (id) => {
+        await new Promise((r) => setTimeout(r, 30));
+        if (!sessions[id]) throw new Error("No such checkout session");
+        return { line_items: { data: [] }, customer_details: { email: "giver@example.com" }, amount_total: 5000, ...sessions[id] };
+      },
+    },
+  },
+};
+
+// Fake fetch: records accepted sheet rows and sent emails per session, and
+// fails the next N calls of a kind on request.
+const rows = [];
+const emails = [];
+const failNext = { sheet: 0, email: 0 };
+globalThis.fetch = async (url, init = {}) => {
+  url = String(url);
+  if (url === SHEETS_URL) {
+    if (failNext.sheet > 0) { failNext.sheet--; throw new TypeError("fetch failed"); }
+    rows.push(JSON.parse(init.body)["Stripe Session"]);
+    return new Response("ok", { status: 200 });
+  }
+  if (url.startsWith("https://api.resend.com/")) {
+    if (failNext.email > 0) {
+      failNext.email--;
+      return Response.json({ name: "internal_server_error", message: "try later", statusCode: 500 }, { status: 500 });
+    }
+    emails.push(new Headers(init.headers).get("Idempotency-Key"));
+    return Response.json({ id: `email_${emails.length}` });
+  }
+  throw new Error(`unexpected fetch ${url}`);
+};
+
+const { POST } = await import("../app/api/stripe/webhook/route.ts");
+
+async function deliver(sessionId, type = "checkout.session.completed") {
+  const res = await POST(new Request("http://localhost/api/stripe/webhook", {
+    method: "POST",
+    headers: { "stripe-signature": "t=0,v1=fake" },
+    body: JSON.stringify({ type, data: { object: { id: sessionId } } }),
+  }));
+  return { status: res.status, body: await res.json() };
+}
+const giving = (status = "paid") => ({ payment_status: status, metadata: { kind: "giving", campaign_title: "Building Fund", contact_name: "Giver" } });
+const count = (list, sessionId) => list.filter((v) => v === sessionId || v === `checkout-session/${sessionId}`).length;
+
+let failures = 0;
+function check(name, ok) {
+  console.log(`${ok ? "PASS" : "FAIL"}  ${name}`);
+  if (!ok) failures++;
+}
+
+// Finding B: overlapping deliveries (completed + async_payment_succeeded).
+sessions.cs_test_overlap = giving();
+const pair = await Promise.all([
+  deliver("cs_test_overlap", "checkout.session.completed"),
+  deliver("cs_test_overlap", "checkout.session.async_payment_succeeded"),
+]);
+check("two concurrent deliveries write one sheet row", count(rows, "cs_test_overlap") === 1);
+check("two concurrent deliveries send one email", count(emails, "cs_test_overlap") === 1);
+check("both concurrent deliveries get 200, one of them marked duplicate",
+  pair.every((r) => r.status === 200) && pair.filter((r) => r.body.duplicate).length === 1);
+const triple = await Promise.all([1, 2, 3].map(() => deliver("cs_test_overlap")));
+check("a later redelivery burst records nothing more",
+  triple.every((r) => r.status === 200 && r.body.duplicate) && count(rows, "cs_test_overlap") === 1 && count(emails, "cs_test_overlap") === 1);
+
+// Finding A: a failed sheet write releases the session; the retry records it.
+sessions.cs_test_sheetfail = giving();
+failNext.sheet = 1;
+const sheetFail = await deliver("cs_test_sheetfail");
+check("sheet failure returns 500 so Stripe retries", sheetFail.status === 500 && count(rows, "cs_test_sheetfail") === 0);
+const sheetRetry = await deliver("cs_test_sheetfail");
+check("retry after a sheet failure records the row (not a duplicate)",
+  sheetRetry.status === 200 && !sheetRetry.body.duplicate && count(rows, "cs_test_sheetfail") === 1);
+check("retry after a sheet failure does not resend the email", count(emails, "cs_test_sheetfail") === 1);
+
+// Finding A: a failed email releases the session; the retry sends it once
+// without appending a second sheet row.
+sessions.cs_test_emailfail = giving();
+failNext.email = 1;
+const emailFail = await deliver("cs_test_emailfail");
+check("email failure returns 500 so Stripe retries", emailFail.status === 500 && count(emails, "cs_test_emailfail") === 0);
+const emailRetry = await deliver("cs_test_emailfail");
+check("retry after an email failure sends the email",
+  emailRetry.status === 200 && !emailRetry.body.duplicate && count(emails, "cs_test_emailfail") === 1);
+check("retry after an email failure does not write a second row", count(rows, "cs_test_emailfail") === 1);
+
+// A successful event is not recorded twice.
+sessions.cs_test_once = giving();
+const first = await deliver("cs_test_once");
+const again = await deliver("cs_test_once");
+check("a recorded session's redelivery is a 200 duplicate that records nothing",
+  first.status === 200 && again.status === 200 && again.body.duplicate && count(rows, "cs_test_once") === 1 && count(emails, "cs_test_once") === 1);
+
+// A pending delayed payment is released, not marked handled.
+sessions.cs_test_pending = giving("unpaid");
+const pending = await deliver("cs_test_pending");
+sessions.cs_test_pending = giving("paid");
+const settled = await deliver("cs_test_pending", "checkout.session.async_payment_succeeded");
+check("pending payment records nothing; the later settled event records it once",
+  pending.status === 200 && !pending.body.duplicate && settled.status === 200 && !settled.body.duplicate &&
+  count(rows, "cs_test_pending") === 1 && count(emails, "cs_test_pending") === 1);
+
+process.stdout.write(failures ? `\n${failures} check(s) FAILED\n` : "\nAll checks passed\n");
+process.exit(failures ? 1 : 0);
