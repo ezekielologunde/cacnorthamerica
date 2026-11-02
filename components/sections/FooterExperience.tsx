@@ -232,6 +232,7 @@ export function FooterExperience() {
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px 20px' }}>
             <Link href={'/about#tenets'} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{t('ourTenets')}</Link>
             <Link href={'/statement-of-faith'} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{t('statementOfFaith')}</Link>
+            <Link href={'/faq'} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{t('faq')}</Link>
             <Link href={'/leadership/past'} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{t('pastLeaders')}</Link>
             <Link href={'/privacy'} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{t('privacy')}</Link>
             <Link href={'/terms'} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{t('terms')}</Link>

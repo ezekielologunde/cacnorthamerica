@@ -12,7 +12,8 @@ export const SEARCH_INDEX: SearchItem[] = [
   { title: "Who We Are", desc: "Our mission, history, and the tenets of faith", href: "/about", tag: "Page", keywords: "about mission vision history apostolic faith tenets belief" },
   { title: "Leadership", desc: "Meet our Regional Superintendent and Coordinating Council", href: "/leadership", tag: "Page", keywords: "leadership team pastor agbeja adenodi latunde adelani oluwatimilehin coordinating council" },
   { title: "Ministries", desc: "Administration, Christian Education, Evangelism, Youth, Missions, Music, and more", href: "/ministries", tag: "Page", keywords: "ministry department administration evangelism youth missions music welfare good women cacma" },
-  { title: "Gallery", desc: "Photos from across CACNA's member churches and the Annual Convention", href: "/gallery", tag: "Page", keywords: "photos gallery pictures events fellowship moments" },
+  { title: "FAQs", desc: "Common questions about CAC: its origin, beliefs, membership, water baptism, and worship", href: "/faq", tag: "Page", keywords: "faq frequently asked questions origin motto vision mission divine healing babalola founder holy spirit apostolic church secession membership baptism visitors dress wear online services" },
+  { title: "Gallery", desc:"Photos from across CACNA's member churches and the Annual Convention", href: "/gallery", tag: "Page", keywords: "photos gallery pictures events fellowship moments" },
   // Grow
   { title: "Watch Online", desc: "The Annual Convention live, and message replays on YouTube", href: "/online", tag: "Page", keywords: "watch live stream youtube sermon online convention" },
   { title: "Watchwords", desc: "Every annual Watchword since 1989", href: "/watchwords", tag: "Page", keywords: "watchword scripture annual theme archive" },
