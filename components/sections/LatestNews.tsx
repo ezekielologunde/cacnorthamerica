@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Reveal } from "@/components/ui/Reveal";
-import { POSTS, badgeTextColor, type BlogPost, type PostCategory } from "@/lib/blog";
+import { POSTS, isArchivePost, badgeTextColor, type BlogPost, type PostCategory } from "@/lib/blog";
 
 const CATEGORIES: PostCategory[] = ["Event Spotlight", "Ministry Update", "Devotional", "Reflection"];
 
@@ -60,7 +60,7 @@ function NewsCard({ p, delay, featured }: { p: BlogPost; delay: number; featured
 }
 
 export function LatestNews() {
-  const posts = pickDiverse(POSTS, 6);
+  const posts = pickDiverse(POSTS.filter((p) => !isArchivePost(p)), 6);
   const [featured, rest] = [posts.slice(0, 2), posts.slice(2)];
 
   return (

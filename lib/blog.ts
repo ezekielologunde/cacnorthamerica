@@ -642,6 +642,15 @@ export const POSTS: BlogPost[] = RAW_POSTS.map((p) => ({
   accent: CATEGORY_ACCENT[p.category],
 }));
 
+/** Posts dated before this are the old newsletter archive (2012-2015 imports).
+ *  They live on /blog under "From the Archives" and never appear in "latest"
+ *  strips like the homepage Latest News. */
+export const ARCHIVE_BEFORE = "2020-01-01";
+
+export function isArchivePost(p: Pick<BlogPost, "dateIso">): boolean {
+  return p.dateIso < ARCHIVE_BEFORE;
+}
+
 export function getPost(slug: string): BlogPost | undefined {
   return POSTS.find((p) => p.slug === slug);
 }
