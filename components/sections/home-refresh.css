@@ -1,0 +1,23 @@
+/* Home page refresh: hover/focus states for the convention registration
+   rows (components/sections/ConventionRegister.tsx). Inline styles set the
+   resting look; these rules only add interaction states. */
+
+.hm-reg-row:focus-visible,
+.hm-text-link:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.hm-text-link { text-underline-offset: 4px; }
+.hm-text-link:hover { text-decoration: underline !important; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .hm-reg-row { transition: transform .25s var(--ease-out-quint), box-shadow .25s var(--ease-out-quint); }
+  .hm-reg-arrow { transition: transform .25s var(--ease-out-quint); }
+  .hm-reg-row:hover .hm-reg-arrow { transform: translateX(4px); }
+}
+
+@media (max-width: 640px) {
+  .hm-conv-photo { aspect-ratio: 16 / 10 !important; border-radius: 22px !important; }
+  .hm-reg-row { padding: 16px 14px 16px 18px !important; }
+}
