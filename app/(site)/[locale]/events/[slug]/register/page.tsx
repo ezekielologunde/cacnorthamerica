@@ -136,6 +136,12 @@ export default async function RegisterPage({ params }: { params: Promise<{ local
                     See all rates
                   </a>
                 </div>
+                <p style={{ margin: "18px 0 0", fontSize: 15.5, lineHeight: 1.5, color: "rgba(245,246,250,.82)" }}>
+                  {t("youthCalloutLead")}{" "}
+                  <Link href={`/events/cacna-${cy.year}/register/youth`} style={{ color: "var(--gold)", fontWeight: 800, display: "inline-block", padding: "10px 0" }}>
+                    {t("youthCalloutLink")}
+                  </Link>
+                </p>
               </Reveal>
             )}
           </div>
@@ -164,7 +170,8 @@ export default async function RegisterPage({ params }: { params: Promise<{ local
                   )}
                   <p style={{ margin: 0, fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.5 }}>
                     {priceMap.young_adult !== undefined && <>Young adults ${(priceMap.young_adult / 100).toFixed(0)} · </>}
-                    Children free
+                    Children free · Under 30s register on the{" "}
+                    <Link href={`/events/cacna-${cy.year}/register/youth`} style={{ color: "var(--red)", fontWeight: 700 }}>Youth &amp; Child form</Link>
                   </p>
                 </div>
               </div>
@@ -177,7 +184,13 @@ export default async function RegisterPage({ params }: { params: Promise<{ local
       {isOpen && (
         <section id="registration-fees" style={{ background: "var(--cream)", padding: "clamp(48px,6vw,72px) clamp(20px,5vw,64px) 0", scrollMarginTop: 72 }}>
           <div style={{ maxWidth: 900, margin: "0 auto" }}>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,30px)", color: "var(--ink)", margin: "0 0 20px" }}>{t("pricingHeading")}</h2>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,30px)", color: "var(--ink)", margin: "0 0 8px" }}>{t("pricingHeading")}</h2>
+            <p style={{ margin: "0 0 20px", fontSize: 15, lineHeight: 1.5, color: "var(--ink-soft)" }}>
+              {t("pricingYouthNote")}{" "}
+              <Link href={`/events/cacna-${cy.year}/register/youth`} style={{ color: "var(--red)", fontWeight: 700, display: "inline-block", padding: "10px 0" }}>
+                {t("youthCalloutLink")}
+              </Link>
+            </p>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 16 }}>
               {pricingLadder.map((cat) => (
                 <div key={cat.category} style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 18, padding: "20px 22px" }}>
