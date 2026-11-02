@@ -13,6 +13,8 @@
 .min-card { position: relative; }
 .min-card-link { min-height: 44px; display: inline-flex; align-items: center; }
 .min-card-link::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+/* A transform on the link would make it the containing block for ::after and shrink the card-wide hit area while pressed. */
+.min-card .min-card-link:active { transform: none; }
 
 @media (max-width: 640px) {
   .min-hero { padding: 112px 20px 44px !important; }
