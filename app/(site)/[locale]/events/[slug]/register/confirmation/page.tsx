@@ -8,7 +8,7 @@ import { getStripeClient } from "@/lib/stripe";
 import { SITE_URL } from "@/lib/site";
 import { renderQrCodeSvg } from "@/lib/qr";
 import { decodeSummary } from "@/lib/checkoutSummary";
-import { paymentOptions } from "@/lib/registrationInfo";
+import { PaymentOptions } from "@/components/register/PaymentOptions";
 import { conventionYears, type ConventionYear, type RegistrantCategory } from "@/lib/conventions";
 import { setRequestLocale } from "next-intl/server";
 
@@ -125,14 +125,7 @@ export default async function RegisterConfirmationPage({
           <h2 style={{ fontSize: 12, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)", margin: "0 0 14px" }}>
             Payment Options
           </h2>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {paymentOptions.map((option) => (
-              <div key={option.name} style={{ background: "rgba(245,246,250,.06)", border: "1px solid rgba(245,246,250,.14)", borderRadius: 14, padding: "12px 16px" }}>
-                <div style={{ fontWeight: 700, fontSize: 14, color: "#fff", marginBottom: 3 }}>{option.name}</div>
-                <div style={{ fontSize: 13, color: "rgba(245,246,250,.6)", lineHeight: 1.5 }}>{option.detail}</div>
-              </div>
-            ))}
-          </div>
+          <PaymentOptions variant="dark" />
         </div>
 
         <div style={{ marginTop: 32 }}>
