@@ -1,19 +1,17 @@
 import { googleReviews, REVIEW_AVERAGE, REVIEW_COUNT } from "@/lib/reviews";
 import { conventionYears } from "@/lib/conventions";
 
-// Canonical host. cacna.cacsalvationcenter.org is a subdomain of the sibling
-// church site, so the whole CAC family shares one domain for SEO. It was
-// attached to the cacnorthamerica Vercel project in September 2026 (before
-// that the default had to fall back to the project's *.vercel.app domain,
-// see PR #31). Three places must agree on this value, or canonicals,
-// hreflang and the sitemap point Google at the wrong host:
+// Canonical host: cacnorthamerica.com (decided 2026-11-01, replacing the
+// temporary cacna.cacsalvationcenter.org subdomain). Do not deploy this until
+// cacnorthamerica.com's DNS points at the Vercel project, or canonicals and the
+// sitemap would send Google to the old WordPress site. Three places must agree
+// on this value:
 //   1. this default,
 //   2. NEXT_PUBLIC_SITE_URL in the Vercel project (it overrides this default),
 //   3. Supabase Auth -> URL Configuration -> Redirect URLs (password-reset
 //      emails link to SITE_URL; a host missing from that allow-list makes
 //      the link silently go nowhere).
-// cacnorthamerica.com still serves an old, unrelated WordPress build.
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cacna.cacsalvationcenter.org";
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cacnorthamerica.com";
 
 export const SITE = {
   name: "Christ Apostolic Church North America",
