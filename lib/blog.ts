@@ -25,6 +25,8 @@ export interface BlogPost {
    *  headshot) instead renders inline alongside the opening paragraph,
    *  since forcing a tall portrait into a short wide band crops the face. */
   image?: { url: string; alt: string; orientation?: "landscape" | "portrait" };
+  /** Extra real photos shown under the body (archive posts with several pictures). */
+  gallery?: { url: string; alt: string }[];
   body: string[];
 }
 
@@ -477,6 +479,143 @@ const RAW_POSTS: Omit<BlogPost, "categoryColor" | "accent">[] = [
       "The study leaves us with questions worth carrying past this week. _How can you embrace purity, and why does it matter to you personally?_ (1 John 3:3) _What would restitution look like in the relationship you've been avoiding_ — the apology not yet made, the debt not yet repaid? (Hebrews 12:14; vv. 6–7). Numbers 5 will not let purity stay an abstract idea. It insists on a person, a debt, a conversation you have been putting off.",
       "Paul's words to the Corinthians are the New Testament echo of this whole chapter: **your body is the temple of the Holy Spirit; you are not your own; you were bought with a price** (1 Corinthians 6:19–20). Purity is not a rule kept for its own sake — it is the natural posture of someone who knows they belong to Someone else. And when we fail, the way back is never hiding. It is confession, restitution, and a return to the God who is faithful to forgive (1 Thessalonians 4:7; 1 Corinthians 4:2). **Let your yes be yes and your no be no — and where you have wronged someone, go and make it right.**",
     ],
+  },
+  // Imported from the CACNA newsletter blog (cacnewsletter.blogspot.com, May 6, 2015).
+  {
+    slug: "cac-village-ready-for-use-2015",
+    title: "CAC Village is ready for use.",
+    excerpt: "We give glory and honor to the Almighty God for the purchase of C.A.C. Village. The property is for all of us in C.A.C. North America and available for any Church for…",
+    date: "May 6, 2015",
+    dateIso: "2015-05-06",
+    category: "Ministry Update",
+    readTime: "1 min read",
+    image: {
+      url: "/images/blog/archive/village-ready-2015.jpg",
+      alt: "Tables set with red napkins and glassware for a banquet"
+    },
+    body: [
+      "We give glory and honor to the Almighty God for the purchase of C.A.C. Village. The property is for all of us in C.A.C. North America and available for any Church for important events.",
+      "The CAC Village is ready to be used for the following:",
+      "Center for our Convention/Conference",
+      "Center for Youth Camp for C.A.C. NA, and All",
+      "Prayer Mountain For ALL",
+      "Center For Retreat for Ministers, CACMA, Good Women, Youth etc.",
+      "Center For Resort – For Vacation, Holiday, Family Reunion etc.",
+      "Church Workers Refresher Programs etc.",
+      "For Multipurpose use like Inside or Outside Weddings, Re-Union, etc.",
+      "For the use of any Christian Organization or Group.",
+      "And many more.",
+      "We need financial support from everyone through donations to be able to maintain and keep the place up to the standard. For the details of the usage of the place, donations, and more information, visit our website, www.cacnorthamerica.net"
+    ]
+  },
+  // Imported from the CACNA newsletter blog (cacnewsletter.blogspot.com, May 6, 2015).
+  {
+    slug: "cacna-2015-convention-faithfulness-of-god",
+    title: "CACNA 2015 Convention — The Faithfulness of God.",
+    excerpt: "Preparation for the 2015 Convention is coming from Monday, July 6, to Friday, July 10, 2015. The Theme for this year Convention is:",
+    date: "May 6, 2015",
+    dateIso: "2015-05-06",
+    category: "Event Spotlight",
+    readTime: "1 min read",
+    image: {
+      url: "/images/blog/archive/convention-2015-ad.png",
+      alt: "Flyer for the 2015 CAC North America Convention at CAC Village, July 6–10, theme The Faithfulness of God"
+    },
+    body: [
+      "Preparation for the 2015 Convention is coming from Monday, July 6, to Friday, July 10, 2015. The Theme for this year Convention is:",
+      "THE FAITHFULNESS OF GOD.",
+      "The Schedule for the event is as followed:",
+      "Monday, July 6, Arrival Day. Evening Revival. By General Evangelist. Pastor S.K. Abiara - 7 pm to 9 pm",
+      "Tuesday, July 7, Ministers Conference. 9 am to 6 pm. Evening Revival. By General Evangelist. Pastor S.K. Abiara - 7 pm to 9 pm",
+      "Wednesday, July 8, CACMA, GOOD WOMEN, MINISTERS WIVES & YOUTH CONFERENCES. 9 am to 6 pm. Evening Revival. By General Evangelist. Pastor S.K. Abiara - 7 pm to 9 pm",
+      "Thursday, July 9, CONVENTION DAY. 9 am to 6 pm. Evening Revival. By General Evangelist. Pastor S.K. Abiara - 7 pm to 9 pm",
+      "Friday, July 10, Ordination of Pastors & Closing of the program.",
+      "VENUE:",
+      "C.A.C. VILLAGE",
+      "14051 Stahley Road,",
+      "Blue Ridge Summit, PA 17214"
+    ]
+  },
+  // Imported from the CACNA newsletter blog (cacnewsletter.blogspot.com, February 20, 2013).
+  {
+    slug: "cacna-chairmen-re-invigorated-2013",
+    title: "CAC North America chairmen re-invigorated.",
+    excerpt: "After four days of retreat at Atlanta Georgia,by the Chairmen of Christ Apostolic Church North America, where Church Management Principles and Leadership Techniques…",
+    date: "February 20, 2013",
+    dateIso: "2013-02-20",
+    category: "Ministry Update",
+    readTime: "2 min read",
+    image: {
+      url: "/images/blog/archive/chairmen-retreat-2013.gif",
+      alt: "Chairmen seated at tables during the retreat in Atlanta, Georgia"
+    },
+    gallery: [
+      {
+        url: "/images/blog/archive/bible-institute-2013.gif",
+        alt: "Banner graphic for the CAC Bible Institute, U.S.A."
+      }
+    ],
+    body: [
+      "After four days of retreat at Atlanta Georgia,by the Chairmen of Christ Apostolic Church North America, where Church Management Principles and Leadership Techniques were properly treated,a great hope is in sight for a great development in the Church.",
+      "The Coordinator,Pastor Dr. Joshua Owoeye demonstrated a true leadership quality that was appreciated by all the Chairmen present.This is a follow up to a similar program that was held earlier in September, 2012 at Chicago.IL.''THE CHURCH IS MARCHING ON.''",
+      "ANOTHER NATIONAL COUNCIL MEETING OF C.A.C.N.A.",
+      "CAME UP SUCCESSFULLY.",
+      "As the Chairmen were concluding their retreat,other members of this Council comprising of selected District Superintendents,Elders representatives and National Good Women Leader sat to deliberate on the progress of the Church in North America.",
+      "Reports of last year activities were rendered,discussed and decisions were taken as to means of moving the Church forward in North America.",
+      "Highlights of logistics of finally taking over the CAC Village very soon were considered and approved.Therefore, high expectations of using this site",
+      "for programs of the Church this year, beginning with Good Women Association Convention,from April 10th -13th,2013 is D.V.possible.",
+      "Every one is implored to pay his/her contributions-$1,000.00, $500.00, $250.00 now and have your receipts,letters and Golden buttons,etc.",
+      "C.A.C. BIBLE INSTITUTE - U.S.A.TAKES OFF.",
+      "Another milestone is the take off of the Bible Institute,C.A.C North America.Mondays from 8 pm -10 pm Eastern Time, is the forum for the un-ordained Ministers, while Thursday 8 pm-10 pm is that of ordained Ministers.",
+      "It will be concluded in July with practicals and graduation ceremonies. The Provost,Pastor Dr.Timothy Agbeja assisted by able men of God have been giving impressive teachings after the coordinator- Pastor Dr. Joshua Owoeye declared the program open.",
+      "''UNPRECEDENTED'' - A MARATHON WEEK OF SPIRITUAL RELAY RACE",
+      "''Behold,how good and pleasant it is for brethren to dwell together in unity''(Psalm 133 Vs.1).",
+      "This came alive at the just concluded ''MARATHON 7 DAYS OF PRAISE,PRAYER AND FASTING''-TELECONFERENCE, organized by Christ Apostolic Church North America Good Women Association from Sunday January 27th to Saturday February 2nd,2013.",
+      "Amazingly,what was supposed to be a program of a small group of women suddenly exploded and became worldwide and involving not only women,but also men including non CAC Members and Muslims.It was followed by a thanksgiving service in various Assemblies all over North America.The Good Women Leader,CAC worldwide - Deaconess Adebule congratulated her comrades and encouraged them to move forward as such prayers can not but bring miraculous results. The President of the Church- Pastor A.O. Akinosun blessed the participants in the program."
+    ]
+  },
+  // Imported from the CACNA newsletter blog (cacnewsletter.blogspot.com, October 30, 2012).
+  {
+    slug: "first-sunday-school-rally-orlando-2012",
+    title: "First Sunday School Rally in CAC North America, Orlando, Florida.",
+    excerpt: "Christ Apostolic Church (Worldwide) is a Pentecostal church which is known for passionate evangelism, divine healing and ceaseless prophetic prayer among others. It…",
+    date: "October 30, 2012",
+    dateIso: "2012-10-30",
+    category: "Event Spotlight",
+    readTime: "4 min read",
+    image: {
+      url: "/images/blog/archive/sunday-school-rally-2012-1.jpg",
+      alt: "Delegates seated at tables during a session of the Sunday School Rally"
+    },
+    gallery: [
+      {
+        url: "/images/blog/archive/sunday-school-rally-2012-2.jpg",
+        alt: "Delegates at the Sunday School Rally in Orlando"
+      },
+      {
+        url: "/images/blog/archive/sunday-school-rally-2012-3.jpg",
+        alt: "Attendees of the Sunday School Rally"
+      },
+      {
+        url: "/images/blog/archive/sunday-school-rally-2012-4.jpg",
+        alt: "Group photo of delegates at the Sunday School Rally in Orlando, Florida"
+      }
+    ],
+    body: [
+      "Christ Apostolic Church (Worldwide) is a Pentecostal church which is known for passionate evangelism, divine healing and ceaseless prophetic prayer among others. It was therefore not a surprise when the CAC North America organized it first Sunday school Rally at Orlando, Florida on Oct. 4th- 6th, 2012.",
+      "The Theme of the Rally was - Wanted: Sacrificial, Sincere and Sanctified Vessels The National coordinator, Pastor Dr. Joshua O. Owoeye PhD declared the conference open. In his opening remark, he declared that: \"This is truly the doing of the Lord-for us members of Christ Apostolic Church North America, to see the inauguration and the First North America Conference Sunday School Rally. We have come this far by faith and by the grace of God. We will keep moving ahead in the Lord and doing exploits in God despite what the enemy may bring. As a church and part of the body of Christ, we are victorious and every of our endeavor shall succeed gloriously in Jesus Name. Amen.\" The Chairman of the Education Department, CAC North America, Pastor Dr. Gabriel Dada Th.D whose selfless service with the committee members of the Education department made the conference a reality, remarked in his Welcome Address that:",
+      "\"Firstly, God has His work (program) here with us; Secondly, He is looking for vessels to serve Him; Thirdly, He has standard and qualities for the work; and fourthly’ the examples of Jesus. God has always chosen people. He has always thrown out His gracious invitation for people to respond (II Chro. 6:9; Isa. 6:8).”",
+      "The president of the CAC (Worldwide) Pastor Abraham O. Akinosun’s sent in his goodwill address which was read by Pastor J.A. Olawale Secretary, CAC North America. The President declared that:",
+      "\"God has good, pleasing and perfect plans for His children. He wants us to be transformed people with renewed minds, living to honor and obey Him. Because He wants only what is best for us, and because He gave His Son to make our new lives possible, we should joyfully give ourselves as living sacrifices for His service.\" The opening lecture was given by Pastor Dr. Francis Iselowo Th.D who spoke on “Jesus Came, Lived and Died For Mankind.” He emphasized that:",
+      "Our lives must be rooted in Jesus Christ whose mission was to make Himself the sacrificial Lamb of God that takes away our sins. If you are a Christian and you are not making any sacrifice for His kingdom sake, check your stand in the Lord. Jesus called us to come to him, live for Him and die for Him if possible.",
+      "Notable speakers include Pastor Felix Adunyame a Ghanian whose lecture on The Quantity And Quality Of Jesus Prayer resonated with the audience. Pastor Oyegoke spoke on The Compassionate and Passionate Jesus and Dr. Duke Maduagwu spoke on Christ and Crisis Management. Pastor Arnold Ogunmoyero gave the fourth lecture on Jesus and The Children.",
+      "The praise and worship team comprised of Lady Evangelist Bolanle Mustapha, Mama Joy Iselowo, Lady Evangelist Funke Ogunwuyi (Texas) and Sister Adejoke Oyelowo from Atlanta Georgia.",
+      "There was time for prayers where burdens were lifted up to mount Calvary.",
+      "We want to place on record the services of our CAC members in Orlando Florida for their impeccable hospitality. Deacon and Deaconess Ben Akinola and Engineer Olaleye from Orlando Florida supervised and sacrificed their resources in transporting delegates from the Orlando International Airport to the conference venue at Double Tree Hotel by Hilton, Orlando Florida.",
+      "The conference ended with the National Coordinator, Pastor Dr. Joshua O. Owoeye praying and declaring prophetic blessings upon the delegates that attended. Finally, Pastor Dr. Gabriel Dada Th. D declared that:",
+      "God really glorified Himself considering the short notice and all the Zones in CAC North America which included 10 delegates from Canada. This portrayed a good sign of Unity for CAC here in North America and Canada under the visionary leadership of our Father in the Lord Pastor Dr. Joshua Owoeye PhD whose unwavering love for the correct teaching of the word of God in our churches motivated our organizing this 1st Sunday School Rally and Orlando, Florida happened to be the first history making city in pioneering the venue of the meeting. Thanks to my committee members and our brethren in Orlando Florida.",
+      "Glory Be to God!"
+    ]
   },
 ];
 
