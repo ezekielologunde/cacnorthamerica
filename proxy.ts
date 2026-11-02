@@ -37,8 +37,18 @@ async function adminAuthGuard(request: NextRequest): Promise<NextResponse> {
   return response;
 }
 
+// cacvillage.com is a second front door to this site that always lands people
+// on convention registration. 307 (not 301) so browsers and Google don't cache
+// the target: it changes every year with the convention.
+const CAC_VILLAGE_HOSTS = new Set(["cacvillage.com", "www.cacvillage.com"]);
+const CONVENTION_REGISTRATION_URL = "https://cacnorthamerica.com/events/cacna-2027/register";
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  if (CAC_VILLAGE_HOSTS.has((request.headers.get("host") ?? "").toLowerCase())) {
+    return NextResponse.redirect(CONVENTION_REGISTRATION_URL, 307);
+  }
 
   if (pathname.startsWith("/admin")) {
     return adminAuthGuard(request);
