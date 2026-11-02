@@ -70,6 +70,9 @@ export default async function RegisterConfirmationPage({
   }
 
   const { summary, isPaid, isFree } = confirmation;
+  // Only a free Youth & Child token the server sealed with `emailed` says a
+  // confirmation email was attempted; the page never claims delivery.
+  const emailAttempted = isFree && summary.emailed === true;
 
   // The QR re-opens this confirmation on whatever device scans it, and the
   // page re-verifies it there (Stripe session or sealed token) -- the
@@ -84,11 +87,16 @@ export default async function RegisterConfirmationPage({
         <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,44px)", color: "#fff", margin: "0 0 14px" }}>
           {`You're registered for CACNA ${cy.year}!`}
         </h1>
-        <p style={{ fontSize: 15.5, color: "rgba(245,246,250,.65)", maxWidth: 480, margin: "0 auto 32px", lineHeight: 1.7 }}>
+        <p style={{ fontSize: 15.5, color: "rgba(245,246,250,.65)", maxWidth: 480, margin: `0 auto ${emailAttempted ? 12 : 32}px`, lineHeight: 1.7 }}>
           {isFree
             ? "Save this page or screenshot the QR code below to show at check-in."
             : "A confirmation email is on its way."}
         </p>
+        {emailAttempted && (
+          <p style={{ fontSize: 14, color: "rgba(245,246,250,.6)", maxWidth: 480, margin: "0 auto 32px", lineHeight: 1.7 }}>
+            We are emailing a confirmation to {summary.contactEmail}; check your spam folder if it does not arrive.
+          </p>
+        )}
 
         <div style={{ maxWidth: 460, margin: "0 auto", textAlign: "left", background: "rgba(245,246,250,.06)", border: "1px solid rgba(245,246,250,.14)", borderRadius: 18, padding: "24px 26px" }}>
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
@@ -129,12 +137,15 @@ export default async function RegisterConfirmationPage({
           </div>
         </div>
 
-        <div style={{ maxWidth: 460, margin: "24px auto 0", textAlign: "left" }}>
-          <h2 style={{ fontSize: 12, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)", margin: "0 0 14px" }}>
-            Payment Options
-          </h2>
-          <PaymentOptions variant="dark" />
-        </div>
+        {/* Nothing to pay on a $0 registration, so no payment options. */}
+        {summary.totalAmountCents > 0 && (
+          <div style={{ maxWidth: 460, margin: "24px auto 0", textAlign: "left" }}>
+            <h2 style={{ fontSize: 12, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)", margin: "0 0 14px" }}>
+              Payment Options
+            </h2>
+            <PaymentOptions variant="dark" />
+          </div>
+        )}
 
         <div style={{ marginTop: 32 }}>
           <Link href={cy.href} className="press" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(245,246,250,.09)", color: "var(--cream)", fontWeight: 700, fontSize: 14.5, padding: "14px 26px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(245,246,250,.2)" }}>

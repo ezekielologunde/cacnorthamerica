@@ -6,6 +6,7 @@ import { SITE_URL } from "@/lib/site";
 import { currentOrNextConvention, activePricing, priceForCategory, type RegistrantCategory } from "@/lib/conventions";
 import { encodeSummary, chunkForMetadata, fitsStripeMetadata, type RegistrationSummary } from "@/lib/checkoutSummary";
 import { sealRegistrationToken } from "@/lib/registrationToken";
+import { sendRegistrationConfirmationEmail } from "@/lib/registrationEmail";
 import { FORM_HEADER, HONEYPOT_FIELD, looksLikeSpam } from "@/lib/spam";
 import { categoryForAge, encodeMeals, parseYouthRegistration, youthSheetName, youthSheetRows } from "@/lib/youthRegistration";
 
@@ -24,6 +25,9 @@ const VALID_CATEGORIES: RegistrantCategory[] = ["adult", "young_adult", "child"]
 const VALID_REGISTRATION_TYPES: RegisterRequestBody["registrationType"][] = ["individual", "group"];
 const MAX_REGISTRANTS = 30;
 const MAX_FIELD_LENGTH = 120;
+/** Free Youth & Child confirmation emails per recipient address per day. */
+const YOUTH_CONFIRM_MAX = 3;
+const DAY_MS = 24 * 60 * 60 * 1000;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Plain, explicit checks rather than a schema library -- matches
@@ -338,16 +342,29 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
     youth: { leader: input.youthLeaderName, dcc: input.dccZone, guardian: input.guardianConfirmed },
   };
 
-  // Everyone 19 or under: free, handled like the adult track's free path --
-  // one sheet row per person, straight to the confirmation page, and no
-  // email, because nobody has proven they own contactEmail. The sealed token
-  // leaves allergy notes out (it lives in the URL); the sheet rows have them.
+  // Everyone 19 or under: free -- one sheet row per person, straight to the
+  // confirmation page, and a confirmation email to contactEmail. Nobody has
+  // proven they own that address, so this path could make the site mail
+  // anyone: each address gets at most YOUTH_CONFIRM_MAX free confirmations a
+  // day (per instance, lib/rateLimit.ts), spam-looking submissions returned
+  // above before reaching here, and the email carries only the names, age
+  // groups, meals, length-capped allergy notes (all escaped) and the
+  // church's fixed text. The sheet rows stay marked unverified. The sealed
+  // token leaves allergy notes out (it lives in the URL); the sheet rows and
+  // email have them.
   if (totalAmountCents === 0) {
+    // Checked before sealing so the confirmation page can say an email was
+    // attempted. Without Resend configured, skip silently (and spend no
+    // slot), like every other optional integration here.
+    const emailed =
+      !!process.env.RESEND_API_KEY &&
+      rateLimit(`youth-confirm:${input.contactEmail.toLowerCase()}`, YOUTH_CONFIRM_MAX, DAY_MS);
     let token: string;
     try {
       token = sealRegistrationToken({
         ...summary,
         registrants: summary.registrants.map((r) => ({ n: r.n, c: r.c, a: r.a, m: r.m })),
+        ...(emailed ? { emailed: true } : {}),
       });
     } catch {
       return NextResponse.json({ error: "Registration is temporarily unavailable" }, { status: 500 });
@@ -355,7 +372,15 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
     for (const row of youthSheetRows(summary, { stripeSession: "", status: "free (email unverified)", startIso: cy.startIso })) {
       logToSheet(youthSheetName(cy.year), row);
     }
-    return NextResponse.json({ checkoutUrl: `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?t=${token}` });
+    const confirmationUrl = `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?t=${token}`;
+    if (emailed) {
+      // Fire-and-forget: never throws, and a failed send never fails the
+      // registration, which is already logged.
+      void sendRegistrationConfirmationEmail(summary, confirmationUrl, true).then((sent) => {
+        if (!sent) console.error(`[register] youth confirmation email failed for ref ${summary.ref}`);
+      });
+    }
+    return NextResponse.json({ checkoutUrl: confirmationUrl });
   }
 
   // The full summary (allergies included) rides in the session metadata for

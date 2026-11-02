@@ -42,11 +42,17 @@ globalThis.__fakeStripe = {
   checkout: { sessions: { create: async (params) => { created.push(params); return { url: "https://checkout.invalid/s" }; } } },
 };
 const rows = [];
-const emails = [];
+const emails = []; // every Resend send attempt, failed ones included
+let resendFailure = null; // null | "error" (Resend answers 500) | "throw" (network failure)
 globalThis.fetch = async (url, init = {}) => {
   url = String(url);
   if (url === SHEETS_URL) { rows.push(JSON.parse(init.body)); return Response.json({ ok: true }); }
-  if (url.startsWith("https://api.resend.com/")) { emails.push(JSON.parse(init.body)); return Response.json({ id: "email_1" }); }
+  if (url.startsWith("https://api.resend.com/")) {
+    emails.push(JSON.parse(init.body));
+    if (resendFailure === "throw") throw new Error("fake network failure");
+    if (resendFailure === "error") return Response.json({ name: "application_error", message: "fake" }, { status: 500 });
+    return Response.json({ id: "email_1" });
+  }
   throw new Error(`unexpected fetch ${url}`);
 };
 
@@ -62,7 +68,12 @@ function check(name, ok) {
   console.log(`${ok ? "PASS" : "FAIL"}  ${name}`);
   if (!ok) failures++;
 }
-const settle = () => new Promise((r) => setTimeout(r, 20)); // logToSheet is fire-and-forget
+// logToSheet and the free youth confirmation email are fire-and-forget; the
+// email renders a QR code first, so it gets a longer wait.
+const settle = (ms = 20) => new Promise((r) => setTimeout(r, ms));
+const settleEmail = () => settle(300);
+const recipients = (e) => [].concat(e.to);
+const tokenOf = (res) => new URL(res.body.checkoutUrl ?? "http://x/").searchParams.get("t") ?? "";
 
 let ip = 0; // a fresh rate-limit bucket per request
 async function post(body, { header = true } = {}) {
@@ -111,7 +122,7 @@ check("bot-guarded youth posts log no rows", rows.length === 0);
 // Free path: everyone 19 or under.
 rows.length = 0; emails.length = 0; created.length = 0;
 const free = await post(youth([kid(5, { allergies: "Peanuts" }), kid(14, { meals: [], noMeals: true })]));
-await settle();
+await settleEmail();
 const token = new URL(free.body.checkoutUrl ?? "http://x/").searchParams.get("t");
 check("free youth registration succeeds with a sealed confirmation link", free.status === 200 && !!token && /\/register\/confirmation\?t=/.test(free.body.checkoutUrl));
 check("free youth registration logs one row per person to the youth tab",
@@ -124,13 +135,60 @@ check("youth rows carry age, group, fee category, meals and allergies",
   r14?.["Age Group"] === "Youth (11–19)" && r14.Meals === "None" && r14["Guardian Confirmed"] === "Yes" &&
   r14["Youth Leader"] === "Leader" && r14["DCC / Zone"] === "Zone 1" && r14.Status === "free (email unverified)" &&
   r5.Ref && r5.Ref === r14.Ref);
-check("free youth path sends no email and creates no Stripe session", emails.length === 0 && created.length === 0);
+check("free youth path creates no Stripe session", created.length === 0);
+const freeHtml0 = emails[0]?.html ?? "";
+check("free youth registration sends exactly one email, to the contact address",
+  emails.length === 1 && recipients(emails[0]).length === 1 && recipients(emails[0])[0] === "parent@example.com");
+check("free youth email names each person with their meals and allergies, and no Payment Options",
+  freeHtml0.includes("Kid Age5") && freeHtml0.includes("Kid Age14") &&
+  freeHtml0.includes("Meals: Tuesday Lunch — 7/13, Friday Dinner — 7/16") && freeHtml0.includes("Meals: None") &&
+  freeHtml0.includes("Allergies: Peanuts") && !freeHtml0.includes("Payment Options"));
 const opened = openRegistrationToken(token ?? "");
+check("free youth token records that an email was attempted", opened?.emailed === true);
 check("sealed token keeps age and meals but leaves allergies out",
   opened?.registrants?.length === 2 && opened.registrants.every((r) => !("l" in r)) && opened.registrants[0].a === 5 &&
   opened.registrants[0].m === 129 && opened.youth?.guardian === true);
 const confirmation = await resolveRegistrationConfirmation({ year: 2027, token, retrieveSession: async () => { throw new Error("no"); } });
 check("free youth token renders as a free confirmation", confirmation?.isFree === true && confirmation.summary.registrants.length === 2);
+
+// Free-path email cap: 3 per recipient address per day (case-insensitive).
+// The 4th registration still succeeds and is logged, but sends nothing.
+emails.length = 0; rows.length = 0;
+const capped = [];
+for (const addr of ["cap@example.com", "cap@example.com", "cap@example.com", "Cap@Example.COM"]) {
+  capped.push(await post(youth([kid(6)], { contactEmail: addr })));
+  await settleEmail();
+}
+check("first 3 free registrations for one address each send one email",
+  emails.length === 3 && emails.every((e) => recipients(e)[0] === "cap@example.com"));
+check("4th free registration for the same address within the window succeeds, is logged, and sends none",
+  capped[3].status === 200 && /\/register\/confirmation\?t=/.test(capped[3].body.checkoutUrl) && rows.length === 4 &&
+  openRegistrationToken(tokenOf(capped[3]))?.emailed === undefined);
+
+// A failed send never fails the registration.
+for (const mode of ["error", "throw"]) {
+  emails.length = 0; rows.length = 0; resendFailure = mode;
+  const res = await post(youth([kid(7)], { contactEmail: `fail-${mode}@example.com` }));
+  await settleEmail();
+  resendFailure = null;
+  check(`Resend failure (${mode}) still returns a successful free youth registration`,
+    res.status === 200 && /\/register\/confirmation\?t=/.test(res.body.checkoutUrl) && emails.length === 1 && rows.length === 1);
+}
+
+// A spam-looking submission sends no email (and, as before, logs nothing).
+emails.length = 0; rows.length = 0;
+const spam = await post(youth([kid(8, { allergies: "http://a.invalid http://b.invalid http://c.invalid" })], { contactEmail: "spam@example.com" }));
+await settleEmail();
+check("spam-looking free youth submission sends no email", spam.body.success === true && emails.length === 0 && rows.length === 0);
+
+// Without Resend configured the email is skipped silently, and the page is not told one was sent.
+emails.length = 0;
+delete process.env.RESEND_API_KEY;
+const noResend = await post(youth([kid(9)], { contactEmail: "noresend@example.com" }));
+await settleEmail();
+process.env.RESEND_API_KEY = "re_check_script_only";
+check("free youth registration without RESEND_API_KEY succeeds, sends none, and seals no emailed flag",
+  noResend.status === 200 && emails.length === 0 && openRegistrationToken(tokenOf(noResend))?.emailed === undefined);
 
 // Paid path: anyone 20-29.
 created.length = 0; rows.length = 0;

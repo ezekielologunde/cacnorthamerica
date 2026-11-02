@@ -37,6 +37,9 @@ export type RegistrationSummary = {
    *  whether the contact confirmed they are a minor's parent or guardian.
    *  The church itself travels in churchName. */
   youth?: { leader: string; dcc: string; guardian: boolean };
+  /** Set only inside the sealed token of a free Youth & Child registration
+   *  when the server attempted a confirmation email to contactEmail. */
+  emailed?: boolean;
 };
 
 export function encodeSummary(summary: RegistrationSummary): string {
