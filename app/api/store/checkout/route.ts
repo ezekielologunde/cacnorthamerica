@@ -94,6 +94,9 @@ export async function POST(request: Request) {
         quantity: l.quantity,
       })),
       customer_email: body.contactEmail,
+      // Every item is a physical product (books, apparel) -- without this the
+      // order has no address to ship to. Shipping cost is not charged here yet.
+      shipping_address_collection: { allowed_countries: ["US", "CA"] },
       success_url: `${SITE_URL}/store/confirmation?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}/store`,
       metadata: { kind: "store_order", contact_name: body.contactName },

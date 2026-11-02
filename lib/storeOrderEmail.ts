@@ -8,6 +8,8 @@ export type StoreOrderConfirmationInput = {
   /** Stripe line-item descriptions, e.g. "CACNA 2027 T-Shirt — L × 2". */
   items: string[];
   totalLabel: string;
+  /** One-line shipping address collected at checkout; empty when none. */
+  shippingAddress?: string;
 };
 
 function buildHtml(input: StoreOrderConfirmationInput): string {
@@ -23,6 +25,7 @@ function buildHtml(input: StoreOrderConfirmationInput): string {
         <td style="font-size:18px;font-weight:800;color:#12141E;text-align:right">${input.totalLabel}</td>
       </tr>
     </table>
+    ${input.shippingAddress ? `<p style="margin:16px 0 0;font-size:13.5px;color:#12141E"><strong>Shipping to:</strong> ${escapeHtml(input.shippingAddress)}</p>` : ""}
   </div>`;
 
   return emailShell({

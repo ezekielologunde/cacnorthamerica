@@ -81,9 +81,15 @@ export async function POST(request: Request) {
           .map((li) => `${li.description ?? ""} × ${li.quantity ?? 1}`)
           .join("; ");
 
+        const ship = full.collected_information?.shipping_details;
+        const shippingAddress = ship?.address
+          ? [ship.name, ship.address.line1, ship.address.line2, `${ship.address.city ?? ""}, ${ship.address.state ?? ""} ${ship.address.postal_code ?? ""}`.trim(), ship.address.country].filter(Boolean).join(", ")
+          : "";
+
         logToSheet("Store Order", {
           "Contact Name": session.metadata?.contact_name ?? "",
           "Contact Email": contactEmail,
+          "Ship To": shippingAddress,
           "Items": itemsSummary,
           "Total": totalDollars,
           "Stripe Session": session.id,
@@ -94,6 +100,7 @@ export async function POST(request: Request) {
           contactEmail,
           items: (full.line_items?.data ?? []).map((li) => `${li.description ?? ""} × ${li.quantity ?? 1}`),
           totalLabel: totalDollars,
+          shippingAddress,
         });
       } else if (kind === "giving") {
         const campaignTitle = session.metadata?.campaign_title ?? "";

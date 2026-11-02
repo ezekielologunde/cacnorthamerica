@@ -28,7 +28,7 @@ export function ConventionAdWidget() {
           CACNA {cy.year} National Convention
         </div>
         <p style={{ fontSize: 13, color: "rgba(255,255,255,.85)", lineHeight: 1.6, marginBottom: 18 }}>
-          {cy.theme ? `Theme: "${cy.theme}." ` : "Registration details announced soon. "}
+          {cy.theme ? `Theme: "${cy.theme}." ` : hasReg ? "Registration is open. " : "Registration details announced soon. "}
           {dateRangeLabel(cy)} · {CONVENTION_VENUE_SHORT}
         </p>
         {hasReg ? (
