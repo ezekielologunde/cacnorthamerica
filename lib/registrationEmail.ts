@@ -1,7 +1,7 @@
 import { Resend } from "resend";
 import QRCode from "qrcode";
 import { escapeHtml } from "@/lib/html";
-import { emailShell, emailCard, EMAIL_FROM } from "@/lib/email";
+import { emailShell, emailCard, sender } from "@/lib/email";
 import { paymentOptions } from "@/lib/registrationInfo";
 import type { RegistrationSummary } from "@/lib/checkoutSummary";
 import type { RegistrantCategory } from "@/lib/conventions";
@@ -84,7 +84,7 @@ export async function sendRegistrationConfirmationEmail(
     const qrDataUri = isPaid ? await renderQrCodePngDataUri(confirmationUrl) : null;
     const resend = new Resend(key);
     const { error } = await resend.emails.send({
-      from: EMAIL_FROM,
+      ...sender("convention"),
       to: summary.contactEmail,
       subject: `You're registered for CACNA ${summary.year}!`,
       html: buildHtml(summary, confirmationUrl, isPaid, qrDataUri),

@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 import { escapeHtml } from "@/lib/html";
-import { emailShell, EMAIL_FROM } from "@/lib/email";
+import { emailShell, sender } from "@/lib/email";
 
 export type ContactReplyInput = {
   name: string;
@@ -32,7 +32,7 @@ export async function sendContactAutoReply(input: ContactReplyInput): Promise<vo
   try {
     const resend = new Resend(key);
     const { error } = await resend.emails.send({
-      from: EMAIL_FROM,
+      ...sender("general"),
       to: input.email,
       subject: `We've received your message — CACNA`,
       html: buildHtml(input),

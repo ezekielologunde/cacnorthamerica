@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 import { escapeHtml } from "@/lib/html";
-import { emailShell, EMAIL_FROM } from "@/lib/email";
+import { emailShell, sender } from "@/lib/email";
 
 export type StoreOrderConfirmationInput = {
   contactName: string;
@@ -45,7 +45,7 @@ export async function sendStoreOrderConfirmationEmail(input: StoreOrderConfirmat
   try {
     const resend = new Resend(key);
     const { error } = await resend.emails.send({
-      from: EMAIL_FROM,
+      ...sender("store"),
       to: input.contactEmail,
       subject: "Your CACNA Store order",
       html: buildHtml(input),

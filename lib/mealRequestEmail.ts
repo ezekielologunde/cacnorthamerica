@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 import { escapeHtml } from "@/lib/html";
-import { emailShell, EMAIL_FROM } from "@/lib/email";
+import { emailShell, sender } from "@/lib/email";
 
 export type MealSlot =
   | "tue_lunch" | "tue_dinner"
@@ -62,7 +62,7 @@ export async function sendMealRequestConfirmationEmail(input: MealRequestConfirm
   try {
     const resend = new Resend(key);
     const { error } = await resend.emails.send({
-      from: EMAIL_FROM,
+      ...sender("convention"),
       to: input.email,
       subject: "Your CACNA Youth Convention meal RSVP",
       html: buildHtml(input),
