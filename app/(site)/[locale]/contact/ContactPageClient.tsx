@@ -5,7 +5,7 @@ import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { IconBadge } from "@/components/ui/IconBadge";
-import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, CheckCircle2 } from "lucide-react";
 import { submitLead, isValidEmail } from "@/lib/forms";
 
 const SUBJECTS = [
@@ -121,26 +121,23 @@ export default function ContactPageClient() {
 
   const inputStyle: React.CSSProperties = {
     width: "100%", boxSizing: "border-box",
-    padding: "11px 14px", borderRadius: 10,
+    padding: "12px 14px", minHeight: 48, borderRadius: 12,
     border: "1.5px solid var(--line)", background: "var(--cream)",
-    fontSize: 14.5, color: "var(--ink)",
+    fontSize: 16, color: "var(--ink)",
     fontFamily: "var(--font-body)",
   };
-  const labelStyle: React.CSSProperties = { display: "block", fontSize: 12.5, fontWeight: 600, color: "var(--ink-soft)", marginBottom: 5 };
+  const labelStyle: React.CSSProperties = { display: "block", fontSize: 14, fontWeight: 600, color: "var(--ink-soft)", marginBottom: 6 };
 
   return (
     <main id="main-content">
       <Nav />
 
       {/* Hero */}
-      <section style={{ background: "var(--cream)", padding: "112px clamp(20px,5vw,64px) 36px", position: "relative", overflow: "hidden" }}>
+      <section style={{ background: "var(--cream)", padding: "100px clamp(20px,5vw,64px) 24px", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", bottom: -80, right: -60, width: 300, height: 300, borderRadius: "50%", background: "radial-gradient(circle,var(--blue),var(--red) 70%)", opacity: .1, filter: "blur(6px)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
-          <Reveal>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Contact &amp; Visit</span>
-          </Reveal>
-          <Reveal delay={80}>
-            <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(32px,5vw,54px)", letterSpacing: "-1.5px", color: "var(--ink)", margin: "12px 0", lineHeight: .98, textWrap: "balance" }}>
+                    <Reveal delay={80}>
+            <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(32px,5vw,54px)", letterSpacing: "-1.5px", color: "var(--ink)", margin: "0 0 12px", lineHeight: 1.02, textWrap: "balance" }}>
               We&apos;d love to <span style={{ color: "var(--red)" }}>hear from you.</span>
             </h1>
           </Reveal>
@@ -149,17 +146,26 @@ export default function ContactPageClient() {
               Fill in the form below — whether it&apos;s a question, a prayer request, or you&apos;re looking for a CACNA member church near you.
             </p>
           </Reveal>
+          <Reveal delay={220}>
+            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 10, marginTop: 18 }}>
+              {[{ href: "tel:+13054690346", Icon: Phone, text: "Call" }, { href: "mailto:info@cacnorthamerica.com", Icon: Mail, text: "Email" }].map(({ href, Icon, text }) => (
+                <a key={text} href={href} style={{ display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 20px", borderRadius: 999, border: "1.5px solid var(--line)", background: "var(--paper)", color: "var(--ink)", fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
+                  <Icon size={17} aria-hidden /> {text}
+                </a>
+              ))}
+            </div>
+          </Reveal>
         </div>
       </section>
 
       {/* Contact Form */}
-      <section style={{ background: "var(--cream-2)", padding: "36px clamp(20px,5vw,64px) 64px" }}>
+      <section style={{ background: "var(--cream-2)", padding: "24px clamp(16px,5vw,64px) 48px" }}>
         <Reveal>
-          <div style={{ maxWidth: 720, margin: "0 auto", background: "var(--paper)", borderRadius: 20, border: "1px solid var(--line)", padding: "clamp(24px,3.5vw,40px)", boxShadow: "0 16px 48px rgba(18,20,30,.06)" }}>
+          <div style={{ maxWidth: 720, margin: "0 auto", background: "var(--paper)", borderRadius: 20, border: "1px solid var(--line)", padding: "clamp(20px,3.5vw,40px)", boxShadow: "0 16px 48px rgba(18,20,30,.06)" }}>
             {status === "success" ? (
-              <div style={{ textAlign: "center", padding: "28px 0" }}>
-                <div style={{ fontSize: 40, marginBottom: 14 }}>🙏</div>
-                <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 24, color: "var(--ink)", margin: "0 0 10px" }}>Message received!</h2>
+              <div role="status" style={{ textAlign: "center", padding: "28px 0" }}>
+                <CheckCircle2 size={44} strokeWidth={2} aria-hidden style={{ color: "var(--red)", marginBottom: 14 }} />
+                <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 24, color: "var(--ink)", margin: "0 0 10px" }}>Message received</h2>
                 <p style={{ color: "var(--ink-soft)", fontSize: 15, lineHeight: 1.6, margin: 0 }}>
                   Thank you for reaching out. Someone from our team will get back to you soon.
                 </p>
@@ -170,39 +176,39 @@ export default function ContactPageClient() {
                   Send us a message
                 </h2>
 
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 12, marginBottom: 12 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,200px),1fr))", gap: 12, marginBottom: 12 }}>
                   <div>
-                    <label style={labelStyle}>Your Name <span style={{ color: "var(--red)" }}>*</span></label>
-                    <input className="field-input" style={inputStyle} type="text" placeholder="Jane Smith" value={fields.name} onChange={update("name")} autoComplete="name" />
+                    <label htmlFor="c-name" style={labelStyle}>Your Name <span style={{ color: "var(--red)" }}>*</span></label>
+                    <input className="field-input" style={inputStyle} id="c-name" type="text" placeholder="Jane Smith" enterKeyHint="next" value={fields.name} onChange={update("name")} autoComplete="name" />
                   </div>
                   <div>
-                    <label style={labelStyle}>Email Address <span style={{ color: "var(--red)" }}>*</span></label>
-                    <input className="field-input" style={inputStyle} type="email" placeholder="you@example.com" value={fields.email} onChange={update("email")} autoComplete="email" />
+                    <label htmlFor="c-email" style={labelStyle}>Email Address <span style={{ color: "var(--red)" }}>*</span></label>
+                    <input className="field-input" style={inputStyle} id="c-email" type="email" inputMode="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} placeholder="you@example.com" enterKeyHint="next" value={fields.email} onChange={update("email")} autoComplete="email" />
                   </div>
                 </div>
 
                 <div style={{ marginBottom: 12 }}>
-                  <label style={labelStyle}>Subject</label>
-                  <select className="field-input" style={{ ...inputStyle, cursor: "pointer" }} value={fields.subject} onChange={update("subject")}>
+                  <label htmlFor="c-subject" style={labelStyle}>Subject</label>
+                  <select id="c-subject" className="field-input" style={{ ...inputStyle, cursor: "pointer" }} value={fields.subject} onChange={update("subject")}>
                     <option value="">Select a topic…</option>
                     {SUBJECTS.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: isMembershipSubject ? "repeat(auto-fit,minmax(200px,1fr))" : "1fr", gap: 12, marginBottom: 12 }}>
+                <div style={{ display: "grid", gridTemplateColumns: isMembershipSubject ? "repeat(auto-fit,minmax(min(100%,200px),1fr))" : "1fr", gap: 12, marginBottom: 12 }}>
                   <div>
-                    <label style={labelStyle}>
+                    <label htmlFor="c-phone" style={labelStyle}>
                       Phone{" "}
                       {isMembershipSubject
                         ? <span style={{ color: "var(--red)" }}>*</span>
                         : <span style={{ fontWeight: 400, opacity: .6 }}>(optional)</span>}
                     </label>
-                    <input className="field-input" style={inputStyle} type="tel" placeholder="+1 (443) 000-0000" value={fields.phone} onChange={update("phone")} autoComplete="tel" />
+                    <input className="field-input" style={inputStyle} id="c-phone" type="tel" inputMode="tel" placeholder="+1 (443) 000-0000" value={fields.phone} onChange={update("phone")} autoComplete="tel" />
                   </div>
                   {isMembershipSubject && (
                     <div>
-                      <label style={labelStyle}>Country <span style={{ fontWeight: 400, opacity: .6 }}>(optional)</span></label>
-                      <select className="field-input" style={{ ...inputStyle, cursor: "pointer" }} value={fields.country} onChange={update("country")} autoComplete="country-name">
+                      <label htmlFor="c-country" style={labelStyle}>Country <span style={{ fontWeight: 400, opacity: .6 }}>(optional)</span></label>
+                      <select id="c-country" className="field-input" style={{ ...inputStyle, cursor: "pointer" }} value={fields.country} onChange={update("country")} autoComplete="country-name">
                         <option value="">Select country…</option>
                         {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
                       </select>
@@ -216,8 +222,8 @@ export default function ContactPageClient() {
                       <p style={{ ...labelStyle, marginBottom: 8 }}>What brings you here?</p>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                         {VISIT_TYPES.map(t => (
-                          <button key={t.value} type="button" onClick={() => setFields(p => ({ ...p, visitType: t.value }))}
-                            style={{ padding: "8px 15px", borderRadius: 999, fontSize: 13, fontWeight: 700, fontFamily: "inherit", cursor: "pointer", border: fields.visitType === t.value ? "none" : "1px solid var(--line)", background: fields.visitType === t.value ? "var(--red)" : "transparent", color: fields.visitType === t.value ? "#fff" : "var(--ink-soft)" }}>
+                          <button key={t.value} type="button" aria-pressed={fields.visitType === t.value} onClick={() => setFields(p => ({ ...p, visitType: t.value }))}
+                            style={{ minHeight: 44, padding: "0 16px", borderRadius: 999, fontSize: 14, fontWeight: 700, fontFamily: "inherit", cursor: "pointer", border: fields.visitType === t.value ? "none" : "1px solid var(--line)", background: fields.visitType === t.value ? "var(--red)" : "transparent", color: fields.visitType === t.value ? "#fff" : "var(--ink-soft)" }}>
                             {t.label}
                           </button>
                         ))}
@@ -225,22 +231,22 @@ export default function ContactPageClient() {
                     </div>
 
                     <div style={{ marginBottom: 12 }}>
-                      <label style={labelStyle}>Address <span style={{ fontWeight: 400, opacity: .6 }}>(optional)</span></label>
-                      <input className="field-input" style={inputStyle} type="text" placeholder="123 Main Street" autoComplete="street-address" value={fields.address} onChange={update("address")} />
+                      <label htmlFor="c-address" style={labelStyle}>Address <span style={{ fontWeight: 400, opacity: .6 }}>(optional)</span></label>
+                      <input className="field-input" style={inputStyle} id="c-address" type="text" placeholder="123 Main Street" autoComplete="street-address" value={fields.address} onChange={update("address")} />
                     </div>
 
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(120px,1fr))", gap: 12, marginBottom: 12 }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,130px),1fr))", gap: 12, marginBottom: 12 }}>
                       <div>
-                        <label style={labelStyle}>City / Town</label>
-                        <input className="field-input" style={inputStyle} type="text" placeholder="Atlanta" autoComplete="address-level2" value={fields.city} onChange={update("city")} />
+                        <label htmlFor="c-city" style={labelStyle}>City / Town</label>
+                        <input className="field-input" style={inputStyle} id="c-city" type="text" placeholder="Atlanta" autoComplete="address-level2" value={fields.city} onChange={update("city")} />
                       </div>
                       <div>
-                        <label style={labelStyle}>State / Province</label>
-                        <input className="field-input" style={inputStyle} type="text" placeholder="GA" autoComplete="address-level1" value={fields.state} onChange={update("state")} />
+                        <label htmlFor="c-state" style={labelStyle}>State / Province</label>
+                        <input className="field-input" style={inputStyle} id="c-state" type="text" placeholder="GA" autoComplete="address-level1" value={fields.state} onChange={update("state")} />
                       </div>
                       <div>
-                        <label style={labelStyle}>Zip / Post Code</label>
-                        <input className="field-input" style={inputStyle} type="text" placeholder="30301" autoComplete="postal-code" value={fields.zip} onChange={update("zip")} />
+                        <label htmlFor="c-zip" style={labelStyle}>Zip / Post Code</label>
+                        <input className="field-input" style={inputStyle} id="c-zip" type="text" inputMode="numeric" placeholder="30301" autoComplete="postal-code" value={fields.zip} onChange={update("zip")} />
                       </div>
                     </div>
 
@@ -250,8 +256,8 @@ export default function ContactPageClient() {
                         {GROUPS.map(g => {
                           const active = groups.includes(g);
                           return (
-                            <button key={g} type="button" onClick={() => toggleGroup(g)}
-                              style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "7px 14px", borderRadius: 999, fontSize: 12.5, fontWeight: 700, fontFamily: "inherit", cursor: "pointer", transition: "all .15s", border: active ? "none" : "1px solid var(--line)", background: active ? "var(--gold)" : "transparent", color: active ? "var(--ink)" : "var(--ink-soft)" }}>
+                            <button key={g} type="button" aria-pressed={active} onClick={() => toggleGroup(g)}
+                              style={{ display: "inline-flex", alignItems: "center", gap: 6, minHeight: 44, padding: "0 14px", borderRadius: 999, fontSize: 14, fontWeight: 700, fontFamily: "inherit", cursor: "pointer", transition: "all .15s", border: active ? "none" : "1px solid var(--line)", background: active ? "var(--gold)" : "transparent", color: active ? "var(--ink)" : "var(--ink-soft)" }}>
                               {active && <span aria-hidden style={{ fontSize: 11 }}>✓</span>}
                               {g}
                             </button>
@@ -263,22 +269,24 @@ export default function ContactPageClient() {
                 )}
 
                 <div style={{ marginBottom: 18 }}>
-                  <label style={labelStyle}>Message <span style={{ color: "var(--red)" }}>*</span></label>
-                  <textarea className="field-input" style={{ ...inputStyle, minHeight: 120, resize: "vertical", lineHeight: 1.6 }} placeholder="How can we help you?" value={fields.message} onChange={update("message")} required />
+                  <label htmlFor="c-message" style={labelStyle}>Message <span style={{ color: "var(--red)" }}>*</span></label>
+                  <textarea id="c-message" className="field-input" style={{ ...inputStyle, minHeight: 120, resize: "vertical", lineHeight: 1.6 }} placeholder="How can we help you?" value={fields.message} onChange={update("message")} required />
                 </div>
 
                 {errMsg && (
-                  <p style={{ color: "var(--red)", fontSize: 13.5, fontWeight: 600, margin: "0 0 14px" }}>{errMsg}</p>
+                  <p role="alert" style={{ color: "var(--red)", fontSize: 15, fontWeight: 600, margin: "0 0 14px" }}>{errMsg}</p>
                 )}
 
+                <div style={{ position: "sticky", bottom: 0, margin: "0 calc(-1 * clamp(20px,3.5vw,40px)) calc(-1 * clamp(20px,3.5vw,40px))", padding: "12px clamp(20px,3.5vw,40px)", background: "linear-gradient(to top, var(--paper) 70%, transparent)", borderRadius: "0 0 20px 20px" }}>
                 <button
                   type="submit"
                   disabled={status === "loading"}
                   className="press"
-                  style={{ padding: "13px 32px", borderRadius: 999, background: status === "loading" ? "var(--line)" : "linear-gradient(100deg,var(--blue),var(--red))", color: "#fff", fontWeight: 700, fontSize: 14.5, border: "none", cursor: status === "loading" ? "not-allowed" : "pointer", letterSpacing: ".3px" }}
+                  style={{ width: "100%", minHeight: 52, padding: "0 32px", borderRadius: 999, background: status === "loading" ? "var(--line)" : "linear-gradient(100deg,var(--blue),var(--red))", color: "#fff", fontWeight: 700, fontSize: 16, border: "none", cursor: status === "loading" ? "not-allowed" : "pointer" }}
                 >
                   {status === "loading" ? "Sending…" : "Send Message"}
                 </button>
+                </div>
               </form>
             )}
           </div>
@@ -291,7 +299,7 @@ export default function ContactPageClient() {
           <Reveal style={{ textAlign: "center", marginBottom: 32 }}>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,34px)", letterSpacing: "-0.8px", color: "var(--ink)", margin: 0 }}>Other ways to reach us</h2>
           </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 14 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,220px),1fr))", gap: 14 }}>
             {[
               { icon: MapPin, title: "Address", lines: [{ text: "14051 Stahley Road", href: "https://maps.google.com/?q=14051+Stahley+Road+Blue+Ridge+Summit+PA+17214" }, { text: "Blue Ridge Summit, PA 17214", href: "https://maps.google.com/?q=14051+Stahley+Road+Blue+Ridge+Summit+PA+17214" }] },
               { icon: Phone, title: "Phone", lines: [{ text: "(305) 469-0346", href: "tel:+13054690346" }] },
@@ -301,10 +309,10 @@ export default function ContactPageClient() {
               <Reveal key={card.title}>
                 <div className="card-lift" style={{ background: "var(--paper)", borderRadius: 18, padding: "22px 20px", border: "1px solid var(--line)", boxShadow: "0 8px 22px rgba(18,20,30,.05)" }}>
                   <IconBadge icon={card.icon} style={{ marginBottom: 12 }} />
-                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 7 }}>{card.title}</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "var(--red)", marginBottom: 6 }}>{card.title}</div>
                   <div style={{ fontSize: 14.5, fontWeight: 700, color: "var(--ink)", lineHeight: 1.6 }}>
                     {card.lines.map((l, i) => l.href ? (
-                      <a key={i} href={l.href} style={{ display: "block", color: "var(--ink)", textDecoration: "none" }}>{l.text}</a>
+                      <a key={i} href={l.href} style={{ display: "block", minHeight: 44, lineHeight: "44px", color: "var(--ink)", textDecoration: "none" }}>{l.text}</a>
                     ) : (
                       <span key={i} style={{ display: "block" }}>{l.text}</span>
                     ))}
@@ -325,21 +333,20 @@ export default function ContactPageClient() {
       <section id="convention-committee" style={{ background: "var(--cream-2)", padding: "56px clamp(20px,5vw,64px)", scrollMarginTop: 90 }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 32 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Annual Convention</span>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,34px)", letterSpacing: "-0.8px", color: "var(--ink)", margin: "10px 0 0" }}>Convention Committee</h2>
-            <p style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.6, margin: "10px auto 0", maxWidth: 560 }}>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,34px)", letterSpacing: "-0.8px", color: "var(--ink)", margin: 0 }}>Convention Committee</h2>
+            <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.6, margin: "10px auto 0", maxWidth: 560 }}>
               For questions specific to the Annual Convention — registration, schedule, or logistics — reach the committee directly.
             </p>
           </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 14 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,240px),1fr))", gap: 14 }}>
             {CONVENTION_CONTACTS.map((c) => (
               <Reveal key={c.name}>
                 <div style={{ background: "var(--paper)", borderRadius: 18, padding: "20px 20px 22px", border: "1px solid var(--line)" }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 8 }}>{t(c.roleKey)}</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "var(--red)", marginBottom: 6 }}>{t(c.roleKey)}</div>
                   <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 16, color: "var(--ink)", lineHeight: 1.3, marginBottom: 4 }}>{c.name}</div>
-                  <div style={{ fontSize: 12.5, color: "var(--ink-soft)", marginBottom: 12 }}>{c.org}</div>
-                  <a href={`tel:${c.phone.replace(/[^0-9+]/g, "")}`} style={{ display: "block", fontSize: 13.5, fontWeight: 600, color: "var(--ink)", textDecoration: "none", marginBottom: 3 }}>{c.phone}</a>
-                  <a href={`mailto:${c.email}`} style={{ display: "block", fontSize: 13.5, fontWeight: 600, color: "var(--ink)", textDecoration: "none" }}>{c.email}</a>
+                  <div style={{ fontSize: 14, color: "var(--ink-soft)", marginBottom: 8 }}>{c.org}</div>
+                  <a href={`tel:${c.phone.replace(/[^0-9+]/g, "")}`} style={{ display: "block", fontSize: 15, fontWeight: 600, color: "var(--ink)", textDecoration: "none", lineHeight: "44px" }}>{c.phone}</a>
+                  <a href={`mailto:${c.email}`} style={{ display: "block", fontSize: 15, fontWeight: 600, color: "var(--ink)", textDecoration: "none", lineHeight: "44px", overflowWrap: "anywhere" }}>{c.email}</a>
                 </div>
               </Reveal>
             ))}
@@ -351,10 +358,10 @@ export default function ContactPageClient() {
       <section style={{ background: "var(--cream-2)", padding: "64px clamp(20px,5vw,64px)" }}>
         <div className="r2" style={{ maxWidth: 1100, margin: "0 auto", gap: 56 }}>
           <Reveal>
-            <div style={{ height: 300, borderRadius: 20, overflow: "hidden", border: "1px solid var(--line)", marginBottom: 18, boxShadow: "0 10px 26px rgba(18,20,30,.06)" }}>
+            <div style={{ height: "clamp(220px,60vw,300px)", borderRadius: 20, overflow: "hidden", border: "1px solid var(--line)", marginBottom: 18, boxShadow: "0 10px 26px rgba(18,20,30,.06)" }}>
               <iframe title="Map to CAC Village, Blue Ridge Summit, PA" src="https://maps.google.com/maps?q=14051%20Stahley%20Road%20Blue%20Ridge%20Summit%20PA%2017214&z=13&output=embed" loading="lazy" referrerPolicy="no-referrer-when-downgrade" style={{ width: "100%", height: "100%", border: 0, display: "block" }} />
             </div>
-            <a href="https://maps.google.com/?q=14051+Stahley+Road+Blue+Ridge+Summit+PA+17214" target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 14, fontWeight: 700, color: "var(--red)", textDecoration: "none" }}>
+            <a href="https://maps.google.com/?q=14051+Stahley+Road+Blue+Ridge+Summit+PA+17214" target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 6, minHeight: 44, fontSize: 15, fontWeight: 700, color: "var(--red)", textDecoration: "none" }}>
               <MapPin size={16} strokeWidth={2} aria-hidden /> Get Directions to CAC Village →
             </a>
           </Reveal>
@@ -371,7 +378,7 @@ export default function ContactPageClient() {
                   <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--red)", flexShrink: 0, minWidth: 36, lineHeight: 1, marginTop: 2 }}>{s.num}</span>
                   <div>
                     <div style={{ fontWeight: 700, fontSize: 15.5, color: "var(--ink)", marginBottom: 4 }}>{s.title}</div>
-                    <p style={{ fontSize: 13.5, color: "var(--ink-soft)", lineHeight: 1.65, margin: 0 }}>{s.body}</p>
+                    <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.65, margin: 0 }}>{s.body}</p>
                   </div>
                 </li>
               ))}
@@ -402,11 +409,11 @@ function FaqList() {
       {faqs.map((faq, i) => (
         <Reveal key={i} delay={i * 50}>
           <div style={{ borderBottom: "1px solid var(--line)" }}>
-            <button onClick={() => setOpenFaq(openFaq === i ? null : i)} style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 0", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}>
+            <button aria-expanded={openFaq === i} onClick={() => setOpenFaq(openFaq === i ? null : i)} style={{ width: "100%", minHeight: 52, fontFamily: "inherit", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 0", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}>
               <span style={{ fontSize: 15.5, fontWeight: 700, color: "var(--ink)", paddingRight: 24 }}>{faq.q}</span>
               <span style={{ color: "var(--red)", fontSize: 20, flexShrink: 0, transform: openFaq === i ? "rotate(45deg)" : "none", transition: "transform .2s" }}>+</span>
             </button>
-            {openFaq === i && <p style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.7, padding: "0 0 18px", margin: 0 }}>{faq.a}</p>}
+            {openFaq === i && <p style={{ fontSize: 15.5, color: "var(--ink-soft)", lineHeight: 1.7, padding: "0 0 18px", margin: 0 }}>{faq.a}</p>}
           </div>
         </Reveal>
       ))}

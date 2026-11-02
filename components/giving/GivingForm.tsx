@@ -7,12 +7,12 @@ const PRESET_AMOUNTS = [25, 50, 100, 250];
 
 const inputStyle: CSSProperties = {
   width: "100%", boxSizing: "border-box",
-  padding: "13px 16px", borderRadius: 10,
+  padding: "13px 14px", minHeight: 48, borderRadius: 12,
   border: "1.5px solid rgba(255,255,255,.25)", background: "rgba(255,255,255,.1)",
-  fontSize: 15, color: "#fff",
+  fontSize: 16, color: "#fff",
   fontFamily: "var(--font-body)",
 };
-const labelStyle: CSSProperties = { display: "block", fontSize: 12.5, fontWeight: 700, color: "rgba(255,255,255,.75)", marginBottom: 6, letterSpacing: ".3px" };
+const labelStyle: CSSProperties = { display: "block", fontSize: 14, fontWeight: 700, color: "rgba(255,255,255,.82)", marginBottom: 6 };
 
 /** Standalone online-giving form, rendered once on the /giving page (not
  *  per campaign card) -- the donor picks which of the three real campaigns
@@ -62,22 +62,21 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
   return (
     <div style={{
       position: "relative", overflow: "hidden",
-      borderRadius: 32, padding: "clamp(36px,5.5vw,56px)",
+      borderRadius: 28, padding: "clamp(22px,5.5vw,56px)",
       background: "linear-gradient(135deg,var(--ink),#1C1E2E)", boxShadow: "0 28px 60px rgba(18,20,30,.22)",
     }}>
       <div aria-hidden style={{ position: "absolute", top: -100, right: -80, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,rgba(253,200,65,.18),transparent 70%)", pointerEvents: "none" }} />
       <div style={{ position: "relative", zIndex: 2, maxWidth: 480, margin: "0 auto" }}>
-        <span style={{ display: "inline-block", fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 16 }}>
-          Give Online
-        </span>
-        <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.4vw,38px)", letterSpacing: "-1px", color: "#fff", margin: "0 0 26px", lineHeight: 1.1 }}>
+
+        <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.4vw,38px)", letterSpacing: "-1px", color: "#fff", margin: "0 0 20px", lineHeight: 1.1 }}>
           Make a gift by card.
         </h2>
 
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: 18 }}>
-            <label style={labelStyle}>Campaign</label>
+            <label htmlFor="give-campaign" style={labelStyle}>Campaign</label>
             <select
+              id="give-campaign"
               className="field-input on-dark"
               style={{ ...inputStyle, appearance: "none" }}
               value={campaignSlug}
@@ -90,8 +89,8 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
           </div>
 
           <div style={{ marginBottom: 18 }}>
-            <label style={labelStyle}>Amount</label>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 8, marginBottom: 10 }}>
+            <span id="give-amount" style={{ ...labelStyle, display: "block" }}>Amount</span>
+            <div role="group" aria-labelledby="give-amount" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 8, marginBottom: 10 }}>
               {PRESET_AMOUNTS.map((preset) => {
                 const active = customAmount.trim() === "" && amount === preset;
                 return (
@@ -101,7 +100,7 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
                     onClick={() => { setAmount(preset); setCustomAmount(""); }}
                     className="press"
                     style={{
-                      padding: "12px 8px", borderRadius: 10, fontWeight: 800, fontSize: 15, cursor: "pointer",
+                      minHeight: 48, padding: "0 8px", borderRadius: 12, fontWeight: 800, fontSize: 16, cursor: "pointer",
                       border: active ? "1.5px solid var(--gold)" : "1.5px solid rgba(255,255,255,.25)",
                       background: active ? "rgba(253,200,65,.16)" : "rgba(255,255,255,.06)",
                       color: active ? "var(--gold)" : "#fff",
@@ -115,20 +114,20 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
             <input
               className="field-input on-dark"
               style={inputStyle}
-              type="number" min="1" step="1" inputMode="decimal"
-              placeholder="Or enter a custom amount"
+              type="number" min="1" step="1" inputMode="decimal" aria-label="Custom amount in dollars"
+              placeholder="Or enter a custom amount ($)"
               value={customAmount}
               onChange={(e) => { setCustomAmount(e.target.value); setAmount(null); }}
             />
           </div>
 
           <div style={{ marginBottom: 14 }}>
-            <label style={labelStyle}>Your Name <span style={{ color: "var(--gold)" }}>*</span></label>
-            <input className="field-input on-dark" style={inputStyle} value={contactName} onChange={(e) => setContactName(e.target.value)} required autoComplete="name" />
+            <label htmlFor="give-name" style={labelStyle}>Your Name <span style={{ color: "var(--gold)" }}>*</span></label>
+            <input id="give-name" className="field-input on-dark" style={inputStyle} value={contactName} onChange={(e) => setContactName(e.target.value)} required autoComplete="name" />
           </div>
           <div style={{ marginBottom: 20 }}>
-            <label style={labelStyle}>Email <span style={{ color: "var(--gold)" }}>*</span></label>
-            <input className="field-input on-dark" style={inputStyle} type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} required autoComplete="email" />
+            <label htmlFor="give-email" style={labelStyle}>Email <span style={{ color: "var(--gold)" }}>*</span></label>
+            <input id="give-email" inputMode="email" className="field-input on-dark" style={inputStyle} type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} required autoComplete="email" />
           </div>
 
           {status === "error" && errorMessage && (
@@ -140,7 +139,7 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
             disabled={status === "loading"}
             className="btn-sheen press"
             style={{
-              width: "100%", padding: "16px 24px", borderRadius: 999,
+              width: "100%", minHeight: 56, padding: "0 24px", borderRadius: 999,
               background: status === "loading" ? "rgba(255,255,255,.15)" : "var(--gold)",
               color: "var(--ink)", fontWeight: 800, fontSize: 16, border: "none",
               cursor: status === "loading" ? "not-allowed" : "pointer",
@@ -148,7 +147,7 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
           >
             {status === "loading" ? "Redirecting…" : `Give ${amountCents ? `$${(amountCents / 100).toFixed(2)}` : "Now"} →`}
           </button>
-          <p style={{ fontSize: 12, color: "rgba(255,255,255,.5)", textAlign: "center", marginTop: 14 }}>
+          <p style={{ fontSize: 13, color: "rgba(255,255,255,.7)", textAlign: "center", marginTop: 14 }}>
             Securely processed by Stripe. You&apos;ll get an email receipt.
           </p>
         </form>
