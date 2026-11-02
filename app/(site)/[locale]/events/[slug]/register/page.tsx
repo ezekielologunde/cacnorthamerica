@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Sparkles } from "lucide-react";
+import { ArrowDown, ArrowLeft, CalendarDays, MapPin, Sparkles } from "lucide-react";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
@@ -70,6 +70,10 @@ export default async function RegisterPage({ params }: { params: Promise<{ local
     { category: "child", labelKey: "categoryChild" },
   ];
   const shortDate = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" });
+  // Hero rate card: today's adult tier and the one that replaces it.
+  const adultTiers = allTiers.filter((tr) => tr.category === "adult").sort((a, b) => a.startsOn.localeCompare(b.startsOn));
+  const currentAdult = adultTiers.find((tr) => activeTierKeys.has(`${tr.category}-${tr.startsOn}`));
+  const nextAdult = currentAdult ? adultTiers.find((tr) => tr.startsOn > currentAdult.startsOn) : undefined;
   const pricingLadder = CATEGORY_ORDER.map(({ category, labelKey }) => {
     const rows = allTiers.filter((tr) => tr.category === category).sort((a, b) => a.startsOn.localeCompare(b.startsOn));
     const lastStartsOn = rows.reduce((max, tr) => (tr.startsOn > max ? tr.startsOn : max), "");
@@ -90,27 +94,80 @@ export default async function RegisterPage({ params }: { params: Promise<{ local
       <Nav heroDark />
 
       {/* Hero */}
-      <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 80px", position: "relative", overflow: "hidden" }}>
-        <div aria-hidden style={{ position: "absolute", top: -100, right: -80, width: 640, height: 520, background: "radial-gradient(circle,rgba(253,200,65,.28),transparent 65%)", pointerEvents: "none" }} />
-        <div style={{ maxWidth: 720, margin: "0 auto", position: "relative", zIndex: 2 }}>
-          <Reveal>
-            <Link href={cy.href} style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 700, color: "rgba(245,246,250,.6)", textDecoration: "none", marginBottom: 32 }}>
-              <ArrowLeft size={14} strokeWidth={2.5} aria-hidden /> Back to Convention {cy.year}
-            </Link>
-          </Reveal>
-          <Reveal>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>
-              {dateRangeLabel(cy)} · {CONVENTION_VENUE}
-            </span>
-          </Reveal>
-          <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(38px,6vw,72px)", letterSpacing: "-0.03em", color: "#fff", margin: "16px 0 0", lineHeight: 1 }}>
-            <RevealText immediate>{t("heroHeading", { year: cy.year })}</RevealText>
-          </h1>
+      <section style={{ background: "var(--ink)", padding: "clamp(120px,16vw,164px) clamp(20px,5vw,64px) clamp(56px,7vw,88px)", position: "relative", overflow: "hidden" }}>
+        <div aria-hidden style={{ position: "absolute", top: -140, right: -120, width: 720, height: 560, background: "radial-gradient(circle,rgba(253,200,65,.22),transparent 65%)", pointerEvents: "none" }} />
+        <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative", zIndex: 2, display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,360px),1fr))", gap: "clamp(36px,6vw,72px)", alignItems: "center" }}>
+          <div>
+            <Reveal>
+              <Link href={cy.href} style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13.5, fontWeight: 700, color: "rgba(245,246,250,.72)", textDecoration: "none", marginBottom: 28 }}>
+                <ArrowLeft size={14} strokeWidth={2.5} aria-hidden /> Back to Convention {cy.year}
+              </Link>
+            </Reveal>
+            <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(40px,6.4vw,80px)", letterSpacing: "-0.035em", color: "#fff", margin: 0, lineHeight: 0.98, textWrap: "balance" }}>
+              <RevealText immediate>{t("heroHeading", { year: cy.year })}</RevealText>
+            </h1>
+            <Reveal delay={120}>
+              <ul style={{ listStyle: "none", margin: "28px 0 0", padding: 0, display: "flex", flexDirection: "column", gap: 12, color: "rgba(245,246,250,.82)", fontSize: 16, lineHeight: 1.5 }}>
+                <li style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+                  <CalendarDays size={20} strokeWidth={2} color="var(--gold)" aria-hidden style={{ flexShrink: 0, marginTop: 2 }} />
+                  <span>{dateRangeLabel(cy)}</span>
+                </li>
+                <li style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+                  <MapPin size={20} strokeWidth={2} color="var(--gold)" aria-hidden style={{ flexShrink: 0, marginTop: 2 }} />
+                  <span>{CONVENTION_VENUE}</span>
+                </li>
+              </ul>
+            </Reveal>
+            {isOpen && (
+              <Reveal delay={200}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 36 }}>
+                  <a
+                    href="#register-form"
+                    className="btn-sheen press"
+                    style={{ display: "inline-flex", alignItems: "center", gap: 8, minHeight: 52, padding: "0 28px", borderRadius: 999, background: "linear-gradient(100deg,var(--red-deep),var(--red))", color: "#fff", fontWeight: 800, fontSize: 16, textDecoration: "none" }}
+                  >
+                    Start registration <ArrowDown size={18} strokeWidth={2.5} aria-hidden />
+                  </a>
+                  <a
+                    href="#registration-fees"
+                    className="press"
+                    style={{ display: "inline-flex", alignItems: "center", minHeight: 52, padding: "0 24px", borderRadius: 999, border: "1.5px solid rgba(245,246,250,.35)", color: "#fff", fontWeight: 700, fontSize: 15.5, textDecoration: "none" }}
+                  >
+                    See all rates
+                  </a>
+                </div>
+              </Reveal>
+            )}
+          </div>
+
           {isOpen && adultPrice !== undefined && (
-            <Reveal delay={140}>
-              <p style={{ marginTop: 20, fontSize: 15, color: "rgba(245,246,250,.72)" }}>
-                Adult rate is ${(adultPrice / 100).toFixed(0)} right now — register before it goes up.
-              </p>
+            <Reveal delay={160}>
+              <div style={{ position: "relative", background: "var(--cream)", borderRadius: 26, boxShadow: "0 28px 60px -24px rgba(0,0,0,.6), 0 6px 14px -6px rgba(0,0,0,.35)", maxWidth: 440, width: "100%", marginInline: "auto" }}>
+                <div style={{ padding: "30px 32px 26px" }}>
+                  <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: "var(--ink-soft)" }}>Adult rate today</p>
+                  <p style={{ margin: "6px 0 0", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(56px,8vw,76px)", lineHeight: 1, letterSpacing: "-0.03em", color: "var(--ink)", fontVariantNumeric: "tabular-nums" }}>
+                    ${(adultPrice / 100).toFixed(0)}
+                  </p>
+                  {currentAdult && (
+                    <p style={{ margin: "10px 0 0", fontSize: 15, color: "var(--ink-soft)" }}>Through {shortDate.format(new Date(`${currentAdult.endsOn}T12:00:00Z`))}</p>
+                  )}
+                </div>
+                <div aria-hidden style={{ position: "relative", height: 0, borderTop: "2px dashed var(--line)" }}>
+                  <span style={{ position: "absolute", left: -13, top: -14, width: 26, height: 26, borderRadius: "50%", background: "var(--ink)" }} />
+                  <span style={{ position: "absolute", right: -13, top: -14, width: 26, height: 26, borderRadius: "50%", background: "var(--ink)" }} />
+                </div>
+                <div style={{ padding: "22px 32px 28px", display: "flex", flexDirection: "column", gap: 8 }}>
+                  {nextAdult && (
+                    <p style={{ margin: 0, fontSize: 15.5, fontWeight: 700, color: "var(--red)" }}>
+                      Rises to ${(nextAdult.priceCents / 100).toFixed(0)} on {shortDate.format(new Date(`${nextAdult.startsOn}T12:00:00Z`))}
+                    </p>
+                  )}
+                  <p style={{ margin: 0, fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.5 }}>
+                    {priceMap.young_adult !== undefined && <>Young adults ${(priceMap.young_adult / 100).toFixed(0)} · </>}
+                    Children free
+                  </p>
+                </div>
+              </div>
             </Reveal>
           )}
         </div>
@@ -118,7 +175,7 @@ export default async function RegisterPage({ params }: { params: Promise<{ local
 
       {/* Full fee ladder */}
       {isOpen && (
-        <section style={{ background: "var(--cream)", padding: "clamp(48px,6vw,72px) clamp(20px,5vw,64px) 0" }}>
+        <section id="registration-fees" style={{ background: "var(--cream)", padding: "clamp(48px,6vw,72px) clamp(20px,5vw,64px) 0", scrollMarginTop: 72 }}>
           <div style={{ maxWidth: 900, margin: "0 auto" }}>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,30px)", color: "var(--ink)", margin: "0 0 20px" }}>{t("pricingHeading")}</h2>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 16 }}>
@@ -148,7 +205,7 @@ export default async function RegisterPage({ params }: { params: Promise<{ local
       )}
 
       {/* Form / not-open state */}
-      <section style={{ background: "var(--paper)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+      <section id="register-form" style={{ background: "var(--paper)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)", scrollMarginTop: 72 }}>
         <div style={{ maxWidth: 640, margin: "0 auto" }}>
           {isOpen ? (
             <RegisterForm year={cy.year} priceMap={priceMap} />
