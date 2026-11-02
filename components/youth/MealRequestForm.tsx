@@ -84,7 +84,7 @@ export function MealRequestForm() {
 
   if (status === "success") {
     return (
-      <div style={{ textAlign: "center", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, padding: "clamp(32px,5vw,44px)" }}>
+      <div role="status" style={{ textAlign: "center", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, padding: "clamp(32px,5vw,44px)" }}>
         <CheckCircle2 size={36} strokeWidth={1.8} color="var(--gold)" aria-hidden style={{ marginBottom: 14 }} />
         <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20, color: "var(--ink)", margin: "0 0 8px" }}>You&apos;re on the list!</h3>
         <p style={{ fontSize: 14.5, color: "var(--ink-soft)", margin: 0 }}>Thanks — we&apos;ve received your meal request. See you at the Convention!</p>
@@ -98,28 +98,28 @@ export function MealRequestForm() {
       <input type="text" name={HONEYPOT_FIELD} value={honeypot} onChange={(e) => setHoneypot(e.target.value)} tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }} />
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 12, marginBottom: 12 }}>
         <div>
-          <label style={labelStyle}>First name <span style={{ color: "var(--red)" }}>*</span></label>
-          <input className="field-input" style={inputStyle} value={firstName} onChange={(e) => setFirstName(e.target.value)} required autoComplete="given-name" />
+          <label htmlFor="meal-first-name" style={labelStyle}>First name <span style={{ color: "var(--red)" }}>*</span></label>
+          <input id="meal-first-name" className="field-input" style={inputStyle} value={firstName} onChange={(e) => setFirstName(e.target.value)} required autoComplete="given-name" />
         </div>
         <div>
-          <label style={labelStyle}>Last name <span style={{ color: "var(--red)" }}>*</span></label>
-          <input className="field-input" style={inputStyle} value={lastName} onChange={(e) => setLastName(e.target.value)} required autoComplete="family-name" />
+          <label htmlFor="meal-last-name" style={labelStyle}>Last name <span style={{ color: "var(--red)" }}>*</span></label>
+          <input id="meal-last-name" className="field-input" style={inputStyle} value={lastName} onChange={(e) => setLastName(e.target.value)} required autoComplete="family-name" />
         </div>
       </div>
 
       <div style={{ marginBottom: 12 }}>
-        <label style={labelStyle}>Email address <span style={{ color: "var(--red)" }}>*</span></label>
-        <input className="field-input" style={inputStyle} type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
+        <label htmlFor="meal-email" style={labelStyle}>Email address <span style={{ color: "var(--red)" }}>*</span></label>
+        <input id="meal-email" className="field-input" style={inputStyle} type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
       </div>
 
       <div style={{ marginBottom: 12 }}>
-        <label style={labelStyle}>Phone number <span style={{ color: "var(--red)" }}>*</span></label>
-        <input className="field-input" style={inputStyle} type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required autoComplete="tel" />
+        <label htmlFor="meal-phone" style={labelStyle}>Phone number <span style={{ color: "var(--red)" }}>*</span></label>
+        <input id="meal-phone" className="field-input" style={inputStyle} type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required autoComplete="tel" />
       </div>
 
       <div style={{ marginBottom: 12 }}>
-        <label style={labelStyle}>Age range</label>
-        <select className="field-input" style={{ ...inputStyle, cursor: "pointer" }} value={ageRange} onChange={(e) => setAgeRange(e.target.value as AgeRange)}>
+        <label htmlFor="meal-age" style={labelStyle}>Age range</label>
+        <select id="meal-age" className="field-input" style={{ ...inputStyle, cursor: "pointer" }} value={ageRange} onChange={(e) => setAgeRange(e.target.value as AgeRange)}>
           <option value="0-12">0–12</option>
           <option value="13-19">13–19</option>
           <option value="20-29">20–29</option>
@@ -128,24 +128,24 @@ export function MealRequestForm() {
       </div>
 
       <div style={{ marginBottom: 12 }}>
-        <label style={labelStyle}>Church name <span style={{ color: "var(--red)" }}>*</span></label>
-        <input className="field-input" style={inputStyle} value={churchName} onChange={(e) => setChurchName(e.target.value)} required autoComplete="organization" />
+        <label htmlFor="meal-church" style={labelStyle}>Church name <span style={{ color: "var(--red)" }}>*</span></label>
+        <input id="meal-church" className="field-input" style={inputStyle} value={churchName} onChange={(e) => setChurchName(e.target.value)} required autoComplete="organization" />
       </div>
 
       <div style={{ marginBottom: 12 }}>
-        <label style={labelStyle}>Youth leader&apos;s name <span style={{ color: "var(--red)" }}>*</span></label>
-        <input className="field-input" style={inputStyle} value={youthLeaderName} onChange={(e) => setYouthLeaderName(e.target.value)} required />
+        <label htmlFor="meal-leader" style={labelStyle}>Youth leader&apos;s name <span style={{ color: "var(--red)" }}>*</span></label>
+        <input id="meal-leader" className="field-input" style={inputStyle} value={youthLeaderName} onChange={(e) => setYouthLeaderName(e.target.value)} required />
       </div>
 
       <div style={{ marginBottom: 12 }}>
-        <label style={labelStyle}>Children traveling with you (optional)</label>
-        <textarea className="field-input" style={{ ...inputStyle, resize: "vertical" }} rows={2} value={childrenNames} onChange={(e) => setChildrenNames(e.target.value)} />
+        <label htmlFor="meal-children" style={labelStyle}>Children traveling with you (optional)</label>
+        <textarea id="meal-children" className="field-input" style={{ ...inputStyle, resize: "vertical" }} rows={2} value={childrenNames} onChange={(e) => setChildrenNames(e.target.value)} />
         <p style={{ fontSize: 12, color: "var(--ink-soft)", margin: "4px 0 0" }}>List up to 3 names living in your household — not youth from your church.</p>
       </div>
 
       <div style={{ marginBottom: 20 }}>
-        <label style={labelStyle}>DCC / Zone <span style={{ color: "var(--red)" }}>*</span></label>
-        <input className="field-input" style={inputStyle} value={dccZone} onChange={(e) => setDccZone(e.target.value)} required />
+        <label htmlFor="meal-zone" style={labelStyle}>DCC / Zone <span style={{ color: "var(--red)" }}>*</span></label>
+        <input id="meal-zone" className="field-input" style={inputStyle} value={dccZone} onChange={(e) => setDccZone(e.target.value)} required />
         <p style={{ fontSize: 12, color: "var(--ink-soft)", margin: "4px 0 0" }}>If you don&apos;t know, write &quot;Not sure.&quot;</p>
       </div>
 
@@ -162,8 +162,8 @@ export function MealRequestForm() {
       </fieldset>
 
       <div style={{ marginBottom: 20 }}>
-        <label style={labelStyle}>Food allergies / limitations (optional)</label>
-        <textarea className="field-input" style={{ ...inputStyle, resize: "vertical" }} rows={2} value={allergies} onChange={(e) => setAllergies(e.target.value)} placeholder="e.g. vegetarian, vegan, nut allergy" />
+        <label htmlFor="meal-allergies" style={labelStyle}>Food allergies / limitations (optional)</label>
+        <textarea id="meal-allergies" className="field-input" style={{ ...inputStyle, resize: "vertical" }} rows={2} value={allergies} onChange={(e) => setAllergies(e.target.value)} placeholder="e.g. vegetarian, vegan, nut allergy" />
       </div>
 
       {status === "error" && errorMessage && (
