@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { createServiceClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rateLimit";
-import { looksLikeSpam } from "@/lib/spam";
+import { FORM_HEADER, looksLikeSpam } from "@/lib/spam";
 import { escapeHtml } from "@/lib/html";
 import { sendContactAutoReply } from "@/lib/contactReplyEmail";
 import { EMAIL_FROM } from "@/lib/email";
@@ -43,6 +43,11 @@ export async function POST(req: Request) {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "anon";
   if (!rateLimit(ip, 5, 60_000)) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
+  // Direct API posts that skip our own form code are bots: fake success, drop.
+  if (!req.headers.get(FORM_HEADER)) {
+    return NextResponse.json({ success: true });
   }
 
   let body: Record<string, unknown>;

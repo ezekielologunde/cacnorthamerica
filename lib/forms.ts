@@ -1,3 +1,5 @@
+import { FORM_HEADER } from "@/lib/spam";
+
 export type LeadData = Record<string, string>;
 
 export function isValidEmail(email: string): boolean {
@@ -17,7 +19,7 @@ export function isValidEmail(email: string): boolean {
 export async function submitLead(data: LeadData, formName: string): Promise<"sent" | "mailto"> {
   const res = await fetch("/api/contact", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", [FORM_HEADER]: "1" },
     body: JSON.stringify({ ...data, formName }),
   });
 
