@@ -23,6 +23,13 @@ const AI_BOTS = [
   "Meta-ExternalAgent",
 ];
 
+// Convention and CAC Village pages must stay crawlable (they are the pages
+// people search "CAC Village", "CAC City of Prayer" and "CACNA Annual
+// Convention" to reach). Listing them as explicit allows keeps them open even
+// if a broader disallow is added to the wildcard group later; the longest
+// matching rule wins, so these always beat any shorter disallow.
+const KEY_PUBLIC_PATHS = ["/events", "/archive", "/about", "/giving", "/calendar"];
+
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
@@ -32,7 +39,7 @@ export default function robots(): MetadataRoute.Robots {
         // /category/news is the one old category URL we redirect (see
         // next.config.ts); it must stay crawlable or Google never sees the
         // 301. The longer allow path wins over the "/category/" disallow.
-        allow: ["/", "/category/news"],
+        allow: ["/", "/category/news", ...KEY_PUBLIC_PATHS],
         disallow: [
           "/admin", "/admin/",
           // This domain ran WordPress before this Next.js rebuild. These paths
