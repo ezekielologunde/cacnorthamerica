@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 import { escapeHtml } from "@/lib/html";
-import { emailShell, EMAIL_FROM } from "@/lib/email";
+import { emailShell, sender } from "@/lib/email";
 
 export type GivingConfirmationInput = {
   contactName: string;
@@ -38,7 +38,7 @@ export async function sendGivingConfirmationEmail(input: GivingConfirmationInput
   try {
     const resend = new Resend(key);
     const { error } = await resend.emails.send({
-      from: EMAIL_FROM,
+      ...sender("giving"),
       to: input.contactEmail,
       subject: "Thank you for your gift to CACNA",
       html: buildHtml(input),

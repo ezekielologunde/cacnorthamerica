@@ -7,7 +7,7 @@ import { rateLimit } from "@/lib/rateLimit";
 import { HONEYPOT_FIELD } from "@/lib/spam";
 import { SITE_URL } from "@/lib/site";
 import { logToSheet } from "@/lib/sheetsWebhook";
-import { EMAIL_FROM } from "@/lib/email";
+import { sender } from "@/lib/email";
 
 export type SubscribeState = { ok: boolean; message: string } | null;
 
@@ -89,7 +89,7 @@ export async function subscribeAction(
   const apiKey = process.env.RESEND_API_KEY;
   if (apiKey) {
     new Resend(apiKey).emails.send({
-      from: EMAIL_FROM,
+      ...sender("general"),
       to: email,
       subject: "Welcome to CACNA 🙏",
       html: welcomeHtml(name),

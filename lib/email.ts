@@ -5,12 +5,28 @@
 // installed (see package.json), so this stays a plain template-literal
 // builder like everything else in this file's family.
 
-// cacnorthamerica.com isn't a verified Resend sending domain yet (DNS
-// verification pending) -- sending from the already-verified
-// cacsalvationcenter.org in the meantime so confirmation emails actually go
-// out. Switch this back to noreply@cacnorthamerica.com once that domain
-// verifies in Resend.
-export const EMAIL_FROM = "CACNA <noreply@cacsalvationcenter.org>";
+// Each kind of mail goes out from its own address on the Resend-verified
+// cacnorthamerica.com domain, with replies routed to a matching mailbox
+// (forwarded to the team's Gmail). Resend can send from any address on a
+// verified domain, but the reply-to mailbox must exist or replies bounce.
+const DOMAIN = "cacnorthamerica.com";
+
+const SENDERS = {
+  general: { name: "CACNA", address: `info@${DOMAIN}` },
+  convention: { name: "CACNA Convention", address: `convention@${DOMAIN}` },
+  store: { name: "CACNA Store", address: `store@${DOMAIN}` },
+  giving: { name: "CACNA Giving", address: `giving@${DOMAIN}` },
+} as const;
+
+export type EmailPurpose = keyof typeof SENDERS;
+
+/** Spread into resend.emails.send(): sets both `from` and `replyTo`. */
+export function sender(purpose: EmailPurpose) {
+  const { name, address } = SENDERS[purpose];
+  return { from: `${name} <${address}>`, replyTo: address };
+}
+
+export const EMAIL_FROM = sender("general").from;
 
 /** Every string here is inserted as raw HTML -- callers must run any
  *  user-supplied value through lib/html.ts's escapeHtml() themselves before

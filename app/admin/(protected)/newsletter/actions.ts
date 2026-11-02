@@ -3,7 +3,7 @@
 import { createServiceClient } from "@/lib/supabase/server";
 import { Resend } from "resend";
 import { requireAdmin } from "@/lib/supabase/require-admin";
-import { EMAIL_FROM } from "@/lib/email";
+import { sender } from "@/lib/email";
 
 export type BroadcastState = {
   ok: boolean;
@@ -83,7 +83,7 @@ export async function broadcastAction(
   for (const subscriber of subscribers) {
     try {
       await resend.emails.send({
-        from: EMAIL_FROM,
+        ...sender("general"),
         to: subscriber.email,
         subject,
         html,
