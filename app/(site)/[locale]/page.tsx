@@ -9,6 +9,7 @@ import { Nav } from "@/components/navigation/Nav";
 import { Hero } from "@/components/sections/Hero";
 import { HomepageAnnouncements } from "@/components/ui/HomepageAnnouncements";
 import { createServiceClient } from "@/lib/supabase/server";
+import { CacWorldNewsStrip } from "@/components/sections/CacWorldNewsStrip";
 
 // Below-fold sections split into separate JS chunks — browser parses them
 // incrementally instead of one blocking task, cutting TBT significantly.
@@ -105,6 +106,7 @@ export default async function Home({
       <PastorWelcome />
       <Watchword />
       <LatestNews />
+      <CacWorldNewsStrip limit={3} />
       <OurMinistries />
       <Impact />
       <GlobalChurches />

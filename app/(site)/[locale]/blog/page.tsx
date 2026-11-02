@@ -7,7 +7,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { POSTS, type BlogPost, badgeTextColor, CATEGORY_COLOR, CATEGORY_ACCENT } from "@/lib/blog";
 import { specialEvents } from "@/lib/events";
-import { getApprovedCacWorldNews, type CacWorldNewsItem } from "@/lib/cacWorldNews";
+import { getLatestCacWorldNews, type CacWorldNewsItem } from "@/lib/cacWorldNews";
 import { GIVING_CAMPAIGNS, type GivingCampaign } from "@/lib/giving";
 import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
 import Link from "next/link";
@@ -207,7 +207,7 @@ function CacWorldCard({ item }: { item: CacWorldNewsItem }) {
         </h3>
         {item.excerpt && (
           <p style={{ fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.68, margin: "0 0 18px", flex: 1 }}>
-            {item.excerpt}…
+            {item.excerpt}
           </p>
         )}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8, borderTop: "1px solid var(--line)", paddingTop: 14, marginTop: "auto" }}>
@@ -370,7 +370,7 @@ export default async function BlogPage({
     .eq("published", true)
     .order("published_at", { ascending: false });
 
-  const cacWorldNews = await getApprovedCacWorldNews(6);
+  const cacWorldNews = await getLatestCacWorldNews(6);
   const dynamicPosts = (dbRows ?? []).map(dbPostToBlogPost);
   const [featured, ...rest] = POSTS;
   const allArticles = [...rest, ...dynamicPosts];
