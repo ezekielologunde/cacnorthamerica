@@ -1,3 +1,4 @@
+import "@/components/ministries/ministries-mobile.css";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
@@ -29,13 +30,10 @@ export default async function WatchwordsPage({
       <Nav heroDark />
 
       {/* Hero */}
-      <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 90px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -100, left: "50%", transform: "translateX(-50%)", width: 740, height: 460, background: "radial-gradient(circle,rgba(253,200,65,.22),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 16s ease-in-out infinite" }} />
+      <section className="min-hero" style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 90px", position: "relative", overflow: "hidden" }}>
+        <div className="min-hero-glow" style={{ position: "absolute", top: -100, left: "50%", transform: "translateX(-50%)", width: 740, height: 460, background: "radial-gradient(circle,rgba(253,200,65,.22),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 16s ease-in-out infinite" }} />
         <div style={{ maxWidth: 820, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
-          <Reveal from="scale">
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Watchwords</span>
-          </Reveal>
-          <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(44px,6.5vw,92px)", letterSpacing: "-0.03em", color: "#fff", margin: "16px 0", lineHeight: 0.95, textWrap: "balance" }}>
+          <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(44px,6.5vw,92px)", letterSpacing: "-0.03em", color: "#fff", margin: "0 0 16px", lineHeight: 0.95, textWrap: "balance" }}>
             <RevealText immediate>A word for</RevealText>
             <br />
             <RevealText immediate delay={0.15} style={{ color: "var(--red)" }}>
@@ -51,12 +49,11 @@ export default async function WatchwordsPage({
       </section>
 
       {/* Current year, spotlighted */}
-      <section style={{ background: "linear-gradient(135deg,var(--red-deep),var(--red))", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)", position: "relative", overflow: "hidden" }}>
+      <section style={{ background: "linear-gradient(135deg,var(--red-deep),var(--red))", padding: "clamp(40px,7vw,90px) clamp(20px,5vw,64px)", position: "relative", overflow: "hidden" }}>
         <div aria-hidden style={{ position: "absolute", top: -120, right: -80, width: 520, height: 420, background: "radial-gradient(circle,rgba(253,200,65,.28),transparent 65%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 860, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
-            <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>{`Our ${CURRENT_WATCHWORD.year} Watchword`}</span>
-          </Reveal>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,4vw,38px)", letterSpacing: "-.8px", color: "var(--cream)", margin: 0, lineHeight: 1.05 }}>{`Our ${CURRENT_WATCHWORD.year} Watchword`}</h2></Reveal>
           <Reveal delay={90}>
             <p style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4.2vw,52px)", letterSpacing: "-0.02em", color: "#fff", margin: "18px 0 0", lineHeight: 1.12, textWrap: "balance" }}>
               &ldquo;{CURRENT_WATCHWORD.verseText}&rdquo;
@@ -80,7 +77,7 @@ export default async function WatchwordsPage({
       </section>
 
       {/* Full archive */}
-      <section style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+      <section className="min-section" style={{ background: "var(--cream)", padding: "clamp(40px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 820, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 48 }}>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,52px)", letterSpacing: "-1px", color: "var(--ink)", margin: 0, lineHeight: 1 }}>

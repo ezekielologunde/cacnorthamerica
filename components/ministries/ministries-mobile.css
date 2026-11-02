@@ -1,0 +1,34 @@
+/* Mobile-first tuning for the ministries group (index + sub-conference pages). */
+.min-cta-row > a { min-height: 52px; display: inline-flex !important; align-items: center; justify-content: center; }
+
+/* Department tab row: one swipeable line, 44px+ tap targets */
+.dept-tabs { display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin: 0 -20px 28px; padding: 2px 20px; }
+.dept-tabs::-webkit-scrollbar { display: none; }
+.dept-tabs button { flex: none; min-height: 44px; scroll-snap-align: start; white-space: nowrap; }
+@media (min-width: 761px) {
+  .dept-tabs { flex-wrap: wrap; overflow: visible; justify-content: center; margin: 0 0 40px; padding: 0; }
+}
+
+/* Ministry cards: whole card is tappable via the stretched link */
+.min-card { position: relative; }
+.min-card-link { min-height: 44px; display: inline-flex; align-items: center; }
+.min-card-link::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+/* A transform on the link would make it the containing block for ::after and shrink the card-wide hit area while pressed. */
+.min-card .min-card-link:active { transform: none; }
+
+@media (max-width: 640px) {
+  .min-hero { padding: 112px 20px 44px !important; }
+  .min-hero-glow { width: 420px !important; height: 300px !important; }
+  .min-grid { gap: 12px !important; grid-template-columns: 1fr !important; }
+  .min-card { border-radius: 18px !important; box-shadow: none !important; }
+  .min-card-banner { height: 64px !important; }
+  .min-card-bigicon { display: none !important; }
+  .min-card-body { padding: 16px 18px 12px !important; }
+  .min-card-body h3 { font-size: 19px !important; margin-bottom: 6px !important; }
+  .min-card-body p { font-size: 15px !important; margin-bottom: 4px !important; line-height: 1.55 !important; }
+  .min-card-link { font-size: 15px !important; }
+  .min-section { padding-left: 20px !important; padding-right: 20px !important; }
+  .sub-section { padding-top: 44px !important; padding-bottom: 44px !important; }
+  .min-photostrip { gap: 8px !important; }
+  .min-cta-row { flex-direction: column; align-items: stretch; }
+}
