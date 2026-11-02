@@ -108,6 +108,15 @@ export const specialEvents: ChurchEvent[] = [
     navLabel: "Singles Game Night",
   },
   {
+    id: "business-group-fellowship-summit-2026-10",
+    title: "CAC North America Business Group Fellowship — Quarterly Summit: \"Investment: Triple Net\"",
+    desc: "The Business Group Fellowship's quarterly summit on the theme \"Investment: Triple Net.\" Speakers: Pastor (Dr) T.A.O. Agbeja, CACNA Latunde Regional Superintendent; Pastor Olubode Olatunji, Supervisor, Business Group Fellowship; Pastor Bolaji Oladunni, Chairman, Business Group Fellowship; and guest speaker Evangelist Bola Mustapha. On Zoom. Contact: 617-922-3033 or 813-458-2892.",
+    dateLabel: "October 26, 2026", timeLabel: "8:30 PM ET · On Zoom", month: "OCT", day: "26",
+    startLocal: "20261026T203000", endLocal: "20261026T220000",
+    location: "Zoom — link shared by the Business Group Fellowship",
+    navLabel: "Business Group Summit",
+  },
+  {
     id: "holy-land-pilgrimage-2026",
     title: "Holy Land Pilgrimage 2026",
     desc: "CACNA Latunde Region Pilgrimage to Israel & Egypt, November 2–12, 2026. Package includes round-trip flights from JFK, 8 nights accommodation (7 in Israel + 1 in St. Catherine, Egypt), daily meals, private guide, group coach, and Pilgrimage Certificate. Price $4,549 · $500 deposit to register · $2,000 second payment due Oct 31. Contact: info@cacnapilgrimage.org | @cacnapilgrimage",
