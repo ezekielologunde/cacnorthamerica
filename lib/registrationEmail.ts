@@ -97,7 +97,16 @@ export async function sendRegistrationConfirmationEmail(
   if (!key) return true;
 
   try {
-    const qrDataUri = isPaid ? await renderQrCodePngDataUri(confirmationUrl) : null;
+    // A very large group makes the confirmation URL too long for a QR code.
+    // The QR is a nicety: send the email without it rather than not at all.
+    let qrDataUri: string | null = null;
+    if (isPaid) {
+      try {
+        qrDataUri = await renderQrCodePngDataUri(confirmationUrl);
+      } catch (qrErr) {
+        console.error("[registration-email] QR skipped:", qrErr);
+      }
+    }
     const resend = new Resend(key);
     const { error } = await resend.emails.send({
       ...sender("convention"),

@@ -190,6 +190,12 @@ process.env.RESEND_API_KEY = "re_check_script_only";
 check("free youth registration without RESEND_API_KEY succeeds, sends none, and seals no emailed flag",
   noResend.status === 200 && emails.length === 0 && openRegistrationToken(tokenOf(noResend))?.emailed === undefined);
 
+emails.length = 0;
+const bigGroup = await post(youth(Array.from({ length: 30 }, (_, i) => kid(5 + (i % 10), { firstName: "Christopher" + i, lastName: "Johnson-Williams" })), { contactEmail: "biggroup@example.com" }));
+await settleEmail();
+check("a 30-person free group still gets its confirmation email even if the QR cannot be encoded",
+  bigGroup.status === 200 && emails.length === 1 && recipients(emails[0])[0] === "biggroup@example.com");
+
 // Paid path: anyone 20-29.
 created.length = 0; rows.length = 0;
 const paid = await post(youth([kid(22, { allergies: "Shellfish" }), kid(8)]));
