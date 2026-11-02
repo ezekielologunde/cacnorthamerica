@@ -47,11 +47,9 @@ export default function robots(): MetadataRoute.Robots {
           "/admin",
           "/api/",
           "/newsletter",
-          // Post-payment receipts: per-person pages reached from Stripe, never
-          // search results. They also send noindex (see each page's metadata).
-          "/events/*/register/confirmation",
-          "/giving/confirmation",
-          "/store/confirmation",
+          // The post-payment confirmation pages are deliberately NOT disallowed:
+          // they send noindex, and Google can only apply a noindex it is
+          // allowed to fetch.
           // This domain ran WordPress before this Next.js rebuild. These paths
           // are leftovers Google still remembers crawling (theme assets,
           // uploads, category archives) that now 404 correctly — disallowing
