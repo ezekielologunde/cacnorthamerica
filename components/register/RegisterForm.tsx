@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 export type RegistrantCategory = "adult" | "young_adult" | "child";
-type RegistrantRow = { fullName: string; category: RegistrantCategory };
+type RegistrantRow = { firstName: string; lastName: string; category: RegistrantCategory | "" };
 type Mode = "individual" | "group";
 
 // 16px text stops iOS Safari zooming the page on focus; 48px height is a
@@ -41,14 +41,9 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("individual");
   const [churchName, setChurchName] = useState("");
-  const [registrants, setRegistrants] = useState<RegistrantRow[]>([{ fullName: "", category: "adult" }]);
-  // Every new row (via "+ Add", duplicate, or bulk-add) starts on whichever
-  // category was picked most recently, instead of always resetting to
-  // "adult" -- saves a re-click when adding several people of the same kind
-  // (e.g. a youth group registering 10 young adults in a row).
-  const [lastCategory, setLastCategory] = useState<RegistrantCategory>("adult");
+  const [registrants, setRegistrants] = useState<RegistrantRow[]>([{ firstName: "", lastName: "", category: "" }]);
   const [bulkNames, setBulkNames] = useState("");
-  const [bulkCategory, setBulkCategory] = useState<RegistrantCategory>("adult");
+  const [bulkCategory, setBulkCategory] = useState<RegistrantCategory | "">("");
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
@@ -75,18 +70,17 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
   // Individual and Group both support registering any number of people; the
   // only difference between them is whether a church name is collected.
   const total = useMemo(
-    () => registrants.reduce((sum, r) => sum + (priceMap[r.category] ?? 0), 0),
+    () => registrants.reduce((sum, r) => sum + (r.category ? priceMap[r.category] ?? 0 : 0), 0),
     [registrants, priceMap]
   );
 
   function updateRegistrant(index: number, patch: Partial<RegistrantRow>) {
     setRegistrants((current) => current.map((r, i) => (i === index ? { ...r, ...patch } : r)));
-    if (patch.category) setLastCategory(patch.category);
   }
 
   function addRegistrant() {
     focusRow.current = registrants.length;
-    setRegistrants((current) => [...current, { fullName: "", category: lastCategory }]);
+    setRegistrants((current) => [...current, { firstName: "", lastName: "", category: "" }]);
   }
 
   function duplicateRegistrant(index: number) {
@@ -94,7 +88,7 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
     setRegistrants((current) => {
       const source = current[index];
       const copy = [...current];
-      copy.splice(index + 1, 0, { fullName: "", category: source.category });
+      copy.splice(index + 1, 0, { firstName: "", lastName: "", category: source.category });
       return copy;
     });
   }
@@ -110,16 +104,29 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
   function addBulkNames() {
     const names = bulkNames.split("\n").map((n) => n.trim()).filter(Boolean);
     if (names.length === 0) return;
-    const newRows: RegistrantRow[] = names.map((fullName) => ({ fullName, category: bulkCategory }));
+    if (!bulkCategory) return;
+    // "Jane Mary Doe" -> first "Jane Mary", last "Doe"; a single word leaves the
+    // last name empty so the row is flagged as required.
+    const newRows: RegistrantRow[] = names.map((full) => {
+      const parts = full.split(/\s+/);
+      const lastName = parts.length > 1 ? parts[parts.length - 1] : "";
+      const firstName = parts.length > 1 ? parts.slice(0, -1).join(" ") : parts[0];
+      return { firstName, lastName, category: bulkCategory };
+    });
     setRegistrants((current) =>
-      current.length === 1 && current[0].fullName.trim() === "" ? newRows : [...current, ...newRows]
+      current.length === 1 && current[0].firstName.trim() === "" && current[0].lastName.trim() === "" ? newRows : [...current, ...newRows]
     );
-    setLastCategory(bulkCategory);
     setBulkNames("");
   }
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    const missing = registrants.findIndex((r) => !r.category);
+    if (missing !== -1) {
+      setErrorMessage(registrants.length > 1 ? `Choose a category for Person ${missing + 1}.` : "Choose a category from the list.");
+      setStatus("error");
+      return;
+    }
     setStatus("loading");
     setErrorMessage(null);
 
@@ -133,7 +140,12 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
           contactName,
           contactEmail,
           contactPhone,
-          registrants,
+          registrants: registrants.map((r) => ({
+            firstName: r.firstName.trim(),
+            lastName: r.lastName.trim(),
+            fullName: `${r.firstName.trim()} ${r.lastName.trim()}`,
+            category: r.category,
+          })),
         }),
       });
 
@@ -157,6 +169,7 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
 
   const categoryOptions = (
     <>
+      <option value="" disabled>{t("categoryPlaceholder")}</option>
       <option value="adult">{t("categoryAdult")}</option>
       <option value="young_adult">{t("categoryYoungAdult")}</option>
       <option value="child">{t("categoryChild")}</option>
@@ -221,34 +234,49 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
               )}
             </div>
           </div>
-          <div className="reg-row">
+          <div className="reg-row2">
             <label>
-              <span style={labelStyle}>{t("fullName")} <span style={{ color: "var(--red)" }}>*</span></span>
+              <span style={labelStyle}>{t("firstName")} <span style={{ color: "var(--red)" }}>*</span></span>
               <input
                 ref={(el) => { nameRefs.current[i] = el; }}
                 className="field-input reg-input"
-                name={`registrant-${i}-name`}
-                value={r.fullName}
-                onChange={(e) => updateRegistrant(i, { fullName: e.target.value })}
+                name={`registrant-${i}-first-name`}
+                value={r.firstName}
+                onChange={(e) => updateRegistrant(i, { firstName: e.target.value })}
                 required
-                autoComplete={i === 0 ? "name" : "off"}
+                autoComplete={i === 0 ? "given-name" : "off"}
                 autoCapitalize="words"
                 enterKeyHint="next"
               />
             </label>
             <label>
-              <span style={labelStyle}>{t("category")}</span>
-              <select
+              <span style={labelStyle}>{t("lastName")} <span style={{ color: "var(--red)" }}>*</span></span>
+              <input
                 className="field-input reg-input"
-                name={`registrant-${i}-category`}
-                style={{ cursor: "pointer" }}
-                value={r.category}
-                onChange={(e) => updateRegistrant(i, { category: e.target.value as RegistrantCategory })}
-              >
-                {categoryOptions}
-              </select>
+                name={`registrant-${i}-last-name`}
+                value={r.lastName}
+                onChange={(e) => updateRegistrant(i, { lastName: e.target.value })}
+                required
+                autoComplete={i === 0 ? "family-name" : "off"}
+                autoCapitalize="words"
+                enterKeyHint="next"
+              />
             </label>
           </div>
+          <label style={{ display: "block", marginTop: 12 }}>
+            <span style={labelStyle}>{t("category")} <span style={{ color: "var(--red)" }}>*</span></span>
+            <select
+              className="field-input reg-input"
+              name={`registrant-${i}-category`}
+              style={{ cursor: "pointer" }}
+              value={r.category}
+              onChange={(e) => updateRegistrant(i, { category: e.target.value as RegistrantCategory })}
+              required
+            >
+              {categoryOptions}
+            </select>
+            {!r.category && <span style={hintStyle}>{t("categoryHint")}</span>}
+          </label>
         </div>
       ))}
 
@@ -279,19 +307,19 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
                 className="field-input reg-input"
                 style={{ width: "auto", flex: "1 1 160px", cursor: "pointer" }}
                 value={bulkCategory}
-                onChange={(e) => setBulkCategory(e.target.value as RegistrantCategory)}
+                onChange={(e) => setBulkCategory(e.target.value as RegistrantCategory | "")}
               >
                 {categoryOptions}
               </select>
               <button
                 type="button"
                 onClick={addBulkNames}
-                disabled={bulkCount === 0}
+                disabled={bulkCount === 0 || !bulkCategory}
                 className="press"
                 style={{
                   flex: "1 1 140px", minHeight: 48, background: "var(--ink)", color: "#fff", fontWeight: 700, fontSize: 14.5,
                   padding: "0 18px", borderRadius: 999, border: "none",
-                  cursor: bulkCount === 0 ? "not-allowed" : "pointer", opacity: bulkCount === 0 ? 0.5 : 1,
+                  cursor: bulkCount === 0 || !bulkCategory ? "not-allowed" : "pointer", opacity: bulkCount === 0 || !bulkCategory ? 0.5 : 1,
                 }}
               >
                 + Add {bulkCount || ""} {bulkCount === 1 ? "person" : "people"}

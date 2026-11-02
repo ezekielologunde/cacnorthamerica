@@ -349,3 +349,5 @@ textarea.reg-input { padding: 12px 14px; }
 .reg-bulk > summary::-webkit-details-marker { display: none; }
 .reg-bulk[open] { padding-bottom: 16px; }
 .reg-sticky { position: sticky; bottom: 0; z-index: 5; margin: 20px -8px 0; padding: 14px 8px calc(14px + env(safe-area-inset-bottom)); background: color-mix(in srgb, var(--paper) 92%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid var(--line); }
+.reg-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 560px) { .reg-row2 { grid-template-columns: 1fr; } }
