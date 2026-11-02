@@ -6,6 +6,12 @@ import { currentOrNextConvention, dateRangeLabel, CONVENTION_VENUE_SHORT, hasExt
  *  convention data (lib/conventions.ts) — never a live fetch to the separate
  *  Convention project, which is an independent Next.js app/Supabase instance
  *  with no shared backend. */
+const BUTTON_STYLE = {
+  display: "inline-flex", alignItems: "center", gap: 7,
+  background: "#fff", color: "var(--ink)", fontWeight: 800,
+  fontSize: 13, padding: "10px 20px", borderRadius: 999, textDecoration: "none",
+} as const;
+
 export function ConventionAdWidget() {
   const cy = currentOrNextConvention();
   const hasReg = !!cy.registrationUrl;
@@ -33,28 +39,16 @@ export function ConventionAdWidget() {
         </p>
         {hasReg ? (
           hasExternalRegistrationUrl(cy) ? (
-            <a href={cy.registrationUrl} target="_blank" rel="noopener noreferrer" className="press" style={{
-              display: "inline-flex", alignItems: "center", gap: 7,
-              background: "#fff", color: "var(--ink)", fontWeight: 800,
-              fontSize: 13, padding: "10px 20px", borderRadius: 999, textDecoration: "none",
-            }}>
+            <a href={cy.registrationUrl} target="_blank" rel="noopener noreferrer" className="press" style={BUTTON_STYLE}>
               {`Convention ${cy.year}`} <ArrowRight size={13} strokeWidth={2.5} aria-hidden />
             </a>
           ) : (
-            <Link href={cy.registrationUrl!} className="press" style={{
-              display: "inline-flex", alignItems: "center", gap: 7,
-              background: "#fff", color: "var(--ink)", fontWeight: 800,
-              fontSize: 13, padding: "10px 20px", borderRadius: 999, textDecoration: "none",
-            }}>
+            <Link href={cy.registrationUrl!} className="press" style={BUTTON_STYLE}>
               {`Convention ${cy.year}`} <ArrowRight size={13} strokeWidth={2.5} aria-hidden />
             </Link>
           )
         ) : (
-          <Link href={cy.href} className="press" style={{
-            display: "inline-flex", alignItems: "center", gap: 7,
-            background: "#fff", color: "var(--ink)", fontWeight: 800,
-            fontSize: 13, padding: "10px 20px", borderRadius: 999, textDecoration: "none",
-          }}>
+          <Link href={cy.href} className="press" style={BUTTON_STYLE}>
             Event Details <ArrowRight size={13} strokeWidth={2.5} aria-hidden />
           </Link>
         )}

@@ -9,7 +9,6 @@ import { POSTS, type BlogPost, badgeTextColor, CATEGORY_COLOR, CATEGORY_ACCENT }
 import { specialEvents } from "@/lib/events";
 import { getApprovedCacWorldNews, type CacWorldNewsItem } from "@/lib/cacWorldNews";
 import { GIVING_CAMPAIGNS, type GivingCampaign } from "@/lib/giving";
-import { currentOrNextConvention, dateRangeLabel, hasExternalRegistrationUrl } from "@/lib/conventions";
 import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
 import Link from "next/link";
 import { Clock, Calendar, ArrowRight, Globe2, Landmark, Sparkles, Archive, BookHeart } from "lucide-react";
@@ -49,7 +48,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Blog & News — Christ Apostolic Church North America (CACNA)",
     description:
-      "Devotionals, ministry updates, and reflections from across CACNA — written for the body, by the body.",
+      "Devotionals, ministry updates, and reflections from across CACNA.",
     alternates: { canonical: `${SITE_URL}/blog` },
   };
 }
@@ -227,7 +226,7 @@ function CacWorldCard({ item }: { item: CacWorldNewsItem }) {
   );
 }
 
-function SectionHeading({ icon: Icon, eyebrow, title, description, meta, gradient }: { icon: LucideIcon; eyebrow: string; title: string; description?: string; meta?: string; gradient: string }) {
+function SectionHeading({ icon: Icon, title, description, meta, gradient }: { icon: LucideIcon; title: string; description?: string; meta?: string; gradient: string }) {
   return (
     <Reveal style={{ marginBottom: 32 }}>
       <div style={{
@@ -242,8 +241,7 @@ function SectionHeading({ icon: Icon, eyebrow, title, description, meta, gradien
               <Icon size={22} strokeWidth={2} color="#fff" aria-hidden />
             </div>
             <div>
-              <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "rgba(255,255,255,.75)" }}>{eyebrow}</span>
-              <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3vw,34px)", letterSpacing: "-.8px", color: "#fff", margin: "4px 0 6px", lineHeight: 1.1 }}>{title}</h2>
+              <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3vw,34px)", letterSpacing: "-.8px", color: "#fff", margin: "0 0 6px", lineHeight: 1.1 }}>{title}</h2>
               {description && <p style={{ fontSize: 14, color: "rgba(255,255,255,.8)", margin: 0, maxWidth: 460, lineHeight: 1.6 }}>{description}</p>}
             </div>
           </div>
@@ -387,7 +385,6 @@ export default async function BlogPage({
   // on a given day, changes daily, no client-side layout shift.
   const dayOfYear = Math.floor((Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) - Date.UTC(now.getUTCFullYear(), 0, 0)) / 86400000);
   const givingCampaign = GIVING_CAMPAIGNS[dayOfYear % GIVING_CAMPAIGNS.length];
-  const cy = currentOrNextConvention();
 
   return (
     <main id="main-content">
@@ -481,9 +478,8 @@ export default async function BlogPage({
           <div style={{ maxWidth: 1140, margin: "0 auto" }}>
             <SectionHeading
               icon={Sparkles}
-              eyebrow="Featured coverage"
               title="2026 Convention Coverage"
-              description="Welcome addresses, messages, and the closing word from CACNA's flagship gathering."
+              description="Welcome addresses, messages, and the closing word."
               gradient="linear-gradient(135deg,var(--red-deep),var(--gold))"
             />
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,360px),1fr))", gap: 22 }}>
@@ -503,9 +499,8 @@ export default async function BlogPage({
           <div style={{ maxWidth: 1140, margin: "0 auto" }}>
             <SectionHeading
               icon={Archive}
-              eyebrow="Looking back"
               title="From the Archives"
-              description="Earlier reflections and updates from across the CACNA family."
+              description="Earlier reflections and updates from across CACNA."
               meta={`${archiveArticles.length} entries`}
               gradient="linear-gradient(135deg,#3A3D4A,var(--ink))"
             />
@@ -526,7 +521,6 @@ export default async function BlogPage({
           <div style={{ maxWidth: 1140, margin: "0 auto" }}>
             <SectionHeading
               icon={Globe2}
-              eyebrow="Beyond CACNA"
               title="From CAC World"
               description="News from Christ Apostolic Church Worldwide, headquartered in Nigeria."
               meta="via cacworldnews.com"
@@ -549,9 +543,8 @@ export default async function BlogPage({
           <div style={{ maxWidth: 1140, margin: "0 auto" }}>
             <SectionHeading
               icon={BookHeart}
-              eyebrow="Daily bread"
               title="Devotionals"
-              description="Short reflections to ground your day in the Word."
+              description="Short reflections on Scripture."
               meta={`${devotionalArticles.length} entries`}
               gradient="linear-gradient(135deg,var(--red),var(--red-deep))"
             />
@@ -565,52 +558,6 @@ export default async function BlogPage({
           </div>
         </section>
       )}
-
-      {/* CACNA CTA */}
-      <section style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(56px,7vw,90px)" }}>
-        <Reveal>
-          <div style={{
-            maxWidth: 900, margin: "0 auto",
-            background: "linear-gradient(135deg,var(--red-deep),var(--red))",
-            borderRadius: 28, padding: "clamp(28px,4vw,44px)",
-            display: "flex", flexWrap: "wrap", alignItems: "center",
-            justifyContent: "space-between", gap: 24,
-            boxShadow: "0 24px 60px rgba(200,30,58,.28)",
-            position: "relative", overflow: "hidden",
-          }}>
-            <div aria-hidden style={{ position: "absolute", top: -80, right: -60, width: 320, height: 280, background: "radial-gradient(circle,rgba(253,200,65,.3),transparent 65%)", pointerEvents: "none" }} />
-            <div style={{ flex: "1 1 320px", position: "relative", zIndex: 2 }}>
-              <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "rgba(245,246,250,.8)", marginBottom: 10 }}>
-                Save the date
-              </div>
-              <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,36px)", letterSpacing: "-.6px", color: "#fff", margin: "0 0 8px", lineHeight: 1.05 }}>
-                {`CACNA ${cy.year} National Convention`}
-              </h2>
-              <p style={{ fontSize: 15, color: "rgba(245,246,250,.82)", margin: 0, lineHeight: 1.6 }}>
-                {dateRangeLabel(cy)} at CAC Village, Blue Ridge Summit, PA.
-              </p>
-            </div>
-            {cy.registrationUrl ? (
-              hasExternalRegistrationUrl(cy) ? (
-                <a href={cy.registrationUrl} target="_blank" rel="noopener noreferrer" className="btn-sheen press"
-                  style={{ position: "relative", zIndex: 2, flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 9, background: "#fff", color: "var(--red)", fontWeight: 800, fontSize: 15, padding: "14px 28px", borderRadius: 999, textDecoration: "none" }}>
-                  {`Convention ${cy.year}`} →
-                </a>
-              ) : (
-                <Link href={cy.registrationUrl} className="btn-sheen press"
-                  style={{ position: "relative", zIndex: 2, flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 9, background: "#fff", color: "var(--red)", fontWeight: 800, fontSize: 15, padding: "14px 28px", borderRadius: 999, textDecoration: "none" }}>
-                  {`Convention ${cy.year}`} →
-                </Link>
-              )
-            ) : (
-              <Link href={cy.href} className="btn-sheen press"
-                style={{ position: "relative", zIndex: 2, flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 9, background: "#fff", color: "var(--red)", fontWeight: 800, fontSize: 15, padding: "14px 28px", borderRadius: 999, textDecoration: "none" }}>
-                Event Details →
-              </Link>
-            )}
-          </div>
-        </Reveal>
-      </section>
 
       <FooterExperience />
     </main>

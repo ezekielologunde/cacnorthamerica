@@ -101,8 +101,6 @@ export async function generateMetadata({
 
 function renderBody(text: string): ReactNode[] {
   const parts: ReactNode[] = [];
-  const boldRe = /\*\*(.+?)\*\*/g;
-  const italicRe = /_(.+?)_/g;
 
   function parseInline(raw: string): ReactNode[] {
     const nodes: ReactNode[] = [];
@@ -118,10 +116,6 @@ function renderBody(text: string): ReactNode[] {
     if (cursor < raw.length) nodes.push(raw.slice(cursor));
     return nodes;
   }
-
-  // suppress unused variable warnings from the individual regexes
-  void boldRe;
-  void italicRe;
 
   parts.push(...parseInline(text));
   return parts;
@@ -270,55 +264,6 @@ function RelatedCard({ post }: { post: BlogPost }) {
   );
 }
 
-function SidebarPostCard({ post }: { post: BlogPost }) {
-  return (
-    <div
-      style={{
-        borderLeft: `3px solid`,
-        borderImage: `${post.accent} 1`,
-        paddingLeft: 14,
-        marginBottom: 22,
-      }}
-    >
-      <Link
-        href={`/blog/${post.slug}`}
-        style={{ textDecoration: "none", color: "inherit" }}
-      >
-        <p
-          style={{
-            fontSize: 14,
-            fontWeight: 700,
-            color: "var(--ink)",
-            margin: "0 0 4px",
-            lineHeight: 1.3,
-          }}
-        >
-          {post.title}
-        </p>
-        <span
-          style={{
-            fontSize: 11.5,
-            color: "var(--ink-soft)",
-            display: "block",
-            marginBottom: 6,
-          }}
-        >
-          {post.date}
-        </span>
-        <span
-          style={{
-            fontSize: 12,
-            fontWeight: 700,
-            color: "var(--red)",
-          }}
-        >
-          Read →
-        </span>
-      </Link>
-    </div>
-  );
-}
-
 export default async function BlogSlugPage({
   params,
 }: {
@@ -351,7 +296,6 @@ export default async function BlogSlugPage({
     if (!seen.has(p.slug)) { seen.add(p.slug); allRelated.push(p); }
   }
   const related = allRelated.slice(0, 3);
-  const sidebarPosts = allRelated.slice(0, 3);
 
   const shareUrl = `${SITE_URL}/blog/${post.slug}`;
   const shareText = encodeURIComponent(`${post.title} — ${shareUrl}`);
@@ -629,32 +573,6 @@ export default async function BlogSlugPage({
 
               <ConventionAdWidget />
 
-              {/* More from the family */}
-              <div
-                style={{
-                  background: "var(--paper)",
-                  borderRadius: 18,
-                  padding: "24px 26px",
-                  boxShadow: "0 4px 16px rgba(18,20,30,.06)",
-                  marginBottom: 24,
-                }}
-              >
-                <p
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 800,
-                    letterSpacing: "2px",
-                    textTransform: "uppercase",
-                    color: "var(--ink-soft)",
-                    margin: "0 0 20px",
-                  }}
-                >
-                  More from the family
-                </p>
-                {sidebarPosts.map((p) => (
-                  <SidebarPostCard key={p.slug} post={p} />
-                ))}
-              </div>
             </aside>
           </Reveal>
         </div>
