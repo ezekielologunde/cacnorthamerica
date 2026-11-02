@@ -59,6 +59,9 @@ export const ROUTES: { path: string; priority: number }[] = [
   { path: "/events/pilgrimage-2026", priority: 0.7 },
   { path: "/events/cacna-50th-anniversary-2026", priority: 0.6 },
   { path: "/events/ministers-retreat-2027", priority: 0.6 },
+  { path: "/events/beyond-the-swipe-2026", priority: 0.5 },
+  { path: "/events/hope-for-all-summit-2026", priority: 0.5 },
+  { path: "/events/cacna-2026/schedule", priority: 0.5 },
   { path: "/calendar", priority: 0.8 },
   { path: "/blog", priority: 0.6 },
   { path: "/gallery", priority: 0.6 },
@@ -81,10 +84,13 @@ export const ROUTES: { path: string; priority: number }[] = [
   { path: "/refunds", priority: 0.3 },
 ];
 
-/** schema.org structured data (@graph: Church + WebSite) for rich results,
- *  local SEO, and AI answer-engines. */
+/** schema.org structured data (@graph: Church + Organization + WebSite) for
+ *  rich results, local SEO, and AI answer-engines. schema.org's Church is a
+ *  Place, not an Organization, so the Organization node is what Google reads
+ *  for the site's name and logo. */
 export function churchJsonLd() {
   const churchId = `${SITE_URL}/#church`;
+  const organizationId = `${SITE_URL}/#organization`;
   const fullAddress = `${SITE.address.street}, ${SITE.address.city}, ${SITE.address.region} ${SITE.address.postalCode}`;
   return {
     "@context": "https://schema.org",
@@ -134,13 +140,25 @@ export function churchJsonLd() {
         } : {}),
       },
       {
+        "@type": "Organization",
+        "@id": organizationId,
+        name: SITE.name,
+        alternateName: SITE.shortName,
+        url: SITE_URL,
+        logo: { "@type": "ImageObject", url: `${SITE_URL}/images/logo.png`, width: 370, height: 318 },
+        email: SITE.email,
+        telephone: SITE.telephone,
+        location: { "@id": churchId },
+        sameAs: SITE.sameAs,
+      },
+      {
         "@type": "WebSite",
         "@id": `${SITE_URL}/#website`,
         url: SITE_URL,
         name: SITE.name,
         alternateName: SITE.shortName,
         description: SITE.description,
-        publisher: { "@id": churchId },
+        publisher: { "@id": organizationId },
         inLanguage: "en-US",
       },
     ],

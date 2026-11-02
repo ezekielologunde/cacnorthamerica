@@ -1,4 +1,5 @@
 import Script from "next/script";
+import { AdSenseScript } from "./AdSenseScript";
 
 // Set these in Vercel → Project → Settings → Environment Variables:
 //   NEXT_PUBLIC_GA_ID          Google Analytics 4 measurement ID  (e.g. G-XXXXXXXXXX)
@@ -32,16 +33,9 @@ export function GoogleTags() {
         </>
       )}
 
-      {/* Google AdSense auto-ads — only loads when publisher ID is set */}
-      {ADSENSE_ID && (
-        <Script
-          id="adsense-init"
-          async
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_ID}`}
-          crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
-      )}
+      {/* Google AdSense auto-ads — only loads when publisher ID is set, and
+          never on admin, receipt or legal pages (see lib/adsense.ts) */}
+      {ADSENSE_ID && <AdSenseScript clientId={ADSENSE_ID} />}
     </>
   );
 }

@@ -10,7 +10,7 @@ import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { POSTS, getPost, badgeTextColor } from "@/lib/blog";
 import type { BlogPost } from "@/lib/blog";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, breadcrumbJsonLd } from "@/lib/site";
 import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { setRequestLocale } from "next-intl/server";
@@ -301,8 +301,15 @@ export default async function BlogSlugPage({
   const shareText = encodeURIComponent(`${post.title} — ${shareUrl}`);
   const whatsappUrl = `https://wa.me/?text=${shareText}`;
 
+  const breadcrumbs = breadcrumbJsonLd([
+    { name: "Home", path: "/" },
+    { name: "Blog", path: "/blog" },
+    { name: post.title, path: `/blog/${post.slug}` },
+  ]);
+
   return (
     <main id="main-content">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs).replace(/</g, "\\u003c") }} />
       <Nav heroDark />
 
       {/* Hero */}
