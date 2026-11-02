@@ -2,6 +2,7 @@
 
 import { useState, type CSSProperties, type FormEvent } from "react";
 import { CheckCircle2 } from "lucide-react";
+import { FORM_HEADER, HONEYPOT_FIELD } from "@/lib/spam";
 
 type AgeRange = "0-12" | "13-19" | "20-29" | "30+";
 type MealSlot = "tue_lunch" | "tue_dinner" | "wed_lunch" | "wed_dinner" | "thu_lunch" | "thu_dinner" | "fri_lunch" | "fri_dinner";
@@ -38,6 +39,7 @@ export function MealRequestForm() {
   const [dccZone, setDccZone] = useState("");
   const [meals, setMeals] = useState<MealSlot[]>([]);
   const [allergies, setAllergies] = useState("");
+  const [honeypot, setHoneypot] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "error" | "success">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -58,8 +60,9 @@ export function MealRequestForm() {
     try {
       const response = await fetch("/api/meal-request", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", [FORM_HEADER]: "1" },
         body: JSON.stringify({
+          [HONEYPOT_FIELD]: honeypot,
           firstName, lastName, email, phone, ageRange, churchName, youthLeaderName,
           childrenNames: childrenNames.trim() || null,
           dccZone, meals,
@@ -91,6 +94,8 @@ export function MealRequestForm() {
 
   return (
     <form onSubmit={handleSubmit} style={{ maxWidth: 520, margin: "0 auto" }}>
+      {/* Honeypot: bots fill every input, people never see this one. */}
+      <input type="text" name={HONEYPOT_FIELD} value={honeypot} onChange={(e) => setHoneypot(e.target.value)} tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }} />
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 12, marginBottom: 12 }}>
         <div>
           <label style={labelStyle}>First name <span style={{ color: "var(--red)" }}>*</span></label>

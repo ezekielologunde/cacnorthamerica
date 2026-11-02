@@ -1,19 +1,19 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { createServiceClient } from "@/lib/supabase/server";
-import { rateLimit } from "@/lib/rateLimit";
-import { FORM_HEADER, looksLikeSpam } from "@/lib/spam";
+import { clientIp, rateLimit } from "@/lib/rateLimit";
+import { FORM_HEADER, HONEYPOT_FIELD, looksLikeSpam } from "@/lib/spam";
 import { escapeHtml } from "@/lib/html";
 import { sendContactAutoReply } from "@/lib/contactReplyEmail";
+import { logToSheet } from "@/lib/sheetsWebhook";
 import { EMAIL_FROM } from "@/lib/email";
+import { CONTACT_FIELD_LIMITS, CONTACT_FORM_NAMES } from "./fields";
 
 const FROM = EMAIL_FROM;
 const TO   = "info@cacnorthamerica.com";
 
-const ALLOWED_FORM_PREFIXES = ["Contact —", "Contact Form"];
-const MAX_FIELD_LENGTH = 10_000;
-const MAX_FIELDS = 20;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 function buildHtml(rows: [string, string][]): string {
   const trs = rows
@@ -26,22 +26,37 @@ function buildHtml(rows: [string, string][]): string {
 </body></html>`;
 }
 
-async function saveToSupabase(formName: string, fields: Record<string, string>): Promise<void> {
+async function saveToSupabase(fields: Record<string, string>): Promise<void> {
   const supabase = await createServiceClient();
+  await supabase.from("contact_submissions").insert({
+    name: fields["Name"] || "Unknown",
+    email: fields["Email"] || "",
+    subject: fields["Subject"] || null,
+    message: fields["Message"] || "",
+  });
+}
 
-  if (formName.startsWith("Contact —") || formName.startsWith("Contact Form")) {
-    await supabase.from("contact_submissions").insert({
-      name: fields["Name"] || fields.name || "Unknown",
-      email: fields["Email"] || fields.email || "",
-      subject: fields["Subject"] || fields.subject || null,
-      message: fields["Message"] || fields.message || "",
-    });
+/** The auto-reply goes to an address nobody has verified, so each address
+ *  gets at most one a day: a per-instance burst guard, then a check against
+ *  the shared contact_submissions table (which every instance writes to).
+ *  Runs before this submission is saved. If the lookup fails, no reply. */
+async function mayAutoReply(email: string): Promise<boolean> {
+  if (!rateLimit(`contact-reply:${email.toLowerCase()}`, 1, DAY_MS)) return false;
+  try {
+    const supabase = await createServiceClient();
+    const { count, error } = await supabase
+      .from("contact_submissions")
+      .select("id", { count: "exact", head: true })
+      .ilike("email", email)
+      .gte("created_at", new Date(Date.now() - DAY_MS).toISOString());
+    return !error && count === 0;
+  } catch {
+    return false;
   }
 }
 
 export async function POST(req: Request) {
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "anon";
-  if (!rateLimit(ip, 5, 60_000)) {
+  if (!rateLimit(clientIp(req.headers), 5, 60_000)) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
@@ -56,24 +71,32 @@ export async function POST(req: Request) {
   } catch {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  }
 
-  const { formName, ...rawFields } = body;
+  // Honeypot: bots fill every input, people never see this one.
+  if (body[HONEYPOT_FIELD]) {
+    return NextResponse.json({ success: true });
+  }
 
-  // Validate formName
-  if (typeof formName !== "string" || !ALLOWED_FORM_PREFIXES.some((p) => formName.startsWith(p))) {
+  // Only the form's own formNames, so callers can't create new Sheets tabs.
+  const { formName } = body;
+  if (typeof formName !== "string" || !CONTACT_FORM_NAMES.has(formName)) {
     return NextResponse.json({ error: "Invalid form" }, { status: 400 });
   }
 
-  // Validate fields: all values must be strings within length limits
-  if (Object.keys(rawFields).length > MAX_FIELDS) {
-    return NextResponse.json({ error: "Too many fields" }, { status: 400 });
-  }
-  for (const [, v] of Object.entries(rawFields)) {
-    if (typeof v !== "string" || v.length > MAX_FIELD_LENGTH) {
+  // Only the form's own field names (anything else is dropped before the
+  // email, Supabase and Sheets), each a string within its length cap.
+  const fields: Record<string, string> = {};
+  for (const [name, max] of Object.entries(CONTACT_FIELD_LIMITS)) {
+    const v = body[name];
+    if (v === undefined) continue;
+    if (typeof v !== "string" || v.length > max) {
       return NextResponse.json({ error: "Input too long" }, { status: 400 });
     }
+    fields[name] = v;
   }
-  const fields = rawFields as Record<string, string>;
 
   // Link-stuffed submissions are spam: drop them quietly with a normal-looking
   // success so bots learn nothing, and never save, log or email them.
@@ -82,43 +105,29 @@ export async function POST(req: Request) {
   }
 
   const subject = `${formName} — CACNA`;
-  const rows = Object.entries(fields).filter(([, v]) => v?.trim()) as [string, string][];
+  const rows = Object.entries(fields).filter(([, v]) => v.trim());
+
+  // Only use email as replyTo if it's a valid address
+  const replyToRaw = (fields["Email"] || "").trim();
+  const replyTo = EMAIL_RE.test(replyToRaw) ? replyToRaw : undefined;
+  const key = process.env.RESEND_API_KEY;
+  const autoReply = key && replyTo ? await mayAutoReply(replyTo) : false;
 
   // Save to Supabase — fire-and-forget
-  saveToSupabase(formName, fields).catch((e) => console.error("[contact] Supabase save failed:", e));
+  saveToSupabase(fields).catch((e) => console.error("[contact] Supabase save failed:", e));
 
-  // Log to Google Sheets — fire-and-forget. See lib/sheetsWebhook.ts for
-  // why SHEETS_WEBHOOK_SECRET is sent alongside every payload.
-  const hook = process.env.SHEETS_WEBHOOK;
-  if (hook) {
-    const secret = process.env.SHEETS_WEBHOOK_SECRET;
-    fetch(hook, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ formName, ...(secret ? { secret } : {}), ...fields }),
-    }).catch((e) => console.error("[contact] Sheets webhook failed:", e));
-  }
+  // Log to Google Sheets — fire-and-forget (formula-escaped in logToSheet).
+  logToSheet(formName, fields);
 
-  const key = process.env.RESEND_API_KEY;
   if (!key) {
     return NextResponse.json({ method: "mailto" });
   }
 
-  // Only use email as replyTo if it's a valid address
-  const replyToRaw = fields.email || fields["Email"] || "";
-  const replyTo = EMAIL_RE.test(replyToRaw.trim()) ? replyToRaw.trim() : undefined;
-
-  // Auto-reply to the submitter — a courtesy confirmation on top of the
-  // staff notification below, fire-and-forget so a failure here never
-  // affects this route's response. Only sent when we have a real address
-  // to reply to.
-  if (replyTo) {
-    sendContactAutoReply({
-      name: fields.name || fields["Name"] || "there",
-      email: replyTo,
-      subject: fields.subject || fields["Subject"] || formName,
-      message: fields.message || fields["Message"] || "",
-    }).catch((e) => console.error("[contact] auto-reply failed:", e));
+  // Auto-reply to the submitter: a fixed courtesy confirmation that repeats
+  // none of the submitted text, fire-and-forget so a failure here never
+  // affects this route's response.
+  if (autoReply && replyTo) {
+    sendContactAutoReply(replyTo).catch((e) => console.error("[contact] auto-reply failed:", e));
   }
 
   try {

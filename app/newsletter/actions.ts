@@ -3,7 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { Resend } from "resend";
 import { headers } from "next/headers";
-import { rateLimit } from "@/lib/rateLimit";
+import { clientIp, rateLimit } from "@/lib/rateLimit";
 import { HONEYPOT_FIELD } from "@/lib/spam";
 import { SITE_URL } from "@/lib/site";
 import { logToSheet } from "@/lib/sheetsWebhook";
@@ -11,8 +11,10 @@ import { sender } from "@/lib/email";
 
 export type SubscribeState = { ok: boolean; message: string } | null;
 
-function welcomeHtml(name: string | null): string {
-  const greeting = name ? `Hi ${name},` : "Hi there,";
+// Fixed text only: the form sends no name, so none is accepted (a submitted
+// name would otherwise reach this HTML, sent to an unverified address).
+function welcomeHtml(): string {
+  const greeting = "Hi there,";
   return `<!DOCTYPE html>
 <html>
 <body style="margin:0;padding:0;background:#F9F8F6;font-family:Georgia,serif">
@@ -56,8 +58,7 @@ export async function subscribeAction(
   _prev: SubscribeState,
   formData: FormData,
 ): Promise<SubscribeState> {
-  const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "anon";
-  if (!rateLimit(ip, 5, 60_000)) {
+  if (!rateLimit(clientIp(await headers()), 5, 60_000)) {
     return { ok: false, message: "Too many requests. Please try again in a minute." };
   }
 
@@ -67,23 +68,29 @@ export async function subscribeAction(
   }
 
   const email = (formData.get("email") as string | null)?.trim().toLowerCase() ?? "";
-  const name = (formData.get("name") as string | null)?.trim() || null;
-
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+  if (!email || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return { ok: false, message: "Please enter a valid email address." };
   }
 
+  // Plain insert, not upsert: the anon role has INSERT but not UPDATE on this
+  // table (supabase/migrations/0010), and INSERT ... ON CONFLICT DO UPDATE
+  // needs UPDATE. Granting it would let anyone re-activate an address that
+  // unsubscribed. An address that's already on the list (23505) counts as
+  // success, but gets no second welcome email.
   const supabase = await createClient();
   const { error } = await supabase
     .from("newsletter_subscribers")
-    .upsert({ email, name, active: true, source: "website" }, { onConflict: "email" });
+    .insert({ email, active: true, source: "website" });
 
+  if (error?.code === "23505") {
+    return { ok: true, message: "You're in! Welcome to the family." };
+  }
   if (error) {
     console.error("Newsletter subscribe error:", error.message);
     return { ok: false, message: "Something went wrong. Please try again." };
   }
 
-  logToSheet("Newsletter Signup", { "Email": email, "Name": name ?? "" });
+  logToSheet("Newsletter Signup", { "Email": email });
 
   // Send welcome email — fire-and-forget, never blocks the response
   const apiKey = process.env.RESEND_API_KEY;
@@ -92,7 +99,7 @@ export async function subscribeAction(
       ...sender("general"),
       to: email,
       subject: "Welcome to CACNA 🙏",
-      html: welcomeHtml(name),
+      html: welcomeHtml(),
     }).catch((e) => console.error("[newsletter] Welcome email failed:", e));
   }
 
