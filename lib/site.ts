@@ -28,6 +28,13 @@ export const SITE = {
     postalCode: "17214",
     country: "US",
   },
+  // Names people search for. CAC Village is the campus the regional office and
+  // the Annual Convention share; keep these in sync with robots.ts/llms.txt.
+  keywords: [
+    "CACNA", "CAC North America", "Christ Apostolic Church North America",
+    "CAC Village", "CAC City of Prayer", "CACNA Annual Convention",
+    "CAC Village Convention", "Blue Ridge Summit convention",
+  ],
   sameAs: [
     "https://youtube.com/@cacnorthamericalatunderegi1330",
     "https://instagram.com/cacnorthamericalatunderegion",
@@ -83,7 +90,8 @@ export function churchJsonLd() {
         "@type": "Church",
         "@id": churchId,
         name: SITE.name,
-        alternateName: SITE.shortName,
+        alternateName: [SITE.shortName, "CAC North America", "CAC Village", "CAC City of Prayer"],
+        keywords: SITE.keywords.join(", "),
         url: SITE_URL,
         logo: `${SITE_URL}/images/logo.png`,
         image: `${SITE_URL}/images/logo.png`,

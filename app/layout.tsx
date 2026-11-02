@@ -32,8 +32,9 @@ export const metadata: Metadata = {
   keywords: [
     "CACNA", "Christ Apostolic Church North America", "Christ Apostolic Church",
     "Nigerian church USA", "Yoruba church", "Aladura church USA",
-    "CAC Village", "Blue Ridge Summit convention", "CAC member church",
-    "Annual Convention", "online church", "prayer line",
+    "CAC Village", "CAC City of Prayer", "CACNA Annual Convention",
+    "CAC Village Convention", "Blue Ridge Summit convention", "CAC member church",
+    "Annual Convention", "convention registration", "online church", "prayer line",
   ],
   applicationName: SITE.shortName,
   alternates: { canonical: "/" },
