@@ -13,7 +13,7 @@ type RegisterRequestBody = {
   contactName: string;
   contactEmail: string;
   contactPhone: string;
-  registrants: { fullName: string; category: RegistrantCategory }[];
+  registrants: { firstName: string; lastName: string; category: RegistrantCategory }[];
   isComplimentary?: boolean;
   staffPasscode?: string;
 };
@@ -46,9 +46,12 @@ function validateRequestBody(body: unknown): string | null {
     if (!registrant || typeof registrant !== "object") {
       return "Each registrant must be an object";
     }
-    const r = registrant as Partial<{ fullName: string; category: RegistrantCategory }>;
-    if (typeof r.fullName !== "string" || r.fullName.trim() === "") {
-      return "Each registrant must have a non-empty fullName";
+    const r = registrant as Partial<{ firstName: string; lastName: string; category: RegistrantCategory }>;
+    if (typeof r.firstName !== "string" || r.firstName.trim() === "") {
+      return "Each registrant must have a first name";
+    }
+    if (typeof r.lastName !== "string" || r.lastName.trim() === "") {
+      return "Each registrant must have a last name (surname)";
     }
     if (typeof r.category !== "string" || !VALID_CATEGORIES.includes(r.category as RegistrantCategory)) {
       return `Invalid registrant category: ${String(r.category)}`;
@@ -104,15 +107,16 @@ export async function POST(request: Request) {
   // goes live).
   const pricedRegistrants: { fullName: string; category: RegistrantCategory; priceCents: number }[] = [];
   for (const registrant of body.registrants) {
+    const fullName = `${registrant.firstName.trim()} ${registrant.lastName.trim()}`;
     if (isComplimentary || registrant.category === "child") {
-      pricedRegistrants.push({ fullName: registrant.fullName, category: registrant.category, priceCents: 0 });
+      pricedRegistrants.push({ fullName, category: registrant.category, priceCents: 0 });
       continue;
     }
     const price = priceForCategory(tiers, registrant.category);
     if (price === null) {
       return NextResponse.json({ error: `No active price for category ${registrant.category}` }, { status: 400 });
     }
-    pricedRegistrants.push({ fullName: registrant.fullName, category: registrant.category, priceCents: price });
+    pricedRegistrants.push({ fullName, category: registrant.category, priceCents: price });
   }
 
   const totalAmountCents = pricedRegistrants.reduce((sum, r) => sum + r.priceCents, 0);
