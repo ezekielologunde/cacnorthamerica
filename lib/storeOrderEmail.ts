@@ -3,6 +3,9 @@ import { escapeHtml } from "@/lib/html";
 import { emailShell, sender } from "@/lib/email";
 
 export type StoreOrderConfirmationInput = {
+  /** Resend idempotency key (24h window) so a redelivered webhook never
+   *  sends the same confirmation twice. */
+  idempotencyKey?: string;
   contactName: string;
   contactEmail: string;
   /** Stripe line-item descriptions, e.g. "CACNA 2027 T-Shirt — L × 2". */
@@ -49,7 +52,7 @@ export async function sendStoreOrderConfirmationEmail(input: StoreOrderConfirmat
       to: input.contactEmail,
       subject: "Your CACNA Store order",
       html: buildHtml(input),
-    });
+    }, input.idempotencyKey ? { idempotencyKey: input.idempotencyKey } : undefined);
     if (error) {
       console.error("[store order email] Resend error:", error);
     }

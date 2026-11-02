@@ -3,6 +3,7 @@ import { CheckCircle2, XCircle } from "lucide-react";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { getStripeClient } from "@/lib/stripe";
+import { isPaidCheckout } from "@/lib/registrationConfirmation";
 import { setRequestLocale } from "next-intl/server";
 
 export default async function StoreConfirmationPage({
@@ -20,12 +21,16 @@ export default async function StoreConfirmationPage({
   let contactEmail: string | null = null;
   let totalCents: number | null = null;
   let items: { description: string; amountCents: number }[] = [];
-  let notFound = false;
+  // Only a paid session of this page's own kind is a completed checkout; an
+  // abandoned or unpaid session, another kind's session, or no session at
+  // all gets the not-found state rather than a receipt.
+  let notFound = !sessionId;
 
   if (sessionId) {
     try {
       const stripe = getStripeClient();
       const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: ["line_items"] });
+      if (!isPaidCheckout(session, "store_order")) throw new Error("not a paid store_order session");
       contactEmail = session.customer_details?.email ?? session.customer_email ?? null;
       totalCents = session.amount_total ?? 0;
       items = (session.line_items?.data ?? []).map((li) => ({ description: li.description ?? "", amountCents: li.amount_total ?? 0 }));

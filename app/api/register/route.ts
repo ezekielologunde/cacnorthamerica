@@ -5,7 +5,8 @@ import { rateLimit } from "@/lib/rateLimit";
 import { SITE_URL } from "@/lib/site";
 import { currentOrNextConvention, activePricing, priceForCategory, type RegistrantCategory } from "@/lib/conventions";
 import { encodeSummary, chunkForMetadata, type RegistrationSummary } from "@/lib/checkoutSummary";
-import { sendRegistrationConfirmationEmail } from "@/lib/registrationEmail";
+import { sealRegistrationToken } from "@/lib/registrationToken";
+import { FORM_HEADER, HONEYPOT_FIELD, looksLikeSpam } from "@/lib/spam";
 
 type RegisterRequestBody = {
   registrationType: "individual" | "group";
@@ -20,6 +21,9 @@ type RegisterRequestBody = {
 
 const VALID_CATEGORIES: RegistrantCategory[] = ["adult", "young_adult", "child"];
 const VALID_REGISTRATION_TYPES: RegisterRequestBody["registrationType"][] = ["individual", "group"];
+const MAX_REGISTRANTS = 30;
+const MAX_FIELD_LENGTH = 120;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Plain, explicit checks rather than a schema library -- matches
 // app/api/contact/route.ts's existing hand-rolled validation style.
@@ -39,8 +43,25 @@ function validateRequestBody(body: unknown): string | null {
   if (typeof b.contactEmail !== "string" || b.contactEmail.trim() === "") {
     return "contactEmail is required";
   }
+  if (!EMAIL_RE.test(b.contactEmail.trim())) {
+    return "Please enter a valid email address";
+  }
+  if (b.churchName != null && typeof b.churchName !== "string") {
+    return "churchName must be a string";
+  }
+  if (b.contactPhone != null && typeof b.contactPhone !== "string") {
+    return "contactPhone must be a string";
+  }
+  for (const value of [b.contactName, b.contactEmail, b.churchName ?? "", b.contactPhone ?? ""]) {
+    if (value.length > MAX_FIELD_LENGTH) {
+      return `Each field must be ${MAX_FIELD_LENGTH} characters or fewer`;
+    }
+  }
   if (!Array.isArray(b.registrants) || b.registrants.length === 0) {
     return "registrants must be a non-empty array";
+  }
+  if (b.registrants.length > MAX_REGISTRANTS) {
+    return `A registration can include at most ${MAX_REGISTRANTS} people. Please split larger groups into separate registrations.`;
   }
   for (const registrant of b.registrants) {
     if (!registrant || typeof registrant !== "object") {
@@ -52,6 +73,9 @@ function validateRequestBody(body: unknown): string | null {
     }
     if (typeof r.lastName !== "string" || r.lastName.trim() === "") {
       return "Each registrant must have a last name (surname)";
+    }
+    if (r.firstName.length > MAX_FIELD_LENGTH || r.lastName.length > MAX_FIELD_LENGTH) {
+      return `Each name must be ${MAX_FIELD_LENGTH} characters or fewer`;
     }
     if (typeof r.category !== "string" || !VALID_CATEGORIES.includes(r.category as RegistrantCategory)) {
       return `Invalid registrant category: ${String(r.category)}`;
@@ -69,11 +93,23 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
+  // Same bot guards as app/api/contact: a direct API post that skips our own
+  // form code (no FORM_HEADER), a filled honeypot, or a link-stuffed
+  // submission gets a normal-looking success and is never logged or priced.
+  if (!request.headers.get(FORM_HEADER)) {
+    return NextResponse.json({ success: true });
+  }
+
   let rawBody: unknown;
   try {
     rawBody = await request.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+
+  const honeypot = rawBody && typeof rawBody === "object" ? (rawBody as Record<string, unknown>)[HONEYPOT_FIELD] : undefined;
+  if (typeof honeypot === "string" && honeypot !== "") {
+    return NextResponse.json({ success: true });
   }
 
   const validationError = validateRequestBody(rawBody);
@@ -82,6 +118,18 @@ export async function POST(request: Request) {
   }
 
   const body = rawBody as RegisterRequestBody;
+
+  if (
+    looksLikeSpam([
+      body.contactName,
+      body.contactEmail,
+      body.churchName ?? "",
+      body.contactPhone ?? "",
+      ...body.registrants.flatMap((r) => [r.firstName, r.lastName]),
+    ])
+  ) {
+    return NextResponse.json({ success: true });
+  }
   const isComplimentary = body.isComplimentary === true;
 
   // Complimentary (zero-price) registrations were removed. Reject any request
@@ -136,12 +184,23 @@ export async function POST(request: Request) {
   };
   const encoded = encodeSummary(summary);
 
-  // If every registrant is free (a child-only registration, or the whole
-  // submission is Complimentary), there's nothing for Stripe to charge and
-  // no async payment step whose outcome is still pending -- log it now
-  // instead of waiting on a webhook, and send the visitor straight to their
-  // confirmation (with its check-in QR).
+  // If every registrant is a child there's nothing for Stripe to charge --
+  // log it now instead of waiting on a webhook, and send the visitor
+  // straight to their confirmation (with its check-in QR). The link carries
+  // a server-sealed token (lib/registrationToken.ts), never the readable
+  // summary, and the page re-verifies it.
+  //
+  // No email is sent on this path: nobody has proven they own contactEmail,
+  // so emailing it would let anyone send church-branded mail to any address
+  // for free. The confirmation page itself is the receipt, and the sheet row
+  // is marked unverified so staff know the email was never confirmed.
   if (totalAmountCents === 0) {
+    let token: string;
+    try {
+      token = sealRegistrationToken(summary);
+    } catch {
+      return NextResponse.json({ error: "Registration is temporarily unavailable" }, { status: 500 });
+    }
     logToSheet(`Registration — CACNA ${cy.year}`, {
       "Registration Type": body.registrationType,
       "Church Name": body.churchName ?? "",
@@ -151,10 +210,9 @@ export async function POST(request: Request) {
       "Registrants": summary.registrants.map((r) => `${r.n} (${r.c})`).join("; "),
       "Total": "$0.00",
       "Stripe Session": "",
-      "Status": isComplimentary ? "complimentary" : "paid",
+      "Status": "free (email unverified)",
     });
-    const checkoutUrl = `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?status=free&d=${encoded}`;
-    await sendRegistrationConfirmationEmail(summary, checkoutUrl, true);
+    const checkoutUrl = `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?t=${token}`;
     return NextResponse.json({ checkoutUrl });
   }
 
@@ -177,7 +235,9 @@ export async function POST(request: Request) {
         quantity: 1,
       })),
       customer_email: body.contactEmail,
-      success_url: `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?session_id={CHECKOUT_SESSION_ID}&d=${encoded}`,
+      // Only the opaque session id travels in the URL; the confirmation page
+      // reads the registration back from this session's own metadata.
+      success_url: `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}/events/cacna-${cy.year}/register`,
       metadata: {
         kind: "registration",

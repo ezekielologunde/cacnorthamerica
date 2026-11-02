@@ -3,6 +3,9 @@ import { escapeHtml } from "@/lib/html";
 import { emailShell, sender } from "@/lib/email";
 
 export type GivingConfirmationInput = {
+  /** Resend idempotency key (24h window) so a redelivered webhook never
+   *  sends the same confirmation twice. */
+  idempotencyKey?: string;
   contactName: string;
   contactEmail: string;
   campaignTitle: string;
@@ -42,7 +45,7 @@ export async function sendGivingConfirmationEmail(input: GivingConfirmationInput
       to: input.contactEmail,
       subject: "Thank you for your gift to CACNA",
       html: buildHtml(input),
-    });
+    }, input.idempotencyKey ? { idempotencyKey: input.idempotencyKey } : undefined);
     if (error) {
       console.error("[giving email] Resend error:", error);
     }

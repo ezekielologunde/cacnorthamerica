@@ -7,7 +7,7 @@ import { QrCode } from "@/components/register/QrCode";
 import { getStripeClient } from "@/lib/stripe";
 import { SITE_URL } from "@/lib/site";
 import { renderQrCodeSvg } from "@/lib/qr";
-import { decodeSummary } from "@/lib/checkoutSummary";
+import { resolveRegistrationConfirmation } from "@/lib/registrationConfirmation";
 import { PaymentOptions } from "@/components/register/PaymentOptions";
 import { conventionYears, type ConventionYear, type RegistrantCategory } from "@/lib/conventions";
 import { setRequestLocale } from "next-intl/server";
@@ -29,7 +29,7 @@ export default async function RegisterConfirmationPage({
   searchParams,
 }: {
   params: Promise<{ locale: string; slug: string }>;
-  searchParams: Promise<{ session_id?: string; status?: string; d?: string }>;
+  searchParams: Promise<{ session_id?: string; t?: string }>;
 }) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
@@ -37,24 +37,20 @@ export default async function RegisterConfirmationPage({
   const cy = findYear(slug);
   if (!cy) notFound();
 
-  const { session_id: sessionId, status, d: encoded } = await searchParams;
+  const { session_id: sessionId, t: token } = await searchParams;
 
-  // Without a database, the registration's own details travel in the `d`
-  // query param (see lib/checkoutSummary.ts) rather than being looked up by
-  // an id -- a missing or undecodable value means a stale/bad link.
-  const summary = encoded ? decodeSummary(encoded) : null;
+  // Nothing in the URL is trusted as proof: paid registrations render from
+  // the Stripe session itself and free ones from a server-sealed token (see
+  // lib/registrationConfirmation.ts). Older links that still carry `d` or
+  // `status=free` are ignored rather than believed.
+  const confirmation = await resolveRegistrationConfirmation({
+    year: cy.year,
+    sessionId,
+    token,
+    retrieveSession: (id) => getStripeClient().checkout.sessions.retrieve(id),
+  });
 
-  let isPaid = status === "free";
-  if (summary && sessionId && !isPaid) {
-    try {
-      const session = await getStripeClient().checkout.sessions.retrieve(sessionId);
-      isPaid = session.payment_status === "paid";
-    } catch {
-      isPaid = false;
-    }
-  }
-
-  if (!summary) {
+  if (!confirmation) {
     return (
       <main id="main-content">
         <Nav heroDark />
@@ -72,14 +68,12 @@ export default async function RegisterConfirmationPage({
     );
   }
 
-  // Re-encode the same query string this page was reached with, so the QR
-  // code opens this exact confirmation again on whatever device scans it --
-  // the self-contained "no login, no lookup needed" check-in proof staff use
-  // at the door.
-  const confirmationUrl = status === "free"
-    ? `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?status=free&d=${encoded}`
-    : `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?session_id=${sessionId}&d=${encoded}`;
-  const qrSvg = isPaid ? await renderQrCodeSvg(confirmationUrl) : null;
+  const { summary, isPaid, isFree } = confirmation;
+
+  // The QR re-opens this confirmation on whatever device scans it, and the
+  // page re-verifies it there (Stripe session or sealed token) -- the
+  // check-in proof staff use at the door.
+  const qrSvg = isPaid ? await renderQrCodeSvg(`${SITE_URL}${confirmation.confirmationPath}`) : null;
 
   return (
     <main id="main-content">
@@ -90,7 +84,9 @@ export default async function RegisterConfirmationPage({
           {`You're registered for CACNA ${cy.year}!`}
         </h1>
         <p style={{ fontSize: 15.5, color: "rgba(245,246,250,.65)", maxWidth: 480, margin: "0 auto 32px", lineHeight: 1.7 }}>
-          We&apos;ve received your registration. A confirmation email is on its way.
+          {isFree
+            ? "We've received your registration. Save this page or screenshot the QR code below to show at check-in."
+            : "We've received your registration. A confirmation email is on its way."}
         </p>
 
         <div style={{ maxWidth: 460, margin: "0 auto", textAlign: "left", background: "rgba(245,246,250,.06)", border: "1px solid rgba(245,246,250,.14)", borderRadius: 18, padding: "24px 26px" }}>

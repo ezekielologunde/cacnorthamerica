@@ -75,7 +75,10 @@ function buildHtml(summary: RegistrationSummary, confirmationUrl: string, isPaid
 export async function sendRegistrationConfirmationEmail(
   summary: RegistrationSummary,
   confirmationUrl: string,
-  isPaid: boolean
+  isPaid: boolean,
+  /** Resend idempotency key (24h window) so a redelivered webhook never
+   *  sends the same confirmation twice. */
+  idempotencyKey?: string
 ): Promise<void> {
   const key = process.env.RESEND_API_KEY;
   if (!key) return;
@@ -88,7 +91,7 @@ export async function sendRegistrationConfirmationEmail(
       to: summary.contactEmail,
       subject: `You're registered for CACNA ${summary.year}!`,
       html: buildHtml(summary, confirmationUrl, isPaid, qrDataUri),
-    });
+    }, idempotencyKey ? { idempotencyKey } : undefined);
     if (error) {
       console.error("[registration email] Resend error:", error);
     }
