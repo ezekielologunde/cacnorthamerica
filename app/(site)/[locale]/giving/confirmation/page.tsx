@@ -49,7 +49,7 @@ export default async function GivingConfirmationPage({
             We couldn&apos;t find that gift
           </h1>
           <p style={{ fontSize: 15.5, color: "rgba(245,246,250,.65)", maxWidth: 480, margin: "0 auto", lineHeight: 1.7 }}>
-            This link may be out of date. If you just completed giving, check your email for a confirmation.
+            This link may be out of date. If you just gave, check your email for a confirmation.
           </p>
         </section>
         <FooterExperience />
@@ -66,7 +66,7 @@ export default async function GivingConfirmationPage({
           Thank you for your gift!
         </h1>
         <p style={{ fontSize: 15.5, color: "rgba(245,246,250,.65)", maxWidth: 480, margin: "0 auto 32px", lineHeight: 1.7 }}>
-          We&apos;ve received your gift. A confirmation email is on its way.
+          A confirmation email is on its way.
         </p>
 
         {sessionId && (totalCents !== null || campaignTitle) && (

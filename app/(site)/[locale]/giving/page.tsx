@@ -14,7 +14,7 @@ import { SITE_URL } from "@/lib/site";
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Giving — Christ Apostolic Church North America (CACNA)",
-    description: "Give online by card, or use real account details for Zelle, wire, and check — the CAC Centenary Building Project, the CAC Village Pay Off, and the Hope For All Initiative.",
+    description: "Give online by card, or use the account details for Zelle, wire, and check — the CAC Centenary Building Project, the CAC Village Pay Off, and the Hope For All Initiative.",
     alternates: { canonical: `${SITE_URL}/giving` },
   };
 }
@@ -75,7 +75,7 @@ export default async function GivingPage({
           </Reveal>
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(16px,1.8vw,19px)", color: "var(--ink-soft)", lineHeight: 1.55, maxWidth: 580, margin: "0 auto" }}>
-              Every gift fuels CACNA&apos;s ministries and the Annual Convention. You are partnering with the kingdom every time you give.
+              Gifts support CACNA&apos;s ministries and the Annual Convention.
             </p>
           </Reveal>
 
@@ -136,13 +136,13 @@ export default async function GivingPage({
           <Reveal style={{ textAlign: "center", marginBottom: 36 }}>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3vw,40px)", letterSpacing: "-1px", color: "var(--ink)", margin: 0 }}>Other ways to give</h2>
             <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.7, margin: "14px auto 0", maxWidth: 560 }}>
-              Prefer Zelle, wire, or check? Use the account details above. Have a question, or want to connect with a member church near you? Reach out.
+              For Zelle, wire, or check, use the account details above. For questions about giving, call or email.
             </p>
           </Reveal>
           <div className="r2" style={{ gap: 18 }}>
             {[
-              { icon: Phone, title: "By phone", desc: "Call CACNA at (305) 469-0346 to ask about giving.", href: "tel:+13054690346", cta: "Call (305) 469-0346" },
-              { icon: Mail, title: "By email", desc: "Email info@cacnorthamerica.com and we’ll follow up with details.", href: "mailto:info@cacnorthamerica.com", cta: "Email us" },
+              { icon: Phone, title: "By phone", desc: "Call the CACNA office.", href: "tel:+13054690346", cta: "Call (305) 469-0346" },
+              { icon: Mail, title: "By email", desc: "Email info@cacnorthamerica.com.", href: "mailto:info@cacnorthamerica.com", cta: "Email us" },
             ].map((w, i) => (
               <Reveal key={w.title} delay={i * 80}>
                 <div style={{ background: "var(--paper)", borderRadius: 20, padding: "22px 20px", border: "1px solid var(--line)", boxShadow: "0 8px 22px rgba(18,20,30,.05)", height: "100%" }}>

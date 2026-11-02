@@ -85,8 +85,8 @@ export default async function RegisterConfirmationPage({
         </h1>
         <p style={{ fontSize: 15.5, color: "rgba(245,246,250,.65)", maxWidth: 480, margin: "0 auto 32px", lineHeight: 1.7 }}>
           {isFree
-            ? "We've received your registration. Save this page or screenshot the QR code below to show at check-in."
-            : "We've received your registration. A confirmation email is on its way."}
+            ? "Save this page or screenshot the QR code below to show at check-in."
+            : "A confirmation email is on its way."}
         </p>
 
         <div style={{ maxWidth: 460, margin: "0 auto", textAlign: "left", background: "rgba(245,246,250,.06)", border: "1px solid rgba(245,246,250,.14)", borderRadius: 18, padding: "24px 26px" }}>

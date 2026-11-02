@@ -25,7 +25,6 @@ export function ApparelComingSoon() {
         ))}
       </ul>
       <p style={{ margin: "22px 0 0", fontSize: 14.5, color: "var(--ink-soft)" }}>
-        We list apparel here once real items and photos are ready.{" "}
         <Link href="/contact" style={{ color: "var(--red)", fontWeight: 700 }}>Ask about apparel</Link>
       </p>
     </div>
