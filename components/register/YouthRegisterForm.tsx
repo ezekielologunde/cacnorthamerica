@@ -173,7 +173,7 @@ export function YouthRegisterForm({
     });
     if (!shared.contactName.trim()) found.contactName = t("errContactName");
     if (!EMAIL_RE.test(shared.contactEmail.trim())) found.contactEmail = t("errEmail");
-    if ((shared.contactPhone.match(/\d/g) ?? []).length < 7) found.contactPhone = t("errPhone");
+    if (shared.contactPhone.trim() !== "" && (shared.contactPhone.match(/\d/g) ?? []).length < 7) found.contactPhone = t("errPhone");
     if (!shared.churchName.trim()) found.churchName = t("errChurch");
     if (!shared.youthLeaderName.trim()) found.youthLeaderName = t("errLeader");
     if (!shared.dccZone.trim()) found.dccZone = t("errDcc");
@@ -261,10 +261,10 @@ export function YouthRegisterForm({
     if (errors[name]) setErrors((current) => { const next = { ...current }; delete next[name]; return next; });
   }
 
-  const sharedFields: { name: SharedField; label: string; type?: string; autoComplete: string; inputMode?: "email" | "tel"; hint?: string }[] = [
+  const sharedFields: { name: SharedField; label: string; type?: string; autoComplete: string; inputMode?: "email" | "tel"; hint?: string; optional?: boolean }[] = [
     { name: "contactName", label: t("contactName"), autoComplete: "name" },
     { name: "contactEmail", label: t("contactEmail"), type: "email", inputMode: "email", autoComplete: "email", hint: t("contactEmailHint") },
-    { name: "contactPhone", label: t("contactPhone"), type: "tel", inputMode: "tel", autoComplete: "tel" },
+    { name: "contactPhone", label: t("contactPhone"), type: "tel", inputMode: "tel", autoComplete: "tel", optional: true },
     { name: "churchName", label: t("churchName"), autoComplete: "organization" },
     { name: "youthLeaderName", label: t("youthLeaderName"), autoComplete: "off" },
     { name: "dccZone", label: t("dccZone"), autoComplete: "off" },
@@ -426,7 +426,7 @@ export function YouthRegisterForm({
 
       {sharedFields.map((f) => (
         <div key={f.name} style={{ marginBottom: 14 }}>
-          <label htmlFor={fid(f.name)} style={labelStyle}>{f.label} {required}</label>
+          <label htmlFor={fid(f.name)} style={labelStyle}>{f.label} {f.optional ? null : required}</label>
           <input
             {...a11y(f.name, f.hint ? fid(`${f.name}-hint`) : undefined)}
             className="field-input reg-input"
@@ -434,7 +434,7 @@ export function YouthRegisterForm({
             inputMode={f.inputMode}
             value={shared[f.name]}
             onChange={(e) => { setShared((s) => ({ ...s, [f.name]: e.target.value })); clearError(f.name); }}
-            required
+            required={!f.optional}
             autoComplete={f.autoComplete}
             autoCapitalize={f.type === "email" ? "none" : "words"}
             autoCorrect={f.type === "email" ? "off" : undefined}

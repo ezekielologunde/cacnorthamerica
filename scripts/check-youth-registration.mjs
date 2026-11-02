@@ -57,6 +57,9 @@ check("allergies over 200 chars rejected", !parse([person(5, { allergies: "x".re
 check("31 people rejected", !parse(Array.from({ length: 31 }, () => person(5))).ok);
 check("bad email rejected", !parse([person(5)], { contactEmail: "nope" }).ok);
 check("missing youth leader rejected", !parse([person(5)], { youthLeaderName: "  " }).ok);
+check("blank phone accepted (optional)", parse([person(5)], { contactPhone: "" }).ok);
+check("missing phone accepted (optional)", parse([person(5)], { contactPhone: undefined }).ok);
+check("phone with too few digits rejected", !parse([person(5)], { contactPhone: "12-34" }).ok);
 
 check("age 10 -> child group, free category", Y.ageGroupFor(10) === "child" && Y.categoryForAge(10) === "child");
 check("age 11 -> youth group, free category", Y.ageGroupFor(11) === "youth" && Y.categoryForAge(11) === "child");

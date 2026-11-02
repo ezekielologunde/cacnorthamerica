@@ -187,7 +187,6 @@ export function parseYouthRegistration(
   const fields: [key: string, label: string][] = [
     ["contactName", "Parent / guardian or contact name"],
     ["contactEmail", "Email"],
-    ["contactPhone", "Phone"],
     ["churchName", "Church name"],
     ["youthLeaderName", "Youth leader's name"],
     ["dccZone", "DCC / Zone"],
@@ -198,8 +197,13 @@ export function parseYouthRegistration(
     shared[key] = v;
   }
   if (!EMAIL_RE.test(shared.contactEmail)) return { ok: false, error: "Please enter a valid email address" };
-  if ((shared.contactPhone.match(/\d/g) ?? []).length < 7) {
-    return { ok: false, error: "Please enter a phone number we can reach you on" };
+  // Phone is optional; when given it must be a plausible number.
+  const rawPhone = b.contactPhone;
+  if (rawPhone != null && typeof rawPhone !== "string") return { ok: false, error: "Phone must be text" };
+  shared.contactPhone = (rawPhone ?? "").trim();
+  if (shared.contactPhone.length > max) return { ok: false, error: `Phone must be ${max} characters or fewer` };
+  if (shared.contactPhone !== "" && (shared.contactPhone.match(/\d/g) ?? []).length < 7) {
+    return { ok: false, error: "Please enter a phone number we can reach you on, or leave it blank" };
   }
   if (b.guardianConfirmed !== undefined && typeof b.guardianConfirmed !== "boolean") {
     return { ok: false, error: "guardianConfirmed must be a boolean" };
