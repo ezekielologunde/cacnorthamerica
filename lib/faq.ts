@@ -1,8 +1,9 @@
-// Frequently asked questions about Christ Apostolic Church, adapted from the
-// FAQ on the worldwide headquarters site (cacworld.org, fetched 2026-11-02).
+// Frequently asked questions about Christ Apostolic Church, based on the FAQ
+// on the worldwide headquarters site (cacworld.org, fetched 2026-11-02).
 // Single source of truth for the /faq page and its FAQPage JSON-LD.
 //
-// Answers are lightly edited for tone and US spelling; facts are unchanged.
+// Answers are written in CACNA's own words from the facts in that FAQ; only
+// the motto and the vision and mission statements are quoted as published.
 // `local` notes are CACNA's own pointers for readers in North America and
 // link only to internal routes.
 
@@ -32,15 +33,15 @@ export const FAQ_GROUPS: FaqGroup[] = [
         id: "origin",
         question: "What is the origin of Christ Apostolic Church (CAC)?",
         answer: [
-          { kind: "p", text: "CAC is a distinctly indigenous African Pentecostal church. Its roots go back to a prayer group formed in Ijebu-Ode in 1918, known as the Precious Stone Society. After several changes, the church was incorporated in May 1943." },
-          { kind: "p", text: "The church emphasizes prayer, holiness, and the power of the Holy Spirit. From its Nigerian roots, CAC has grown to establish congregations across Africa and around the world, including Europe, North America, and other continents." },
+          { kind: "p", text: "CAC is a Pentecostal church of fully African, indigenous origin. It grew out of the Precious Stone Society, a prayer group that started meeting in Ijebu-Ode in 1918. The movement went through several changes before it was formally incorporated in May 1943." },
+          { kind: "p", text: "Prayer, holy living and the work of the Holy Spirit sit at the center of its life. From Nigeria it has spread to congregations elsewhere in Africa and on other continents, Europe and North America among them." },
         ],
       },
       {
         id: "motto",
         question: "What is the motto of CAC?",
         answer: [
-          { kind: "p", text: "The motto of the church is “One Fold, One Shepherd” (John 10:16), reflecting the unity of the body of Christ under the leadership of Jesus." },
+          { kind: "p", text: "The church’s motto is “One Fold, One Shepherd” (John 10:16): all of Christ’s people gathered as a single flock, with Jesus as their leader." },
         ],
       },
       {
@@ -60,15 +61,15 @@ export const FAQ_GROUPS: FaqGroup[] = [
         id: "babalola",
         question: "Was Apostle Joseph Ayo Babalola the founder of CAC?",
         answer: [
-          { kind: "p", text: "No, Apostle Joseph Ayo Babalola was not the founder of CAC. He was one of the vessels God used during the Great Revival of 1930 at Oke Ooye, Ilesa, and he was the first General Evangelist of CAC." },
+          { kind: "p", text: "No, he did not found the church. God used him as one of the instruments of the 1930 Great Revival at Oke Ooye in Ilesa, and he became CAC’s first General Evangelist." },
         ],
       },
       {
         id: "the-apostolic-church",
         question: "Is it true that CAC seceded from The Apostolic Church?",
         answer: [
-          { kind: "p", text: "No, it is not true. CAC was incorporated in May 1943 with registration No. 147. The Apostolic Church was registered many years later, as No. 186." },
-          { kind: "p", text: "In April 1972, the Supreme Court of Nigeria delivered judgment in Suit No. SC.223/70, establishing that The Apostolic Church seceded from Christ Apostolic Church in 1940." },
+          { kind: "p", text: "No. CAC came first: it was incorporated in May 1943 as registration No. 147, while The Apostolic Church was not registered until years afterward, as No. 186." },
+          { kind: "p", text: "Nigeria’s Supreme Court settled the matter in April 1972. Its judgment in Suit SC.223/70 held that the secession went the other way: in 1940, The Apostolic Church broke away from Christ Apostolic Church." },
         ],
         local: {
           text: "You can read more about the church’s history on our About page.",
@@ -79,15 +80,15 @@ export const FAQ_GROUPS: FaqGroup[] = [
         id: "organization",
         question: "How is the church organized geographically?",
         answer: [
-          { kind: "p", text: "The church operates through a hierarchical structure to ensure effective administration:" },
+          { kind: "p", text: "Administration is layered, from the top down:" },
           {
             kind: "list",
             items: [
-              { term: "General Executive Council (GEC)", text: "The highest governing body." },
-              { term: "Regions", text: "The church is divided into 17 administrative regions." },
-              { term: "DCCs/Zones", text: "Groupings of districts." },
-              { term: "Districts", text: "Groups of local assemblies." },
-              { term: "Assemblies", text: "The local church." },
+              { term: "General Executive Council (GEC)", text: "Governs the whole church; no body sits above it." },
+              { term: "Regions", text: "17 in all, each an administrative division of the church." },
+              { term: "DCCs/Zones", text: "Each brings several districts together." },
+              { term: "Districts", text: "Each is made up of a number of local assemblies." },
+              { term: "Assemblies", text: "Individual local congregations." },
             ],
           },
         ],
@@ -96,7 +97,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
         id: "future-planning",
         question: "How does the church support future planning?",
         answer: [
-          { kind: "p", text: "Through its R&D department, the church uses technology and 2024 census data to plan future outreach programs. This helps it allocate resources efficiently, to areas of membership decline or to plant new churches where they are needed most." },
+          { kind: "p", text: "Its research and development (R&D) department draws on technology and figures from the 2024 census when planning outreach. That lets the church direct resources efficiently: toward areas where membership has fallen, or toward places that most need a new church." },
         ],
       },
     ],
@@ -108,15 +109,15 @@ export const FAQ_GROUPS: FaqGroup[] = [
         id: "divine-healing",
         question: "Does CAC believe in and practice divine healing?",
         answer: [
-          { kind: "p", text: "Yes. Divine healing is a fundamental belief and practice in CAC. The church believes that Jesus Christ heals through prayer and faith, and it holds healing services and prayer sessions for the sick." },
-          { kind: "p", text: "The church also recognizes the importance of health education and does not forbid members from seeking medical attention, acknowledging that God can work through both divine intervention and medical professionals." },
+          { kind: "p", text: "Yes, it is central to both CAC’s faith and its practice. The church holds that Jesus Christ heals in answer to prayer and faith, and it runs healing services and prayer meetings for people who are ill." },
+          { kind: "p", text: "Members are not barred from seeing a doctor. The church values health education and accepts that God may heal by direct intervention or by way of medical professionals." },
         ],
       },
       {
         id: "holy-spirit",
         question: "What is the church’s view on the Holy Spirit?",
         answer: [
-          { kind: "p", text: "As a Pentecostal pioneer in Nigeria, CAC believes in the definite outpouring of the Holy Spirit, including the manifestation of spiritual gifts for the edification of the Church." },
+          { kind: "p", text: "As one of Nigeria’s Pentecostal pioneers, CAC firmly believes the Holy Spirit is poured out on believers, and that spiritual gifts are at work among them to build up the Church." },
         ],
       },
     ],
@@ -128,28 +129,28 @@ export const FAQ_GROUPS: FaqGroup[] = [
         id: "membership",
         question: "How can I become a member of CAC?",
         answer: [
-          { kind: "p", text: "Membership begins with a confession of faith in Jesus Christ and evidence of regeneration. New converts are expected to undergo water baptism by immersion and to join a local CAC assembly for spiritual nurturing. Those joining CAC from another background attend a discipleship class for proper grounding in the church’s doctrine." },
+          { kind: "p", text: "A person becomes a member by professing faith in Jesus Christ, and their life should show evidence of regeneration. New believers are then expected to be baptized by immersion and to join a local CAC assembly, where they are nurtured in the faith. People coming to CAC from another church background first take a discipleship class that grounds them in its teaching." },
         ],
       },
       {
         id: "water-baptism",
         question: "What are the requirements for water baptism?",
         answer: [
-          { kind: "p", text: "In CAC, baptism is by immersion, upon confession of the Lordship of Jesus Christ. Candidates must be at least 12 years old and must have completed baptismal classes, so that they understand the spiritual significance of the rite." },
+          { kind: "p", text: "CAC baptizes by immersion once a person confesses that Jesus Christ is Lord. Candidates must be 12 or older and must first complete baptismal classes, so they understand what the rite means spiritually." },
         ],
       },
       {
         id: "visitors",
         question: "Can non-members attend CAC services?",
         answer: [
-          { kind: "p", text: "Absolutely. CAC welcomes everyone to its services, whatever their church affiliation. Visitors are always welcome to experience the worship, hear the Word of God, and take part in prayer. You don’t need to be a member to attend services or to benefit from the church’s spiritual programs." },
+          { kind: "p", text: "Yes, everyone is welcome. You do not have to belong to CAC, or to any particular church, to come to a service. Visitors are free to join in the worship and prayer, hear God’s Word preached, and share in the church’s spiritual programs." },
         ],
       },
       {
         id: "find-a-church",
         question: "How can I find a CAC church near me?",
         answer: [
-          { kind: "p", text: "CAC has branches across Nigeria and overseas. The church finder on cacworld.org can help you locate at least the nearest District headquarters, and many CAC branches have social media pages with contact information you can use." },
+          { kind: "p", text: "CAC congregations are spread throughout Nigeria and beyond. The church finder on cacworld.org will point you to, at the very least, the District headquarters closest to you, and many local branches post contact details on their social media pages." },
         ],
         local: {
           text: "In the United States, Canada, and South America, the Zones & DCCs directory helps you find your CACNA zone or DCC and its superintendent. Coming to the Annual Convention at CAC Village? Plan Your Visit covers travel, hotels, and what to pack.",
@@ -163,14 +164,14 @@ export const FAQ_GROUPS: FaqGroup[] = [
         id: "what-to-wear",
         question: "What should I wear to CAC services?",
         answer: [
-          { kind: "p", text: "CAC encourages modest, decent dress that honors God. Women are generally expected to wear dresses that are not revealing, with head coverings during worship services. Men typically wear formal or semi-formal attire. Ministers are expected to appear in proper clerical attire." },
+          { kind: "p", text: "Dress modestly and decently, in a way that honors God. Women generally wear clothing that is not revealing and cover their heads for worship. Men usually dress formally or semi-formally, and ministers are expected to be in proper clerical dress." },
         ],
       },
       {
         id: "online-services",
         question: "Does CAC offer online services?",
         answer: [
-          { kind: "p", text: "Yes. CAC provides online worship services, sermons, and programs through its digital platforms." },
+          { kind: "p", text: "Yes. Worship services, sermons and other programs are available online on the church’s digital platforms." },
         ],
         local: {
           text: "Here in North America, CACNA streams the Annual Convention and shares message replays on YouTube, with Zoom available during the convention.",

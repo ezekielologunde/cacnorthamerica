@@ -8,6 +8,7 @@ import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
 import { FAQ_GROUPS, FAQ_SOURCE_URL, faqJsonLd } from "@/lib/faq";
+import { FaqHashOpener } from "./FaqHashOpener";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -115,6 +116,7 @@ export default async function FaqPage({
         </Reveal>
       </section>
 
+      <FaqHashOpener />
       <FooterExperience />
     </main>
   );
