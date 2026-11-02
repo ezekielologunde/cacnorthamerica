@@ -1,8 +1,8 @@
-﻿import { createServiceClient } from "@/lib/supabase/server";
+﻿import { requireAdmin } from "@/lib/supabase/require-admin";
 import Link from "next/link";
 
 export default async function EventsListPage() {
-  const supabase = createServiceClient();
+  const { supabase } = await requireAdmin();
   const { data: events } = await supabase
     .from("events")
     .select("id, title, event_date, location, published")

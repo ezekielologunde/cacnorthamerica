@@ -1,6 +1,5 @@
 "use server";
 
-import { createServiceClient } from "@/lib/supabase/server";
 import { Resend } from "resend";
 import { requireAdmin } from "@/lib/supabase/require-admin";
 import { sender } from "@/lib/email";
@@ -42,7 +41,7 @@ export async function broadcastAction(
   _prev: BroadcastState,
   formData: FormData,
 ): Promise<BroadcastState> {
-  await requireAdmin();
+  const { supabase } = await requireAdmin();
 
   const subject = (formData.get("subject") as string | null)?.trim() ?? "";
   const body = (formData.get("body") as string | null)?.trim() ?? "";
@@ -54,7 +53,6 @@ export async function broadcastAction(
   if (body.length > 10000)
     return { ok: false, sent: 0, failed: 0, message: "Body must be 10,000 characters or fewer." };
 
-  const supabase = createServiceClient();
   const { data: subscribers, error: fetchError } = await supabase
     .from("newsletter_subscribers")
     .select("email, name")

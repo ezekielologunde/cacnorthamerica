@@ -1,8 +1,9 @@
-import { createServiceClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/supabase/require-admin";
 import DashboardCards from "@/components/admin/DashboardCards";
 
-async function getStats() {
-  const service = createServiceClient();
+type AdminClient = Awaited<ReturnType<typeof requireAdmin>>["supabase"];
+
+async function getStats(service: AdminClient) {
   const [posts, events, contacts, gallery, announcements] = await Promise.all([
     service.from("blog_posts").select("id", { count: "exact", head: true }),
     service.from("events").select("id", { count: "exact", head: true }),
@@ -20,7 +21,8 @@ async function getStats() {
 }
 
 export default async function AdminDashboard() {
-  const stats = await getStats();
+  const { supabase } = await requireAdmin();
+  const stats = await getStats(supabase);
   const totalAttention = stats.contacts;
 
   return (

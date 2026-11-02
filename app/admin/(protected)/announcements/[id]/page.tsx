@@ -1,6 +1,6 @@
 ﻿import { notFound } from "next/navigation";
 import Link from "next/link";
-import { createServiceClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/supabase/require-admin";
 import AnnouncementForm from "@/components/admin/AnnouncementForm";
 
 type AnnouncementRow = {
@@ -17,8 +17,8 @@ type AnnouncementRow = {
 };
 
 export default async function EditAnnouncementPage({ params }: { params: Promise<{ id: string }> }) {
+  const { supabase } = await requireAdmin();
   const { id } = await params;
-  const supabase = createServiceClient();
   const result = await supabase
     .from("announcements")
     .select("id, title, body, cta_text, cta_url, bg_color, text_color, placement, active, expires_at")

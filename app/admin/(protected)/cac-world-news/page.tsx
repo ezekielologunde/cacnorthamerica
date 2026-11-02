@@ -1,4 +1,4 @@
-import { createServiceClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/supabase/require-admin";
 import { fetchLatestCandidates, approveNews, rejectNews, unpublishNews } from "./actions";
 import ActionButton from "@/components/admin/ActionButton";
 
@@ -83,7 +83,7 @@ function Card({ item, status }: { item: Row; status: "pending" | "approved" | "r
 }
 
 export default async function CacWorldNewsPage() {
-  const supabase = createServiceClient();
+  const { supabase } = await requireAdmin();
   const { data: rows } = await supabase
     .from("cac_world_news")
     .select("id, title, excerpt, image_url, source_url, published_at, fetched_at, status")

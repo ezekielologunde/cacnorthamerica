@@ -1,7 +1,10 @@
 ﻿import Link from "next/link";
+import { requireAdmin } from "@/lib/supabase/require-admin";
 import PostForm from "@/components/admin/PostForm";
 
-export default function NewPostPage() {
+export default async function NewPostPage() {
+  await requireAdmin();
+
   return (
     <div>
       <div style={{ marginBottom: 28 }}>

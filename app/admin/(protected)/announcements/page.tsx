@@ -1,10 +1,10 @@
-﻿import { createServiceClient } from "@/lib/supabase/server";
+﻿import { requireAdmin } from "@/lib/supabase/require-admin";
 import Link from "next/link";
 import { toggleActive } from "./actions";
 import ActionButton from "@/components/admin/ActionButton";
 
 export default async function AnnouncementsListPage() {
-  const supabase = createServiceClient();
+  const { supabase } = await requireAdmin();
   const { data: announcements } = await supabase
     .from("announcements")
     .select("id, title, bg_color, placement, active, expires_at, created_at")

@@ -1,16 +1,10 @@
-﻿import { createClient, createServiceClient } from "@/lib/supabase/server";
+﻿import { requireAdmin } from "@/lib/supabase/require-admin";
 import AdminsClient from "./AdminsClient";
 
 export default async function AdminsPage() {
-  const [supabase, service] = await Promise.all([
-    createClient(),
-    Promise.resolve(createServiceClient()),
-  ]);
-
-  const [{ data: { user } }, { data: admins }] = await Promise.all([
-    supabase.auth.getUser(),
-    service.from("admin_profiles").select("id, email, created_at").order("created_at"),
-  ]);
+  const { supabase: service, user } = await requireAdmin();
+  const { data: admins } = await service
+    .from("admin_profiles").select("id, email, created_at").order("created_at");
 
   return (
     <div style={{ maxWidth: 720 }}>
@@ -22,7 +16,7 @@ export default async function AdminsPage() {
           Invite new admins or remove existing ones. Invitations are sent by email.
         </p>
       </div>
-      <AdminsClient admins={admins ?? []} currentUserId={user?.id ?? ""} />
+      <AdminsClient admins={admins ?? []} currentUserId={user.id} />
     </div>
   );
 }
