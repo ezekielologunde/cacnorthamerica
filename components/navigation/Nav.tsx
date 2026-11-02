@@ -1,14 +1,17 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type MouseEvent } from 'react';
+import dynamic from 'next/dynamic';
+import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type FocusEvent, type KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Search, CalendarDays } from 'lucide-react';
 import { haptic } from '@/lib/haptics';
-import { SearchModal } from '@/components/ui/SearchModal';
 import { currentOrNextConvention, isConventionPast } from '@/lib/conventions';
 import './chrome-mobile.css';
+
+// The search modal (and its index) only ships once someone opens it.
+const SearchModal = dynamic(() => import('@/components/ui/SearchModal').then(m => m.SearchModal), { ssr: false });
 
 interface NavItem {
   label: string;
@@ -20,6 +23,10 @@ interface NavItem {
 }
 
 const isExternalHref = (href: string) => href.startsWith('http');
+const menuId = (label: string) => `nav-menu-${label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])';
+const visibleFocusables = (root: HTMLElement | null) =>
+  root ? Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(el => el.getClientRects().length > 0) : [];
 
 // Whichever convention is current/next — once this year's dates pass, the
 // nav's "Register" CTA automatically points at the next confirmed year.
@@ -36,6 +43,11 @@ interface NavProps {
 
 export function Nav({ dark = false, heroDark = false }: NavProps) {
   const navRef = useRef<HTMLElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
+  const triggerRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const panelRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const focusFirstOnOpen = useRef(false);
   const pathname = usePathname();
   const t = useTranslations('Nav');
   const conventionCtaLabel = t('conventionCta', { year: nextConvention.year });
@@ -57,11 +69,14 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
     {
       label: t('whoWeAre'),
       href: '/about',
+      layout: 'grid',
       dropdown: [
         { href: '/about', label: t('aboutCacna'), desc: t('aboutCacnaDesc') },
+        { href: '/history', label: t('history'), desc: t('historyDesc') },
         { href: '/leadership', label: t('leadership'), desc: t('leadershipDesc') },
         { href: '/zones', label: t('zonesDccs'), desc: t('zonesDccsDesc') },
         { href: '/bible-institute', label: t('bibleInstitute'), desc: t('bibleInstituteDesc') },
+        { href: '/faq', label: t('faq'), desc: t('faqDesc') },
       ],
     },
     {
@@ -109,9 +124,8 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
   useEffect(() => {
     const nav = navRef.current;
     if (!nav) return;
-    const update = () => {
-      const isScrolled = window.scrollY > 36;
-      setScrolled(isScrolled);
+    let last: boolean | null = null;
+    const paint = (isScrolled: boolean) => {
       nav.style.background = open
         ? dark ? 'rgba(12,14,19,.97)' : 'rgba(255,255,255,.98)'
         : isScrolled
@@ -121,6 +135,15 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
         ? dark ? '0 6px 24px rgba(0,0,0,.4)' : '0 6px 24px rgba(18,20,30,.08)'
         : 'none';
       nav.style.backdropFilter = isScrolled || open ? 'blur(12px)' : 'none';
+    };
+    // Only touch the DOM / React state when the threshold is actually crossed,
+    // not on every scroll event.
+    const update = () => {
+      const isScrolled = window.scrollY > 36;
+      if (isScrolled === last) return;
+      last = isScrolled;
+      setScrolled(isScrolled);
+      paint(isScrolled);
     };
     update();
     window.addEventListener('scroll', update, { passive: true });
@@ -133,14 +156,34 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
     setMenuPath(pathname);
     setOpen(false);
     setOpenMobileSection(null);
+    setOpenDropdown(null);
   }
 
+  const closeMobileMenu = (returnFocus: boolean) => {
+    setOpen(false);
+    if (returnFocus) requestAnimationFrame(() => hamburgerRef.current?.focus());
+  };
+
+  // Mobile menu: Esc closes and returns focus to the toggle; Tab / Shift+Tab
+  // stay inside the bar + menu while it is open (focus trap). Paused while the
+  // search modal is on top, which owns the keyboard then.
   useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [open]);
+    if (!open || searchOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { closeMobileMenu(true); return; }
+      if (e.key !== 'Tab') return;
+      const items = [...visibleFocusables(navRef.current), ...visibleFocusables(overlayRef.current)];
+      if (items.length === 0) return;
+      const first = items[0];
+      const lastItem = items[items.length - 1];
+      const current = document.activeElement as HTMLElement | null;
+      if (!current || !items.includes(current)) { e.preventDefault(); first.focus(); return; }
+      if (e.shiftKey && current === first) { e.preventDefault(); lastItem.focus(); }
+      else if (!e.shiftKey && current === lastItem) { e.preventDefault(); first.focus(); }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open, searchOpen]);
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : '';
@@ -158,6 +201,48 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
     return () => window.removeEventListener('keydown', handler);
   }, []);
 
+  // Keyboard-opened dropdowns move focus to their first item once rendered.
+  useEffect(() => {
+    if (!openDropdown || !focusFirstOnOpen.current) return;
+    focusFirstOnOpen.current = false;
+    panelRefs.current[openDropdown]?.querySelector<HTMLElement>('a')?.focus();
+  }, [openDropdown]);
+
+  const closeDropdown = (label: string, returnFocus: boolean) => {
+    setOpenDropdown(cur => (cur === label ? null : cur));
+    if (returnFocus) triggerRefs.current[label]?.focus();
+  };
+
+  const onDropdownKeyDown = (label: string) => (e: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Escape' && openDropdown === label) {
+      e.preventDefault();
+      closeDropdown(label, true);
+      return;
+    }
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    const panel = panelRefs.current[label];
+    if (!panel || !panel.contains(document.activeElement)) return;
+    e.preventDefault();
+    const links = Array.from(panel.querySelectorAll<HTMLElement>('a'));
+    const i = links.indexOf(document.activeElement as HTMLElement);
+    const next = e.key === 'ArrowDown' ? (i + 1) % links.length : (i - 1 + links.length) % links.length;
+    links[next]?.focus();
+  };
+
+  const onTriggerKeyDown = (label: string) => (e: ReactKeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      focusFirstOnOpen.current = true;
+      if (openDropdown === label) panelRefs.current[label]?.querySelector<HTMLElement>('a')?.focus();
+      else setOpenDropdown(label);
+    }
+  };
+
+  // Close when focus leaves the trigger + panel group entirely.
+  const onDropdownBlur = (label: string) => (e: FocusEvent<HTMLDivElement>) => {
+    if (!e.currentTarget.contains(e.relatedTarget as Node | null)) closeDropdown(label, false);
+  };
+
   const ink = dark ? 'var(--cream)' : 'var(--ink)';
   const accent = dark ? 'var(--gold)' : 'var(--red)';
   // Top-bar link colors are scroll-aware so they stay legible over a dark hero
@@ -172,24 +257,43 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
   const hasSolidBg = open || scrolled || !heroDark;
 
   const pillLinks: [string, string][] = [['/giving', t('give')], ['/store', t('store')]];
+  const ctaGradient = 'linear-gradient(135deg,var(--red-deep),var(--gold))';
   // Convention CTA: same props/content whether the href is internal (Link) or external (<a>).
   const deskCtaProps = {
     onClick: () => haptic('medium'),
     className: 'btn-sheen press',
-    style: { display: 'inline-flex', alignItems: 'center', gap: 7, background: 'linear-gradient(135deg,var(--red-deep),var(--gold))', color: '#fff', fontWeight: 800, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '0 8px 22px rgba(122,17,40,.45)' } satisfies CSSProperties,
+    style: { display: 'inline-flex', alignItems: 'center', gap: 7, minHeight: 44, background: ctaGradient, color: '#fff', fontWeight: 800, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '0 8px 22px rgba(122,17,40,.45)' } satisfies CSSProperties,
   };
   const deskCtaContent = <><CalendarDays size={14} strokeWidth={2.5} aria-hidden />{conventionCtaLabel} →</>;
+  // Compact bar CTA for tablet widths where the desktop row is collapsed but
+  // there is still room beside the logo (shown by CSS only, 520–1200px).
+  const barCtaProps = {
+    onClick: () => haptic('medium'),
+    className: 'press nav-bar-cta',
+    style: { alignItems: 'center', gap: 6, minHeight: 44, background: ctaGradient, color: '#fff', fontWeight: 800, fontSize: 13.5, padding: '0 16px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', marginLeft: 'auto', marginRight: 6 } satisfies CSSProperties,
+  };
   const mobileCtaProps = {
     onClick: () => { haptic('medium'); setOpen(false); },
     className: 'press',
-    style: { display: 'flex', order: 1, alignItems: 'center', justifyContent: 'center', gap: 8, background: 'linear-gradient(135deg,var(--red-deep),var(--gold))', color: '#fff', fontWeight: 800, fontSize: 17, padding: '14px 24px', minHeight: 52, borderRadius: 999, textDecoration: 'none', boxShadow: '0 10px 24px rgba(122,17,40,.35)' } satisfies CSSProperties,
+    style: { display: 'flex', order: 1, alignItems: 'center', justifyContent: 'center', gap: 8, background: ctaGradient, color: '#fff', fontWeight: 800, fontSize: 17, padding: '14px 24px', minHeight: 52, borderRadius: 999, textDecoration: 'none', boxShadow: '0 10px 24px rgba(122,17,40,.35)' } satisfies CSSProperties,
   };
   const mobileCtaContent = <><CalendarDays size={17} strokeWidth={2.5} aria-hidden />{conventionCtaLabel} →</>;
+
+  const topLinkStyle = (active: boolean): CSSProperties => ({
+    display: 'flex', alignItems: 'center', minHeight: 44,
+    fontSize: 14.5, fontWeight: active ? 700 : 600,
+    color: active ? barAccent : barInk,
+    textDecoration: 'none', transition: 'color .4s, border-color .4s',
+    padding: '0 10px', whiteSpace: 'nowrap',
+    borderBottom: `2px solid ${active ? 'var(--red)' : 'transparent'}`,
+    borderTop: '2px solid transparent',
+  });
 
   return (
     <>
       <nav
         ref={navRef}
+        aria-label={t('mainNavLabel')}
         style={{
           position: 'fixed', top: 'var(--bar-h, 0px)', left: 0, right: 0, zIndex: 100,
           padding: '13px clamp(20px,5vw,64px)',
@@ -211,99 +315,103 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
         </Link>
 
         {/* Desktop nav */}
-        <div className="nav-desktop" style={{ alignItems: 'center', gap: 2 }}>
+        <ul className="nav-desktop" style={{ alignItems: 'center', gap: 2, listStyle: 'none', margin: 0, padding: 0 }}>
           {navItems.map((item) => {
             const active = pathname === item.href || (item.dropdown?.some(d => pathname === d.href));
             const isOpen = openDropdown === item.label;
 
             if (item.dropdown) {
+              const id = menuId(item.label);
               return (
-                <div
+                <li
                   key={item.label}
                   style={{ position: 'relative', display: 'flex', alignItems: 'center' }}
                   onMouseEnter={() => setOpenDropdown(item.label)}
                   onMouseLeave={() => setOpenDropdown(null)}
                 >
-                  <Link href={item.href!} style={{
-                    display: 'flex', alignItems: 'center', gap: 5,
-                    fontSize: 14.5, fontWeight: active ? 700 : 600,
-                    color: active ? barAccent : barInk,
-                    textDecoration: 'none', transition: 'color .4s, border-color .4s',
-                    padding: '7px 10px 5px', borderRadius: 8, whiteSpace: 'nowrap',
-                    borderBottom: `2px solid ${active ? 'var(--red)' : 'transparent'}`,
-                  }}>
-                    {item.label}
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform .2s' }}>
-                      <polyline points="6 9 12 15 18 9" />
-                    </svg>
-                  </Link>
-                  {isOpen && (
-                    // Outer wrapper is positioned flush to the trigger (top: 100%) and
-                    // uses paddingTop as a transparent "bridge" so the cursor never
-                    // crosses a dead zone on its way to the panel — which would fire
-                    // mouseleave and collapse the menu before a click could land.
-                    <div style={{
-                      position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)',
-                      paddingTop: 8, zIndex: 10,
-                    }}>
+                  <div style={{ display: 'flex', alignItems: 'center' }} onKeyDown={onDropdownKeyDown(item.label)} onBlur={onDropdownBlur(item.label)}>
+                    <Link href={item.href!} style={{ ...topLinkStyle(!!active), paddingRight: 2 }} aria-current={pathname === item.href ? 'page' : undefined}>
+                      {item.label}
+                    </Link>
+                    <button
+                      type="button"
+                      ref={el => { triggerRefs.current[item.label] = el; }}
+                      className="nav-dd-trigger"
+                      aria-expanded={isOpen}
+                      aria-haspopup="true"
+                      aria-controls={id}
+                      aria-label={t('showSubmenu', { section: item.label })}
+                      onClick={() => setOpenDropdown(isOpen ? null : item.label)}
+                      onKeyDown={onTriggerKeyDown(item.label)}
+                      style={{ color: active ? barAccent : barInk }}
+                    >
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden style={{ transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform .2s' }}>
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </button>
+                    {isOpen && (
+                      // Outer wrapper is positioned flush to the trigger (top: 100%) and
+                      // uses paddingTop as a transparent "bridge" so the cursor never
+                      // crosses a dead zone on its way to the panel — which would fire
+                      // mouseleave and collapse the menu before a click could land.
                       <div style={{
-                        background: dark ? 'rgba(18,20,26,.97)' : 'var(--paper)',
-                        borderRadius: 16, padding: 8,
-                        boxShadow: '0 20px 50px rgba(18,20,30,.16)',
-                        border: `1px solid ${dark ? 'rgba(255,255,255,.1)' : 'var(--line)'}`,
-                        minWidth: item.layout === 'grid' ? 440 : 200,
-                        ...(item.layout === 'grid'
-                          ? { display: 'grid' as const, gridTemplateColumns: '1fr 1fr', gap: 2 }
-                          : {}),
+                        position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)',
+                        paddingTop: 8, zIndex: 10,
                       }}>
-                        {item.dropdown.map(d => {
-                          const itemStyle: CSSProperties = {
-                            display: 'block', padding: '10px 14px', borderRadius: 10, textDecoration: 'none', transition: 'background .15s',
-                            background: d.external ? (dark ? 'rgba(253,200,65,.12)' : 'var(--cream-2)') : undefined,
-                          };
-                          const onMouseEnter = (e: MouseEvent<HTMLElement>) => (e.currentTarget.style.background = dark ? 'rgba(255,255,255,.06)' : 'var(--cream-2)');
-                          const onMouseLeave = (e: MouseEvent<HTMLElement>) => (e.currentTarget.style.background = d.external ? (dark ? 'rgba(253,200,65,.12)' : 'var(--cream-2)') : 'transparent');
-                          const content = (
-                            <>
-                              <div style={{ fontWeight: 700, fontSize: 14, color: d.external ? (dark ? 'var(--gold)' : 'var(--red-deep)') : dark ? 'var(--cream)' : 'var(--ink)' }}>{d.label}</div>
-                              <div style={{ fontSize: 12, color: dark ? 'rgba(245,246,250,.5)' : 'var(--ink-soft)', marginTop: 2 }}>{d.desc}</div>
-                            </>
-                          );
-                          return d.external || isExternalHref(d.href)
-                            ? <a key={d.href} href={d.href} target="_blank" rel="noopener noreferrer" style={itemStyle} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>{content}</a>
-                            : <Link key={d.href} href={d.href} style={itemStyle} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>{content}</Link>;
-                        })}
+                        <div
+                          id={id}
+                          ref={el => { panelRefs.current[item.label] = el; }}
+                          className={dark ? 'nav-dd nav-dd-dark' : 'nav-dd'}
+                          style={{
+                            minWidth: item.layout === 'grid' ? 440 : 220,
+                            ...(item.layout === 'grid'
+                              ? { display: 'grid' as const, gridTemplateColumns: '1fr 1fr', gap: 2 }
+                              : {}),
+                          }}
+                        >
+                          {item.dropdown.map(d => {
+                            const external = d.external || isExternalHref(d.href);
+                            const current = !external && pathname === d.href;
+                            const className = `nav-dd-item${d.external ? ' is-feature' : ''}${current ? ' is-current' : ''}`;
+                            const content = (
+                              <>
+                                <span className="nav-dd-label">{d.label}</span>
+                                <span className="nav-dd-desc">{d.desc}</span>
+                              </>
+                            );
+                            return external
+                              ? <a key={d.href} href={d.href} target="_blank" rel="noopener noreferrer" className={className}>{content}</a>
+                              : <Link key={d.href} href={d.href} className={className} aria-current={current ? 'page' : undefined}>{content}</Link>;
+                          })}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
+                    )}
+                  </div>
+                </li>
               );
             }
 
             return (
-              <Link key={item.label} href={item.href!} style={{
-                fontSize: 14.5, fontWeight: active ? 700 : 600,
-                color: active ? barAccent : barInk,
-                textDecoration: 'none', padding: '7px 10px 5px', borderRadius: 8, whiteSpace: 'nowrap',
-                borderBottom: `2px solid ${active ? 'var(--red)' : 'transparent'}`,
-                transition: 'color .4s, border-color .4s',
-              }}>
-                {item.label}
-              </Link>
+              <li key={item.label} style={{ display: 'flex' }}>
+                <Link href={item.href!} style={topLinkStyle(!!active)} aria-current={active ? 'page' : undefined}>
+                  {item.label}
+                </Link>
+              </li>
             );
           })}
 
           {/* Search, Give, Store, Register — spaced out as their own cluster
               rather than packed tight, so each reads as its own control
               instead of a run-on row (matches the reference nav). */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 18, marginLeft: 16 }}>
+          <li style={{ display: 'flex', alignItems: 'center', gap: 18, marginLeft: 16 }}>
             <button
+              type="button"
               onClick={() => setSearchOpen(true)}
               aria-label={t("search")}
               title={t("searchShortcut")}
-              style={{ background: lightBar ? 'rgba(245,246,250,.1)' : 'var(--cream-2)', border: `1px solid ${lightBar ? 'rgba(245,246,250,.18)' : 'var(--line)'}`, borderRadius: 999, cursor: 'pointer', padding: '9px 13px', color: barInk, display: 'flex', alignItems: 'center', transition: 'all .4s' }}
+              style={{ background: lightBar ? 'rgba(245,246,250,.1)' : 'var(--cream-2)', border: `1px solid ${lightBar ? 'rgba(245,246,250,.18)' : 'var(--line)'}`, borderRadius: 999, cursor: 'pointer', width: 44, height: 44, color: barInk, display: 'grid', placeItems: 'center', transition: 'background .4s, border-color .4s, color .4s' }}
             >
-              <Search size={16} strokeWidth={2} />
+              <Search size={16} strokeWidth={2} aria-hidden />
             </button>
             <span aria-hidden style={{ width: 1, height: 20, background: lightBar ? 'rgba(245,246,250,.25)' : 'var(--line)', flexShrink: 0 }} />
             {/* Give and Store share one pill style -- previously Give was a
@@ -314,11 +422,12 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
               <Link
                 key={href}
                 href={href}
+                aria-current={pathname === href ? 'page' : undefined}
                 style={{
-                  display: 'inline-flex', alignItems: 'center',
-                  border: `1.5px solid ${lightBar ? 'rgba(245,246,250,.4)' : 'var(--ink)'}`,
-                  color: barInk, fontWeight: 700, fontSize: 13.5,
-                  padding: '8px 16px', borderRadius: 999, textDecoration: 'none',
+                  display: 'inline-flex', alignItems: 'center', minHeight: 44,
+                  border: `1.5px solid ${pathname === href ? barAccent : lightBar ? 'rgba(245,246,250,.4)' : 'var(--ink)'}`,
+                  color: pathname === href ? barAccent : barInk, fontWeight: 700, fontSize: 13.5,
+                  padding: '0 16px', borderRadius: 999, textDecoration: 'none',
                   transition: 'color .4s, border-color .4s', whiteSpace: 'nowrap',
                 }}
               >
@@ -335,21 +444,33 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                 <Link href={conventionCtaHref} {...deskCtaProps}>{deskCtaContent}</Link>
               )
             )}
-          </div>
-        </div>
+          </li>
+        </ul>
+
+        {/* Tablet bar CTA (CSS-gated) */}
+        {conventionOpen && (
+          isExternalHref(conventionCtaHref) ? (
+            <a href={conventionCtaHref} target="_blank" rel="noopener noreferrer" {...barCtaProps}><CalendarDays size={14} strokeWidth={2.5} aria-hidden />{conventionCtaLabel}</a>
+          ) : (
+            <Link href={conventionCtaHref} {...barCtaProps}><CalendarDays size={14} strokeWidth={2.5} aria-hidden />{conventionCtaLabel}</Link>
+          )
+        )}
 
         {/* Mobile search icon */}
         <button
+          type="button"
           className="nav-hbg nav-tap"
           onClick={() => { haptic('light'); setSearchOpen(true); }}
           aria-label={t("search")}
           style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 8, color: barInk, flexDirection: 'row', gap: 0, alignItems: 'center', justifyContent: 'center', transition: 'color .4s' }}
         >
-          <Search size={20} strokeWidth={2} />
+          <Search size={20} strokeWidth={2} aria-hidden />
         </button>
 
         {/* Hamburger */}
         <button
+          type="button"
+          ref={hamburgerRef}
           className="nav-hbg nav-tap"
           onClick={() => { haptic('light'); setOpen(o => !o); }}
           aria-label={open ? t('closeMenu') : t('openMenu')}
@@ -357,9 +478,9 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
           aria-controls="mobile-menu"
           style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 8, color: barInk, gap: 5, alignItems: 'center', transition: 'color .4s' }}
         >
-          <span style={{ display: 'block', width: 24, height: 2, background: 'currentColor', borderRadius: 2, transition: 'transform .25s', transform: open ? 'translateY(7px) rotate(45deg)' : 'none' }} />
-          <span style={{ display: 'block', width: 24, height: 2, background: 'currentColor', borderRadius: 2, transition: 'opacity .25s', opacity: open ? 0 : 1 }} />
-          <span style={{ display: 'block', width: 24, height: 2, background: 'currentColor', borderRadius: 2, transition: 'transform .25s', transform: open ? 'translateY(-7px) rotate(-45deg)' : 'none' }} />
+          <span aria-hidden style={{ display: 'block', width: 24, height: 2, background: 'currentColor', borderRadius: 2, transition: 'transform .25s', transform: open ? 'translateY(7px) rotate(45deg)' : 'none' }} />
+          <span aria-hidden style={{ display: 'block', width: 24, height: 2, background: 'currentColor', borderRadius: 2, transition: 'opacity .25s', opacity: open ? 0 : 1 }} />
+          <span aria-hidden style={{ display: 'block', width: 24, height: 2, background: 'currentColor', borderRadius: 2, transition: 'transform .25s', transform: open ? 'translateY(-7px) rotate(-45deg)' : 'none' }} />
         </button>
         </div>
 
@@ -375,24 +496,25 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
 
       {/* Mobile overlay */}
       {open && (
-        <div id="mobile-menu" className="nav-m-overlay" style={{
+        <div id="mobile-menu" ref={overlayRef} className="nav-m-overlay" style={{
           position: 'fixed', inset: 0, zIndex: 99,
           background: dark ? 'rgb(12,14,19)' : 'rgb(255,255,255)',
           display: 'flex', flexDirection: 'column',
           padding: 'calc(var(--bar-h, 0px) + 76px) 20px 0',
           overflowY: 'auto', overscrollBehavior: 'contain',
         }}>
-          <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+          <nav aria-label={t('mobileNavLabel')} style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
             {navItems.map((item) => {
               const active = pathname === item.href || (item.dropdown?.some(d => pathname === d.href));
               const mobileOpen = openMobileSection === item.label;
+              const sectionId = `${menuId(item.label)}-m`;
 
               return (
                 <div key={item.label} style={{ borderBottom: `1px solid ${dark ? 'rgba(245,246,250,.1)' : 'var(--line)'}` }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <Link
                       href={item.href ?? (item.dropdown?.[0]?.href ?? '/')}
-                      onClick={() => !item.dropdown && setOpen(false)}
+                      onClick={() => setOpen(false)}
                       style={{
                         fontFamily: 'var(--font-display)', fontWeight: 800,
                         fontSize: 'clamp(24px,6.6vw,32px)',
@@ -401,26 +523,28 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                         padding: '12px 0', flex: 1, minHeight: 56,
                         display: 'flex', alignItems: 'center', gap: 10,
                       }}
-                      aria-current={active ? 'page' : undefined}
+                      aria-current={pathname === item.href ? 'page' : undefined}
                     >
                       {active && <span aria-hidden style={{ width: 8, height: 8, borderRadius: '50%', background: accent, flexShrink: 0 }} />}
                       {item.label}
                     </Link>
                     {item.dropdown && (
                       <button
+                        type="button"
                         onClick={() => setOpenMobileSection(mobileOpen ? null : item.label)}
                         style={{ background: 'none', border: 'none', cursor: 'pointer', color: ink, width: 48, height: 48, display: 'grid', placeItems: 'center', flexShrink: 0 }}
                         aria-expanded={mobileOpen}
-                        aria-label={mobileOpen ? t('collapse') : t('expand')}
+                        aria-controls={sectionId}
+                        aria-label={t('showSubmenu', { section: item.label })}
                       >
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ transform: mobileOpen ? 'rotate(180deg)' : 'none', transition: 'transform .2s' }}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden style={{ transform: mobileOpen ? 'rotate(180deg)' : 'none', transition: 'transform .2s' }}>
                           <polyline points="6 9 12 15 18 9" />
                         </svg>
                       </button>
                     )}
                   </div>
                   {item.dropdown && mobileOpen && (
-                    <div style={{ paddingBottom: 14, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    <div id={sectionId} style={{ paddingBottom: 14, display: 'flex', flexDirection: 'column', gap: 4 }}>
                       {item.dropdown.map(d => {
                         const external = d.external || isExternalHref(d.href);
                         const current = !external && pathname === d.href;
@@ -447,7 +571,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                 </div>
               );
             })}
-          </div>
+          </nav>
 
           <div className="nav-m-actions" style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 24, position: 'sticky', bottom: 0, padding: '12px 0 calc(14px + env(safe-area-inset-bottom))', background: dark ? 'rgb(12,14,19)' : 'rgb(255,255,255)', borderTop: `1px solid ${dark ? 'rgba(245,246,250,.1)' : 'var(--line)'}` }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, order: 2 }}>
@@ -481,7 +605,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
         </div>
       )}
 
-      <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
+      {searchOpen && <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />}
     </>
   );
 }
