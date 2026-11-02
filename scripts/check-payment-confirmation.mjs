@@ -65,18 +65,18 @@ const retrieveSession = async (id) => {
   return sessions[id];
 };
 const resolve = (q) => resolveRegistrationConfirmation({ year: YEAR, retrieveSession, ...q });
-const rendersPaid = (r) => !!r && r.isPaid; // the page shows "Paid" + QR only when isPaid
+const rendersPaid = (r) => !!r && r.isPaid; // the page shows "Paid" only when isPaid
 
 // payments-1: the attack from the audit.
-check("forged d + status=free does not render Paid/QR",
+check("forged d + status=free does not render Paid",
   !rendersPaid(await resolve({ status: "free", d: forgedD })));
-check("forged plain-JSON token (?t=<base64url JSON>) does not render Paid/QR",
+check("forged plain-JSON token (?t=<base64url JSON>) does not render Paid",
   !rendersPaid(await resolve({ token: forgedD })));
 const good = sealRegistrationToken(childOnly);
 const tampered = Buffer.from(good, "base64url"); tampered[20] ^= 1;
-check("tampered sealed token does not render Paid/QR",
+check("tampered sealed token does not render Paid",
   !rendersPaid(await resolve({ token: tampered.toString("base64url") })));
-check("sealed token for a non-$0 / adult summary does not render Paid/QR",
+check("sealed token for a non-$0 / adult summary does not render Paid",
   !rendersPaid(await resolve({ token: sealRegistrationToken(forgedPaid) })));
 check("sealed token for another year does not render",
   (await resolve({ token: sealRegistrationToken({ ...childOnly, year: 2026 }) })) === null);
@@ -87,9 +87,9 @@ check("registration session from another year does not render",
 check("malformed session_id is rejected without a Stripe call",
   (await resolve({ sessionId: "../../v1/customers" })) === null);
 
-// Legitimate flows still work (QR/check-in).
+// Legitimate flows still work.
 const free = await resolve({ token: good });
-check("genuine child-only sealed token renders Paid with a re-openable QR path",
+check("genuine child-only sealed token renders Paid with a re-openable confirmation path",
   rendersPaid(free) && free.isFree && free.confirmationPath === `/events/cacna-${YEAR}/register/confirmation?t=${good}`);
 const paid = await resolve({ sessionId: "cs_test_regpaid", d: forgedD });
 check("paid registration session renders Paid from Stripe metadata, ignoring URL d",
@@ -98,7 +98,7 @@ const extras = await resolve({ sessionId: "cs_test_regextras" });
 check("paid adult session keeps DCC / Zone and meals for the confirmation page",
   rendersPaid(extras) && extras.summary.dcc === "Zone 3" && extras.summary.registrants[0].m === 3);
 const unpaid = await resolve({ sessionId: "cs_test_regunpaid" });
-check("unpaid registration session renders Pending (no Paid/QR)", !!unpaid && !unpaid.isPaid);
+check("unpaid registration session renders Pending (not Paid)", !!unpaid && !unpaid.isPaid);
 check("no confirmation path contains readable PII",
   !free.confirmationPath.includes("Kid") && !free.confirmationPath.includes(Buffer.from("parent@").toString("base64url").slice(0, 8)));
 

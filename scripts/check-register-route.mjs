@@ -64,17 +64,18 @@ const { decodeSummary, unchunkFromMetadata, STRIPE_METADATA_MAX_KEYS } = await i
 const { sendRegistrationConfirmationEmail } = await import("../lib/registrationEmail.ts");
 const { checkinCodesFor, isWellFormedCheckinCode } = await import("../lib/checkinCode.ts");
 const lastColumn = (row) => Object.keys(row ?? {}).filter((k) => k !== "formName" && k !== "secret").at(-1);
-// The person's (escaped) name, then directly their own "Check-in code: <code>" line.
+// The person's (escaped) name row, then directly a row of its own holding
+// their large "Check-in code" block.
 const codeBesideName = (html, name, code) =>
-  new RegExp(`>${name}<div[^>]*>Check-in code: <span[^>]*>${code}</span>`).test(html ?? "");
+  new RegExp(`>${name}</td><td[^>]*>[^<]*</td></tr><tr><td[^>]*><div[^>]*>Check-in code</div><div[^>]*>${code}</div>`).test(html ?? "");
 
 let failures = 0;
 function check(name, ok) {
   console.log(`${ok ? "PASS" : "FAIL"}  ${name}`);
   if (!ok) failures++;
 }
-// logToSheet and the free youth confirmation email are fire-and-forget; the
-// email renders a QR code first, so it gets a longer wait.
+// logToSheet and the free youth confirmation email are fire-and-forget, so
+// the email gets a longer wait.
 const settle = (ms = 20) => new Promise((r) => setTimeout(r, ms));
 const settleEmail = () => settle(300);
 const recipients = (e) => [].concat(e.to);
@@ -285,8 +286,12 @@ check("free youth registration without RESEND_API_KEY succeeds, sends none, and 
 emails.length = 0;
 const bigGroup = await post(youth(Array.from({ length: 30 }, (_, i) => kid(5 + (i % 10), { firstName: "Christopher" + i, lastName: "Johnson-Williams" })), { contactEmail: "biggroup@example.com" }));
 await settleEmail();
-check("a 30-person free group still gets its confirmation email even if the QR cannot be encoded",
+const bigCodes = checkinCodesFor(openRegistrationToken(tokenOf(bigGroup)) ?? { ref: "", year: 0, registrants: [] });
+check("a 30-person free group gets one confirmation email",
   bigGroup.status === 200 && emails.length === 1 && recipients(emails[0])[0] === "biggroup@example.com");
+check("the 30-person group email shows all 30 distinct codes, each under its own person's name",
+  bigCodes.length === 30 && new Set(bigCodes).size === 30 &&
+  bigCodes.every((code, i) => codeBesideName(emails[0]?.html, `Christopher${i} Johnson-Williams`, code)));
 
 emails.length = 0;
 const prompt = await post(youth([kid(7)], { contactEmail: "prompt@example.com" }));

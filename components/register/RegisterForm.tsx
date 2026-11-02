@@ -349,7 +349,7 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
 
       <StepHeading n={2} title="Your contact details" />
       <p style={{ margin: "-6px 0 14px", fontSize: 13.5, color: "var(--ink-soft)", lineHeight: 1.5 }}>
-        We email your confirmation and QR code here.
+        We email your confirmation and check-in codes here.
       </p>
 
       <label style={{ display: "block", marginBottom: 14 }}>

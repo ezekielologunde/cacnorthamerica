@@ -24,7 +24,7 @@ export type RegistrationConfirmation = {
   isFree: boolean;
   /** Processing fee charged on top of summary.totalAmountCents; 0 when none. */
   processingFeeCents: number;
-  /** Path (no origin) that re-opens this confirmation; encoded in the QR. */
+  /** Path (no origin) that re-opens this confirmation. */
   confirmationPath: string;
 };
 

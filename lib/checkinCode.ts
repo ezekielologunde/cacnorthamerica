@@ -1,7 +1,7 @@
 import { createHmac } from "node:crypto";
 
-// Human-readable check-in code for every registrant of a convention year, so
-// check-in never depends on the QR code alone. Format: four Crockford base32
+// Human-readable check-in code for every registrant of a convention year:
+// the only check-in method. Format: four Crockford base32
 // characters, e.g. "7K3Q" (no I, L, O or U).
 //
 // Four characters is only about 1M combinations, so a code is unique-ish, not

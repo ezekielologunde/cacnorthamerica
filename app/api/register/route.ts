@@ -230,7 +230,7 @@ export async function POST(request: Request) {
 
   // If every registrant is a child there's nothing for Stripe to charge --
   // log it now instead of waiting on a webhook, and send the visitor
-  // straight to their confirmation (with its check-in QR). The link carries
+  // straight to their confirmation (with each person's check-in code). The link carries
   // a server-sealed token (lib/registrationToken.ts), never the readable
   // summary, and the page re-verifies it.
   //

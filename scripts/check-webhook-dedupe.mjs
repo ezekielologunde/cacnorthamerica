@@ -240,9 +240,10 @@ check("youth: the first row carries the registration's Processing Fee and Amount
 // its person's own cell.
 const { checkinCodesFor } = await import("../lib/checkinCode.ts");
 const lastColumn = (row) => Object.keys(row ?? {}).filter((k) => k !== "formName" && k !== "secret").at(-1);
-// The person's name, then directly their own "Check-in code: <code>" line.
+// The person's (escaped) name row, then directly a row of its own holding
+// their large "Check-in code" block.
 const codeBesideName = (html, name, code) =>
-  new RegExp(`>${name}<div[^>]*>Check-in code: <span[^>]*>${code}</span>`).test(html ?? "");
+  new RegExp(`>${name}</td><td[^>]*>[^<]*</td></tr><tr><td[^>]*><div[^>]*>Check-in code</div><div[^>]*>${code}</div>`).test(html ?? "");
 const youthCodes = checkinCodesFor({ ref: "ref-youth", year: 2027, registrants: [{}, {}, {}] });
 const youthByName = (n) => youthRows.find((r) => r["Stripe Session"] === "cs_test_youth" && r.Name === n);
 check("youth (paid): each row carries that person's check-in code as the last column",
