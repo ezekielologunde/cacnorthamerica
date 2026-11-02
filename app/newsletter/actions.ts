@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
 import { Resend } from "resend";
 import { headers } from "next/headers";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
@@ -72,12 +72,12 @@ export async function subscribeAction(
     return { ok: false, message: "Please enter a valid email address." };
   }
 
-  // Plain insert, not upsert: the anon role has INSERT but not UPDATE on this
-  // table (supabase/migrations/0010), and INSERT ... ON CONFLICT DO UPDATE
-  // needs UPDATE. Granting it would let anyone re-activate an address that
-  // unsubscribed. An address that's already on the list (23505) counts as
-  // success, but gets no second welcome email.
-  const supabase = await createClient();
+  // Plain insert, not upsert, so an address that unsubscribed can never be
+  // re-activated from this public form. Written with the service client so
+  // direct anon inserts can be revoked (see the admin hardening migration).
+  // An address that's already on the list (23505) counts as success, but gets
+  // no second welcome email.
+  const supabase = await createServiceClient();
   const { error } = await supabase
     .from("newsletter_subscribers")
     .insert({ email, active: true, source: "website" });
