@@ -119,6 +119,71 @@ const nextConfig: NextConfig = {
       { source: "/leadership/j-a-sanya", destination: "/leadership/past", permanent: true },
       { source: "/leadership/j-a-medaiyese", destination: "/leadership/past", permanent: true },
       { source: "/leadership/gabriel-o-olaoye", destination: "/leadership/past", permanent: true },
+
+      // The old WordPress site (cacnorthamerica.com, retired 2026-11) is still
+      // indexed by Google. Send its URLs to the closest page here so search
+      // traffic and any inbound links land somewhere useful. Spam, scanner and
+      // demo-theme URLs from that site (/feed, /newsite/*, /practice-areas, ...)
+      // are deliberately NOT redirected: they should 404. Same-path matches
+      // (/cacma, /gallery, /contact) need no entry. Trailing slashes are
+      // normalised by Next before these are matched.
+      ...(
+        [
+          ["/cac-north-america", "/"],
+          ["/about-us", "/about"],
+          ["/our-tenets", "/statement-of-faith"],
+          ["/current-leaders", "/leadership"],
+          ["/cac-current-leaders-2", "/leadership"],
+          ["/presidency", "/leadership"],
+          ["/:slug(pastor-[^/]+-profile)", "/leadership"],
+          ["/prophet-h-o-oladeji-profile", "/leadership"],
+          ["/pastor-so-oladele", "/leadership"],
+          ["/pastor-agbeja-profile", "/leadership"],
+          ["/past-leaders", "/leadership/past"],
+          ["/cac-past-leaders", "/leadership/past"],
+          ["/dcc-zonal-superintendents", "/zones"],
+          ["/c-a-c-north-washington-zone", "/zones"],
+          ["/portfolio-item/:slug(c-a-c-[^/]+-zone)", "/zones"],
+          ["/portfolio-item/:slug([^/]+-dcc)", "/zones"],
+          ["/departments", "/ministries"],
+          ["/administration-department", "/ministries"],
+          ["/music-department", "/ministries"],
+          ["/2947-2", "/ministries"],
+          ["/evangelical", "/ministries"],
+          ["/portfolio-item/administration", "/ministries"],
+          ["/portfolio-item/2203", "/ministries"],
+          ["/portfolio-item/2483", "/ministries"],
+          ["/youth-young-adult", "/youth"],
+          ["/portfolio-item/youth-conference", "/youth"],
+          ["/portfolio-item/2496", "/christian-education"],
+          ["/upcoming-events", "/calendar"],
+          ["/live-streaming", "/online"],
+          ["/sermons", "/online"],
+          ["/sermons/lord", "/online"],
+          ["/portfolio-item/2026-cacna-annual-convention", "/events/cacna-2026"],
+          ["/2026-cacna-national-convention", "/events/cacna-2026"],
+          ["/portfolio-item/2026-cac-north-america-pilgrim-tour", "/events/pilgrimage-2026"],
+          ["/2026-cac-north-america-pilgrim-tour", "/events/pilgrimage-2026"],
+          ["/retreat", "/events/ministers-retreat-2027"],
+          ["/portfolio-item/retreat", "/events/ministers-retreat-2027"],
+          ["/portfolio-item/leadership-retreat", "/events/ministers-retreat-2027"],
+          ["/portfolio-item/cac-na-men-of-nobility", "/cacma"],
+          ["/cac-na-men-of-nobility", "/cacma"],
+          ["/portfolio-item/2026-regional-general-council-meeting", "/calendar"],
+          ["/2026-regional-general-council-meeting", "/calendar"],
+          ["/portfolio-item/cac-north-america-2026-sunday-school-rally", "/calendar"],
+          ["/cac-north-america-2026-sunday-school-rally", "/calendar"],
+          ["/event/cacna-2024-annual-convention", "/archive"],
+          ["/venue/:path*", "/archive"],
+          ["/organizer/:path*", "/archive"],
+          ["/prayer-request-2", "/contact"],
+          ["/form", "/contact"],
+          ["/donation", "/giving"],
+          ["/online-giving", "/giving"],
+          ["/about-2/gallery", "/gallery"],
+          ["/category/news", "/blog"],
+        ] as const
+      ).map(([source, destination]) => ({ source, destination, permanent: true })),
     ];
   },
 

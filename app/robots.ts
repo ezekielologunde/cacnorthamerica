@@ -29,7 +29,10 @@ export default function robots(): MetadataRoute.Robots {
       // Everyone is welcome to crawl the public site; admin and checkout are private.
       {
         userAgent: "*",
-        allow: "/",
+        // /category/news is the one old category URL we redirect (see
+        // next.config.ts); it must stay crawlable or Google never sees the
+        // 301. The longer allow path wins over the "/category/" disallow.
+        allow: ["/", "/category/news"],
         disallow: [
           "/admin", "/admin/",
           // This domain ran WordPress before this Next.js rebuild. These paths
