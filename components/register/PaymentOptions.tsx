@@ -28,6 +28,9 @@ export function PaymentOptions({ variant = "light" }: { variant?: "light" | "dar
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <span role="status" aria-live="polite" style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap" }}>
+        {copied ? "Copied to clipboard" : ""}
+      </span>
       {paymentOptions.map((option) => {
         const kind = KINDS[option.kind];
         const { Icon } = kind;
@@ -38,7 +41,6 @@ export function PaymentOptions({ variant = "light" }: { variant?: "light" | "dar
               display: "flex", gap: 14, alignItems: "flex-start",
               background: dark ? "rgba(245,246,250,.06)" : "var(--paper)",
               border: `1px solid ${dark ? "rgba(245,246,250,.14)" : "var(--line)"}`,
-              borderLeft: `4px solid ${kind.tint}`,
               borderRadius: 16, padding: "14px 16px",
             }}
           >
@@ -56,7 +58,7 @@ export function PaymentOptions({ variant = "light" }: { variant?: "light" | "dar
             <div style={{ minWidth: 0, flex: 1 }}>
               <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "2px 10px" }}>
                 <span style={{ fontWeight: 800, fontSize: 15.5, color: dark ? "#fff" : "var(--ink)" }}>{option.name}</span>
-                <span style={{ fontSize: 11.5, fontWeight: 700, letterSpacing: ".5px", textTransform: "uppercase", color: dark ? "rgba(245,246,250,.55)" : kind.tint }}>
+                <span style={{ fontSize: 11.5, fontWeight: 700, letterSpacing: ".5px", textTransform: "uppercase", color: dark ? "rgba(245,246,250,.78)" : kind.tint }}>
                   {kind.label}
                 </span>
               </div>
@@ -77,7 +79,7 @@ export function PaymentOptions({ variant = "light" }: { variant?: "light" | "dar
                   }}
                 >
                   {copied === option.kind ? <Check size={16} aria-hidden /> : <Copy size={16} aria-hidden />}
-                  <span aria-live="polite">{copied === option.kind ? "Copied" : option.copyLabel}</span>
+                  <span>{copied === option.kind ? "Copied" : option.copyLabel}</span>
                 </button>
               )}
             </div>
