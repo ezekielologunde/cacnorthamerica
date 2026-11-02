@@ -99,7 +99,7 @@ export default async function Cacna50thAnniversaryPage({
 
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(16px,1.9vw,20px)", color: "rgba(245,246,250,.72)", lineHeight: 1.72, maxWidth: 580, margin: "0 0 8px", textWrap: "pretty" }}>
-              Christ Apostolic Church North America celebrates 50 years since its founding in 1976, at CAC Village — the same grounds that host the Annual Convention.
+              Christ Apostolic Church North America celebrates 50 years since its founding in 1976, at CAC Village, Blue Ridge Summit, PA — the same grounds that host the Annual Convention.
             </p>
           </Reveal>
 
