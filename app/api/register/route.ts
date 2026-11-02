@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getStripeClient } from "@/lib/stripe";
 import { logToSheet } from "@/lib/sheetsWebhook";
-import { rateLimit } from "@/lib/rateLimit";
+import { clientIp, rateLimit } from "@/lib/rateLimit";
 import { SITE_URL } from "@/lib/site";
 import { currentOrNextConvention, activePricing, priceForCategory, type RegistrantCategory } from "@/lib/conventions";
 import { encodeSummary, chunkForMetadata, type RegistrationSummary } from "@/lib/checkoutSummary";
@@ -88,8 +88,7 @@ function validateRequestBody(body: unknown): string | null {
 }
 
 export async function POST(request: Request) {
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "anon";
-  if (!rateLimit(ip, 5, 60_000)) {
+  if (!rateLimit(clientIp(request.headers), 5, 60_000)) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 

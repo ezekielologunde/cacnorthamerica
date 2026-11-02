@@ -117,7 +117,12 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
               type="number" min="1" step="1" inputMode="decimal" aria-label="Custom amount in dollars"
               placeholder="Or enter a custom amount ($)"
               value={customAmount}
-              onChange={(e) => { setCustomAmount(e.target.value); setAmount(null); }}
+              onChange={(e) => {
+                const v = e.target.value;
+                setCustomAmount(v);
+                // Clearing the field falls back to the default preset instead of leaving no amount.
+                setAmount(v.trim() === "" ? PRESET_AMOUNTS[1] : null);
+              }}
             />
           </div>
 

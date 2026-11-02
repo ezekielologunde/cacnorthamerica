@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server";
 import { getStripeClient } from "@/lib/stripe";
-import { rateLimit } from "@/lib/rateLimit";
+import { clientIp, rateLimit } from "@/lib/rateLimit";
 import { SITE_URL } from "@/lib/site";
 import { storeProducts } from "@/lib/conventions";
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MAX_FIELD_LENGTH = 120;
+const MAX_EMAIL_LENGTH = 254;
+const MAX_LINE_ITEMS = 20;
+const MAX_QUANTITY = 50;
 
 type CheckoutRequestBody = {
   contactName: string;
@@ -19,11 +25,20 @@ function validateRequestBody(body: unknown): string | null {
   if (typeof b.contactName !== "string" || b.contactName.trim() === "") {
     return "contactName is required";
   }
+  if (b.contactName.length > MAX_FIELD_LENGTH) {
+    return `contactName must be ${MAX_FIELD_LENGTH} characters or fewer`;
+  }
   if (typeof b.contactEmail !== "string" || b.contactEmail.trim() === "") {
     return "contactEmail is required";
   }
+  if (b.contactEmail.length > MAX_EMAIL_LENGTH || !EMAIL_RE.test(b.contactEmail.trim())) {
+    return "Please enter a valid email address";
+  }
   if (!Array.isArray(b.items) || b.items.length === 0) {
     return "items must be a non-empty array";
+  }
+  if (b.items.length > MAX_LINE_ITEMS) {
+    return `An order can have at most ${MAX_LINE_ITEMS} items`;
   }
   for (const item of b.items) {
     if (!item || typeof item !== "object") {
@@ -33,16 +48,15 @@ function validateRequestBody(body: unknown): string | null {
     if (typeof i.productId !== "string" || i.productId.trim() === "") {
       return "Each item must have a productId";
     }
-    if (typeof i.quantity !== "number" || i.quantity < 1) {
-      return "Each item must have a quantity of at least 1";
+    if (typeof i.quantity !== "number" || !Number.isInteger(i.quantity) || i.quantity < 1 || i.quantity > MAX_QUANTITY) {
+      return `Each item must have a whole-number quantity from 1 to ${MAX_QUANTITY}`;
     }
   }
   return null;
 }
 
 export async function POST(request: Request) {
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "anon";
-  if (!rateLimit(ip, 5, 60_000)) {
+  if (!rateLimit(clientIp(request.headers), 5, 60_000)) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
