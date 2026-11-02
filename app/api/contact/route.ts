@@ -26,15 +26,24 @@ function buildHtml(rows: [string, string][]): string {
 </body></html>`;
 }
 
+const OWN_COLUMNS = new Set(["Name", "Email", "Subject", "Message"]);
+
 /** True only when the insert actually went through (supabase-js reports
- *  failures in `error` rather than throwing). */
+ *  failures in `error` rather than throwing). The table has no column for
+ *  Phone, Address, Groups and the rest, so they are appended to the message:
+ *  a stored row must hold everything the mailto fallback would have carried,
+ *  since a successful save suppresses that fallback. */
 async function saveToSupabase(fields: Record<string, string>): Promise<boolean> {
+  const extras = Object.entries(fields)
+    .filter(([k, v]) => !OWN_COLUMNS.has(k) && v.trim())
+    .map(([k, v]) => `${k}: ${v.trim()}`);
+  const message = extras.length ? `${fields["Message"]}\n\n---\n${extras.join("\n")}` : fields["Message"];
   const supabase = await createServiceClient();
   const { error } = await supabase.from("contact_submissions").insert({
     name: fields["Name"],
     email: fields["Email"],
     subject: fields["Subject"] || null,
-    message: fields["Message"],
+    message,
   });
   if (error) console.error("[contact] Supabase insert error:", error.message);
   return !error;
