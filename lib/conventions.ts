@@ -368,6 +368,16 @@ export interface StoreProduct {
 }
 
 export const storeProducts: StoreProduct[] = [
+  { id: "ce-2027-unified-bible-study-manual", name: "2027 Unified Bible Study Manual", category: "christian_education", priceCents: 1800, sizes: [], imageSrc: "/photos/store/store-2027-unified-bible-study-manual.jpg" },
+  { id: "ce-2027-eko-ile-eko-oluko", name: "2027 Awon Eko Ile Eko Ojo Isimi — Iwe Oluko", category: "christian_education", priceCents: 2000, sizes: [], imageSrc: "/photos/store/store-2027-eko-ile-eko-oluko.jpg" },
+  { id: "ce-2027-eko-ile-eko-akeko", name: "2027 Awon Eko Ile Eko Ojo Isimi — Iwe Akeko", category: "christian_education", priceCents: 1800, sizes: [], imageSrc: "/photos/store/store-2027-eko-ile-eko-akeko.jpg" },
+  { id: "ce-2027-sunday-school-teacher-manual", name: "2027 Sunday School Lessons Teacher’s Manual", category: "christian_education", priceCents: 2000, sizes: [], imageSrc: "/photos/store/store-2027-sunday-school-teacher-manual.jpg" },
+  { id: "ce-2027-sunday-school-student-manual", name: "2027 Sunday School Lessons Students Manual", category: "christian_education", priceCents: 1800, sizes: [], imageSrc: "/photos/store/store-2027-sunday-school-student-manual.jpg" },
+  { id: "ce-2027-omi-iye-naa", name: "2027 Omi Iye Naa", category: "christian_education", priceCents: 2000, sizes: [], imageSrc: "/photos/store/store-2027-omi-iye-naa.jpg" },
+  { id: "ce-2027-living-water-devotional", name: "2027 The Living Water Devotional", category: "christian_education", priceCents: 2000, sizes: [], imageSrc: "/photos/store/store-2027-living-water-devotional.jpg" },
+  { id: "ce-2027-youth-young-adults-lesson", name: "2027 Youth and Young Adults Sunday School Lessons", category: "christian_education", priceCents: 1600, sizes: [], imageSrc: "/photos/store/store-2027-youth-young-adults-lesson.jpg" },
+  { id: "ce-2027-pre-teens-elementary-lesson", name: "2027 Pre Teens Elementary Sunday School Lessons", category: "christian_education", priceCents: 1600, sizes: [], imageSrc: "/photos/store/store-2027-pre-teens-elementary-lesson.jpg" },
+  { id: "ce-2027-children-lesson", name: "2027 Children Sunday School Lessons", category: "christian_education", priceCents: 1600, sizes: [], imageSrc: "/photos/store/store-2027-children-lesson.jpg" },
   { id: "ce-2026-youth-young-adults-lesson", name: "2026 Youth & Young Adults Teenagers Sunday School Lesson", category: "christian_education", priceCents: 1600, sizes: [], imageSrc: "/photos/store/store-2026-youth-young-adults-lesson.jpg" },
   { id: "ce-2026-pre-teen-lesson", name: "2026 Pre-Teen Sunday School Lesson", category: "christian_education", priceCents: 1600, sizes: [], imageSrc: "/photos/store/store-2026-pre-teen-lesson.jpg" },
   { id: "ce-2026-elementary-lesson", name: "2026 Elementary Sunday School Lesson", category: "christian_education", priceCents: 1600, sizes: [], imageSrc: "/photos/store/store-2026-elementary-lesson.jpg" },
