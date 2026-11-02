@@ -47,7 +47,8 @@ async function mayAutoReply(email: string): Promise<boolean> {
     const { count, error } = await supabase
       .from("contact_submissions")
       .select("id", { count: "exact", head: true })
-      .ilike("email", email)
+      // ilike treats % and _ as wildcards; escape them so only this exact address matches.
+      .ilike("email", email.replace(/[\\%_]/g, "\\$&"))
       .gte("created_at", new Date(Date.now() - DAY_MS).toISOString());
     return !error && count === 0;
   } catch {
