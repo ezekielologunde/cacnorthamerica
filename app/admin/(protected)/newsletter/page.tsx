@@ -1,8 +1,8 @@
-import { createServiceClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/supabase/require-admin";
 import NewsletterBroadcast from "@/components/admin/NewsletterBroadcast";
 
 export default async function NewsletterPage() {
-  const supabase = createServiceClient();
+  const { supabase } = await requireAdmin();
   const { data: subscribers } = await supabase
     .from("newsletter_subscribers")
     .select("id, email, name, source, subscribed_at, active")

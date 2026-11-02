@@ -241,6 +241,9 @@ export function FooterExperience() {
             <Link href={'/statement-of-faith'} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{t('statementOfFaith')}</Link>
             <Link href={'/leadership/past'} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{t('pastLeaders')}</Link>
             <Link href={'/contact'} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{t('contact')}</Link>
+            <Link href={'/privacy'} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{t('privacy')}</Link>
+            <Link href={'/terms'} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{t('terms')}</Link>
+            <Link href={'/refunds'} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{t('refunds')}</Link>
             <Link href={'/sitemap'} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{t('sitemap')}</Link>
             <BackToTop label={t('backToTop')} />
           </div>

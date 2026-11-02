@@ -11,6 +11,20 @@
  *  can't require Google auth and still accept unauthenticated POSTs from a
  *  server), so this is what stops someone who finds the URL from writing
  *  arbitrary rows into the sheet directly. */
+
+/** Google Sheets runs a cell that starts with =, +, - or @ as a formula (tab
+ *  and CR are used to smuggle them past naive checks), so a form value like
+ *  =HYPERLINK(...) built from other tabs would run next to every
+ *  registrant's details. A leading apostrophe makes Sheets keep it as plain
+ *  text and is itself hidden in the cell. The Apps Script
+ *  (docs/google-apps-script/sheets-webhook.gs) applies the same rule; this
+ *  is the server-side half. */
+const FORMULA_START = /^[=+\-@\t\r]/;
+
+export function sheetSafe(value: string): string {
+  return FORMULA_START.test(value) ? `'${value}` : value;
+}
+
 export function logToSheet(formName: string, fields: Record<string, string>): void {
   const hook = process.env.SHEETS_WEBHOOK;
   if (!hook) return;
@@ -55,10 +69,14 @@ export async function logToSheetChecked(formName: string, fields: Record<string,
 }
 
 function sheetRequest(formName: string, fields: Record<string, string>): RequestInit {
+  const safeFields: Record<string, string> = {};
+  for (const [k, v] of Object.entries(fields)) safeFields[sheetSafe(k)] = sheetSafe(String(v));
+
+  // formName and secret go last so no field can override them.
   const secret = process.env.SHEETS_WEBHOOK_SECRET;
   return {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ formName, ...(secret ? { secret } : {}), ...fields }),
+    body: JSON.stringify({ ...safeFields, formName, ...(secret ? { secret } : {}) }),
   };
 }
