@@ -394,8 +394,8 @@ export default async function BlogPage({
       <section className="mm-hero mm-hero-tall" style={{ background: "var(--ink)", padding: "170px clamp(20px,5vw,64px) 110px", position: "relative", overflow: "hidden", minHeight: "72vh", display: "flex", alignItems: "center" }}>
         <div aria-hidden style={{ position: "absolute", inset: 0 }}>
           <Image
-            src="/images/cac-youth-convention.jpg"
-            alt="CACNA youth at a past Annual Convention"
+            src="/photos/gallery-archive/youth-3264.jpg"
+            alt="CACNA youth gathered outdoors for a group photo"
             fill
             preload
             style={{ objectFit: "cover", objectPosition: "center 30%" }}

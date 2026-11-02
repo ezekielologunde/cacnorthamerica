@@ -21,7 +21,7 @@ export function AnniversaryCelebration() {
           featured here full-bleed instead of shrunk into the photo marquee. */}
       <div aria-hidden style={{
         position: "absolute", inset: 0,
-        backgroundImage: "url(/images/cac-gathering-crowd.jpg)", backgroundSize: "cover", backgroundPosition: "center",
+        backgroundImage: "url(/photos/gallery-archive/whatsapp-image-2018-07-23-at-10-11-12-pm-1-1601.jpg)", backgroundSize: "cover", backgroundPosition: "center 60%",
       }} />
       <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg,rgba(10,11,18,.92) 0%,rgba(28,30,46,.85) 55%,rgba(10,11,18,.92) 100%)" }} />
       <div aria-hidden style={{ position: "absolute", top: -120, right: -100, width: 640, height: 560, background: "radial-gradient(circle,rgba(253,200,65,.22),transparent 65%)", pointerEvents: "none" }} />

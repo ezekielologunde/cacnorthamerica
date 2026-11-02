@@ -10,6 +10,10 @@ import { Hero } from "@/components/sections/Hero";
 import { HomepageAnnouncements } from "@/components/ui/HomepageAnnouncements";
 import { createServiceClient } from "@/lib/supabase/server";
 import { CacWorldNewsStrip } from "@/components/sections/CacWorldNewsStrip";
+import { ConventionRegister } from "@/components/sections/ConventionRegister";
+import { HistoryTeaser } from "@/components/sections/HistoryTeaser";
+import { FaqTeaser } from "@/components/sections/FaqTeaser";
+import { SocialsRow } from "@/components/sections/SocialsRow";
 
 // Below-fold sections split into separate JS chunks — browser parses them
 // incrementally instead of one blocking task, cutting TBT significantly.
@@ -96,20 +100,25 @@ export default async function Home({
       <Nav heroDark />
       {announcements && announcements.length > 0 && <HomepageAnnouncements announcements={announcements} />}
       <Hero />
-      {/* Phone-first order: what a visitor most often came for (what is
-          coming up, then watching a service) sits right under the hero;
-          the photo strip and the superintendent's letter follow. */}
+      {/* Phone-first order: what a visitor most often came for (registering
+          for the convention, what is coming up, then watching a service)
+          sits right under the hero; the photo strip and the
+          superintendent's letter follow. */}
+      <ConventionRegister />
       <UpcomingPrograms />
       <WatchOnline />
       <AnniversaryCelebration />
       <PhotoMarquee />
       <PastorWelcome />
       <Watchword />
+      <HistoryTeaser />
       <LatestNews />
       <CacWorldNewsStrip limit={3} />
       <OurMinistries />
       <Impact />
       <GlobalChurches />
+      <FaqTeaser />
+      <SocialsRow />
       <PlanVisit />
       <FooterExperience />
     </main>

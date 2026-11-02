@@ -4,7 +4,8 @@ import { escapeHtml } from "@/lib/html";
 import { emailShell, emailCard, sender } from "@/lib/email";
 import { paymentOptions } from "@/lib/registrationInfo";
 import type { RegistrationSummary } from "@/lib/checkoutSummary";
-import type { RegistrantCategory } from "@/lib/conventions";
+import { conventionYears, type RegistrantCategory } from "@/lib/conventions";
+import { describeYouthRegistrant } from "@/lib/youthRegistration";
 
 const CATEGORY_LABEL: Record<RegistrantCategory, string> = {
   adult: "Adult",
@@ -24,14 +25,27 @@ function buildHtml(summary: RegistrationSummary, confirmationUrl: string, isPaid
   const statusLabel = summary.isComplimentary ? "Complimentary" : isPaid ? "Paid" : "Pending";
   const totalLabel = `$${(summary.totalAmountCents / 100).toFixed(2)}`;
 
+  const startIso = conventionYears.find((cy) => cy.year === summary.year)?.startIso;
   const registrantRows = summary.registrants
-    .map(
-      (r) =>
-        `<tr><td style="padding:9px 0;font-size:14.5px;color:#12141E;border-bottom:1px solid #ECE9E4">${escapeHtml(r.n)}</td><td style="padding:9px 0;font-size:14.5px;color:#5f5e5a;text-align:right;border-bottom:1px solid #ECE9E4">${CATEGORY_LABEL[r.c] ?? "Adult"}</td></tr>`
-    )
+    .map((r) => {
+      // Youth & Child registrants also list their age group, meals and
+      // allergy notes under their name.
+      const youth = describeYouthRegistrant(r, startIso);
+      const details = youth
+        ? `<div style="font-size:12.5px;color:#8a8983;margin-top:3px;line-height:1.5">Meals: ${escapeHtml(youth.meals.length > 0 ? youth.meals.join(", ") : "None")}${r.l ? `<br>Allergies: ${escapeHtml(r.l)}` : ""}</div>`
+        : "";
+      const label = youth ? youth.ageGroup : (CATEGORY_LABEL[r.c] ?? "Adult");
+      return `<tr><td style="padding:9px 0;font-size:14.5px;color:#12141E;border-bottom:1px solid #ECE9E4">${escapeHtml(r.n)}${details}</td><td style="padding:9px 0;font-size:14.5px;color:#5f5e5a;text-align:right;vertical-align:top;border-bottom:1px solid #ECE9E4">${escapeHtml(label)}</td></tr>`;
+    })
     .join("");
 
-  const paymentCards = paymentOptions.map((o) => emailCard(escapeHtml(o.name), escapeHtml(o.detail))).join("");
+  // Nothing to pay on a $0 registration, so no payment options.
+  const paymentBlock = summary.totalAmountCents > 0
+    ? `<div style="padding-top:20px">
+      <h2 style="font-size:14px;font-weight:800;color:#12141E;margin:0 0 12px;text-transform:uppercase;letter-spacing:1.2px">Payment Options</h2>
+      ${paymentOptions.map((o) => emailCard(escapeHtml(o.name), escapeHtml(o.detail))).join("")}
+    </div>`
+    : "";
 
   const qrBlock = qrDataUri
     ? `<div style="text-align:center;margin:26px 0 4px">
@@ -52,10 +66,7 @@ function buildHtml(summary: RegistrationSummary, confirmationUrl: string, isPaid
       </table>
       ${qrBlock}
     </div>
-    <div style="padding-top:20px">
-      <h2 style="font-size:14px;font-weight:800;color:#12141E;margin:0 0 12px;text-transform:uppercase;letter-spacing:1.2px">Payment Options</h2>
-      ${paymentCards}
-    </div>`;
+    ${paymentBlock}`;
 
   return emailShell({
     heading: `You're registered for CACNA ${summary.year}!`,
@@ -86,7 +97,16 @@ export async function sendRegistrationConfirmationEmail(
   if (!key) return true;
 
   try {
-    const qrDataUri = isPaid ? await renderQrCodePngDataUri(confirmationUrl) : null;
+    // A very large group makes the confirmation URL too long for a QR code.
+    // The QR is a nicety: send the email without it rather than not at all.
+    let qrDataUri: string | null = null;
+    if (isPaid) {
+      try {
+        qrDataUri = await renderQrCodePngDataUri(confirmationUrl);
+      } catch (qrErr) {
+        console.error("[registration-email] QR skipped:", qrErr);
+      }
+    }
     const resend = new Resend(key);
     const { error } = await resend.emails.send({
       ...sender("convention"),

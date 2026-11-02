@@ -14,10 +14,13 @@ export function VideoFacade({
   videoId,
   title,
   live = false,
+  showTitle = true,
 }: {
   videoId: string;
   title: string;
   live?: boolean;
+  /** Overlay the title on the thumbnail. Turn off when the caller prints it alongside. */
+  showTitle?: boolean;
 }) {
   const [playing, setPlaying] = useState(false);
 
@@ -72,12 +75,14 @@ export function VideoFacade({
       }}>
         <Play size={28} strokeWidth={0} fill="var(--red)" style={{ marginLeft: 3 }} aria-hidden />
       </span>
-      <span style={{
-        position: "absolute", bottom: 0, left: 0, right: 0, padding: "18px 20px 16px",
-        color: "#fff", fontSize: 15, fontWeight: 700, textAlign: "left", lineHeight: 1.3,
-      }}>
-        {title}
-      </span>
+      {showTitle && (
+        <span style={{
+          position: "absolute", bottom: 0, left: 0, right: 0, padding: "18px 20px 16px",
+          color: "#fff", fontSize: 15, fontWeight: 700, textAlign: "left", lineHeight: 1.3,
+        }}>
+          {title}
+        </span>
+      )}
     </button>
   );
 }

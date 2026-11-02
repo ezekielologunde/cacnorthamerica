@@ -60,8 +60,8 @@ export function PlanVisit() {
               border: '3px solid var(--ink)', boxShadow: '0 14px 30px rgba(0,0,0,.45)',
             }}>
               <Image
-                src="/images/cac-gathering-crowd.jpg"
-                alt="A gathering of the CACNA family"
+                src="/photos/gallery-archive/village03-1352.jpg"
+                alt="Lawns and trees on the grounds of CAC Village"
                 fill
                 style={{ objectFit: 'cover' }}
                 sizes="132px"
