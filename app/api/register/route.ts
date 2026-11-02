@@ -81,17 +81,10 @@ export async function POST(request: Request) {
   const body = rawBody as RegisterRequestBody;
   const isComplimentary = body.isComplimentary === true;
 
-  // The Complimentary tab (RegisterForm's third tab) is staff/comp-only --
-  // unlike Individual/Group, it isn't meant to be publicly self-selectable,
-  // so it's gated behind a shared passcode staff enter into the form rather
-  // than being reachable by anyone who inspects the request body. An unset
-  // STAFF_PASSCODE disables the tab entirely rather than silently accepting
-  // any value.
+  // Complimentary (zero-price) registrations were removed. Reject any request
+  // that still asks for one rather than quietly pricing it as a normal booking.
   if (isComplimentary) {
-    const staffPasscode = process.env.STAFF_PASSCODE;
-    if (!staffPasscode || body.staffPasscode !== staffPasscode) {
-      return NextResponse.json({ error: "Invalid staff passcode" }, { status: 403 });
-    }
+    return NextResponse.json({ error: "Complimentary registration is not available" }, { status: 403 });
   }
 
   const cy = currentOrNextConvention();

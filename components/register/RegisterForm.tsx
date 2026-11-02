@@ -1,24 +1,39 @@
 "use client";
 
-import { useMemo, useState, type CSSProperties, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 export type RegistrantCategory = "adult" | "young_adult" | "child";
 type RegistrantRow = { fullName: string; category: RegistrantCategory };
-type Mode = "individual" | "group" | "complimentary";
+type Mode = "individual" | "group";
 
-const inputStyle: CSSProperties = {
-  width: "100%", boxSizing: "border-box",
-  padding: "11px 14px", borderRadius: 10,
-  border: "1.5px solid var(--line)", background: "var(--cream)",
-  fontSize: 14.5, color: "var(--ink)",
-  fontFamily: "var(--font-body)",
-};
-const labelStyle: CSSProperties = { display: "block", fontSize: 12.5, fontWeight: 600, color: "var(--ink-soft)", marginBottom: 5 };
+// 16px text stops iOS Safari zooming the page on focus; 48px height is a
+// comfortable thumb target. Both live in .reg-input (globals.css).
+const labelStyle: CSSProperties = { display: "block", fontSize: 13.5, fontWeight: 700, color: "var(--ink)", marginBottom: 6 };
+const hintStyle: CSSProperties = { display: "block", fontSize: 12.5, fontWeight: 500, color: "var(--ink-soft)", marginTop: 5 };
 
 function formatPrice(cents: number) {
   return `$${(cents / 100).toFixed(2)}`;
+}
+
+function StepHeading({ n, title }: { n: number; title: string }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "28px 0 14px" }}>
+      <span
+        aria-hidden
+        style={{
+          width: 26, height: 26, borderRadius: "50%", flexShrink: 0,
+          background: "linear-gradient(140deg,var(--flame),var(--red))", color: "#fff",
+          display: "inline-flex", alignItems: "center", justifyContent: "center",
+          fontSize: 13, fontWeight: 800,
+        }}
+      >
+        {n}
+      </span>
+      <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 19, color: "var(--ink)", margin: 0 }}>{title}</h2>
+    </div>
+  );
 }
 
 export function RegisterForm({ year, priceMap }: { year: number; priceMap: Partial<Record<RegistrantCategory, number>> }) {
@@ -37,23 +52,31 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
-  const [staffPasscode, setStaffPasscode] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const isComplimentary = mode === "complimentary";
-  // The Complimentary tab is a one-off staff/comp registration, not a group
-  // booking -- it keeps the single-registrant layout. Individual and Group
-  // both support registering any number of people; the only difference
-  // between them is whether a church name is collected.
-  const allowsMultiple = !isComplimentary;
+  // After "+ Add" / "Duplicate", jump straight into the new row's name field
+  // so a phone user keeps typing instead of hunting for it.
+  const nameRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const focusRow = useRef<number | null>(null);
+  const errorRef = useRef<HTMLParagraphElement | null>(null);
 
-  // Complimentary submissions are always zeroed server-side regardless of
-  // category (see app/api/register/route.ts) -- reflect that here so the
-  // live total never shows a price that won't actually be charged.
+  useEffect(() => {
+    if (focusRow.current !== null) {
+      nameRefs.current[focusRow.current]?.focus();
+      focusRow.current = null;
+    }
+  }, [registrants.length]);
+
+  useEffect(() => {
+    if (errorMessage) errorRef.current?.scrollIntoView({ block: "center", behavior: "smooth" });
+  }, [errorMessage]);
+
+  // Individual and Group both support registering any number of people; the
+  // only difference between them is whether a church name is collected.
   const total = useMemo(
-    () => (isComplimentary ? 0 : registrants.reduce((sum, r) => sum + (priceMap[r.category] ?? 0), 0)),
-    [registrants, priceMap, isComplimentary]
+    () => registrants.reduce((sum, r) => sum + (priceMap[r.category] ?? 0), 0),
+    [registrants, priceMap]
   );
 
   function updateRegistrant(index: number, patch: Partial<RegistrantRow>) {
@@ -62,10 +85,12 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
   }
 
   function addRegistrant() {
+    focusRow.current = registrants.length;
     setRegistrants((current) => [...current, { fullName: "", category: lastCategory }]);
   }
 
   function duplicateRegistrant(index: number) {
+    focusRow.current = index + 1;
     setRegistrants((current) => {
       const source = current[index];
       const copy = [...current];
@@ -81,6 +106,7 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
   // Pastes a block of names (one per line) into that many new registrant
   // rows at once, all set to `bulkCategory` -- built for a church signing up
   // a whole busload of members without clicking "+ Add" dozens of times.
+  const bulkCount = bulkNames.split("\n").map((n) => n.trim()).filter(Boolean).length;
   function addBulkNames() {
     const names = bulkNames.split("\n").map((n) => n.trim()).filter(Boolean);
     if (names.length === 0) return;
@@ -102,17 +128,12 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          // The Complimentary tab reuses the single-registrant Individual
-          // layout (no church name, no add-another-registrant) -- it's a
-          // one-off comp/staff-test registration, not a group booking.
-          registrationType: mode === "group" ? "group" : "individual",
+          registrationType: mode,
           churchName: mode === "group" ? churchName : null,
           contactName,
           contactEmail,
           contactPhone,
           registrants,
-          isComplimentary,
-          ...(isComplimentary ? { staffPasscode } : {}),
         }),
       });
 
@@ -134,223 +155,234 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
     }
   }
 
+  const categoryOptions = (
+    <>
+      <option value="adult">{t("categoryAdult")}</option>
+      <option value="young_adult">{t("categoryYoungAdult")}</option>
+      <option value="child">{t("categoryChild")}</option>
+    </>
+  );
+
+  const submitLabel = status === "loading" ? t("submitting") : `${t("submit")} — CACNA ${year}`;
+
   return (
     <form onSubmit={handleSubmit}>
-      <div style={{ display: "flex", gap: 8, marginBottom: 24, borderBottom: "1.5px solid var(--line)" }}>
+      {/* Two big, equal tabs. */}
+      <div role="tablist" aria-label="Registration type" className="reg-seg">
         {([
           { key: "individual", label: t("individualTab") },
           { key: "group", label: t("groupTab") },
-          { key: "complimentary", label: t("complimentaryTab") },
         ] as const).map((m) => (
           <button
             key={m.key}
             type="button"
+            role="tab"
+            aria-selected={mode === m.key}
             onClick={() => setMode(m.key)}
-            style={{
-              padding: "10px 4px", marginBottom: -1.5, background: "none", border: "none",
-              borderBottom: mode === m.key ? "2.5px solid var(--red)" : "2.5px solid transparent",
-              color: mode === m.key ? "var(--red)" : "var(--ink-soft)",
-              fontWeight: 700, fontSize: 14.5, cursor: "pointer", marginRight: 20,
-            }}
+            className={mode === m.key ? "reg-seg-btn on" : "reg-seg-btn"}
           >
             {m.label}
           </button>
         ))}
       </div>
 
+      <StepHeading n={1} title={mode === "group" ? "Your group" : "Who's coming"} />
+
       {mode === "group" && (
-        <div style={{ marginBottom: 16 }}>
-          <label style={labelStyle}>{t("churchName")} <span style={{ color: "var(--red)" }}>*</span></label>
+        <label style={{ display: "block", marginBottom: 14 }}>
+          <span style={labelStyle}>{t("churchName")} <span style={{ color: "var(--red)" }}>*</span></span>
           <input
-            className="field-input"
-            style={inputStyle}
+            className="field-input reg-input"
+            name="organization"
             value={churchName}
             onChange={(e) => setChurchName(e.target.value)}
             required
             autoComplete="organization"
+            autoCapitalize="words"
+            enterKeyHint="next"
           />
-        </div>
-      )}
-
-      {isComplimentary && (
-        <p style={{ marginBottom: 16, padding: "11px 14px", borderRadius: 10, background: "var(--cream)", fontSize: 13.5, color: "var(--ink-soft)" }}>
-          Complimentary registrations are for staff/comp use only and require a staff passcode to submit.
-        </p>
+        </label>
       )}
 
       {registrants.map((r, i) => (
-        <div key={i} style={{ marginBottom: 12, background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 14, padding: "14px 16px 16px" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-            <span style={{ fontSize: 11.5, fontWeight: 800, letterSpacing: "1px", textTransform: "uppercase", color: "var(--ink-soft)" }}>
-              Registrant {i + 1}
+        <div key={i} style={{ marginBottom: 12, background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 16, padding: "12px 14px 16px" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", minHeight: 44 }}>
+            <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: "1px", textTransform: "uppercase", color: "var(--ink-soft)" }}>
+              {registrants.length > 1 ? `Person ${i + 1}` : "Registrant"}
             </span>
-            {allowsMultiple && (
-              <div style={{ display: "flex", gap: 14 }}>
-                <button
-                  type="button"
-                  onClick={() => duplicateRegistrant(i)}
-                  style={{ background: "none", border: "none", color: "var(--ink-soft)", fontWeight: 700, fontSize: 12.5, cursor: "pointer" }}
-                >
-                  Duplicate
+            <div style={{ display: "flex", gap: 4 }}>
+              <button type="button" onClick={() => duplicateRegistrant(i)} className="reg-linkbtn" style={{ color: "var(--ink-soft)" }}>
+                Duplicate
+              </button>
+              {registrants.length > 1 && (
+                <button type="button" onClick={() => removeRegistrant(i)} className="reg-linkbtn" style={{ color: "var(--red)" }}>
+                  {t("removeRegistrant")}
                 </button>
-                {registrants.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeRegistrant(i)}
-                    style={{ background: "none", border: "none", color: "var(--red)", fontWeight: 700, fontSize: 12.5, cursor: "pointer" }}
-                  >
-                    {t("removeRegistrant")}
-                  </button>
-                )}
-              </div>
-            )}
+              )}
+            </div>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 180px", gap: 12, alignItems: "end" }}>
-            <div>
-              <label style={labelStyle}>{t("fullName")} <span style={{ color: "var(--red)" }}>*</span></label>
+          <div className="reg-row">
+            <label>
+              <span style={labelStyle}>{t("fullName")} <span style={{ color: "var(--red)" }}>*</span></span>
               <input
-                className="field-input"
-                style={inputStyle}
+                ref={(el) => { nameRefs.current[i] = el; }}
+                className="field-input reg-input"
+                name={`registrant-${i}-name`}
                 value={r.fullName}
                 onChange={(e) => updateRegistrant(i, { fullName: e.target.value })}
                 required
-                autoComplete="name"
+                autoComplete={i === 0 ? "name" : "off"}
+                autoCapitalize="words"
+                enterKeyHint="next"
               />
-            </div>
-            <div>
-              <label style={labelStyle}>{t("category")}</label>
+            </label>
+            <label>
+              <span style={labelStyle}>{t("category")}</span>
               <select
-                className="field-input"
-                style={{ ...inputStyle, cursor: "pointer" }}
+                className="field-input reg-input"
+                name={`registrant-${i}-category`}
+                style={{ cursor: "pointer" }}
                 value={r.category}
                 onChange={(e) => updateRegistrant(i, { category: e.target.value as RegistrantCategory })}
               >
-                <option value="adult">{t("categoryAdult")}</option>
-                <option value="young_adult">{t("categoryYoungAdult")}</option>
-                <option value="child">{t("categoryChild")}</option>
+                {categoryOptions}
               </select>
-            </div>
+            </label>
           </div>
         </div>
       ))}
 
-      {allowsMultiple && (
-        <>
-          <button
-            type="button"
-            onClick={addRegistrant}
-            className="press"
-            style={{ marginBottom: 16, marginRight: 10, background: "none", border: "1.5px solid var(--line)", borderRadius: 999, padding: "9px 18px", fontWeight: 700, fontSize: 13.5, color: "var(--ink)", cursor: "pointer" }}
-          >
+      <>
+          <button type="button" onClick={addRegistrant} className="press reg-add">
             + {t("addRegistrant")}
           </button>
 
           {/* Registering a large group (a church bus, a whole family) one
-              click at a time is tedious -- paste every name at once instead. */}
-          <div style={{ marginBottom: 20, background: "var(--cream)", border: "1px solid var(--line)", borderRadius: 14, padding: "14px 16px" }}>
-            <label style={labelStyle}>Add multiple people at once — paste one name per line</label>
-            <textarea
-              className="field-input"
-              style={{ ...inputStyle, minHeight: 70, resize: "vertical", fontFamily: "var(--font-body)" }}
-              value={bulkNames}
-              onChange={(e) => setBulkNames(e.target.value)}
-              placeholder={"Jane Doe\nJohn Doe\nMary Doe"}
-            />
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 10 }}>
+              tap at a time is tedious -- collapsed by default so it does not
+              crowd a phone screen, but one tap away. */}
+          <details className="reg-bulk">
+            <summary>Registering many people? Paste a list of names</summary>
+            <label style={{ display: "block", marginTop: 12 }}>
+              <span style={labelStyle}>One name per line</span>
+              <textarea
+                className="field-input reg-input"
+                style={{ minHeight: 96, resize: "vertical", fontFamily: "var(--font-body)" }}
+                value={bulkNames}
+                onChange={(e) => setBulkNames(e.target.value)}
+                placeholder={"Jane Doe\nJohn Doe\nMary Doe"}
+                autoCapitalize="words"
+              />
+            </label>
+            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10, marginTop: 10 }}>
               <select
-                className="field-input"
-                style={{ ...inputStyle, width: "auto", padding: "8px 10px", cursor: "pointer" }}
+                aria-label="Category for pasted names"
+                className="field-input reg-input"
+                style={{ width: "auto", flex: "1 1 160px", cursor: "pointer" }}
                 value={bulkCategory}
                 onChange={(e) => setBulkCategory(e.target.value as RegistrantCategory)}
               >
-                <option value="adult">{t("categoryAdult")}</option>
-                <option value="young_adult">{t("categoryYoungAdult")}</option>
-                <option value="child">{t("categoryChild")}</option>
+                {categoryOptions}
               </select>
               <button
                 type="button"
                 onClick={addBulkNames}
-                disabled={bulkNames.trim() === ""}
+                disabled={bulkCount === 0}
                 className="press"
                 style={{
-                  background: "var(--ink)", color: "#fff", fontWeight: 700, fontSize: 13.5,
-                  padding: "10px 18px", borderRadius: 999, border: "none",
-                  cursor: bulkNames.trim() === "" ? "not-allowed" : "pointer",
-                  opacity: bulkNames.trim() === "" ? 0.5 : 1,
+                  flex: "1 1 140px", minHeight: 48, background: "var(--ink)", color: "#fff", fontWeight: 700, fontSize: 14.5,
+                  padding: "0 18px", borderRadius: 999, border: "none",
+                  cursor: bulkCount === 0 ? "not-allowed" : "pointer", opacity: bulkCount === 0 ? 0.5 : 1,
                 }}
               >
-                + Add {bulkNames.split("\n").map((n) => n.trim()).filter(Boolean).length || ""} people
+                + Add {bulkCount || ""} {bulkCount === 1 ? "person" : "people"}
               </button>
             </div>
-          </div>
-        </>
-      )}
+          </details>
+      </>
 
-      {/* Live headcount + running total -- computed from the same tiers the
-          server re-prices with, so what's shown here is what Stripe will
-          actually charge. */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "var(--cream-2)", borderRadius: 14, padding: "14px 18px", marginBottom: 20 }}>
-        <span style={{ fontSize: 13.5, fontWeight: 700, color: "var(--ink-soft)" }}>
-          {registrants.length} {registrants.length === 1 ? "registrant" : "registrants"}
-        </span>
-        <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "var(--ink)" }}>
-          {formatPrice(total)}
-        </span>
-      </div>
+      <StepHeading n={2} title="Your contact details" />
+      <p style={{ margin: "-6px 0 14px", fontSize: 13.5, color: "var(--ink-soft)", lineHeight: 1.5 }}>
+        We email your confirmation and QR code here.
+      </p>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 12, marginTop: 8, marginBottom: 12 }}>
-        <div>
-          <label style={labelStyle}>{t("contactName")} <span style={{ color: "var(--red)" }}>*</span></label>
-          <input className="field-input" style={inputStyle} value={contactName} onChange={(e) => setContactName(e.target.value)} required autoComplete="name" />
-        </div>
-        <div>
-          <label style={labelStyle}>{t("contactEmail")} <span style={{ color: "var(--red)" }}>*</span></label>
-          <input className="field-input" style={inputStyle} type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} required autoComplete="email" />
-        </div>
-      </div>
-      <div style={{ marginBottom: 20 }}>
-        <label style={labelStyle}>{t("contactPhone")}</label>
-        <input className="field-input" style={inputStyle} type="tel" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} autoComplete="tel" />
-      </div>
-
-      {isComplimentary && (
-        <div style={{ marginBottom: 20 }}>
-          <label style={labelStyle}>{t("staffPasscode")} <span style={{ color: "var(--red)" }}>*</span></label>
-          <input
-            className="field-input"
-            style={inputStyle}
-            type="password"
-            value={staffPasscode}
-            onChange={(e) => setStaffPasscode(e.target.value)}
-            required
-            autoComplete="off"
-          />
-        </div>
-      )}
+      <label style={{ display: "block", marginBottom: 14 }}>
+        <span style={labelStyle}>{t("contactName")} <span style={{ color: "var(--red)" }}>*</span></span>
+        <input
+          className="field-input reg-input"
+          name="contact-name"
+          value={contactName}
+          onChange={(e) => setContactName(e.target.value)}
+          required
+          autoComplete="name"
+          autoCapitalize="words"
+          enterKeyHint="next"
+        />
+      </label>
+      <label style={{ display: "block", marginBottom: 14 }}>
+        <span style={labelStyle}>{t("contactEmail")} <span style={{ color: "var(--red)" }}>*</span></span>
+        <input
+          className="field-input reg-input"
+          name="email"
+          type="email"
+          inputMode="email"
+          value={contactEmail}
+          onChange={(e) => setContactEmail(e.target.value)}
+          required
+          autoComplete="email"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
+          enterKeyHint="next"
+        />
+      </label>
+      <label style={{ display: "block", marginBottom: 14 }}>
+        <span style={labelStyle}>{t("contactPhone")}</span>
+        <input
+          className="field-input reg-input"
+          name="tel"
+          type="tel"
+          inputMode="tel"
+          value={contactPhone}
+          onChange={(e) => setContactPhone(e.target.value)}
+          autoComplete="tel"
+          enterKeyHint="done"
+        />
+        <span style={hintStyle}>Only used if we need to reach you about your registration.</span>
+      </label>
 
       {status === "error" && errorMessage && (
-        <p role="alert" style={{ color: "var(--red)", fontWeight: 600, fontSize: 14, marginBottom: 16 }}>
+        <p ref={errorRef} role="alert" style={{ color: "var(--red)", fontWeight: 700, fontSize: 14.5, margin: "4px 0 12px", padding: "12px 14px", borderRadius: 12, background: "rgba(200,30,58,.08)" }}>
           {errorMessage}
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={status === "loading"}
-        className="btn-sheen press"
-        style={{
-          width: "100%", padding: "16px 24px", borderRadius: 999,
-          background: status === "loading" ? "var(--line)" : "linear-gradient(100deg,var(--red-deep),var(--red))",
-          color: "#fff", fontWeight: 800, fontSize: 16, border: "none",
-          cursor: status === "loading" ? "not-allowed" : "pointer",
-        }}
-      >
-        {status === "loading"
-          ? t("submitting")
-          : isComplimentary
-            ? `${t("submitComplimentary")} — CACNA ${year}`
-            : `${t("submit")} — CACNA ${year}`}
-      </button>
+      {/* Sticky on phones: the running total and the pay button stay in thumb
+          reach however long the list of people gets. The total is computed
+          from the same tiers the server re-prices with, so what is shown here
+          is what Stripe will charge. */}
+      <div className="reg-sticky">
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
+          <span style={{ fontSize: 13.5, fontWeight: 700, color: "var(--ink-soft)" }} aria-live="polite">
+            {registrants.length} {registrants.length === 1 ? "registrant" : "registrants"}
+          </span>
+          <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--ink)" }}>
+            {formatPrice(total)}
+          </span>
+        </div>
+        <button
+          type="submit"
+          disabled={status === "loading"}
+          className="btn-sheen press"
+          style={{
+            width: "100%", minHeight: 54, padding: "0 24px", borderRadius: 999,
+            background: status === "loading" ? "var(--line)" : "linear-gradient(100deg,var(--red-deep),var(--red))",
+            color: "#fff", fontWeight: 800, fontSize: 16, border: "none",
+            cursor: status === "loading" ? "not-allowed" : "pointer",
+          }}
+        >
+          {submitLabel}
+        </button>
+      </div>
     </form>
   );
 }

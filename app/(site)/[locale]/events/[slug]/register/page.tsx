@@ -7,7 +7,8 @@ import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import { RegisterForm } from "@/components/register/RegisterForm";
 import { CONVENTION_VENUE, conventionYears, dateRangeLabel, activePricing, type ConventionYear } from "@/lib/conventions";
-import { registrationGuidelines, paymentOptions } from "@/lib/registrationInfo";
+import { registrationGuidelines } from "@/lib/registrationInfo";
+import { PaymentOptions } from "@/components/register/PaymentOptions";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { SITE_URL } from "@/lib/site";
 
@@ -181,14 +182,7 @@ export default async function RegisterPage({ params }: { params: Promise<{ local
           </div>
           <div>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,30px)", color: "var(--ink)", margin: "0 0 16px" }}>{t("paymentOptionsHeading")}</h2>
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {paymentOptions.map((option) => (
-                <div key={option.name} style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 14, padding: "14px 18px" }}>
-                  <div style={{ fontWeight: 700, fontSize: 14.5, color: "var(--ink)", marginBottom: 4 }}>{option.name}</div>
-                  <div style={{ fontSize: 13.5, color: "var(--ink-soft)", lineHeight: 1.5 }}>{option.detail}</div>
-                </div>
-              ))}
-            </div>
+            <PaymentOptions />
           </div>
         </div>
       </section>

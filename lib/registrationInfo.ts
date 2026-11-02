@@ -20,8 +20,15 @@ export const registrationGuidelines = {
 // are the registration-specific accounts (verified against Convention's
 // own payment-options.ts), for registrants paying by Zelle or check
 // instead of card.
-export const paymentOptions = [
-  { name: "Zelle", detail: "Send to cacnaconvention@gmail.com." },
-  { name: "Check", detail: "Deposit directly to Chase Bank under \"CACNA CONVENTION,\" Account Number 823936908." },
-  { name: "Credit / Debit Card", detail: "Pay by card during registration via Stripe." },
+export const paymentOptions: {
+  kind: "zelle" | "check" | "card";
+  name: string;
+  detail: string;
+  /** Value worth one-tap copying (shown with copyLabel on the button). */
+  copyValue?: string;
+  copyLabel?: string;
+}[] = [
+  { kind: "card", name: "Credit / Debit Card", detail: "Pay by card during registration via Stripe." },
+  { kind: "zelle", name: "Zelle", detail: "Send to cacnaconvention@gmail.com.", copyValue: "cacnaconvention@gmail.com", copyLabel: "Copy Zelle email" },
+  { kind: "check", name: "Check / bank deposit", detail: "Deposit directly to Chase Bank under \"CACNA CONVENTION,\" Account Number 823936908.", copyValue: "823936908", copyLabel: "Copy account number" },
 ];

@@ -112,7 +112,6 @@
     "paymentOptionsHeading": "Payment Options",
     "individualTab": "Individual",
     "groupTab": "Church / Group",
-    "complimentaryTab": "Complimentary",
     "churchName": "Church name",
     "addRegistrant": "Add another registrant",
     "removeRegistrant": "Remove",
@@ -124,9 +123,7 @@
     "contactName": "Contact name",
     "contactEmail": "Email",
     "contactPhone": "Phone (optional)",
-    "staffPasscode": "Staff passcode",
     "submit": "Continue to Payment",
-    "submitComplimentary": "Submit Complimentary Registration",
     "submitting": "Submitting…"
   },
   "Contact": {
