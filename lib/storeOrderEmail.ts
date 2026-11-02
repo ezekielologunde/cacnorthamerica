@@ -3,6 +3,9 @@ import { escapeHtml } from "@/lib/html";
 import { emailShell, sender } from "@/lib/email";
 
 export type StoreOrderConfirmationInput = {
+  /** Resend idempotency key (24h window) so a redelivered webhook never
+   *  sends the same confirmation twice. */
+  idempotencyKey?: string;
   contactName: string;
   contactEmail: string;
   /** Stripe line-item descriptions, e.g. "CACNA 2027 T-Shirt — L × 2". */
@@ -37,10 +40,12 @@ function buildHtml(input: StoreOrderConfirmationInput): string {
 
 /** Never throws -- mirrors lib/registrationEmail.ts's contract; the payment
  *  already succeeded on Stripe's side, so a failed confirmation email
- *  shouldn't surface as an error to the webhook caller. */
-export async function sendStoreOrderConfirmationEmail(input: StoreOrderConfirmationInput): Promise<void> {
+ *  shouldn't surface as an error to the webhook caller.
+ *  Resolves false when the send failed (true when sent or skipped), so the
+ *  Stripe webhook can return 500 and be retried. */
+export async function sendStoreOrderConfirmationEmail(input: StoreOrderConfirmationInput): Promise<boolean> {
   const key = process.env.RESEND_API_KEY;
-  if (!key || !input.contactEmail) return;
+  if (!key || !input.contactEmail) return true;
 
   try {
     const resend = new Resend(key);
@@ -49,11 +54,14 @@ export async function sendStoreOrderConfirmationEmail(input: StoreOrderConfirmat
       to: input.contactEmail,
       subject: "Your CACNA Store order",
       html: buildHtml(input),
-    });
+    }, input.idempotencyKey ? { idempotencyKey: input.idempotencyKey } : undefined);
     if (error) {
       console.error("[store order email] Resend error:", error);
+      return false;
     }
+    return true;
   } catch (err) {
     console.error("[store order email] send failed:", err);
+    return false;
   }
 }

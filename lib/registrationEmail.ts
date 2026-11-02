@@ -71,14 +71,19 @@ function buildHtml(summary: RegistrationSummary, confirmationUrl: string, isPaid
  *  engine is installed). Never throws -- a failed email shouldn't block a
  *  registration that already succeeded (payment captured / row logged), so
  *  every caller can just call this without its own try/catch, matching how
- *  lib/sheetsWebhook.ts's logToSheet already degrades silently. */
+ *  lib/sheetsWebhook.ts's logToSheet already degrades silently. Resolves
+ *  false when the send failed (true when sent, or skipped because Resend
+ *  isn't configured), so the Stripe webhook can return 500 and be retried. */
 export async function sendRegistrationConfirmationEmail(
   summary: RegistrationSummary,
   confirmationUrl: string,
-  isPaid: boolean
-): Promise<void> {
+  isPaid: boolean,
+  /** Resend idempotency key (24h window) so a redelivered webhook never
+   *  sends the same confirmation twice. */
+  idempotencyKey?: string
+): Promise<boolean> {
   const key = process.env.RESEND_API_KEY;
-  if (!key) return;
+  if (!key) return true;
 
   try {
     const qrDataUri = isPaid ? await renderQrCodePngDataUri(confirmationUrl) : null;
@@ -88,11 +93,14 @@ export async function sendRegistrationConfirmationEmail(
       to: summary.contactEmail,
       subject: `You're registered for CACNA ${summary.year}!`,
       html: buildHtml(summary, confirmationUrl, isPaid, qrDataUri),
-    });
+    }, idempotencyKey ? { idempotencyKey } : undefined);
     if (error) {
       console.error("[registration email] Resend error:", error);
+      return false;
     }
+    return true;
   } catch (err) {
     console.error("[registration email] send failed:", err);
+    return false;
   }
 }

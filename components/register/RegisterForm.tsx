@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { FORM_HEADER, HONEYPOT_FIELD } from "@/lib/spam";
 
 export type RegistrantCategory = "adult" | "young_adult" | "child";
 type RegistrantRow = { firstName: string; lastName: string; category: RegistrantCategory | "" };
@@ -129,12 +130,14 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
     }
     setStatus("loading");
     setErrorMessage(null);
+    const honeypot = new FormData(event.currentTarget as HTMLFormElement).get(HONEYPOT_FIELD);
 
     try {
       const response = await fetch("/api/register", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", [FORM_HEADER]: "1" },
         body: JSON.stringify({
+          [HONEYPOT_FIELD]: typeof honeypot === "string" ? honeypot : "",
           registrationType: mode,
           churchName: mode === "group" ? churchName : null,
           contactName,
@@ -180,6 +183,7 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
 
   return (
     <form onSubmit={handleSubmit}>
+      <input type="text" name={HONEYPOT_FIELD} tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }} />
       {/* Two big, equal tabs. */}
       <div role="tablist" aria-label="Registration type" className="reg-seg">
         {([

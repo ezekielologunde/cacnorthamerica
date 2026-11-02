@@ -3,6 +3,7 @@ import { CheckCircle2, XCircle } from "lucide-react";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { getStripeClient } from "@/lib/stripe";
+import { isPaidCheckout } from "@/lib/registrationConfirmation";
 import { setRequestLocale } from "next-intl/server";
 
 export default async function GivingConfirmationPage({
@@ -20,12 +21,16 @@ export default async function GivingConfirmationPage({
   let contactEmail: string | null = null;
   let totalCents: number | null = null;
   let campaignTitle: string | null = null;
-  let notFound = false;
+  // Only a paid session of this page's own kind is a completed checkout; an
+  // abandoned or unpaid session, another kind's session, or no session at
+  // all gets the not-found state rather than a receipt.
+  let notFound = !sessionId;
 
   if (sessionId) {
     try {
       const stripe = getStripeClient();
       const session = await stripe.checkout.sessions.retrieve(sessionId);
+      if (!isPaidCheckout(session, "giving")) throw new Error("not a paid giving session");
       contactEmail = session.customer_details?.email ?? session.customer_email ?? null;
       totalCents = session.amount_total ?? 0;
       campaignTitle = session.metadata?.campaign_title ?? null;
