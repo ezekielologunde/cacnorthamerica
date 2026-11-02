@@ -129,13 +129,13 @@ function parseHttpsUrl(value: unknown): URL | null {
   }
 }
 
-/** Story links must point at CAC World News itself (its own domain or the
- *  Blogger hosts it publishes from). */
+/** Story links must point at CAC World News itself (cacworldnews.com / www.);
+ *  arbitrary *.blogspot.com blogs are not accepted. */
 export function isAllowedStoryUrl(value: unknown): boolean {
   const url = parseHttpsUrl(value);
   if (!url) return false;
   const host = url.hostname.toLowerCase();
-  return ["cacworldnews.com", "blogspot.com", "blogger.com"].some((d) => hostMatches(host, d));
+  return hostMatches(host, "cacworldnews.com");
 }
 
 /** Images must be https and served from Blogger's image hosts -- the only
@@ -202,6 +202,7 @@ async function fetchFeedItems(): Promise<CacWorldNewsItem[]> {
   return parseFeed(await res.json()).map((c) => ({ id: c.sourceUrl, ...c }));
 }
 
+// NOTE: hiding rejected stories only works if SUPABASE_SERVICE_ROLE_KEY is set in production, and takes effect after the page's revalidate window (60s on the home page).
 /** Source URLs an admin rejected or unpublished (the newest few hundred is
  *  plenty: the feed only carries its latest 25 posts). Rejected rows are
  *  hidden from the anon key by RLS, so this needs the service-role key;

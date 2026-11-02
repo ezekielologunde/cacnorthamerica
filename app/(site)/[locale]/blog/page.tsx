@@ -178,7 +178,7 @@ function FeaturedCard({ post }: { post: typeof POSTS[number] }) {
 
 function CacWorldCard({ item }: { item: CacWorldNewsItem }) {
   const date = item.publishedAt
-    ? new Date(item.publishedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+    ? new Date(item.publishedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" })
     : null;
   return (
     <article className="card-lift" style={{

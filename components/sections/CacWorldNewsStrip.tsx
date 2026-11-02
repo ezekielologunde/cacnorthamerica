@@ -8,7 +8,7 @@ const CAC_WORLD_NEWS_URL = "https://www.cacworldnews.com/";
 
 function formatDate(iso: string | null): string | null {
   if (!iso) return null;
-  return new Date(iso).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+  return new Date(iso).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
 }
 
 function StoryCard({ item, delay }: { item: CacWorldNewsItem; delay: number }) {
