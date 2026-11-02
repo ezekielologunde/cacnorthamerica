@@ -64,25 +64,28 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
-      // cacnorthamerica.vercel.app was the declared canonical host until
-      // cacna.cacsalvationcenter.org was attached (September 2026), so Google
-      // has it indexed. Send every page there to the subdomain so there is one
-      // canonical host. API routes are left alone: Stripe webhooks and other
-      // server-to-server callers may still be configured against the old host
-      // and do not follow redirects. Preview deployments use other hostnames
-      // (and are noindex on Vercel anyway), so they are unaffected.
-      {
-        source: "/",
-        has: [{ type: "host" as const, value: "cacnorthamerica.vercel.app" }],
-        destination: "https://cacna.cacsalvationcenter.org/",
-        permanent: true,
-      },
-      {
-        source: "/:path((?!api/|_next/).*)",
-        has: [{ type: "host" as const, value: "cacnorthamerica.vercel.app" }],
-        destination: "https://cacna.cacsalvationcenter.org/:path",
-        permanent: true,
-      },
+      // One canonical host: cacnorthamerica.com. The *.vercel.app project
+      // domain and the retired cacna.cacsalvationcenter.org subdomain are both
+      // indexed by Google, so send every page to the canonical host. API routes
+      // are left alone: Stripe webhooks and other server-to-server callers may
+      // still be configured against the old hosts and do not follow redirects.
+      // Preview deployments use other hostnames (and are noindex on Vercel
+      // anyway), so they are unaffected. www is handled by Vercel's domain
+      // redirect, not here.
+      ...["cacnorthamerica.vercel.app", "cacna.cacsalvationcenter.org"].flatMap((host) => [
+        {
+          source: "/",
+          has: [{ type: "host" as const, value: host }],
+          destination: "https://cacnorthamerica.com/",
+          permanent: true,
+        },
+        {
+          source: "/:path((?!api/|_next/).*)",
+          has: [{ type: "host" as const, value: host }],
+          destination: "https://cacnorthamerica.com/:path",
+          permanent: true,
+        },
+      ]),
       { source: "/leadership-meet-our-pastors", destination: "/leadership", permanent: true },
       { source: "/leadership-meet-our-pastors/", destination: "/leadership", permanent: true },
       { source: "/online-connect-to-our-services", destination: "/online", permanent: true },
