@@ -55,7 +55,14 @@
     "closeMenu": "Close menu",
     "collapse": "Collapse",
     "expand": "Expand",
-    "mobileFooterNote": "24 Zones & DCCs · United States, Canada & South America · A region of Christ Apostolic Church Worldwide"
+    "mobileFooterNote": "24 Zones & DCCs · United States, Canada & South America · A region of Christ Apostolic Church Worldwide",
+    "history": "Our History",
+    "historyDesc": "How Christ Apostolic Church began, from 1918",
+    "faq": "FAQs",
+    "faqDesc": "Answers to common questions",
+    "mainNavLabel": "Main",
+    "mobileNavLabel": "Site menu",
+    "showSubmenu": "{section} menu"
   },
   "Footer": {
     "logoAlt": "Christ Apostolic Church North America",
@@ -97,7 +104,16 @@
     "contactConventionCommittee": "Contact the Convention Committee",
     "anniversaryBadge": "50th Anniversary · 1976–2026",
     "registerNowCta": "Register Now",
-    "aboutConvention": "About the Convention"
+    "aboutConvention": "About the Convention",
+    "history": "Our History",
+    "navLabel": "Footer",
+    "legalNavLabel": "Faith and policies",
+    "followHeading": "Follow along",
+    "followCacna": "CACNA",
+    "followYouth": "Youth & Young Adult",
+    "visitHeading": "Visit",
+    "directions": "Get directions",
+    "youthRegister": "Youth & Child Registration"
   },
   "Register": {
     "heroHeading": "Register for CACNA {year}",
