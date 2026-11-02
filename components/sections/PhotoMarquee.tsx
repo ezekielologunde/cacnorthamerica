@@ -1,4 +1,3 @@
-"use client";
 import { Reveal } from "@/components/ui/Reveal";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import "./home-mobile.css";

@@ -400,7 +400,7 @@ export default async function BlogPage({
             src="/images/cac-youth-convention.jpg"
             alt="CACNA youth at a past Annual Convention"
             fill
-            priority
+            preload
             style={{ objectFit: "cover", objectPosition: "center 30%" }}
           />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(12,14,19,.55) 0%,rgba(12,14,19,.72) 55%,var(--ink) 100%)" }} />

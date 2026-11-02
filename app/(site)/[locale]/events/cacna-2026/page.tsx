@@ -149,7 +149,7 @@ export default async function CACNA2026Page({
                 width={1127}
                 height={1600}
                 style={{ width: "100%", height: "auto", display: "block" }}
-                priority
+                preload
               />
             </div>
           </Reveal>

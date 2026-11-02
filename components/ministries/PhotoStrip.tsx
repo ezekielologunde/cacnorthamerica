@@ -16,7 +16,7 @@ export function PhotoStrip({ photos, caption }: { photos: string[]; caption: str
       <div role="group" aria-label={caption} style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12 }}>
         {photos.map((src, i) => (
           <div key={src} style={{ position: "relative", aspectRatio: "4/5", overflow: "hidden", borderRadius: 16 }}>
-            <Image src={src} alt="" fill sizes="(max-width: 640px) 30vw, 260px" style={{ objectFit: "cover" }} priority={i === 0} />
+            <Image src={src} alt="" fill sizes="(max-width: 640px) 30vw, 260px" style={{ objectFit: "cover" }} preload={i === 0} />
           </div>
         ))}
       </div>
