@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { createServiceClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rateLimit";
+import { looksLikeSpam } from "@/lib/spam";
 import { escapeHtml } from "@/lib/html";
 import { sendContactAutoReply } from "@/lib/contactReplyEmail";
 import { EMAIL_FROM } from "@/lib/email";
@@ -68,6 +69,12 @@ export async function POST(req: Request) {
     }
   }
   const fields = rawFields as Record<string, string>;
+
+  // Link-stuffed submissions are spam: drop them quietly with a normal-looking
+  // success so bots learn nothing, and never save, log or email them.
+  if (looksLikeSpam(Object.values(fields))) {
+    return NextResponse.json({ success: true });
+  }
 
   const subject = `${formName} — CACNA`;
   const rows = Object.entries(fields).filter(([, v]) => v?.trim()) as [string, string][];
