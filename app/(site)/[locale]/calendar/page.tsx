@@ -165,7 +165,7 @@ export default async function CalendarPage({
           </Reveal>
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "rgba(245,246,250,.72)", lineHeight: 1.7, maxWidth: 580, margin: "0 auto" }}>
-              CACNA's annual rhythm and special gatherings — save any of them to your phone in one tap.
+              CACNA&apos;s annual rhythm and special gatherings — save any of them to your phone in one tap.
             </p>
           </Reveal>
           <Reveal delay={220}>
@@ -203,16 +203,9 @@ export default async function CalendarPage({
           <Reveal delay={100}>
             <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 24, padding: "24px 22px", boxShadow: "0 10px 26px rgba(18,20,30,.05)" }}>
               <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 14 }}>How to read it</div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <Circle size={9} fill="var(--red)" color="var(--red)" aria-hidden />
                 <span style={{ fontSize: 13.5, color: "var(--ink-soft)", lineHeight: 1.5 }}>A gathering is happening that day — tap it for details.</span>
-              </div>
-              <div style={{ height: 1, background: "var(--line)", marginBottom: 18 }} />
-              <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 12 }}>Jump to</div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                <a href="#special-gatherings" style={{ fontSize: 14, fontWeight: 700, color: "var(--ink)", textDecoration: "none" }}>Special gatherings →</a>
-                <a href="#future-dates" style={{ fontSize: 14, fontWeight: 700, color: "var(--ink)", textDecoration: "none" }}>Future dates →</a>
-                <a href="#annual-rhythm" style={{ fontSize: 14, fontWeight: 700, color: "var(--ink)", textDecoration: "none" }}>Annual rhythm →</a>
               </div>
             </div>
           </Reveal>
@@ -223,8 +216,7 @@ export default async function CalendarPage({
       <section id="special-gatherings" style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)", scrollMarginTop: 24 }}>
         <div style={{ maxWidth: 1000, margin: "0 auto" }}>
           <Reveal style={{ marginBottom: 40 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Coming Up</span>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,52px)", letterSpacing: "-1px", color: "var(--cream)", margin: "12px 0 0" }}>Special gatherings</h2>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,52px)", letterSpacing: "-1px", color: "var(--cream)", margin: 0 }}>Special gatherings</h2>
           </Reveal>
           {upcomingSpecial.length === 0 ? (
             <Reveal>
@@ -298,10 +290,9 @@ export default async function CalendarPage({
         <section id="future-dates" style={{ background: "var(--paper)", padding: "clamp(48px,6vw,72px) clamp(20px,5vw,64px)", scrollMarginTop: 24 }}>
           <div style={{ maxWidth: 1000, margin: "0 auto" }}>
             <Reveal style={{ marginBottom: 32 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--flame)" }}>Looking further ahead</span>
-              <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.6vw,44px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 0" }}>Future Convention dates</h2>
+              <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.6vw,44px)", letterSpacing: "-1px", color: "var(--ink)", margin: 0 }}>Future Convention dates</h2>
               <p style={{ fontSize: 15.5, color: "var(--ink-soft)", lineHeight: 1.7, maxWidth: 600, margin: "14px 0 0" }}>
-                The venue never changes — every CACNA Convention meets at {CONVENTION_VENUE_SHORT}. Themes, registration, and full schedules are announced closer to each date.
+                Every CACNA Convention meets at {CONVENTION_VENUE_SHORT}. Themes, registration, and full schedules are announced closer to each date.
               </p>
             </Reveal>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 14 }}>
@@ -323,9 +314,8 @@ export default async function CalendarPage({
       <section id="annual-rhythm" style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px) clamp(70px,9vw,110px)", scrollMarginTop: 24 }}>
         <div style={{ maxWidth: 1000, margin: "0 auto" }}>
           <Reveal style={{ marginBottom: 36 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Mark your year</span>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,48px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 10px" }}>Annual moments</h2>
-            <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.7, margin: 0, maxWidth: 620 }}>The yearly gatherings that mark CACNA's calendar. Firm dates are announced on this site as they approach.</p>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,48px)", letterSpacing: "-1px", color: "var(--ink)", margin: "0 0 10px" }}>Annual moments</h2>
+            <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.7, margin: 0, maxWidth: 620 }}>Firm dates are announced on this site as they approach.</p>
           </Reveal>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 14 }}>
             {annualMoments.map((m, i) => {
@@ -362,8 +352,8 @@ export default async function CalendarPage({
       <section className="mm-sec" style={{ background: "var(--ink)", padding: "clamp(44px,5vw,70px) clamp(20px,5vw,64px)" }}>
         <Reveal style={{ maxWidth: 900, margin: "0 auto", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
           <div>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,38px)", letterSpacing: "-.6px", color: "var(--cream)", margin: "0 0 8px" }}>Can&apos;t be there in person?</h2>
-            <p style={{ fontSize: 15, color: "rgba(245,246,250,.6)", margin: 0 }}>The Annual Convention streams live — YouTube and Zoom. Never miss a message.</p>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,38px)", letterSpacing: "-.6px", color: "var(--cream)", margin: "0 0 8px" }}>The Annual Convention streams live.</h2>
+            <p style={{ fontSize: 15, color: "rgba(245,246,250,.6)", margin: 0 }}>On YouTube and Zoom.</p>
           </div>
           <Link href="/online" className="press btn-sheen" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 15, padding: "15px 28px", borderRadius: 999, textDecoration: "none", whiteSpace: "nowrap", flexShrink: 0, boxShadow: "0 10px 24px rgba(200,30,58,.35)" }}>
             Watch online →

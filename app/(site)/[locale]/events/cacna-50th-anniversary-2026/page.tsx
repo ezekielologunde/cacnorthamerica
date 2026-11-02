@@ -1,10 +1,11 @@
 import { Nav } from "@/components/navigation/Nav";
 import "@/app/(site)/[locale]/mobile-events-media.css";
+import { PastEventBanner } from "@/components/events/PastEventBanner";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import Link from "next/link";
-import { Sparkles, Users, MapPin, HandHeart, ArrowLeft, CalendarPlus, Download, PartyPopper, ClipboardList } from "lucide-react";
+import { Users, HandHeart, ArrowLeft, CalendarPlus, Download, PartyPopper, ClipboardList } from "lucide-react";
 import { specialEvents, googleCalUrl, icsDataUri, isEventPast } from "@/lib/events";
 import { SITE, SITE_URL, breadcrumbJsonLd } from "@/lib/site";
 import { setRequestLocale } from "next-intl/server";
@@ -26,9 +27,7 @@ const RSVP_URL = "https://forms.gle/FBzNzoXH76SK14Ah9";
 const rsvpFields = ["Your full name", "A contact phone number", "Your church", "Your DCC or Zone", "How many in your group"];
 
 const pillars = [
-  { icon: Sparkles, label: "50 Years of Faithfulness", desc: "Est. 1976 — five decades of ministry across North America." },
   { icon: Users, label: "One Family, Many Homes", desc: "24 Zones & DCCs across the United States, Canada, and South America." },
-  { icon: MapPin, label: "Same Grounds", desc: "CAC Village, Blue Ridge Summit, PA — home to the Annual Convention, now hosting this milestone too." },
   { icon: HandHeart, label: "A Season of Thanksgiving", desc: "A day set apart to thank God for five decades of grace and growth." },
 ];
 
@@ -64,12 +63,7 @@ export default async function Cacna50thAnniversaryPage({
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Events", path: "/calendar" }, { name: ev.navLabel ?? ev.title, path: "/events/cacna-50th-anniversary-2026" }])).replace(/</g, "\\u003c") }} />
       <Nav heroDark />
-      {isPast && (
-        <div role="status" style={{ background: "#2c2825", padding: "13px clamp(20px,5vw,64px)", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px 20px", fontSize: 14, fontWeight: 600, color: "rgba(245,246,250,.7)" }}>
-          <span>This event has passed — page kept as an archive.</span>
-          <Link href="/calendar" style={{ color: "var(--gold)", fontWeight: 700, fontSize: 13, textDecoration: "none", whiteSpace: "nowrap" }}>See upcoming events →</Link>
-        </div>
-      )}
+      {isPast && <PastEventBanner />}
 
       {/* Hero */}
       <section className="mm-hero" style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) clamp(80px,10vw,120px)", position: "relative", overflow: "hidden" }}>
@@ -105,7 +99,7 @@ export default async function Cacna50thAnniversaryPage({
 
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(16px,1.9vw,20px)", color: "rgba(245,246,250,.72)", lineHeight: 1.72, maxWidth: 580, margin: "0 0 8px", textWrap: "pretty" }}>
-              Christ Apostolic Church North America celebrates 50 years since its founding in 1976, at CAC Village — the same grounds that host the Annual Convention.
+              Christ Apostolic Church North America celebrates 50 years since its founding in 1976, at CAC Village, Blue Ridge Summit, PA — the same grounds that host the Annual Convention.
             </p>
           </Reveal>
 

@@ -3,7 +3,6 @@ import "@/app/(site)/[locale]/mobile-events-media.css";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import Image from "next/image";
-import Link from "next/link";
 import { getSermons, getLiveStream, formatSermonDate } from "@/lib/sermons";
 import { PRAYER_LINE } from "@/lib/prayerLine";
 import { Video } from "lucide-react";
@@ -82,7 +81,7 @@ export default async function OnlinePage({
           </Reveal>
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "rgba(255,255,255,.55)", lineHeight: 1.65, maxWidth: 560, margin: "0 auto" }}>
-              The Annual Convention streams live, and messages are available on demand. The full experience — wherever you are.
+              The Annual Convention streams live, and messages are available on demand.
             </p>
           </Reveal>
         </div>
@@ -100,7 +99,7 @@ export default async function OnlinePage({
                 <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#fff", animation: "pulse-red 1.8s infinite", display: "inline-block" }} /> Watch on YouTube
               </div>
               <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.4vw,40px)", letterSpacing: "-1px", color: "#fff", margin: "0 0 6px" }}>CAC North America (Latunde Region)</h2>
-              <p style={{ fontSize: 15, color: "rgba(255,255,255,.88)", margin: 0 }}>The Annual Convention and message replays — Zoom is also available during convention week.</p>
+              <p style={{ fontSize: 15, color: "rgba(255,255,255,.88)", margin: 0 }}>Zoom is also available during convention week.</p>
             </div>
             <span style={{ flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 8, background: "#fff", color: "var(--red-deep)", fontWeight: 800, fontSize: 16, padding: "15px 28px", borderRadius: 999 }}>
               Open YouTube →
@@ -157,15 +156,6 @@ export default async function OnlinePage({
                 ? <span style={{ fontSize: 12, fontWeight: 700, color: "var(--red)", marginRight: 8, animation: "pulse-red 1.8s infinite" }}>● LIVE NOW</span>
                 : <span style={{ fontSize: 12, fontWeight: 700, color: "var(--gold)", marginRight: 8 }}>● Latest message</span>
               }
-              <span style={{ fontSize: 12, color: "rgba(255,255,255,.4)", fontWeight: 600, marginRight: 4 }}>Watch on:</span>
-              {platforms.map(p => (
-                <a key={p.name} href={p.href} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, fontWeight: 700, color: "rgba(255,255,255,.7)", textDecoration: "none", padding: "6px 14px", borderRadius: 999, border: "1px solid rgba(255,255,255,.12)" }}>
-                  {p.name}
-                </a>
-              ))}
-              <a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer" style={{ marginLeft: "auto", fontSize: 13, fontWeight: 700, color: "var(--gold)", textDecoration: "none" }}>
-                View channel →
-              </a>
             </div>
           </div>
         </Reveal>

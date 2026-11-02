@@ -44,7 +44,7 @@ export default async function GalleryPage({
           </h1>
           <Reveal delay={200}>
             <p style={{ fontSize: "clamp(16px,1.8vw,19px)", color: "var(--ink-soft)", lineHeight: 1.65, maxWidth: 520, margin: "0 auto", textWrap: "pretty" }}>
-              A glimpse of worship, family, and the joy of God&apos;s presence across CACNA&apos;s member churches. Tap any photo to explore.
+              Photos of worship and fellowship across CACNA&apos;s member churches. Tap any photo to explore.
             </p>
           </Reveal>
         </div>
