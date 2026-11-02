@@ -84,7 +84,7 @@ export default async function SitemapPage({
   return (
     <main id="main-content">
       <Nav heroDark />
-      <section style={{ background: "var(--ink)", padding: "108px clamp(20px,5vw,64px) 40px" }}>
+      <section style={{ background: "var(--ink)", padding: "calc(var(--bar-h, 0px) + 108px) clamp(20px,5vw,64px) 40px" }}>
         <div style={{ maxWidth: 760, margin: "0 auto", textAlign: "center" }}>
           <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(34px,6vw,64px)", letterSpacing: "-0.03em", color: "#fff", margin: 0, lineHeight: 1 }}>
             {t("subtitle")}

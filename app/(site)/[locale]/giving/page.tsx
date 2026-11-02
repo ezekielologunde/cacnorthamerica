@@ -64,7 +64,7 @@ export default async function GivingPage({
       <Nav />
 
       {/* Hero */}
-      <section style={{ background: "var(--cream)", padding: "104px clamp(20px,5vw,64px) 28px", position: "relative", overflow: "hidden" }}>
+      <section style={{ background: "var(--cream)", padding: "calc(var(--bar-h, 0px) + 104px) clamp(20px,5vw,64px) 28px", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: -80, left: -80, width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle,var(--blue),var(--red) 70%)", opacity: 0.1, filter: "blur(6px)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 720, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal delay={80}>

@@ -133,7 +133,7 @@ export default function ContactPageClient() {
       <Nav />
 
       {/* Hero */}
-      <section style={{ background: "var(--cream)", padding: "100px clamp(20px,5vw,64px) 24px", position: "relative", overflow: "hidden" }}>
+      <section style={{ background: "var(--cream)", padding: "calc(var(--bar-h, 0px) + 100px) clamp(20px,5vw,64px) 24px", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", bottom: -80, right: -60, width: 300, height: 300, borderRadius: "50%", background: "radial-gradient(circle,var(--blue),var(--red) 70%)", opacity: .1, filter: "blur(6px)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
                     <Reveal delay={80}>
@@ -246,7 +246,7 @@ export default function ContactPageClient() {
                       </div>
                       <div>
                         <label htmlFor="c-zip" style={labelStyle}>Zip / Post Code</label>
-                        <input className="field-input" style={inputStyle} id="c-zip" type="text" inputMode="numeric" placeholder="30301" autoComplete="postal-code" value={fields.zip} onChange={update("zip")} />
+                        <input className="field-input" style={inputStyle} id="c-zip" type="text" placeholder="30301" autoComplete="postal-code" value={fields.zip} onChange={update("zip")} />
                       </div>
                     </div>
 
