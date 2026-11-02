@@ -1,0 +1,35 @@
+/* Mobile pass for events, calendar, archive, gallery, online. Inline styles
+   on these pages need !important to be overridden. */
+@media (max-width: 640px) {
+  .mm-hero { padding-top: 124px !important; padding-bottom: 48px !important; }
+  .mm-sec { padding-top: 40px !important; padding-bottom: 44px !important; }
+  .mm-hero h1 { font-size: clamp(34px, 10.5vw, 44px) !important; letter-spacing: -0.02em !important; line-height: 1.02 !important; }
+  .mm-hero p { line-height: 1.6 !important; }
+  /* CTA rows: full-width, thumb-sized, stacked, primary first */
+  .mm-actions { flex-direction: column !important; align-items: stretch !important; gap: 10px !important; }
+  .mm-actions > a, .mm-actions > span, .mm-actions > button {
+    width: 100% !important; box-sizing: border-box; justify-content: center !important;
+    min-height: 48px; padding-top: 13px !important; padding-bottom: 13px !important; text-align: center;
+  }
+  .mm-hero-tall { min-height: 0 !important; }
+  .mm-tap { min-height: 44px; display: inline-flex !important; align-items: center; }
+  /* in-page jump chips: one scrollable row instead of wrapping into 2-3 rows */
+  .mm-chips { flex-wrap: nowrap !important; justify-content: flex-start !important; overflow-x: auto; margin-inline: calc(-1 * clamp(20px, 5vw, 64px)); padding-inline: clamp(20px, 5vw, 64px); scrollbar-width: none; }
+  .mm-chips::-webkit-scrollbar { display: none; }
+  .mm-chips > a { flex: 0 0 auto; min-height: 44px; }
+}
+/* Sticky primary action bar (phones only) */
+.mm-sticky, .mm-sticky-spacer { display: none; }
+@media (max-width: 767px) {
+  .mm-sticky-spacer { display: block; height: calc(68px + env(safe-area-inset-bottom)); background: var(--ink); }
+  .mm-sticky {
+    display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    background: rgba(12, 14, 19, .94); backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(245, 246, 250, .12);
+  }
+  .mm-sticky a {
+    display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px;
+    border-radius: 999px; background: var(--gold); color: var(--ink); font-weight: 800; font-size: 16px; text-decoration: none;
+  }
+}

@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import "@/app/(site)/[locale]/mobile-events-media.css";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
@@ -83,7 +84,7 @@ function AddToCalendar({ ev, dark = false }: { ev: ChurchEvent; dark?: boolean }
     ? { color: "var(--cream)", border: "1.5px solid rgba(245,246,250,.28)", background: "rgba(245,246,250,.06)" }
     : { color: "var(--ink)", border: "1.5px solid var(--line)", background: "var(--paper)" };
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+    <div className="mm-actions" style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
       <a href={googleCalUrl(ev)} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 14, padding: "11px 18px", borderRadius: 999, textDecoration: "none", boxShadow: "0 8px 20px rgba(200,30,58,.3)" }}>
         <CalendarPlus size={16} strokeWidth={2} aria-hidden /> Google
       </a>
@@ -150,7 +151,7 @@ export default async function CalendarPage({
       <Nav heroDark />
 
       {/* Hero */}
-      <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 90px", position: "relative", overflow: "hidden" }}>
+      <section className="mm-hero" style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 90px", position: "relative", overflow: "hidden" }}>
         <div aria-hidden style={{ position: "absolute", top: -100, right: -80, width: 620, height: 460, background: "radial-gradient(circle,rgba(253,200,65,.22),transparent 65%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 880, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
@@ -168,7 +169,7 @@ export default async function CalendarPage({
             </p>
           </Reveal>
           <Reveal delay={220}>
-            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 10, marginTop: 34 }}>
+            <div className="mm-chips" style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 10, marginTop: 34 }}>
               {[
                 { href: "#this-month", label: "This month" },
                 { href: "#special-gatherings", label: "Special gatherings" },
@@ -261,7 +262,7 @@ export default async function CalendarPage({
 
       {/* Past special events — auto-populated once end date passes */}
       {past.length > 0 && (
-        <section style={{ background: "var(--cream)", padding: "clamp(48px,6vw,72px) clamp(20px,5vw,64px)" }}>
+        <section className="mm-sec" style={{ background: "var(--cream)", padding: "clamp(48px,6vw,72px) clamp(20px,5vw,64px)" }}>
           <div style={{ maxWidth: 1000, margin: "0 auto" }}>
             <Reveal style={{ marginBottom: 32 }}>
               <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3.5vw,42px)", letterSpacing: "-1px", color: "var(--ink-soft)", margin: 0 }}>Past events</h2>
@@ -358,7 +359,7 @@ export default async function CalendarPage({
       </section>
 
       {/* Watch online CTA */}
-      <section style={{ background: "var(--ink)", padding: "clamp(44px,5vw,70px) clamp(20px,5vw,64px)" }}>
+      <section className="mm-sec" style={{ background: "var(--ink)", padding: "clamp(44px,5vw,70px) clamp(20px,5vw,64px)" }}>
         <Reveal style={{ maxWidth: 900, margin: "0 auto", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
           <div>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,38px)", letterSpacing: "-.6px", color: "var(--cream)", margin: "0 0 8px" }}>Can&apos;t be there in person?</h2>

@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import "@/app/(site)/[locale]/mobile-events-media.css";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
@@ -362,6 +363,7 @@ export default async function BlogSlugPage({
 
       {/* Hero */}
       <section
+        className="mm-hero"
         style={{
           background: "var(--ink)",
           padding: "140px clamp(20px,5vw,64px) 80px",
@@ -391,7 +393,7 @@ export default async function BlogSlugPage({
           }}
         >
           <Reveal>
-            <Link
+            <Link className="mm-tap"
               href="/blog"
               style={{
                 display: "inline-flex",
@@ -496,7 +498,7 @@ export default async function BlogSlugPage({
                 {post.readTime}
               </span>
               {post.href && (
-                <Link
+                <Link className="mm-tap"
                   href={post.href}
                   style={{
                     display: "inline-flex",
@@ -528,6 +530,7 @@ export default async function BlogSlugPage({
 
       {/* Body */}
       <section
+        className="mm-sec"
         style={{
           background: "var(--cream-2)",
           padding: "clamp(50px,6vw,80px) clamp(20px,5vw,64px) clamp(60px,8vw,100px)",
@@ -600,6 +603,7 @@ export default async function BlogSlugPage({
                   Share this article
                 </p>
                 <a
+                  className="mm-tap"
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
