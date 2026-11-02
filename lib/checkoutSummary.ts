@@ -27,9 +27,19 @@ export type RegistrationSummary = {
   contactName: string;
   contactEmail: string;
   contactPhone: string;
-  registrants: { n: string; c: RegistrantCategory }[];
+  /** n = full name, c = fee category. Youth & Child registrations (see
+   *  lib/youthRegistration.ts) also carry a = age, m = meal bitmask and
+   *  l = allergy notes; adult registrations leave them unset. */
+  registrants: { n: string; c: RegistrantCategory; a?: number; m?: number; l?: string }[];
   totalAmountCents: number;
   isComplimentary: boolean;
+  /** Set only on Youth & Child registrations: shared church details and
+   *  whether the contact confirmed they are a minor's parent or guardian.
+   *  The church itself travels in churchName. */
+  youth?: { leader: string; dcc: string; guardian: boolean };
+  /** Set only inside the sealed token of a free Youth & Child registration
+   *  when the server attempted a confirmation email to contactEmail. */
+  emailed?: boolean;
 };
 
 export function encodeSummary(summary: RegistrationSummary): string {
@@ -55,6 +65,16 @@ export function chunkForMetadata(key: string, value: string): Record<string, str
     chunks[`${key}${i}`] = value.slice(i * METADATA_CHUNK_SIZE, (i + 1) * METADATA_CHUNK_SIZE);
   }
   return chunks;
+}
+
+/** Stripe allows at most 50 metadata keys per object. */
+export const STRIPE_METADATA_MAX_KEYS = 50;
+
+/** Whether `value`, chunked under one key prefix, still fits alongside
+ *  `otherKeys` other metadata keys. A registration that does not fit would
+ *  make Stripe reject the Checkout Session outright. */
+export function fitsStripeMetadata(value: string, otherKeys: number): boolean {
+  return Math.ceil(value.length / METADATA_CHUNK_SIZE) + otherKeys <= STRIPE_METADATA_MAX_KEYS;
 }
 
 export function unchunkFromMetadata(

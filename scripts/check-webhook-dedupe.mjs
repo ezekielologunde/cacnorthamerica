@@ -65,12 +65,17 @@ const rows = [];
 const emails = [];
 const failNext = { sheet: 0, email: 0 };
 const sheetReplies = [];
+const youthRows = [];
+let failRowNamed = null; // fail the sheet write of the row with this Name, once
 globalThis.fetch = async (url, init = {}) => {
   url = String(url);
   if (url === SHEETS_URL) {
     if (failNext.sheet > 0) { failNext.sheet--; throw new TypeError("fetch failed"); }
     if (sheetReplies.length) return new Response(sheetReplies.shift(), { status: 200 });
-    rows.push(JSON.parse(init.body)["Stripe Session"]);
+    const row = JSON.parse(init.body);
+    if (failRowNamed && row.Name === failRowNamed) { failRowNamed = null; throw new TypeError("fetch failed"); }
+    if (row.Name) youthRows.push(row);
+    rows.push(row["Stripe Session"]);
     return Response.json({ ok: true });
   }
   if (url.startsWith("https://api.resend.com/")) {
@@ -181,6 +186,48 @@ sessions.cs_test_sheetnonjson = giving();
 sheetReplies.push("<html>Script error</html>");
 const nonJson = await deliver("cs_test_sheetnonjson");
 check("sheet webhook non-JSON 200 body returns 500 so Stripe retries", nonJson.status === 500 && count(rows, "cs_test_sheetnonjson") === 0);
+
+// Youth & Child: one row per person, each its own idempotent step, so a
+// retry after a failure part-way through appends only the missing rows.
+const { encodeSummary, chunkForMetadata } = await import("../lib/checkoutSummary.ts");
+const youthSummary = {
+  ref: "ref-youth", year: 2027, registrationType: "group", churchName: "CAC Example", contactName: "Parent",
+  contactEmail: "parent@example.com", contactPhone: "4435550100", totalAmountCents: 10000, isComplimentary: false,
+  registrants: [
+    { n: "Ada Young", c: "young_adult", a: 22, m: 1, l: "Peanuts" },
+    { n: "Ben Kid", c: "child", a: 8, m: 0 },
+    { n: "Cy Teen", c: "child", a: 15, m: 255 },
+  ],
+  youth: { leader: "Leader", dcc: "Zone 1", guardian: true },
+};
+sessions.cs_test_youth = {
+  payment_status: "paid",
+  amount_total: 10330, // $100.00 young-adult subtotal + $3.30 processing fee
+  metadata: {
+    kind: "registration", convention_year: "2027", ...chunkForMetadata("d", encodeSummary(youthSummary)),
+    subtotal_cents: "10000", processing_fee_cents: "330",
+  },
+};
+failRowNamed = "Ben Kid";
+const youthFail = await deliver("cs_test_youth");
+// (The email step still runs on a failed attempt, as for every kind.)
+check("youth: a failed second row returns 500 after writing only the first",
+  youthFail.status === 500 && count(rows, "cs_test_youth") === 1);
+const youthRetry = await deliver("cs_test_youth");
+const youthAgain = await deliver("cs_test_youth");
+const names = youthRows.filter((r) => r["Stripe Session"] === "cs_test_youth").map((r) => r.Name);
+check("youth: the retry appends only the missing rows, in order, then emails once",
+  youthRetry.status === 200 && JSON.stringify(names) === JSON.stringify(["Ada Young", "Ben Kid", "Cy Teen"]) &&
+  count(emails, "cs_test_youth") === 1);
+check("youth: a later redelivery adds no rows", youthAgain.body.duplicate === true && count(rows, "cs_test_youth") === 3);
+const ada = youthRows.find((r) => r.Name === "Ada Young");
+check("youth: rows go to the youth tab with per-person details and status paid",
+  ada?.formName === "Youth & Child Registration — CACNA 2027" && ada.Allergies === "Peanuts" && ada.Age === "22" &&
+  ada.Meals === "Tuesday Lunch — 7/13" && ada.Status === "paid" && ada["Contact Email"] === "giver@example.com");
+const youthSessionRows = youthRows.filter((r) => r["Stripe Session"] === "cs_test_youth");
+check("youth: the first row carries the registration's Processing Fee and Amount Charged, the rest leave them blank",
+  ada?.["Processing Fee"] === "$3.30" && ada["Amount Charged"] === "$103.30" &&
+  youthSessionRows.filter((r) => r !== ada).every((r) => r["Processing Fee"] === "" && r["Amount Charged"] === ""));
 
 process.stdout.write(failures ? `\n${failures} check(s) FAILED\n` : "\nAll checks passed\n");
 process.exit(failures ? 1 : 0);

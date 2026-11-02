@@ -11,6 +11,7 @@ import { resolveRegistrationConfirmation } from "@/lib/registrationConfirmation"
 import { PaymentOptions } from "@/components/register/PaymentOptions";
 import { conventionYears, type ConventionYear, type RegistrantCategory } from "@/lib/conventions";
 import { setRequestLocale } from "next-intl/server";
+import { describeYouthRegistrant } from "@/lib/youthRegistration";
 
 const CATEGORY_LABEL: Record<RegistrantCategory, string> = {
   adult: "Adult",
@@ -70,6 +71,9 @@ export default async function RegisterConfirmationPage({
 
   const { summary, isPaid, isFree, processingFeeCents } = confirmation;
   const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
+  // Only a free Youth & Child token the server sealed with `emailed` says a
+  // confirmation email was attempted; the page never claims delivery.
+  const emailAttempted = isFree && summary.emailed === true;
 
   // The QR re-opens this confirmation on whatever device scans it, and the
   // page re-verifies it there (Stripe session or sealed token) -- the
@@ -84,11 +88,16 @@ export default async function RegisterConfirmationPage({
         <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,44px)", color: "#fff", margin: "0 0 14px" }}>
           {`You're registered for CACNA ${cy.year}!`}
         </h1>
-        <p style={{ fontSize: 15.5, color: "rgba(245,246,250,.65)", maxWidth: 480, margin: "0 auto 32px", lineHeight: 1.7 }}>
+        <p style={{ fontSize: 15.5, color: "rgba(245,246,250,.65)", maxWidth: 480, margin: `0 auto ${emailAttempted ? 12 : 32}px`, lineHeight: 1.7 }}>
           {isFree
             ? "Save this page or screenshot the QR code below to show at check-in."
             : "A confirmation email is on its way."}
         </p>
+        {emailAttempted && (
+          <p style={{ fontSize: 14, color: "rgba(245,246,250,.6)", maxWidth: 480, margin: "0 auto 32px", lineHeight: 1.7 }}>
+            We are emailing a confirmation to {summary.contactEmail}; check your spam folder if it does not arrive.
+          </p>
+        )}
 
         <div style={{ maxWidth: 460, margin: "0 auto", textAlign: "left", background: "rgba(245,246,250,.06)", border: "1px solid rgba(245,246,250,.14)", borderRadius: 18, padding: "24px 26px" }}>
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
@@ -101,12 +110,23 @@ export default async function RegisterConfirmationPage({
             {qrSvg && <QrCode svg={qrSvg} label="Check-in QR code" />}
           </div>
           <ul style={{ margin: "16px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8 }}>
-            {summary.registrants.map((r, i) => (
-              <li key={i} style={{ display: "flex", justifyContent: "space-between", fontSize: 14.5 }}>
-                <span style={{ color: "var(--cream)" }}>{r.n}</span>
-                <span style={{ color: "rgba(245,246,250,.6)" }}>{CATEGORY_LABEL[r.c] ?? "Adult"}</span>
-              </li>
-            ))}
+            {summary.registrants.map((r, i) => {
+              // Youth & Child registrants show their age group and meals.
+              const youth = describeYouthRegistrant(r, cy.startIso);
+              return (
+                <li key={i} style={{ fontSize: 14.5 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+                    <span style={{ color: "var(--cream)" }}>{r.n}</span>
+                    <span style={{ color: "rgba(245,246,250,.6)" }}>{youth ? youth.ageGroup : (CATEGORY_LABEL[r.c] ?? "Adult")}</span>
+                  </div>
+                  {youth && (
+                    <p style={{ fontSize: 12.5, color: "rgba(245,246,250,.55)", margin: "3px 0 0", lineHeight: 1.5 }}>
+                      Meals: {youth.meals.length > 0 ? youth.meals.join(", ") : "None"}
+                    </p>
+                  )}
+                </li>
+              );
+            })}
           </ul>
           {processingFeeCents > 0 && (
             <div style={{ borderTop: "1px solid rgba(245,246,250,.14)", marginTop: 16, paddingTop: 12 }}>
@@ -130,12 +150,15 @@ export default async function RegisterConfirmationPage({
           </div>
         </div>
 
-        <div style={{ maxWidth: 460, margin: "24px auto 0", textAlign: "left" }}>
-          <h2 style={{ fontSize: 12, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)", margin: "0 0 14px" }}>
-            Payment Options
-          </h2>
-          <PaymentOptions variant="dark" />
-        </div>
+        {/* Nothing to pay on a $0 registration, so no payment options. */}
+        {summary.totalAmountCents > 0 && (
+          <div style={{ maxWidth: 460, margin: "24px auto 0", textAlign: "left" }}>
+            <h2 style={{ fontSize: 12, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)", margin: "0 0 14px" }}>
+              Payment Options
+            </h2>
+            <PaymentOptions variant="dark" />
+          </div>
+        )}
 
         <div style={{ marginTop: 32 }}>
           <Link href={cy.href} className="press" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(245,246,250,.09)", color: "var(--cream)", fontWeight: 700, fontSize: 14.5, padding: "14px 26px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(245,246,250,.2)" }}>

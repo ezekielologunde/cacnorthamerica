@@ -38,7 +38,7 @@ const nextConfig: NextConfig = {
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://pagead2.googlesyndication.com https://www.google-analytics.com https://unpkg.com",
       "style-src 'self' 'unsafe-inline' https://unpkg.com",
-      "img-src 'self' data: blob: https://img.youtube.com https://i.ytimg.com https://res.cloudinary.com https://*.cdninstagram.com https://cacnorthamerica.com https://www.googletagmanager.com https://www.google-analytics.com https://pagead2.googlesyndication.com https://unpkg.com https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com",
+      "img-src 'self' data: blob: https://img.youtube.com https://i.ytimg.com https://res.cloudinary.com https://*.cdninstagram.com https://cacnorthamerica.com https://blogger.googleusercontent.com https://*.bp.blogspot.com https://www.googletagmanager.com https://www.google-analytics.com https://pagead2.googlesyndication.com https://unpkg.com https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com",
       "font-src 'self' https://unpkg.com",
       "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://analytics.google.com https://www.google.com https://vitals.vercel-insights.com https://*.tile.openstreetmap.org",
       "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://maps.google.com https://www.google.com",

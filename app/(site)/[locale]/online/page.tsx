@@ -1,6 +1,7 @@
 import { Nav } from "@/components/navigation/Nav";
 import "@/app/(site)/[locale]/mobile-events-media.css";
 import { FooterExperience } from "@/components/sections/FooterExperience";
+import { FeaturedStories } from "@/components/sections/FeaturedStories";
 import { Reveal } from "@/components/ui/Reveal";
 import Image from "next/image";
 import { getSermons, getLiveStream, formatSermonDate } from "@/lib/sermons";
@@ -208,6 +209,9 @@ export default async function OnlinePage({
         </div>
       </section>
       )}
+
+      {/* Featured stories -- curated videos from lib/featuredStories.ts */}
+      <FeaturedStories tone="dark" />
 
       {/* Full archive, year-grouped, filterable */}
       <section style={{ padding: "20px clamp(20px,5vw,64px) 80px" }}>

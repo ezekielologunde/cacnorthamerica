@@ -1,0 +1,39 @@
+/* FAQ accordion: native <details>/<summary>, so it opens without JS and
+   is keyboard operable by default. These rules only restyle the marker. */
+.faq-item { border-bottom: 1px solid var(--line); }
+.faq-item > summary {
+  list-style: none; cursor: pointer;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+  min-height: 44px; padding: 20px 0;
+  font-family: var(--font-display); font-weight: 800; font-size: 19px;
+  letter-spacing: -.2px; line-height: 1.3; color: var(--ink);
+}
+.faq-item > summary::-webkit-details-marker { display: none; }
+.faq-item > summary::after {
+  content: "+";
+  content: "+" / "";
+  flex-shrink: 0; width: 28px; height: 28px; margin-top: -1px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 50%; border: 1.5px solid var(--line);
+  font-family: var(--font-display); font-weight: 700; font-size: 18px; line-height: 1; color: var(--red);
+  transition: transform .2s ease;
+}
+.faq-item[open] > summary::after { transform: rotate(45deg); }
+.faq-item > summary:hover { color: var(--red); }
+.faq-item > summary:focus-visible { outline: 2px solid var(--red); outline-offset: 4px; border-radius: 4px; }
+.faq-answer { padding: 0 44px 24px 0; color: var(--ink-soft); font-size: 16px; line-height: 1.75; }
+.faq-answer p { margin: 0 0 12px; }
+.faq-answer dl { margin: 0 0 12px; }
+.faq-answer dt { font-weight: 700; color: var(--ink); }
+.faq-answer dd { margin: 0 0 10px; }
+.faq-local { margin-top: 4px; }
+.faq-local a { color: var(--red); font-weight: 700; text-decoration: none; }
+.faq-local a:hover { text-decoration: underline; }
+
+@media (max-width: 700px) {
+  .faq-item > summary { font-size: 17px; padding: 18px 0; }
+  .faq-answer { padding-right: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .faq-item > summary::after { transition: none; }
+}

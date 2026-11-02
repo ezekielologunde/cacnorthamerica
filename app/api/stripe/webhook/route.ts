@@ -7,6 +7,8 @@ import { sendStoreOrderConfirmationEmail } from "@/lib/storeOrderEmail";
 import { sendGivingConfirmationEmail } from "@/lib/givingEmail";
 import { SITE_URL } from "@/lib/site";
 import { splitCheckoutAmount, isProcessingFeeLine } from "@/lib/processingFee";
+import { conventionYears } from "@/lib/conventions";
+import { youthSheetName, youthSheetRows } from "@/lib/youthRegistration";
 
 // checkout.session.completed also fires for delayed methods (ACH, etc.)
 // before the money has moved; only these statuses mean the checkout is
@@ -35,7 +37,10 @@ const SETTLED_PAYMENT_STATUSES = new Set(["paid", "no_payment_required"]);
 const handledSessions = new Set<string>();
 /** Settles (never rejects) when the in-flight delivery for the key ends. */
 const inFlightSessions = new Map<string, Promise<void>>();
-type RecordStep = "sheet" | "email";
+// A Youth & Child registration writes one row per person, each its own step
+// (`sheet-${i}`), so a retry after a partial failure appends only the rows
+// that are still missing.
+type RecordStep = "sheet" | "email" | `sheet-${number}`;
 const completedSteps = new Map<string, Set<RecordStep>>();
 const MAX_TRACKED_SESSIONS = 1000;
 
@@ -182,7 +187,15 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
       const encoded = unchunkFromMetadata(metadata, "d");
       const summary: RegistrationSummary | null = encoded ? decodeSummary(encoded) : null;
 
-      sheetOk = await runStep(sessionId, "sheet", () => logToSheetChecked(`Registration — CACNA ${summary?.year ?? metadata?.convention_year ?? ""}`, {
+      if (summary?.youth) {
+        // In order, stopping at the first failure so a retry resumes there.
+        const startIso = conventionYears.find((cy) => cy.year === summary.year)?.startIso;
+        const rows = youthSheetRows(summary, { stripeSession: sessionId, status: "paid", startIso, contactEmail, feeColumns });
+        for (const [i, row] of rows.entries()) {
+          sheetOk = await runStep(sessionId, `sheet-${i}`, () => logToSheetChecked(youthSheetName(summary.year), row));
+          if (!sheetOk) break;
+        }
+      } else sheetOk = await runStep(sessionId, "sheet", () => logToSheetChecked(`Registration — CACNA ${summary?.year ?? metadata?.convention_year ?? ""}`, {
         "Registration Type": summary?.registrationType ?? "",
         "Church Name": summary?.churchName ?? "",
         "Contact Name": summary?.contactName ?? "",
