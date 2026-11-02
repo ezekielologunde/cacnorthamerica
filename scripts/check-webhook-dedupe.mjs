@@ -34,6 +34,7 @@ const SHEETS_URL = "https://sheets.invalid/hook";
 process.env.STRIPE_WEBHOOK_SECRET = "whsec_check_script_only";
 process.env.SHEETS_WEBHOOK = SHEETS_URL;
 process.env.RESEND_API_KEY = "re_check_script_only";
+process.env.REGISTRATION_SIGNING_SECRET = "check-script-only-secret";
 delete process.env.SHEETS_WEBHOOK_SECRET;
 console.error = () => {}; // the handler logs every simulated failure
 
@@ -66,6 +67,8 @@ const emails = [];
 const failNext = { sheet: 0, email: 0 };
 const sheetReplies = [];
 const youthRows = [];
+const allRows = []; // every accepted row, in full
+const emailBodies = []; // every sent email's Resend payload
 let failRowNamed = null; // fail the sheet write of the row with this Name, once
 globalThis.fetch = async (url, init = {}) => {
   url = String(url);
@@ -75,6 +78,7 @@ globalThis.fetch = async (url, init = {}) => {
     const row = JSON.parse(init.body);
     if (failRowNamed && row.Name === failRowNamed) { failRowNamed = null; throw new TypeError("fetch failed"); }
     if (row.Name) youthRows.push(row);
+    allRows.push(row);
     rows.push(row["Stripe Session"]);
     return Response.json({ ok: true });
   }
@@ -84,6 +88,7 @@ globalThis.fetch = async (url, init = {}) => {
       return Response.json({ name: "internal_server_error", message: "try later", statusCode: 500 }, { status: 500 });
     }
     emails.push(new Headers(init.headers).get("Idempotency-Key"));
+    emailBodies.push(JSON.parse(init.body));
     return Response.json({ id: `email_${emails.length}` });
   }
   throw new Error(`unexpected fetch ${url}`);
@@ -228,6 +233,37 @@ const youthSessionRows = youthRows.filter((r) => r["Stripe Session"] === "cs_tes
 check("youth: the first row carries the registration's Processing Fee and Amount Charged, the rest leave them blank",
   ada?.["Processing Fee"] === "$3.30" && ada["Amount Charged"] === "$103.30" &&
   youthSessionRows.filter((r) => r !== ada).every((r) => r["Processing Fee"] === "" && r["Amount Charged"] === ""));
+
+// Check-in codes (lib/checkinCode.ts): youth rows carry each person's code
+// as the last column, the adult row carries every code in Registrants
+// order, and the paid confirmation email shows them.
+const { checkinCodeFor } = await import("../lib/checkinCode.ts");
+const lastColumn = (row) => Object.keys(row ?? {}).filter((k) => k !== "formName" && k !== "secret").at(-1);
+const youthCodes = [0, 1, 2].map((i) => checkinCodeFor("ref-youth", 2027, i));
+const youthByName = (n) => youthRows.find((r) => r["Stripe Session"] === "cs_test_youth" && r.Name === n);
+check("youth (paid): each row carries that person's check-in code as the last column",
+  ["Ada Young", "Ben Kid", "Cy Teen"].every((n, i) => youthByName(n)?.["Check-in Code"] === youthCodes[i] && lastColumn(youthByName(n)) === "Check-in Code") &&
+  new Set(youthCodes).size === 3);
+const youthEmail = emailBodies.find((e) => e.html?.includes("Ada Young"));
+check("youth (paid): the confirmation email shows every person's code", youthCodes.every((c) => youthEmail?.html.includes(`>${c}</span>`)));
+
+const adultSummary = {
+  ref: "ref-adult", year: 2027, registrationType: "group", churchName: "CAC Example", contactName: "Adult One",
+  contactEmail: "adult@example.com", contactPhone: "4435550100", totalAmountCents: 30000, isComplimentary: false,
+  registrants: [{ n: "Adult One", c: "adult" }, { n: "Adult Two", c: "adult" }],
+};
+sessions.cs_test_adult = {
+  payment_status: "paid",
+  metadata: { kind: "registration", convention_year: "2027", ...chunkForMetadata("d", encodeSummary(adultSummary)) },
+};
+const adultRes = await deliver("cs_test_adult");
+const adultRow = allRows.find((r) => r["Stripe Session"] === "cs_test_adult");
+const adultCodes = [0, 1].map((i) => checkinCodeFor("ref-adult", 2027, i));
+check("adult (paid): the row lists every registrant's code in Registrants order, as the last column",
+  adultRes.status === 200 && adultRow?.Registrants === "Adult One (adult); Adult Two (adult)" &&
+  adultRow["Check-in Code"] === adultCodes.join("; ") && lastColumn(adultRow) === "Check-in Code" && adultCodes[0] !== adultCodes[1]);
+const adultEmail = emailBodies.find((e) => e.html?.includes("Adult Two"));
+check("adult (paid): the confirmation email shows each person's code", adultCodes.every((c) => adultEmail?.html.includes(`>${c}</span>`)));
 
 process.stdout.write(failures ? `\n${failures} check(s) FAILED\n` : "\nAll checks passed\n");
 process.exit(failures ? 1 : 0);

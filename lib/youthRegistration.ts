@@ -131,6 +131,9 @@ export function youthSheetRows(
      *  the first row carries the values and the rest leave them blank, which
      *  keeps a column sum equal to what Stripe charged. */
     feeColumns?: { "Processing Fee": string; "Amount Charged": string };
+    /** Per-person check-in codes in registrants order (lib/checkinCode.ts's
+     *  checkinCodesFor; passed in so this file stays free of Node APIs). */
+    checkinCodes: readonly string[];
   }
 ): Record<string, string>[] {
   return summary.registrants.map((r, i) => {
@@ -157,6 +160,7 @@ export function youthSheetRows(
           ? opts.feeColumns
           : { "Processing Fee": "", "Amount Charged": "" }
         : {}),
+      "Check-in Code": opts.checkinCodes[i] ?? "",
     };
   });
 }

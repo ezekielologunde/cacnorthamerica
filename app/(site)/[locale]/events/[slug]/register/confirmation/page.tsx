@@ -12,6 +12,7 @@ import { PaymentOptions } from "@/components/register/PaymentOptions";
 import { conventionYears, type ConventionYear, type RegistrantCategory } from "@/lib/conventions";
 import { setRequestLocale } from "next-intl/server";
 import { describeYouthRegistrant } from "@/lib/youthRegistration";
+import { checkinCodesFor } from "@/lib/checkinCode";
 
 const CATEGORY_LABEL: Record<RegistrantCategory, string> = {
   adult: "Adult",
@@ -79,6 +80,8 @@ export default async function RegisterConfirmationPage({
   // page re-verifies it there (Stripe session or sealed token) -- the
   // check-in proof staff use at the door.
   const qrSvg = isPaid ? await renderQrCodeSvg(`${SITE_URL}${confirmation.confirmationPath}`) : null;
+  // Each person's own code, so check-in never depends on the QR alone.
+  const checkinCodes = checkinCodesFor(summary);
 
   return (
     <main id="main-content">
@@ -90,7 +93,7 @@ export default async function RegisterConfirmationPage({
         </h1>
         <p style={{ fontSize: 15.5, color: "rgba(245,246,250,.65)", maxWidth: 480, margin: `0 auto ${emailAttempted ? 12 : 32}px`, lineHeight: 1.7 }}>
           {isFree
-            ? "Save this page or screenshot the QR code below to show at check-in."
+            ? "Save this page, or screenshot the QR code and check-in codes below, to show at check-in."
             : "A confirmation email is on its way."}
         </p>
         {emailAttempted && (
@@ -113,12 +116,22 @@ export default async function RegisterConfirmationPage({
             {summary.registrants.map((r, i) => {
               // Youth & Child registrants show their age group and meals.
               const youth = describeYouthRegistrant(r, cy.startIso);
+              const code = checkinCodes[i];
               return (
                 <li key={i} style={{ fontSize: 14.5 }}>
                   <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", columnGap: 12, rowGap: 2 }}>
                     <span style={{ color: "var(--cream)", minWidth: 0, overflowWrap: "anywhere" }}>{r.n}</span>
                     <span style={{ color: "rgba(245,246,250,.6)" }}>{youth ? youth.ageGroup : (CATEGORY_LABEL[r.c] ?? "Adult")}</span>
                   </div>
+                  <p style={{ fontSize: 12.5, color: "rgba(245,246,250,.55)", margin: "4px 0 0", lineHeight: 1.5 }}>
+                    Check-in code:{" "}
+                    <code
+                      data-checkin-code
+                      style={{ fontFamily: "ui-monospace, Consolas, Menlo, monospace", fontSize: 16, fontWeight: 700, letterSpacing: "0.5px", color: "#fff", userSelect: "all", overflowWrap: "anywhere" }}
+                    >
+                      {code}
+                    </code>
+                  </p>
                   {youth && (
                     <p style={{ fontSize: 12.5, color: "rgba(245,246,250,.55)", margin: "3px 0 0", lineHeight: 1.5 }}>
                       Meals: {youth.meals.length > 0 ? youth.meals.join(", ") : "None"}

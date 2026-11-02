@@ -6,6 +6,7 @@ import { paymentOptions } from "@/lib/registrationInfo";
 import type { RegistrationSummary } from "@/lib/checkoutSummary";
 import { conventionYears, type RegistrantCategory } from "@/lib/conventions";
 import { describeYouthRegistrant } from "@/lib/youthRegistration";
+import { checkinCodesFor } from "@/lib/checkinCode";
 
 const CATEGORY_LABEL: Record<RegistrantCategory, string> = {
   adult: "Adult",
@@ -31,8 +32,9 @@ function buildHtml(summary: RegistrationSummary, confirmationUrl: string, isPaid
     : "";
 
   const startIso = conventionYears.find((cy) => cy.year === summary.year)?.startIso;
+  const codes = checkinCodesFor(summary);
   const registrantRows = summary.registrants
-    .map((r) => {
+    .map((r, i) => {
       // Youth & Child registrants also list their age group, meals and
       // allergy notes under their name.
       const youth = describeYouthRegistrant(r, startIso);
@@ -40,7 +42,8 @@ function buildHtml(summary: RegistrationSummary, confirmationUrl: string, isPaid
         ? `<div style="font-size:12.5px;color:#8a8983;margin-top:3px;line-height:1.5">Meals: ${escapeHtml(youth.meals.length > 0 ? youth.meals.join(", ") : "None")}${r.l ? `<br>Allergies: ${escapeHtml(r.l)}` : ""}</div>`
         : "";
       const label = youth ? youth.ageGroup : (CATEGORY_LABEL[r.c] ?? "Adult");
-      return `<tr><td style="padding:9px 0;font-size:14.5px;color:#12141E;border-bottom:1px solid #ECE9E4">${escapeHtml(r.n)}${details}</td><td style="padding:9px 0;font-size:14.5px;color:#5f5e5a;text-align:right;vertical-align:top;border-bottom:1px solid #ECE9E4">${escapeHtml(label)}</td></tr>`;
+      const code = `<div style="font-size:12.5px;color:#8a8983;margin-top:3px">Check-in code: <span style="font-family:Consolas,Menlo,'Courier New',monospace;font-size:14px;font-weight:700;color:#12141E;letter-spacing:.5px">${escapeHtml(codes[i])}</span></div>`;
+      return `<tr><td style="padding:9px 0;font-size:14.5px;color:#12141E;border-bottom:1px solid #ECE9E4">${escapeHtml(r.n)}${code}${details}</td><td style="padding:9px 0;font-size:14.5px;color:#5f5e5a;text-align:right;vertical-align:top;border-bottom:1px solid #ECE9E4">${escapeHtml(label)}</td></tr>`;
     })
     .join("");
 
