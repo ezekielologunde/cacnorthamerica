@@ -4,6 +4,7 @@ import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { getStripeClient } from "@/lib/stripe";
 import { isPaidCheckout } from "@/lib/registrationConfirmation";
+import { splitCheckoutAmount } from "@/lib/processingFee";
 import { setRequestLocale } from "next-intl/server";
 
 export default async function GivingConfirmationPage({
@@ -20,6 +21,8 @@ export default async function GivingConfirmationPage({
 
   let contactEmail: string | null = null;
   let totalCents: number | null = null;
+  let feeCents = 0;
+  let chargedCents = 0;
   let campaignTitle: string | null = null;
   // Only a paid session of this page's own kind is a completed checkout; an
   // abandoned or unpaid session, another kind's session, or no session at
@@ -32,7 +35,11 @@ export default async function GivingConfirmationPage({
       const session = await stripe.checkout.sessions.retrieve(sessionId);
       if (!isPaidCheckout(session, "giving")) throw new Error("not a paid giving session");
       contactEmail = session.customer_details?.email ?? session.customer_email ?? null;
-      totalCents = session.amount_total ?? 0;
+      // "Given" is the gift the donor chose; the fee is shown on its own.
+      const split = splitCheckoutAmount(session.amount_total ?? 0, session.metadata);
+      totalCents = split.subtotalCents;
+      feeCents = split.processingFeeCents;
+      chargedCents = split.totalCents;
       campaignTitle = session.metadata?.campaign_title ?? null;
     } catch {
       notFound = true;
@@ -83,6 +90,18 @@ export default async function GivingConfirmationPage({
                 <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)" }}>Given</span>
                 <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "#fff" }}>${(totalCents / 100).toFixed(2)}</span>
               </div>
+            )}
+            {totalCents !== null && feeCents > 0 && (
+              <>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, color: "rgba(245,246,250,.6)", marginTop: 10 }}>
+                <span>Processing fee</span>
+                <span>{`$${(feeCents / 100).toFixed(2)}`}</span>
+              </div>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, color: "rgba(245,246,250,.6)", marginTop: 4 }}>
+                <span>Total charged</span>
+                <span>{`$${(chargedCents / 100).toFixed(2)}`}</span>
+              </div>
+              </>
             )}
           </div>
         )}

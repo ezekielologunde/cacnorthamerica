@@ -3,6 +3,7 @@ import { getStripeClient } from "@/lib/stripe";
 import { rateLimit } from "@/lib/rateLimit";
 import { SITE_URL } from "@/lib/site";
 import { GIVING_CAMPAIGNS } from "@/lib/giving";
+import { processingFeeLineItem, processingFeeMetadata } from "@/lib/processingFee";
 
 const MIN_CENTS = 100; // $1
 const MAX_CENTS = 5_000_000; // $50,000 -- generous ceiling against a typo/abuse, not a real donation cap
@@ -68,11 +69,13 @@ export async function POST(request: Request) {
           product_data: { name: `Gift — ${campaign.title}` },
         },
         quantity: 1,
-      }],
+      // The gift line stays exactly the amount the donor chose; the fee is
+      // a separate line after it.
+      }, processingFeeLineItem(body.amountCents)],
       customer_email: body.contactEmail,
       success_url: `${SITE_URL}/giving/confirmation?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}/giving`,
-      metadata: { kind: "giving", contact_name: body.contactName, campaign_slug: campaign.slug, campaign_title: campaign.title },
+      metadata: { kind: "giving", contact_name: body.contactName, campaign_slug: campaign.slug, campaign_title: campaign.title, ...processingFeeMetadata(body.amountCents) },
     });
 
     return NextResponse.json({ checkoutUrl: session.url });

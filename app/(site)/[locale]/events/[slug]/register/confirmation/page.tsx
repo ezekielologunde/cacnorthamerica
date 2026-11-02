@@ -68,7 +68,8 @@ export default async function RegisterConfirmationPage({
     );
   }
 
-  const { summary, isPaid, isFree } = confirmation;
+  const { summary, isPaid, isFree, processingFeeCents } = confirmation;
+  const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
 
   // The QR re-opens this confirmation on whatever device scans it, and the
   // page re-verifies it there (Stripe session or sealed token) -- the
@@ -107,12 +108,24 @@ export default async function RegisterConfirmationPage({
               </li>
             ))}
           </ul>
-          <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid rgba(245,246,250,.14)", marginTop: 16, paddingTop: 14 }}>
+          {processingFeeCents > 0 && (
+            <div style={{ borderTop: "1px solid rgba(245,246,250,.14)", marginTop: 16, paddingTop: 12 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, color: "rgba(245,246,250,.6)", marginTop: 0 }}>
+                <span>Subtotal</span>
+                <span>{dollars(summary.totalAmountCents)}</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, color: "rgba(245,246,250,.6)", marginTop: 4 }}>
+                <span>Processing fee</span>
+                <span>{dollars(processingFeeCents)}</span>
+              </div>
+            </div>
+          )}
+          <div style={{ display: "flex", justifyContent: "space-between", borderTop: processingFeeCents > 0 ? "none" : "1px solid rgba(245,246,250,.14)", marginTop: processingFeeCents > 0 ? 8 : 16, paddingTop: processingFeeCents > 0 ? 0 : 14 }}>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)" }}>
               {summary.isComplimentary ? "Complimentary" : isPaid ? "Paid" : "Pending"}
             </span>
             <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "#fff" }}>
-              ${(summary.totalAmountCents / 100).toFixed(2)}
+              {dollars(summary.totalAmountCents + processingFeeCents)}
             </span>
           </div>
         </div>

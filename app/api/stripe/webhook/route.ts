@@ -6,6 +6,7 @@ import { sendRegistrationConfirmationEmail } from "@/lib/registrationEmail";
 import { sendStoreOrderConfirmationEmail } from "@/lib/storeOrderEmail";
 import { sendGivingConfirmationEmail } from "@/lib/givingEmail";
 import { SITE_URL } from "@/lib/site";
+import { splitCheckoutAmount, isProcessingFeeLine } from "@/lib/processingFee";
 
 // checkout.session.completed also fires for delayed methods (ACH, etc.)
 // before the money has moved; only these statuses mean the checkout is
@@ -152,8 +153,15 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
 
   try {
     const contactEmail = full.customer_details?.email ?? full.customer_email ?? "";
-    const totalDollars = `$${((full.amount_total ?? 0) / 100).toFixed(2)}`;
-    const lineDescriptions = (full.line_items?.data ?? []).map((li) => li.description ?? "");
+    // "Total" stays the subtotal (registration/order/gift amount); the
+    // processing fee and the amount actually charged get their own columns.
+    const { subtotalCents, processingFeeCents, totalCents } = splitCheckoutAmount(full.amount_total ?? 0, metadata);
+    const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
+    const totalDollars = dollars(subtotalCents);
+    const feeColumns = { "Processing Fee": dollars(processingFeeCents), "Amount Charged": dollars(totalCents) };
+    const feeLabels = processingFeeCents > 0 ? { feeLabel: dollars(processingFeeCents), chargedLabel: dollars(totalCents) } : {};
+    const realLines = (full.line_items?.data ?? []).filter((li) => !isProcessingFeeLine(li.description));
+    const lineDescriptions = realLines.map((li) => li.description ?? "");
 
     if (kind === "registration") {
       // The full registration -- including free registrants Stripe never
@@ -174,6 +182,7 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
           ? summary.registrants.map((r) => `${r.n} (${r.c})`).join("; ")
           : lineDescriptions.join("; "),
         "Total": totalDollars,
+        ...feeColumns,
         "Stripe Session": sessionId,
       }));
 
@@ -188,11 +197,11 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
         if (emailTo) {
           const confirmationUrl = `${SITE_URL}/events/cacna-${summary.year}/register/confirmation?session_id=${sessionId}`;
           emailOk = await runStep(sessionId, "email", () =>
-            sendRegistrationConfirmationEmail({ ...summary, contactEmail: emailTo }, confirmationUrl, true, idempotencyKey));
+            sendRegistrationConfirmationEmail({ ...summary, contactEmail: emailTo }, confirmationUrl, true, idempotencyKey, processingFeeCents));
         }
       }
     } else if (kind === "store_order") {
-      const itemsSummary = (full.line_items?.data ?? [])
+      const itemsSummary = realLines
         .map((li) => `${li.description ?? ""} × ${li.quantity ?? 1}`)
         .join("; ");
 
@@ -207,14 +216,16 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
         "Ship To": shippingAddress,
         "Items": itemsSummary,
         "Total": totalDollars,
+        ...feeColumns,
         "Stripe Session": sessionId,
       }));
 
       emailOk = await runStep(sessionId, "email", () => sendStoreOrderConfirmationEmail({
         contactName: metadata?.contact_name ?? "",
         contactEmail,
-        items: (full.line_items?.data ?? []).map((li) => `${li.description ?? ""} × ${li.quantity ?? 1}`),
+        items: realLines.map((li) => `${li.description ?? ""} × ${li.quantity ?? 1}`),
         totalLabel: totalDollars,
+        ...feeLabels,
         shippingAddress,
         idempotencyKey,
       }));
@@ -226,6 +237,7 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
         "Contact Name": metadata?.contact_name ?? "",
         "Contact Email": contactEmail,
         "Total": totalDollars,
+        ...feeColumns,
         "Stripe Session": sessionId,
       }));
 
@@ -234,6 +246,7 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
         contactEmail,
         campaignTitle,
         totalLabel: totalDollars,
+        ...feeLabels,
         idempotencyKey,
       }));
     } else {

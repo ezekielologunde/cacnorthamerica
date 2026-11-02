@@ -4,6 +4,7 @@ import { useMemo, useState, type CSSProperties, type FormEvent } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import type { StoreProduct } from "@/lib/conventions";
+import { FeeBreakdown } from "@/components/checkout/FeeBreakdown";
 
 type CartLine = { productId: string; name: string; unitPriceCents: number; size: string | null; quantity: number };
 
@@ -139,9 +140,8 @@ export function StoreCatalog({ categories }: { categories: { key: string; label:
                 );
               })}
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid var(--line)", paddingTop: 14, marginBottom: 20 }}>
-              <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", color: "var(--ink-soft)" }}>{t("totalLabel")}</span>
-              <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 19, color: "var(--ink)" }}>{formatPrice(total)}</span>
+            <div style={{ borderTop: "1px solid var(--line)", paddingTop: 14, marginBottom: 20 }}>
+              <FeeBreakdown subtotalCents={total} />
             </div>
 
             <form onSubmit={handleCheckout}>

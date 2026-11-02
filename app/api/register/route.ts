@@ -7,6 +7,7 @@ import { currentOrNextConvention, activePricing, priceForCategory, type Registra
 import { encodeSummary, chunkForMetadata, type RegistrationSummary } from "@/lib/checkoutSummary";
 import { sealRegistrationToken } from "@/lib/registrationToken";
 import { FORM_HEADER, HONEYPOT_FIELD, looksLikeSpam } from "@/lib/spam";
+import { processingFeeLineItem, processingFeeMetadata } from "@/lib/processingFee";
 
 type RegisterRequestBody = {
   registrationType: "individual" | "group";
@@ -226,14 +227,14 @@ export async function POST(request: Request) {
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
-      line_items: payableRegistrants.map((r) => ({
+      line_items: [...payableRegistrants.map((r) => ({
         price_data: {
           currency: "usd",
           unit_amount: r.priceCents,
           product_data: { name: `CACNA ${cy.year} Convention registration — ${r.fullName} (${r.category})` },
         },
         quantity: 1,
-      })),
+      })), processingFeeLineItem(totalAmountCents)],
       customer_email: body.contactEmail,
       // Only the opaque session id travels in the URL; the confirmation page
       // reads the registration back from this session's own metadata.
@@ -243,6 +244,9 @@ export async function POST(request: Request) {
         kind: "registration",
         convention_year: String(cy.year),
         ...chunkForMetadata("d", encoded),
+        // totalAmountCents (and the summary) stay the subtotal; the fee is
+        // its own line item and recorded separately here.
+        ...processingFeeMetadata(totalAmountCents),
       },
     });
 

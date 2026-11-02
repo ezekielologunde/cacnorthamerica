@@ -1,5 +1,6 @@
 import { decodeSummary, unchunkFromMetadata, type RegistrationSummary } from "./checkoutSummary";
 import { openRegistrationToken } from "./registrationToken";
+import { splitCheckoutAmount } from "./processingFee";
 
 // Decides what the registration confirmation page may show. The URL is never
 // trusted as proof of anything:
@@ -14,12 +15,15 @@ import { openRegistrationToken } from "./registrationToken";
 export type SessionLike = {
   metadata?: Record<string, string | null | undefined> | null;
   payment_status?: string | null;
+  amount_total?: number | null;
 };
 
 export type RegistrationConfirmation = {
   summary: RegistrationSummary;
   isPaid: boolean;
   isFree: boolean;
+  /** Processing fee charged on top of summary.totalAmountCents; 0 when none. */
+  processingFeeCents: number;
   /** Path (no origin) that re-opens this confirmation; encoded in the QR. */
   confirmationPath: string;
 };
@@ -79,6 +83,7 @@ export async function resolveRegistrationConfirmation(input: {
       summary,
       isPaid: session.payment_status === "paid",
       isFree: false,
+      processingFeeCents: splitCheckoutAmount(session.amount_total ?? 0, session.metadata).processingFeeCents,
       confirmationPath: `${basePath}?session_id=${input.sessionId}`,
     };
   }
@@ -86,7 +91,7 @@ export async function resolveRegistrationConfirmation(input: {
   if (typeof input.token === "string" && input.token !== "") {
     const summary = openRegistrationToken(input.token);
     if (!isRegistrationSummary(summary) || !isFreeChildOnlySummary(summary, input.year)) return null;
-    return { summary, isPaid: true, isFree: true, confirmationPath: `${basePath}?t=${input.token}` };
+    return { summary, isPaid: true, isFree: true, processingFeeCents: 0, confirmationPath: `${basePath}?t=${input.token}` };
   }
 
   return null;

@@ -20,9 +20,14 @@ async function renderQrCodePngDataUri(data: string): Promise<string> {
   return QRCode.toDataURL(data, { margin: 1, width: 240 });
 }
 
-function buildHtml(summary: RegistrationSummary, confirmationUrl: string, isPaid: boolean, qrDataUri: string | null): string {
+function buildHtml(summary: RegistrationSummary, confirmationUrl: string, isPaid: boolean, qrDataUri: string | null, processingFeeCents: number): string {
   const statusLabel = summary.isComplimentary ? "Complimentary" : isPaid ? "Paid" : "Pending";
-  const totalLabel = `$${(summary.totalAmountCents / 100).toFixed(2)}`;
+  const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
+  const totalLabel = dollars(summary.totalAmountCents + processingFeeCents);
+  const feeRows = processingFeeCents > 0
+    ? `<tr><td style="padding:0 0 6px;font-size:13.5px;color:#5f5e5a">Subtotal</td><td style="padding:0 0 6px;font-size:13.5px;color:#5f5e5a;text-align:right">${dollars(summary.totalAmountCents)}</td></tr>
+        <tr><td style="padding:0 0 10px;font-size:13.5px;color:#5f5e5a">Processing fee</td><td style="padding:0 0 10px;font-size:13.5px;color:#5f5e5a;text-align:right">${dollars(processingFeeCents)}</td></tr>`
+    : "";
 
   const registrantRows = summary.registrants
     .map(
@@ -45,6 +50,7 @@ function buildHtml(summary: RegistrationSummary, confirmationUrl: string, isPaid
       <p style="margin:0 0 16px;font-size:13.5px;color:#8a8983">${escapeHtml(summary.contactEmail)}</p>
       <table style="width:100%;border-collapse:collapse">${registrantRows}</table>
       <table style="width:100%;border-collapse:collapse;margin-top:16px;padding-top:14px;border-top:1px solid #ECE9E4">
+        ${feeRows}
         <tr>
           <td style="font-size:11.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#C81E3A">${statusLabel}</td>
           <td style="font-size:18px;font-weight:800;color:#12141E;text-align:right">${totalLabel}</td>
@@ -80,7 +86,9 @@ export async function sendRegistrationConfirmationEmail(
   isPaid: boolean,
   /** Resend idempotency key (24h window) so a redelivered webhook never
    *  sends the same confirmation twice. */
-  idempotencyKey?: string
+  idempotencyKey?: string,
+  /** Processing fee charged on top of summary.totalAmountCents (the subtotal). */
+  processingFeeCents = 0
 ): Promise<boolean> {
   const key = process.env.RESEND_API_KEY;
   if (!key) return true;
@@ -92,7 +100,7 @@ export async function sendRegistrationConfirmationEmail(
       ...sender("convention"),
       to: summary.contactEmail,
       subject: `You're registered for CACNA ${summary.year}!`,
-      html: buildHtml(summary, confirmationUrl, isPaid, qrDataUri),
+      html: buildHtml(summary, confirmationUrl, isPaid, qrDataUri, processingFeeCents),
     }, idempotencyKey ? { idempotencyKey } : undefined);
     if (error) {
       console.error("[registration email] Resend error:", error);
