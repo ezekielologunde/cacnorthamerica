@@ -101,22 +101,22 @@ export function MonthCalendar({ events }: { events: ChurchEvent[] }) {
         </div>
         <div style={{ display: "flex", gap: 8 }}>
           <button type="button" onClick={() => goMonth(-1)} aria-label="Previous month" className="press"
-            style={{ width: 38, height: 38, borderRadius: 999, border: "1.5px solid var(--line)", background: "var(--cream)", display: "grid", placeItems: "center", cursor: "pointer" }}>
+            style={{ width: 44, height: 44, borderRadius: 999, border: "1.5px solid var(--line)", background: "var(--cream)", display: "grid", placeItems: "center", cursor: "pointer" }}>
             <ChevronLeft size={17} strokeWidth={2.5} color="var(--ink)" aria-hidden />
           </button>
           <button type="button" onClick={() => { setViewYear(now.getFullYear()); setViewMonth(now.getMonth() + 1); setSelectedKey(null); }}
-            className="press" style={{ padding: "0 16px", height: 38, borderRadius: 999, border: "1.5px solid var(--line)", background: "var(--cream)", fontSize: 13, fontWeight: 700, color: "var(--ink)", cursor: "pointer" }}>
+            className="press" style={{ padding: "0 18px", height: 44, borderRadius: 999, border: "1.5px solid var(--line)", background: "var(--cream)", fontSize: 13, fontWeight: 700, color: "var(--ink)", cursor: "pointer" }}>
             Today
           </button>
           <button type="button" onClick={() => goMonth(1)} aria-label="Next month" className="press"
-            style={{ width: 38, height: 38, borderRadius: 999, border: "1.5px solid var(--line)", background: "var(--cream)", display: "grid", placeItems: "center", cursor: "pointer" }}>
+            style={{ width: 44, height: 44, borderRadius: 999, border: "1.5px solid var(--line)", background: "var(--cream)", display: "grid", placeItems: "center", cursor: "pointer" }}>
             <ChevronRight size={17} strokeWidth={2.5} color="var(--ink)" aria-hidden />
           </button>
         </div>
       </div>
 
       {/* Weekday header */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 6, marginBottom: 6 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(7,minmax(0,1fr))", gap: 6, marginBottom: 6 }}>
         {WEEKDAYS.map((w) => (
           <div key={w} style={{ fontSize: 11.5, fontWeight: 800, letterSpacing: "1px", textTransform: "uppercase", color: "var(--ink-soft)", textAlign: "center", padding: "4px 0" }}>
             {w}
@@ -125,7 +125,7 @@ export function MonthCalendar({ events }: { events: ChurchEvent[] }) {
       </div>
 
       {/* Day grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 6 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(7,minmax(0,1fr))", gap: 6 }}>
         {grid.map((c, i) => {
           const key = dayKey(c.y, c.m, c.d);
           const dayEvents = eventsByDay.get(key) ?? [];

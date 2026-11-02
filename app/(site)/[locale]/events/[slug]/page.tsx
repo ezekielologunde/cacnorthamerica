@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import "@/app/(site)/[locale]/mobile-events-media.css";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
@@ -88,7 +89,7 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
       )}
 
       {/* Hero */}
-      <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) clamp(80px,10vw,120px)", position: "relative", overflow: "hidden" }}>
+      <section className="mm-hero" style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) clamp(80px,10vw,120px)", position: "relative", overflow: "hidden" }}>
         <div aria-hidden style={{ position: "absolute", top: -140, right: -120, width: 760, height: 600, background: "radial-gradient(circle,rgba(253,200,65,.25),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 18s ease-in-out infinite" }} />
         <div aria-hidden style={{ position: "absolute", bottom: -80, left: -80, width: 500, height: 400, background: "radial-gradient(circle,rgba(200,30,58,.15),transparent 65%)", pointerEvents: "none" }} />
 
@@ -117,7 +118,7 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
 
           {!isPast && (
             <Reveal delay={280}>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
+              <div className="mm-actions" style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
                 {cy.registrationUrl ? (
                   hasExternalRegistrationUrl(cy) ? (
                     <a href={cy.registrationUrl} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(253,200,65,.4)" }}>
@@ -146,7 +147,7 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
       </section>
 
       {/* Recurring day-by-day pattern */}
-      <section style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+      <section className="mm-sec" style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <Reveal style={{ marginBottom: 40 }}>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--flame)" }}>What to expect</span>
@@ -172,7 +173,7 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
       </section>
 
       {/* Logistics */}
-      <section style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+      <section className="mm-sec" style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <Reveal style={{ marginBottom: 32 }}>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3.4vw,40px)", letterSpacing: "-1px", color: "var(--cream)", margin: 0 }}>Confirmed so far</h2>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import "@/app/(site)/[locale]/mobile-events-media.css";
 import type { Metadata } from "next";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
@@ -40,7 +41,7 @@ export default async function ArchivePage({
     <main id="main-content">
       <Nav heroDark />
 
-      <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 80px" }}>
+      <section className="mm-hero" style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 80px" }}>
         <div style={{ maxWidth: 760, margin: "0 auto", textAlign: "center" }}>
           <Reveal>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Archive</span>
@@ -56,7 +57,7 @@ export default async function ArchivePage({
         </div>
       </section>
 
-      <section style={{ background: "var(--cream)", padding: "clamp(48px,6vw,72px) clamp(20px,5vw,64px)" }}>
+      <section className="mm-sec" style={{ background: "var(--cream)", padding: "clamp(48px,6vw,72px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 760, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
           {pastYears.map((cy, i) => {
             const tiers = cy.pricingTiers ?? [];

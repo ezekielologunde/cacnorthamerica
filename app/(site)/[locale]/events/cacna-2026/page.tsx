@@ -1,4 +1,6 @@
 import { Nav } from "@/components/navigation/Nav";
+import "@/app/(site)/[locale]/mobile-events-media.css";
+import { MobileStickyCta } from "@/components/events/MobileStickyCta";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
@@ -70,7 +72,7 @@ export default async function CACNA2026Page({
       )}
 
       {/* Hero */}
-      <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) clamp(80px,10vw,120px)", position: "relative", overflow: "hidden" }}>
+      <section className="mm-hero" style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) clamp(80px,10vw,120px)", position: "relative", overflow: "hidden" }}>
         <style>{`
           .cacna2026-hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: clamp(32px,5vw,60px); align-items: center; }
           @media (max-width: 900px) { .cacna2026-hero-grid { grid-template-columns: 1fr; } }
@@ -124,7 +126,7 @@ export default async function CACNA2026Page({
 
           {!isPast && CACNA_REG && (
           <Reveal delay={280}>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
+            <div className="mm-actions" style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
               <a href={CACNA_REG} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(253,200,65,.4)" }}>
                 Register Now →
               </a>
@@ -155,7 +157,7 @@ export default async function CACNA2026Page({
       </section>
 
       {/* What is CACNA */}
-      <section style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+      <section className="mm-sec" style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 960, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,440px),1fr))", gap: "clamp(36px,5vw,64px)", alignItems: "center" }}>
           <Reveal>
             <div>
@@ -195,7 +197,7 @@ export default async function CACNA2026Page({
       </section>
 
       {/* Full details live on the Convention website */}
-      <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+      <section className="mm-sec" style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
           <Reveal>
             <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 16 }}>
@@ -225,7 +227,7 @@ export default async function CACNA2026Page({
 
       {/* Registration CTA */}
       {!isPast && CACNA_REG && (
-      <section style={{ background: "var(--ink)", padding: "clamp(60px,8vw,100px) clamp(20px,5vw,64px)" }}>
+      <section className="mm-sec" style={{ background: "var(--ink)", padding: "clamp(60px,8vw,100px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 720, margin: "0 auto", textAlign: "center" }}>
           <Reveal>
             <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 20 }}>Secure your spot</div>
@@ -249,6 +251,7 @@ export default async function CACNA2026Page({
       )}
 
       <FooterExperience />
+      {!isPast && CACNA_REG && <MobileStickyCta href={CACNA_REG} label="Register now" />}
     </main>
   );
 }

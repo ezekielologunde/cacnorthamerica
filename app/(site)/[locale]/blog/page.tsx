@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import "@/app/(site)/[locale]/mobile-events-media.css";
 import Image from "next/image";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
@@ -104,7 +105,7 @@ function ArticleCard({ post, archival }: { post: typeof POSTS[number]; archival?
             <Calendar size={12} strokeWidth={2.5} aria-hidden /> {archival ? `Archival · ${post.date}` : post.date}
           </span>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <a href={WHATSAPP_SHARE(post.title, post.slug)} target="_blank" rel="noopener noreferrer"
+            <a className="mm-tap" href={WHATSAPP_SHARE(post.title, post.slug)} target="_blank" rel="noopener noreferrer"
               style={{ fontSize: 11.5, fontWeight: 700, color: "#25D366", textDecoration: "none" }}
               aria-label="Share on WhatsApp">Share ↗</a>
             <Link href={`/blog/${post.slug}`}
@@ -166,7 +167,7 @@ function FeaturedCard({ post }: { post: typeof POSTS[number] }) {
           }}>
             Read full story <ArrowRight size={14} strokeWidth={2.5} aria-hidden />
           </Link>
-          <a href={WHATSAPP_SHARE(post.title, post.slug)} target="_blank" rel="noopener noreferrer"
+          <a className="mm-tap" href={WHATSAPP_SHARE(post.title, post.slug)} target="_blank" rel="noopener noreferrer"
             style={{ fontSize: 12.5, fontWeight: 700, color: "#25D366", textDecoration: "none" }}>
             Share on WhatsApp ↗
           </a>
@@ -312,7 +313,7 @@ function UpcomingEventWidget() {
         </div>
       )}
       {ev.href && (
-        <Link href={ev.href} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 700, color: "var(--red)", textDecoration: "none", marginTop: 8 }}>
+        <Link className="mm-tap" href={ev.href} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 700, color: "var(--red)", textDecoration: "none", marginTop: 8 }}>
           Event details <ArrowRight size={12} strokeWidth={2.5} aria-hidden />
         </Link>
       )}
@@ -393,7 +394,7 @@ export default async function BlogPage({
       <Nav heroDark />
 
       {/* Masthead */}
-      <section style={{ background: "var(--ink)", padding: "170px clamp(20px,5vw,64px) 110px", position: "relative", overflow: "hidden", minHeight: "72vh", display: "flex", alignItems: "center" }}>
+      <section className="mm-hero mm-hero-tall" style={{ background: "var(--ink)", padding: "170px clamp(20px,5vw,64px) 110px", position: "relative", overflow: "hidden", minHeight: "72vh", display: "flex", alignItems: "center" }}>
         <div aria-hidden style={{ position: "absolute", inset: 0 }}>
           <Image
             src="/images/cac-youth-convention.jpg"
@@ -426,7 +427,7 @@ export default async function BlogPage({
             </p>
           </Reveal>
           <Reveal delay={200}>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center" }}>
+            <div className="mm-chips" style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center" }}>
               {[
                 { href: "#convention-coverage", label: "Convention Coverage" },
                 { href: "#archives", label: "Archives" },
