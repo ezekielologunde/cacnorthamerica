@@ -86,7 +86,7 @@ export default async function ChildrenPage({
           </Reveal>
           <Reveal delay={280}>
             <p style={{ fontSize: "clamp(16px,1.8vw,19px)", color: "rgba(245,246,250,.72)", lineHeight: 1.7, maxWidth: 560, margin: "20px auto 0", textWrap: "pretty" }}>
-              A dedicated program for children during the Annual Convention — worship, teaching, and fun, at every session.
+              The children&apos;s program at the CACNA Annual Convention.
             </p>
           </Reveal>
         </div>
@@ -194,7 +194,7 @@ export default async function ChildrenPage({
             Bring the whole family.
           </h2>
           <p style={{ fontSize: 16, color: "rgba(245,246,250,.6)", margin: "0 0 32px" }}>
-            Questions about the children&apos;s program? Reach out to us.
+            Questions about the children&apos;s program?
           </p>
           <Link
             href="/contact"

@@ -13,8 +13,6 @@ export type AgendaItem = { time?: string; event: string; speaker?: string };
 export type ScheduleBlock = { dayLabel: string; timeRange?: string; agenda: AgendaItem[] };
 
 export type SubConferencePageProps = {
-  /** Kept for callers; no longer rendered as an eyebrow above the h1. */
-  kicker?: string;
   headingLines: [string, string];
   intro: string;
   theme?: string;
@@ -211,12 +209,9 @@ export async function SubConferencePage({
       {/* CTA */}
       <section className="min-section" style={{ background: "var(--ink)", padding: "clamp(44px,7vw,90px) clamp(20px,5vw,64px)", textAlign: "center" }}>
         <Reveal>
-          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4.5vw,54px)", letterSpacing: "-1.2px", color: "var(--cream)", margin: "0 0 16px", lineHeight: 0.98 }}>
+          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4.5vw,54px)", letterSpacing: "-1.2px", color: "var(--cream)", margin: "0 0 32px", lineHeight: 0.98 }}>
             Connect with us.
           </h2>
-          <p style={{ fontSize: 16, color: "rgba(245,246,250,.6)", margin: "0 0 32px" }}>
-            Reach out to learn more or get involved.
-          </p>
           <div className="min-cta-row" style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 12 }}>
             <Link
               href="/contact"
