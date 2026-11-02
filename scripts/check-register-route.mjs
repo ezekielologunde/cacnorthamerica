@@ -62,14 +62,20 @@ const { openRegistrationToken } = await import("../lib/registrationToken.ts");
 const { resolveRegistrationConfirmation } = await import("../lib/registrationConfirmation.ts");
 const { decodeSummary, unchunkFromMetadata, STRIPE_METADATA_MAX_KEYS } = await import("../lib/checkoutSummary.ts");
 const { sendRegistrationConfirmationEmail } = await import("../lib/registrationEmail.ts");
+const { checkinCodesFor, isWellFormedCheckinCode } = await import("../lib/checkinCode.ts");
+const lastColumn = (row) => Object.keys(row ?? {}).filter((k) => k !== "formName" && k !== "secret").at(-1);
+// The person's (escaped) name row, then directly a row of its own holding
+// their large "Check-in code" block.
+const codeBesideName = (html, name, code) =>
+  new RegExp(`>${name}</td><td[^>]*>[^<]*</td></tr><tr><td[^>]*><div[^>]*>Check-in code</div><div[^>]*>${code}</div>`).test(html ?? "");
 
 let failures = 0;
 function check(name, ok) {
   console.log(`${ok ? "PASS" : "FAIL"}  ${name}`);
   if (!ok) failures++;
 }
-// logToSheet and the free youth confirmation email are fire-and-forget; the
-// email renders a QR code first, so it gets a longer wait.
+// logToSheet and the free youth confirmation email are fire-and-forget, so
+// the email gets a longer wait.
 const settle = (ms = 20) => new Promise((r) => setTimeout(r, ms));
 const settleEmail = () => settle(300);
 const recipients = (e) => [].concat(e.to);
@@ -85,7 +91,12 @@ async function post(body, { header = true } = {}) {
 
 const adult = (category) => ({
   registrationType: "individual", churchName: "CAC Example", contactName: "A Adult", contactEmail: "a@example.com",
-  contactPhone: "4435550100", registrants: [{ firstName: "A", lastName: "Adult", category }],
+  contactPhone: "4435550100", dccZone: "Zone 3", registrants: [{ firstName: "A", lastName: "Adult", category, meals: ["tue_lunch"] }],
+});
+const adultPerson = (i, extra = {}) => ({ firstName: "Adult", lastName: `Person${i}`, category: "adult", meals: ["tue_lunch", "fri_dinner"], ...extra });
+const adultBody = (registrants, extra = {}) => ({
+  track: "adult", registrationType: "individual", churchName: null, contactName: "A Adult", contactEmail: "a@example.com",
+  contactPhone: "4435550100", dccZone: "Zone 3", registrants, ...extra,
 });
 const youth = (registrants, extra = {}) => ({
   track: "youth", contactName: "Parent Name", contactEmail: "parent@example.com", contactPhone: "(443) 555-0100",
@@ -101,6 +112,76 @@ for (const c of ["child", "young_adult"]) {
 const adultTrackExplicit = await post({ ...adult("child"), track: "adult" });
 check("explicit track 'adult' rejects category child", adultTrackExplicit.status === 400);
 check("unknown track rejected", (await post({ ...adult("adult"), track: "kids" })).status === 400);
+
+// Adult DCC / Zone, meals and allergies: validated on the server.
+created.length = 0;
+for (const [label, body] of [
+  ["missing DCC / Zone", adultBody([adultPerson(1)], { dccZone: undefined })],
+  ["blank DCC / Zone", adultBody([adultPerson(1)], { dccZone: "   " })],
+  ["over-long DCC / Zone", adultBody([adultPerson(1)], { dccZone: "D".repeat(121) })],
+]) {
+  const r = await post(body);
+  check(`adult ${label} rejected with 400`, r.status === 400 && /DCC . Zone|characters or fewer/.test(r.body.error ?? ""));
+}
+check("adult group without DCC / Zone rejected too",
+  (await post(adultBody([adultPerson(1)], { registrationType: "group", churchName: "CAC X", dccZone: "" }))).status === 400);
+check("adult individual with no meal choice rejected with 400",
+  /choose at least one meal/.test((await post(adultBody([adultPerson(1, { meals: [] })]))).body.error ?? ""));
+check("adult individual with meals and noMeals both rejected",
+  (await post(adultBody([adultPerson(1, { noMeals: true })]))).status === 400);
+check("adult individual unknown meal slot rejected", (await post(adultBody([adultPerson(1, { meals: ["sat_breakfast"] })]))).status === 400);
+check("adult individual allergies over 200 chars rejected",
+  /200 characters/.test((await post(adultBody([adultPerson(1, { allergies: "A".repeat(201) })]))).body.error ?? ""));
+check("rejected adult requests create no Stripe session", created.length === 0);
+
+// Paid adult individual: zone, meals and allergies travel in the summary; price and fee unchanged.
+created.length = 0;
+const adultPaid = await post(adultBody([adultPerson(1, { allergies: "  Gluten  " }), adultPerson(2, { meals: [], noMeals: true })], { dccZone: "  Zone 3  " }));
+const adultParams = created[0];
+const adultMeta = decodeSummary(unchunkFromMetadata(adultParams?.metadata, "d"));
+check("paid adult individual reaches Stripe with zone, meals and trimmed allergies in the summary",
+  adultPaid.status === 200 && adultMeta?.dcc === "Zone 3" && adultMeta.registrants[0].m === 129 &&
+  adultMeta.registrants[0].l === "Gluten" && adultMeta.registrants[1].m === 0 && !("l" in adultMeta.registrants[1]) && !adultMeta.youth);
+check("adult pricing and processing fee unchanged by the new fields",
+  adultMeta?.totalAmountCents === 2 * adultParams.line_items[0].price_data.unit_amount &&
+  adultParams.metadata.subtotal_cents === String(adultMeta.totalAmountCents) && adultParams.line_items.length === 3 &&
+  adultParams.line_items.at(-1).price_data.product_data.name === "Processing fee");
+
+// Group mode is names-only: meals / allergies sent anyway are ignored.
+created.length = 0;
+await post(adultBody([adultPerson(1, { allergies: "Nuts" }), adultPerson(2)], { registrationType: "group", churchName: "CAC Group" }));
+const groupMeta = decodeSummary(unchunkFromMetadata(created[0]?.metadata, "d"));
+check("adult group summary carries the zone but no meals or allergies",
+  groupMeta?.dcc === "Zone 3" && groupMeta.registrants.every((r) => !("m" in r) && !("l" in r)));
+
+// Largest allowed adult registration: 30 people, every field maxed, all meals.
+created.length = 0;
+const maxAdults = Array.from({ length: 30 }, (_, i) => adultPerson(i, {
+  firstName: "F".repeat(120), lastName: "L".repeat(118) + String(i).padStart(2, "0"), meals: ["tue_lunch", "tue_dinner", "wed_lunch", "wed_dinner", "thu_lunch", "thu_dinner", "fri_lunch", "fri_dinner"], allergies: "A".repeat(200),
+}));
+const maxAdultRes = await post(adultBody(maxAdults, { contactName: "N".repeat(120), dccZone: "D".repeat(120), contactPhone: "5".repeat(120) }));
+// ASCII-only it just fits; either way it must never reach Stripe over the limit.
+check(`30-person maxed adult registration fits (${Object.keys(created[0]?.metadata ?? {}).length}/${STRIPE_METADATA_MAX_KEYS} keys) or is refused, never over the limit`,
+  (maxAdultRes.status === 200 && created.length === 1 && Object.keys(created[0].metadata).length <= STRIPE_METADATA_MAX_KEYS) ||
+  (maxAdultRes.status === 400 && /split it/.test(maxAdultRes.body.error ?? "") && created.length === 0));
+// Multi-byte allergy notes (still 200 characters) push it past 50 keys: refused with a clear message.
+created.length = 0;
+const wideRes = await post(adultBody(maxAdults.map((p) => ({ ...p, allergies: "é".repeat(200) })), { contactName: "N".repeat(120), dccZone: "D".repeat(120), contactPhone: "5".repeat(120) }));
+check("oversize adult registration (multi-byte allergies) is refused with the split message, creating no Stripe session",
+  wideRes.status === 400 && /split it into two smaller registrations/.test(wideRes.body.error ?? "") && created.length === 0);
+created.length = 0;
+const typical = Array.from({ length: 30 }, (_, i) => adultPerson(i, { firstName: "Christopher", lastName: `Johnson-Williams${i}`, meals: ["tue_lunch", "tue_dinner", "wed_lunch", "wed_dinner", "thu_lunch", "thu_dinner", "fri_lunch", "fri_dinner"], allergies: "No dairy or shellfish, please" }));
+const typicalRes = await post(adultBody(typical));
+check(`30-person adult registration with all meals and allergy notes fits Stripe metadata (${Object.keys(created[0]?.metadata ?? {}).length}/${STRIPE_METADATA_MAX_KEYS} keys)`,
+  typicalRes.status === 200 && created.length === 1 && Object.keys(created[0].metadata).length <= STRIPE_METADATA_MAX_KEYS);
+
+// Adult email shows the zone and each person's meals and allergies.
+emails.length = 0;
+await sendRegistrationConfirmationEmail({ ...adultMeta, ref: "adult-ref" }, "https://example.invalid/c", true);
+const adultHtml = emails[0]?.html ?? "";
+check("adult email shows DCC / Zone, each person's meals and allergies",
+  adultHtml.includes("DCC / Zone: Zone 3") && adultHtml.includes("Meals: Tuesday Lunch — 7/13, Friday Dinner — 7/16") &&
+  adultHtml.includes("Meals: None") && adultHtml.includes("Allergies: Gluten"));
 
 // Youth validation.
 for (const age of [0, 30, "abc", 5.5]) {
@@ -152,6 +233,17 @@ check("sealed token keeps age and meals but leaves allergies out",
 const confirmation = await resolveRegistrationConfirmation({ year: 2027, token, retrieveSession: async () => { throw new Error("no"); } });
 check("free youth token renders as a free confirmation", confirmation?.isFree === true && confirmation.summary.registrants.length === 2);
 
+// Check-in codes: one per person, derived from the sealed ref and order, so
+// the sheet rows, the email and the confirmation page all show the same code.
+const freeCodes = checkinCodesFor({ ref: opened?.ref ?? "", year: 2027, registrants: [{}, {}] });
+check("free youth rows: each person has their own well-formed check-in code, as the last column",
+  r5?.["Check-in Code"] === freeCodes[0] && r14?.["Check-in Code"] === freeCodes[1] && freeCodes[0] !== freeCodes[1] &&
+  freeCodes.every(isWellFormedCheckinCode) && lastColumn(r5) === "Check-in Code" && lastColumn(r14) === "Check-in Code");
+check("free youth email shows each person's check-in code next to their name",
+  codeBesideName(freeHtml0, "Kid Age5", freeCodes[0]) && codeBesideName(freeHtml0, "Kid Age14", freeCodes[1]));
+check("free youth confirmation page derives the same codes from the sealed token",
+  JSON.stringify(checkinCodesFor(confirmation?.summary ?? { ref: "", year: 0, registrants: [] })) === JSON.stringify(freeCodes));
+
 // Free-path email cap: 3 per recipient address per day (case-insensitive).
 // The 4th registration still succeeds and is logged, but sends nothing.
 emails.length = 0; rows.length = 0;
@@ -194,8 +286,12 @@ check("free youth registration without RESEND_API_KEY succeeds, sends none, and 
 emails.length = 0;
 const bigGroup = await post(youth(Array.from({ length: 30 }, (_, i) => kid(5 + (i % 10), { firstName: "Christopher" + i, lastName: "Johnson-Williams" })), { contactEmail: "biggroup@example.com" }));
 await settleEmail();
-check("a 30-person free group still gets its confirmation email even if the QR cannot be encoded",
+const bigCodes = checkinCodesFor(openRegistrationToken(tokenOf(bigGroup)) ?? { ref: "", year: 0, registrants: [] });
+check("a 30-person free group gets one confirmation email",
   bigGroup.status === 200 && emails.length === 1 && recipients(emails[0])[0] === "biggroup@example.com");
+check("the 30-person group email shows all 30 distinct codes, each under its own person's name",
+  bigCodes.length === 30 && new Set(bigCodes).size === 30 &&
+  bigCodes.every((code, i) => codeBesideName(emails[0]?.html, `Christopher${i} Johnson-Williams`, code)));
 
 emails.length = 0;
 const prompt = await post(youth([kid(7)], { contactEmail: "prompt@example.com" }));
@@ -272,6 +368,9 @@ check("email lists each person's age group and meals",
   paidHtml.includes("Tuesday Lunch — 7/13, Friday Dinner — 7/16") && paidHtml.includes("Meals: None"));
 check("email escapes names and allergy notes",
   paidHtml?.includes("Allergies: &lt;script&gt;alert(1)&lt;/script&gt;") && paidHtml.includes("Kid &lt;i&gt;One&lt;/i&gt;") && !paidHtml.includes("<script>"));
+const paidCodes = checkinCodesFor(emailSummary);
+check("paid email shows each person's check-in code for this ref next to their name",
+  codeBesideName(paidHtml, "Kid &lt;i&gt;One&lt;/i&gt;", paidCodes[0]) && codeBesideName(paidHtml, "Kid Two", paidCodes[1]));
 check("email shows Payment Options only when the total is over $0",
   paidHtml?.includes("Payment Options") && freeHtml !== undefined && !freeHtml.includes("Payment Options"));
 emails.length = 0;

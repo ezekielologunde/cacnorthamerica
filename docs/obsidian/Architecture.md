@@ -133,8 +133,9 @@ layer: `archive.ts`, `blog.ts`, `cacWorldNews.ts`, `churches.ts`,
   -- ported from Convention's own version during Phase B of the Convention
   merge (see [[Decisions]]). The register API also gates a "Complimentary"
   tab behind a server-checked `STAFF_PASSCODE` env var, and the confirmation
-  page renders a check-in QR (`lib/qr.ts`, `components/register/QrCode.tsx`)
-  once payment (or a free/comp registration) is confirmed.
+  page and email show each person's 4-character check-in code
+  (`lib/checkinCode.ts`, `components/register/RegistrantCheckinList.tsx`),
+  the only check-in method (the earlier check-in QR was dropped).
 - Resend — transactional email (contact form, likely)
 - Behold — Instagram feed via `/api/instagram`
 - Google Analytics / Ads, YouTube Data API, a Google Sheets webhook

@@ -29,7 +29,8 @@ export type RegistrationSummary = {
   contactPhone: string;
   /** n = full name, c = fee category. Youth & Child registrations (see
    *  lib/youthRegistration.ts) also carry a = age, m = meal bitmask and
-   *  l = allergy notes; adult registrations leave them unset. */
+   *  l = allergy notes; adult registrations carry m and l in individual mode
+   *  only, and never a. */
   registrants: { n: string; c: RegistrantCategory; a?: number; m?: number; l?: string }[];
   totalAmountCents: number;
   isComplimentary: boolean;
@@ -37,6 +38,10 @@ export type RegistrationSummary = {
    *  whether the contact confirmed they are a minor's parent or guardian.
    *  The church itself travels in churchName. */
   youth?: { leader: string; dcc: string; guardian: boolean };
+  /** Set only on adult registrations: the registration's DCC / Zone. Adult
+   *  individual-mode registrants also carry m (meals) and l (allergies);
+   *  group-mode (names-only) registrants carry neither. */
+  dcc?: string;
   /** Set only inside the sealed token of a free Youth & Child registration
    *  when the server attempted a confirmation email to contactEmail. */
   emailed?: boolean;

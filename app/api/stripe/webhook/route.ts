@@ -8,7 +8,8 @@ import { sendGivingConfirmationEmail } from "@/lib/givingEmail";
 import { SITE_URL } from "@/lib/site";
 import { splitCheckoutAmount, isProcessingFeeLine } from "@/lib/processingFee";
 import { conventionYears } from "@/lib/conventions";
-import { youthSheetName, youthSheetRows } from "@/lib/youthRegistration";
+import { adultSheetExtras, youthSheetName, youthSheetRows } from "@/lib/youthRegistration";
+import { checkinCodesFor, checkinCodeSheetCell } from "@/lib/checkinCode";
 
 // checkout.session.completed also fires for delayed methods (ACH, etc.)
 // before the money has moved; only these statuses mean the checkout is
@@ -190,7 +191,7 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
       if (summary?.youth) {
         // In order, stopping at the first failure so a retry resumes there.
         const startIso = conventionYears.find((cy) => cy.year === summary.year)?.startIso;
-        const rows = youthSheetRows(summary, { stripeSession: sessionId, status: "paid", startIso, contactEmail, feeColumns });
+        const rows = youthSheetRows(summary, { stripeSession: sessionId, status: "paid", startIso, contactEmail, feeColumns, checkinCodes: checkinCodesFor(summary) });
         for (const [i, row] of rows.entries()) {
           sheetOk = await runStep(sessionId, `sheet-${i}`, () => logToSheetChecked(youthSheetName(summary.year), row));
           if (!sheetOk) break;
@@ -207,6 +208,14 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
         "Total": totalDollars,
         ...feeColumns,
         "Stripe Session": sessionId,
+        // New columns go before "Check-in Code" so it stays last; blank in
+        // the no-summary fallback.
+        ...(summary
+          ? adultSheetExtras(summary, conventionYears.find((cy) => cy.year === summary.year)?.startIso)
+          : { "DCC / Zone": "", "Meals": "", "Allergies": "" }),
+        // "Name: CODE" pairs in "Registrants" order; blank in the no-summary
+        // fallback (no ref).
+        "Check-in Code": summary ? checkinCodeSheetCell(summary) : "",
       }));
 
       // Stripe's own customer_details email is more authoritative than

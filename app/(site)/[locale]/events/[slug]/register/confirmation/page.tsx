@@ -3,21 +3,12 @@ import Link from "next/link";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
-import { QrCode } from "@/components/register/QrCode";
 import { getStripeClient } from "@/lib/stripe";
-import { SITE_URL } from "@/lib/site";
-import { renderQrCodeSvg } from "@/lib/qr";
 import { resolveRegistrationConfirmation } from "@/lib/registrationConfirmation";
 import { PaymentOptions } from "@/components/register/PaymentOptions";
-import { conventionYears, type ConventionYear, type RegistrantCategory } from "@/lib/conventions";
+import { RegistrantCheckinList } from "@/components/register/RegistrantCheckinList";
+import { conventionYears, type ConventionYear } from "@/lib/conventions";
 import { setRequestLocale } from "next-intl/server";
-import { describeYouthRegistrant } from "@/lib/youthRegistration";
-
-const CATEGORY_LABEL: Record<RegistrantCategory, string> = {
-  adult: "Adult",
-  young_adult: "Young Adult",
-  child: "Child",
-};
 
 function findYear(slug: string): ConventionYear | undefined {
   const match = /^cacna-(\d{4})$/.exec(slug);
@@ -75,11 +66,6 @@ export default async function RegisterConfirmationPage({
   // confirmation email was attempted; the page never claims delivery.
   const emailAttempted = isFree && summary.emailed === true;
 
-  // The QR re-opens this confirmation on whatever device scans it, and the
-  // page re-verifies it there (Stripe session or sealed token) -- the
-  // check-in proof staff use at the door.
-  const qrSvg = isPaid ? await renderQrCodeSvg(`${SITE_URL}${confirmation.confirmationPath}`) : null;
-
   return (
     <main id="main-content">
       <Nav heroDark />
@@ -90,7 +76,7 @@ export default async function RegisterConfirmationPage({
         </h1>
         <p style={{ fontSize: 15.5, color: "rgba(245,246,250,.65)", maxWidth: 480, margin: `0 auto ${emailAttempted ? 12 : 32}px`, lineHeight: 1.7 }}>
           {isFree
-            ? "Save this page or screenshot the QR code below to show at check-in."
+            ? "Save this page and show your check-in code at check-in."
             : "A confirmation email is on its way."}
         </p>
         {emailAttempted && (
@@ -100,34 +86,16 @@ export default async function RegisterConfirmationPage({
         )}
 
         <div style={{ maxWidth: 460, margin: "0 auto", textAlign: "left", background: "rgba(245,246,250,.06)", border: "1px solid rgba(245,246,250,.14)", borderRadius: 18, padding: "24px clamp(16px, 5vw, 26px)" }}>
-          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
-            <div style={{ minWidth: 0, flex: "1 1 160px", overflowWrap: "anywhere" }}>
-              {summary.churchName && (
-                <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 16, color: "#fff", margin: "0 0 4px" }}>{summary.churchName}</p>
-              )}
-              <p style={{ fontSize: 13.5, color: "rgba(245,246,250,.6)", margin: 0 }}>{summary.contactEmail}</p>
-            </div>
-            {qrSvg && <QrCode svg={qrSvg} label="Check-in QR code" />}
+          <div style={{ minWidth: 0, overflowWrap: "anywhere" }}>
+            {summary.churchName && (
+              <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 16, color: "#fff", margin: "0 0 4px" }}>{summary.churchName}</p>
+            )}
+            {summary.dcc && (
+              <p style={{ fontSize: 13.5, color: "rgba(245,246,250,.75)", margin: "0 0 4px" }}>DCC / Zone: {summary.dcc}</p>
+            )}
+            <p style={{ fontSize: 13.5, color: "rgba(245,246,250,.6)", margin: 0 }}>{summary.contactEmail}</p>
           </div>
-          <ul style={{ margin: "16px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8 }}>
-            {summary.registrants.map((r, i) => {
-              // Youth & Child registrants show their age group and meals.
-              const youth = describeYouthRegistrant(r, cy.startIso);
-              return (
-                <li key={i} style={{ fontSize: 14.5 }}>
-                  <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", columnGap: 12, rowGap: 2 }}>
-                    <span style={{ color: "var(--cream)", minWidth: 0, overflowWrap: "anywhere" }}>{r.n}</span>
-                    <span style={{ color: "rgba(245,246,250,.6)" }}>{youth ? youth.ageGroup : (CATEGORY_LABEL[r.c] ?? "Adult")}</span>
-                  </div>
-                  {youth && (
-                    <p style={{ fontSize: 12.5, color: "rgba(245,246,250,.55)", margin: "3px 0 0", lineHeight: 1.5 }}>
-                      Meals: {youth.meals.length > 0 ? youth.meals.join(", ") : "None"}
-                    </p>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
+          <RegistrantCheckinList summary={summary} startIso={cy.startIso} />
           {processingFeeCents > 0 && (
             <div style={{ borderTop: "1px solid rgba(245,246,250,.14)", marginTop: 16, paddingTop: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, color: "rgba(245,246,250,.6)", marginTop: 0 }}>

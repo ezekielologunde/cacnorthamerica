@@ -6,10 +6,11 @@ import { SITE_URL } from "@/lib/site";
 import { currentOrNextConvention, activePricing, priceForCategory, type RegistrantCategory } from "@/lib/conventions";
 import { encodeSummary, chunkForMetadata, fitsStripeMetadata, type RegistrationSummary } from "@/lib/checkoutSummary";
 import { sealRegistrationToken } from "@/lib/registrationToken";
+import { checkinCodesFor, checkinCodeSheetCell } from "@/lib/checkinCode";
 import { sendRegistrationConfirmationEmail } from "@/lib/registrationEmail";
 import { FORM_HEADER, HONEYPOT_FIELD, looksLikeSpam } from "@/lib/spam";
 import { processingFeeLineItem, processingFeeMetadata } from "@/lib/processingFee";
-import { categoryForAge, encodeMeals, parseYouthRegistration, youthSheetName, youthSheetRows } from "@/lib/youthRegistration";
+import { adultSheetExtras, categoryForAge, encodeMeals, parseMealsAndAllergies, parseYouthRegistration, youthSheetName, youthSheetRows } from "@/lib/youthRegistration";
 
 type RegisterRequestBody = {
   registrationType: "individual" | "group";
@@ -17,6 +18,10 @@ type RegisterRequestBody = {
   contactName: string;
   contactEmail: string;
   contactPhone: string;
+  /** Required, one per registration (both modes). */
+  dccZone: string;
+  /** Individual mode also sends meals / noMeals / allergies per person
+   *  (parsed by parseMealsAndAllergies); group mode's are ignored. */
   registrants: { firstName: string; lastName: string; category: RegistrantCategory }[];
   isComplimentary?: boolean;
   staffPasscode?: string;
@@ -58,7 +63,11 @@ function validateRequestBody(body: unknown): string | null {
   if (b.contactPhone != null && typeof b.contactPhone !== "string") {
     return "contactPhone must be a string";
   }
-  for (const value of [b.contactName, b.contactEmail, b.churchName ?? "", b.contactPhone ?? ""]) {
+  // Same label and rule as the youth track's DCC / Zone.
+  if (typeof b.dccZone !== "string" || b.dccZone.trim() === "") {
+    return "DCC / Zone is required";
+  }
+  for (const value of [b.contactName, b.contactEmail, b.churchName ?? "", b.contactPhone ?? "", b.dccZone]) {
     if (value.length > MAX_FIELD_LENGTH) {
       return `Each field must be ${MAX_FIELD_LENGTH} characters or fewer`;
     }
@@ -136,6 +145,20 @@ export async function POST(request: Request) {
   }
 
   const body = rawBody as RegisterRequestBody;
+  const dccZone = body.dccZone.trim();
+
+  // Individual mode: each person's meals (an explicit choice) and allergy
+  // notes, under the youth track's rule. Group mode is a names-only list, so
+  // anything sent there is ignored and its rows leave Meals / Allergies blank.
+  const extras: { m: number; l?: string }[] = [];
+  if (body.registrationType === "individual") {
+    for (const [i, registrant] of body.registrants.entries()) {
+      const who = body.registrants.length > 1 ? `Person ${i + 1}` : "This person";
+      const choice = parseMealsAndAllergies(registrant as unknown as Record<string, unknown>, who);
+      if (!choice.ok) return NextResponse.json({ error: choice.error }, { status: 400 });
+      extras.push({ m: encodeMeals(choice.meals), ...(choice.allergies ? { l: choice.allergies } : {}) });
+    }
+  }
 
   if (
     looksLikeSpam([
@@ -143,7 +166,9 @@ export async function POST(request: Request) {
       body.contactEmail,
       body.churchName ?? "",
       body.contactPhone ?? "",
+      dccZone,
       ...body.registrants.flatMap((r) => [r.firstName, r.lastName]),
+      ...extras.map((e) => e.l ?? ""),
     ])
   ) {
     return NextResponse.json({ success: true });
@@ -196,15 +221,16 @@ export async function POST(request: Request) {
     contactName: body.contactName,
     contactEmail: body.contactEmail,
     contactPhone: body.contactPhone || "",
-    registrants: pricedRegistrants.map((r) => ({ n: r.fullName, c: r.category })),
+    registrants: pricedRegistrants.map((r, i) => ({ n: r.fullName, c: r.category, ...extras[i] })),
     totalAmountCents,
     isComplimentary,
+    dcc: dccZone,
   };
   const encoded = encodeSummary(summary);
 
   // If every registrant is a child there's nothing for Stripe to charge --
   // log it now instead of waiting on a webhook, and send the visitor
-  // straight to their confirmation (with its check-in QR). The link carries
+  // straight to their confirmation (with each person's check-in code). The link carries
   // a server-sealed token (lib/registrationToken.ts), never the readable
   // summary, and the page re-verifies it.
   //
@@ -215,7 +241,9 @@ export async function POST(request: Request) {
   if (totalAmountCents === 0) {
     let token: string;
     try {
-      token = sealRegistrationToken(summary);
+      // Allergy notes stay out of the token (it lives in the URL), as on
+      // the youth track; the sheet row has them.
+      token = sealRegistrationToken({ ...summary, registrants: summary.registrants.map((r) => ({ n: r.n, c: r.c, ...(r.m !== undefined ? { m: r.m } : {}) })) });
     } catch {
       return NextResponse.json({ error: "Registration is temporarily unavailable" }, { status: 500 });
     }
@@ -229,9 +257,22 @@ export async function POST(request: Request) {
       "Total": "$0.00",
       "Stripe Session": "",
       "Status": "free (email unverified)",
+      ...adultSheetExtras(summary, cy.startIso),
+      "Check-in Code": checkinCodeSheetCell(summary),
     });
     const checkoutUrl = `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?t=${token}`;
     return NextResponse.json({ checkoutUrl });
+  }
+
+  // The full summary (meals and allergies included) rides in the session
+  // metadata for the webhook's sheet row and email. Refuse up front if it
+  // cannot fit rather than let Stripe reject the session (4 = kind,
+  // convention_year, subtotal_cents, processing_fee_cents).
+  if (!fitsStripeMetadata(encoded, 4)) {
+    return NextResponse.json(
+      { error: "This registration has too many details to process in one payment. Please split it into two smaller registrations." },
+      { status: 400 }
+    );
   }
 
   const stripe = getStripeClient();
@@ -373,7 +414,7 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
     } catch {
       return NextResponse.json({ error: "Registration is temporarily unavailable" }, { status: 500 });
     }
-    for (const row of youthSheetRows(summary, { stripeSession: "", status: "free (email unverified)", startIso: cy.startIso })) {
+    for (const row of youthSheetRows(summary, { stripeSession: "", status: "free (email unverified)", startIso: cy.startIso, checkinCodes: checkinCodesFor(summary) })) {
       logToSheet(youthSheetName(cy.year), row);
     }
     const confirmationUrl = `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?t=${token}`;

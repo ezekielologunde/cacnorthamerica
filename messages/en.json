@@ -171,7 +171,7 @@
     "stepContactBody": "We email the confirmation here. For anyone under 18, this must be their parent or guardian.",
     "contactName": "Parent / guardian or contact name",
     "contactEmail": "Email",
-    "contactEmailHint": "Your confirmation and QR code go here.",
+    "contactEmailHint": "Your confirmation and check-in codes go here.",
     "contactPhone": "Phone (optional)",
     "churchName": "Church name",
     "youthLeaderName": "Youth leader's name",

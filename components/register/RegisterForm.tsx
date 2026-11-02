@@ -6,11 +6,15 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { FORM_HEADER, HONEYPOT_FIELD } from "@/lib/spam";
 import { FeeBreakdown } from "@/components/checkout/FeeBreakdown";
+import { MAX_ALLERGIES_LENGTH, MEAL_SLOTS, mealSlotLabel, type MealSlot } from "@/lib/youthRegistration";
 
 export type RegistrantCategory = "adult" | "young_adult" | "child";
 // Adults (30+) only: everyone under 30 registers on the Youth & Child form
 // (YouthRegisterForm), so every row here is the "adult" category.
-type RegistrantRow = { firstName: string; lastName: string };
+// Individual mode also asks each person's meals (an explicit choice, as on
+// the youth form) and allergy notes; group mode is a names-only list.
+type RegistrantRow = { firstName: string; lastName: string; meals: MealSlot[]; noMeals: boolean; allergies: string };
+const emptyRow = (): RegistrantRow => ({ firstName: "", lastName: "", meals: [], noMeals: false, allergies: "" });
 type Mode = "individual" | "group";
 
 // 16px text stops iOS Safari zooming the page on focus; 48px height is a
@@ -41,16 +45,19 @@ function StepHeading({ n, title }: { n: number; title: string }) {
   );
 }
 
-export function RegisterForm({ year, priceMap }: { year: number; priceMap: Partial<Record<RegistrantCategory, number>> }) {
+export function RegisterForm({ year, startIso, priceMap }: { year: number; startIso?: string; priceMap: Partial<Record<RegistrantCategory, number>> }) {
   const t = useTranslations("Register");
+  // Meal, allergy and DCC / Zone copy is shared with the youth form.
+  const ty = useTranslations("YouthRegister");
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("individual");
   const [churchName, setChurchName] = useState("");
-  const [registrants, setRegistrants] = useState<RegistrantRow[]>([{ firstName: "", lastName: "" }]);
+  const [registrants, setRegistrants] = useState<RegistrantRow[]>([emptyRow()]);
   const [bulkNames, setBulkNames] = useState("");
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
+  const [dccZone, setDccZone] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -81,7 +88,7 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
 
   function addRegistrant() {
     focusRow.current = registrants.length;
-    setRegistrants((current) => [...current, { firstName: "", lastName: "" }]);
+    setRegistrants((current) => [...current, emptyRow()]);
   }
 
   function removeRegistrant(index: number) {
@@ -101,7 +108,7 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
       const parts = full.split(/\s+/);
       const lastName = parts.length > 1 ? parts[parts.length - 1] : "";
       const firstName = parts.length > 1 ? parts.slice(0, -1).join(" ") : parts[0];
-      return { firstName, lastName };
+      return { ...emptyRow(), firstName, lastName };
     });
     setRegistrants((current) =>
       current.length === 1 && current[0].firstName.trim() === "" && current[0].lastName.trim() === "" ? newRows : [...current, ...newRows]
@@ -109,8 +116,21 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
     setBulkNames("");
   }
 
+  function toggleMeal(index: number, slot: MealSlot) {
+    const r = registrants[index];
+    // Picking a meal undoes "No meals needed" -- the two never coexist.
+    updateRegistrant(index, { meals: r.meals.includes(slot) ? r.meals.filter((m) => m !== slot) : [...r.meals, slot], noMeals: false });
+  }
+
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    // Same explicit-choice rule the server enforces (parseMealsAndAllergies).
+    const missingMeals = mode === "individual" ? registrants.findIndex((r) => !r.noMeals && r.meals.length === 0) : -1;
+    if (missingMeals !== -1) {
+      setErrorMessage(`${registrants.length > 1 ? `Person ${missingMeals + 1}` : "This person"}: ${ty("errMeals")}`);
+      setStatus("error");
+      return;
+    }
     setStatus("loading");
     setErrorMessage(null);
     const honeypot = new FormData(event.currentTarget as HTMLFormElement).get(HONEYPOT_FIELD);
@@ -127,11 +147,15 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
           contactName,
           contactEmail,
           contactPhone,
+          dccZone: dccZone.trim(),
           registrants: registrants.map((r) => ({
             firstName: r.firstName.trim(),
             lastName: r.lastName.trim(),
             fullName: `${r.firstName.trim()} ${r.lastName.trim()}`,
             category: "adult",
+            ...(mode === "individual"
+              ? { meals: MEAL_SLOTS.filter((m) => r.meals.includes(m)), noMeals: r.noMeals, allergies: r.allergies.trim() }
+              : {}),
           })),
         }),
       });
@@ -245,6 +269,42 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
               />
             </label>
           </div>
+          {mode === "individual" && (
+            <>
+              <fieldset style={{ border: "none", padding: 0, margin: "16px 0 0", minWidth: 0 }}>
+                <legend style={{ ...labelStyle, padding: 0, marginBottom: 8 }}>
+                  {ty("mealsLegend", { who: r.firstName.trim() || (registrants.length > 1 ? `Person ${i + 1}` : "this person") })} <span style={{ color: "var(--red)" }}>*</span>
+                </legend>
+                <div className="reg-meals">
+                  {MEAL_SLOTS.map((slot) => (
+                    <label key={slot} className="reg-check">
+                      <input type="checkbox" checked={r.meals.includes(slot)} onChange={() => toggleMeal(i, slot)} />
+                      {mealSlotLabel(slot, startIso)}
+                    </label>
+                  ))}
+                </div>
+                <label className="reg-check" style={{ marginTop: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={r.noMeals}
+                    onChange={() => updateRegistrant(i, { noMeals: !r.noMeals, meals: r.noMeals ? r.meals : [] })}
+                  />
+                  {ty("noMeals")}
+                </label>
+              </fieldset>
+              <label style={{ display: "block", marginTop: 14 }}>
+                <span style={labelStyle}>{ty("allergies")}</span>
+                <textarea
+                  className="field-input reg-input"
+                  style={{ minHeight: 72, resize: "vertical" }}
+                  maxLength={MAX_ALLERGIES_LENGTH}
+                  value={r.allergies}
+                  onChange={(e) => updateRegistrant(i, { allergies: e.target.value })}
+                />
+                <span style={hintStyle}>{ty("allergiesHint", { count: r.allergies.length, max: MAX_ALLERGIES_LENGTH })}</span>
+              </label>
+            </>
+          )}
         </div>
       ))}
 
@@ -289,7 +349,7 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
 
       <StepHeading n={2} title="Your contact details" />
       <p style={{ margin: "-6px 0 14px", fontSize: 13.5, color: "var(--ink-soft)", lineHeight: 1.5 }}>
-        We email your confirmation and QR code here.
+        We email your confirmation and check-in codes here.
       </p>
 
       <label style={{ display: "block", marginBottom: 14 }}>
@@ -319,6 +379,19 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
           autoCapitalize="none"
           autoCorrect="off"
           spellCheck={false}
+          enterKeyHint="next"
+        />
+      </label>
+      <label style={{ display: "block", marginBottom: 14 }}>
+        <span style={labelStyle}>{ty("dccZone")} <span style={{ color: "var(--red)" }}>*</span></span>
+        <input
+          className="field-input reg-input"
+          name="dcc-zone"
+          value={dccZone}
+          onChange={(e) => setDccZone(e.target.value)}
+          required
+          autoComplete="off"
+          autoCapitalize="words"
           enterKeyHint="next"
         />
       </label>

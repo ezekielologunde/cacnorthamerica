@@ -131,6 +131,9 @@ export function youthSheetRows(
      *  the first row carries the values and the rest leave them blank, which
      *  keeps a column sum equal to what Stripe charged. */
     feeColumns?: { "Processing Fee": string; "Amount Charged": string };
+    /** Per-person check-in codes in registrants order (lib/checkinCode.ts's
+     *  checkinCodesFor; passed in so this file stays free of Node APIs). */
+    checkinCodes: readonly string[];
   }
 ): Record<string, string>[] {
   return summary.registrants.map((r, i) => {
@@ -157,6 +160,7 @@ export function youthSheetRows(
           ? opts.feeColumns
           : { "Processing Fee": "", "Amount Charged": "" }
         : {}),
+      "Check-in Code": opts.checkinCodes[i] ?? "",
     };
   });
 }
@@ -186,6 +190,65 @@ function requiredString(value: unknown, label: string, max: number): string | { 
   if (typeof value !== "string" || value.trim() === "") return { error: `${label} is required` };
   if (value.length > max) return { error: `${label} must be ${max} characters or fewer` };
   return value.trim();
+}
+
+/** One registrant's meal choice and allergy notes, under the rule both the
+ *  youth track and the adult track's individual mode use: meals are
+ *  optional, but the choice must be explicit (at least one slot, or
+ *  `noMeals: true`, never both), and allergy notes are optional and capped at
+ *  MAX_ALLERGIES_LENGTH. `who` names the person in error messages. */
+export function parseMealsAndAllergies(
+  r: Record<string, unknown>,
+  who: string
+): { ok: true; meals: MealSlot[]; allergies: string } | { ok: false; error: string } {
+  if (!Array.isArray(r.meals)) return { ok: false, error: "meals must be an array" };
+  const meals: MealSlot[] = [];
+  for (const m of r.meals) {
+    if (typeof m !== "string" || !(MEAL_SLOTS as readonly string[]).includes(m)) {
+      return { ok: false, error: `Invalid meal: ${String(m).slice(0, 40)}` };
+    }
+    if (!meals.includes(m as MealSlot)) meals.push(m as MealSlot);
+  }
+  if (r.noMeals !== undefined && typeof r.noMeals !== "boolean") return { ok: false, error: "noMeals must be a boolean" };
+  if (r.noMeals === true && meals.length > 0) {
+    return { ok: false, error: `${who}: choose meals or tick "No meals needed", not both` };
+  }
+  if (r.noMeals !== true && meals.length === 0) {
+    return { ok: false, error: `${who}: choose at least one meal, or tick "No meals needed"` };
+  }
+  if (r.allergies != null && typeof r.allergies !== "string") return { ok: false, error: "allergies must be a string" };
+  const allergies = typeof r.allergies === "string" ? r.allergies.trim() : "";
+  if (allergies.length > MAX_ALLERGIES_LENGTH) {
+    return { ok: false, error: `Allergy notes must be ${MAX_ALLERGIES_LENGTH} characters or fewer` };
+  }
+  return { ok: true, meals, allergies };
+}
+
+/** Dated meal labels for a summary registrant's mask, or null when meals
+ *  were never asked (an adult group-mode row carries no `m`). */
+export function describeMeals(m: number | undefined, startIso?: string): string[] | null {
+  return typeof m === "number" ? decodeMeals(m).map((slot) => mealSlotLabel(slot, startIso)) : null;
+}
+
+/** The adult tab's "DCC / Zone", "Meals" and "Allergies" cells. The adult tab
+ *  has one row per registration, so Meals and Allergies list "Name: ..." per
+ *  person in Registrants order (allergies only for people who gave some).
+ *  Group-mode registrations (names only) leave both blank. */
+export function adultSheetExtras(
+  summary: { dcc?: string; registrants: { n: string; m?: number; l?: string }[] },
+  startIso?: string
+): { "DCC / Zone": string; "Meals": string; "Allergies": string } {
+  const meals = summary.registrants
+    .map((r) => {
+      const labels = describeMeals(r.m, startIso);
+      return labels ? `${r.n}: ${labels.length > 0 ? labels.join(", ") : "None"}` : null;
+    })
+    .filter((v): v is string => v !== null);
+  return {
+    "DCC / Zone": summary.dcc ?? "",
+    "Meals": meals.join("; "),
+    "Allergies": summary.registrants.filter((r) => r.l).map((r) => `${r.n}: ${r.l}`).join("; "),
+  };
 }
 
 /** Validates the youth-track request body field by field (hand-rolled, like
@@ -249,26 +312,9 @@ export function parseYouthRegistration(
         error: `${who}'s age must be a whole number from ${MIN_YOUTH_AGE} to ${MAX_YOUTH_AGE}. Adults 30 and over use the main registration form.`,
       };
     }
-    if (!Array.isArray(r.meals)) return { ok: false, error: "meals must be an array" };
-    const meals: MealSlot[] = [];
-    for (const m of r.meals) {
-      if (typeof m !== "string" || !(MEAL_SLOTS as readonly string[]).includes(m)) {
-        return { ok: false, error: `Invalid meal: ${String(m).slice(0, 40)}` };
-      }
-      if (!meals.includes(m as MealSlot)) meals.push(m as MealSlot);
-    }
-    if (r.noMeals !== undefined && typeof r.noMeals !== "boolean") return { ok: false, error: "noMeals must be a boolean" };
-    if (r.noMeals === true && meals.length > 0) {
-      return { ok: false, error: `${who}: choose meals or tick "No meals needed", not both` };
-    }
-    if (r.noMeals !== true && meals.length === 0) {
-      return { ok: false, error: `${who}: choose at least one meal, or tick "No meals needed"` };
-    }
-    if (r.allergies != null && typeof r.allergies !== "string") return { ok: false, error: "allergies must be a string" };
-    const allergies = typeof r.allergies === "string" ? r.allergies.trim() : "";
-    if (allergies.length > MAX_ALLERGIES_LENGTH) {
-      return { ok: false, error: `Allergy notes must be ${MAX_ALLERGIES_LENGTH} characters or fewer` };
-    }
+    const choice = parseMealsAndAllergies(r, who);
+    if (!choice.ok) return choice;
+    const { meals, allergies } = choice;
     registrants.push({ firstName, lastName, age: r.age, meals, allergies });
   }
 
