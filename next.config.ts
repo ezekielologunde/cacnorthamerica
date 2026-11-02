@@ -59,6 +59,15 @@ const nextConfig: NextConfig = {
           { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
         ],
       },
+      // Static photos change rarely; a week of caching (plus a day of
+      // stale-while-revalidate) stops repeat visits re-downloading them.
+      // Lighthouse flagged ~140 KiB of short-lived cache lifetimes.
+      ...["/images/:path*", "/photos/:path*"].map((source) => ({
+        source,
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=604800, stale-while-revalidate=86400" },
+        ],
+      })),
     ];
   },
 
