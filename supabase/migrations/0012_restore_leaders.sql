@@ -82,13 +82,13 @@ Pastor Timothy Agbeja is married to Evangelist Agnes Adebomi, nee Adeniji both 
 
 -- ---------- zonal_superintendent ----------
 insert into cacna.leaders (full_name, title, category, bio, photo_url, zone_name, phone, email, tenure_start, tenure_end, sort_order, person_key, is_published)
-select 'Pastor Samson Kunle Aroniyo', 'Superintendent', 'zonal_superintendent', null, '/images/leaders/samson-aroniyo.jpg', 'Atlanta', '404-953-1808', 'pastoraroniyo2000@yahoo.com', null::integer, null::integer, 1, null, true
+select 'Pastor Samson Kunle Aroniyo', 'Superintendent', 'zonal_superintendent', null, '/images/leaders/samson-aroniyo.jpg', 'Atlanta', null, null, null::integer, null::integer, 1, null, true
 where not exists (select 1 from cacna.leaders l where l.full_name = 'Pastor Samson Kunle Aroniyo' and l.category = 'zonal_superintendent');
 insert into cacna.leaders (full_name, title, category, bio, photo_url, zone_name, phone, email, tenure_start, tenure_end, sort_order, person_key, is_published)
-select 'Pastor Chris Ogunleye', 'Superintendent', 'zonal_superintendent', null, '/images/leaders/chris-ogunleye.jpg', 'Philadelphia', '610-517-1842', 'chrisyemileye@aol.com', null::integer, null::integer, 2, null, true
+select 'Pastor Chris Ogunleye', 'Superintendent', 'zonal_superintendent', null, '/images/leaders/chris-ogunleye.jpg', 'Philadelphia', null, null, null::integer, null::integer, 2, null, true
 where not exists (select 1 from cacna.leaders l where l.full_name = 'Pastor Chris Ogunleye' and l.category = 'zonal_superintendent');
 insert into cacna.leaders (full_name, title, category, bio, photo_url, zone_name, phone, email, tenure_start, tenure_end, sort_order, person_key, is_published)
-select 'Pastor Abayomi Ademuwagun', 'Superintendent', 'zonal_superintendent', null, '/images/leaders/abayomi-ademuwagun.jpg', 'North Washington', '443-583-9416', 'ademuwagun@gmail.com', null::integer, null::integer, 3, null, true
+select 'Pastor Abayomi Ademuwagun', 'Superintendent', 'zonal_superintendent', null, '/images/leaders/abayomi-ademuwagun.jpg', 'North Washington', null, null, null::integer, null::integer, 3, null, true
 where not exists (select 1 from cacna.leaders l where l.full_name = 'Pastor Abayomi Ademuwagun' and l.category = 'zonal_superintendent');
 insert into cacna.leaders (full_name, title, category, bio, photo_url, zone_name, phone, email, tenure_start, tenure_end, sort_order, person_key, is_published)
 select 'Pastor Amos Adetobi', 'Superintendent', 'zonal_superintendent', 'About the Senior Pastor
@@ -103,19 +103,19 @@ In September 1998, he was given the assignment to start a branch of the Church i
 
 He holds the Higher National Diploma in Civil Engineering from College of Technology, Yaba Lagos, Nigeria; Advance Level Diploma in Practical Theology from International Seminary, Plymouth, Florida; Bachelor of Arts in Biblical Studies from Bible University, Baltimore and presently studying for his Masters in Theology. He is a Certified Pastoral Counselor from Sarasota Academy of Christian Counseling, Florida.
 
-Married to his wife Esther, a fellow minister and a God-fearing woman, and they are blessed with four godly children.', '/images/leaders/amos-adetobi.jpg', 'Cornerstone', '301-793-4472', 'ofadetobi@yahoo.com', null::integer, null::integer, 4, null, true
+Married to his wife Esther, a fellow minister and a God-fearing woman, and they are blessed with four godly children.', '/images/leaders/amos-adetobi.jpg', 'Cornerstone', null, null, null::integer, null::integer, 4, null, true
 where not exists (select 1 from cacna.leaders l where l.full_name = 'Pastor Amos Adetobi' and l.category = 'zonal_superintendent');
 insert into cacna.leaders (full_name, title, category, bio, photo_url, zone_name, phone, email, tenure_start, tenure_end, sort_order, person_key, is_published)
-select 'Pastor Ebenezer S. Akinyele', 'Superintendent', 'zonal_superintendent', null, '/images/leaders/ebenezer-akinyele.jpg', 'SW Houston', '281-948-2329', 'ebenaca2003@yahoo.com', null::integer, null::integer, 5, null, true
+select 'Pastor Ebenezer S. Akinyele', 'Superintendent', 'zonal_superintendent', null, '/images/leaders/ebenezer-akinyele.jpg', 'SW Houston', null, null, null::integer, null::integer, 5, null, true
 where not exists (select 1 from cacna.leaders l where l.full_name = 'Pastor Ebenezer S. Akinyele' and l.category = 'zonal_superintendent');
 insert into cacna.leaders (full_name, title, category, bio, photo_url, zone_name, phone, email, tenure_start, tenure_end, sort_order, person_key, is_published)
-select 'Pastor Zacheous Oloba', 'Superintendent', 'zonal_superintendent', null, null, 'VOC Atlanta', '404-597-1270', 'oloba@yahoo.com', null::integer, null::integer, 6, null, true
+select 'Pastor Zacheous Oloba', 'Superintendent', 'zonal_superintendent', null, null, 'VOC Atlanta', null, null, null::integer, null::integer, 6, null, true
 where not exists (select 1 from cacna.leaders l where l.full_name = 'Pastor Zacheous Oloba' and l.category = 'zonal_superintendent');
 insert into cacna.leaders (full_name, title, category, bio, photo_url, zone_name, phone, email, tenure_start, tenure_end, sort_order, person_key, is_published)
-select 'Pastor Ezekiel Olasumbo Adebunmi', 'Superintendent', 'zonal_superintendent', null, null, 'Dallas North', '214-622-8506', 'adebunmiezekiel@yahoo.com', null::integer, null::integer, 7, null, true
+select 'Pastor Ezekiel Olasumbo Adebunmi', 'Superintendent', 'zonal_superintendent', null, null, 'Dallas North', null, null, null::integer, null::integer, 7, null, true
 where not exists (select 1 from cacna.leaders l where l.full_name = 'Pastor Ezekiel Olasumbo Adebunmi' and l.category = 'zonal_superintendent');
 insert into cacna.leaders (full_name, title, category, bio, photo_url, zone_name, phone, email, tenure_start, tenure_end, sort_order, person_key, is_published)
-select 'Pastor Ademola Oyeniyi', 'Superintendent', 'zonal_superintendent', null, '/images/leaders/ademola-oyeniyi.jpg', 'Agbala Itura Canada', '647-898-1636', 'oyeniyiade@hotmail.com', null::integer, null::integer, 8, null, true
+select 'Pastor Ademola Oyeniyi', 'Superintendent', 'zonal_superintendent', null, '/images/leaders/ademola-oyeniyi.jpg', 'Agbala Itura Canada', null, null, null::integer, null::integer, 8, null, true
 where not exists (select 1 from cacna.leaders l where l.full_name = 'Pastor Ademola Oyeniyi' and l.category = 'zonal_superintendent');
 insert into cacna.leaders (full_name, title, category, bio, photo_url, zone_name, phone, email, tenure_start, tenure_end, sort_order, person_key, is_published)
 select 'Pastor Amos Dada Ph.D.', 'Superintendent', 'zonal_superintendent', 'Ministry
@@ -134,10 +134,10 @@ Missions
 
 In 2003, as directed by the Lord, himself and his wife commenced International Gathering of Eagles Conference, this is one way by which he has been used of God to put Canada on the spiritual map of the world. This annual conference attracts Christians from all continents of the world and thereby affects the social, tourist and spiritual landscape of Canada positively.
 
-Pastor Dada has ministered in over 41 nations of the world, some of the nations he has ministered including, South Africa, Germany, France many States in the U.S.A, Nigeria, Israel, Portugal, India, Singapore, Malaysia, Sri Lanka, Dominican Republic, Haiti, Netherlands, Scotland, Britain, Kenya, Uganda, Ethiopia, Eritrea and of recent Libya and Ghana to mention but a few.', '/images/leaders/amos-dada.jpg', 'Bethel Canada', '416-616-2425', 'amos.dada@gmail.com', null::integer, null::integer, 9, null, true
+Pastor Dada has ministered in over 41 nations of the world, some of the nations he has ministered including, South Africa, Germany, France many States in the U.S.A, Nigeria, Israel, Portugal, India, Singapore, Malaysia, Sri Lanka, Dominican Republic, Haiti, Netherlands, Scotland, Britain, Kenya, Uganda, Ethiopia, Eritrea and of recent Libya and Ghana to mention but a few.', '/images/leaders/amos-dada.jpg', 'Bethel Canada', null, null, null::integer, null::integer, 9, null, true
 where not exists (select 1 from cacna.leaders l where l.full_name = 'Pastor Amos Dada Ph.D.' and l.category = 'zonal_superintendent');
 insert into cacna.leaders (full_name, title, category, bio, photo_url, zone_name, phone, email, tenure_start, tenure_end, sort_order, person_key, is_published)
-select 'Pastor Michael Ekemode', 'Superintendent', 'zonal_superintendent', null, null, 'Orlando', '706-558-5697', 'mik.mode@gmail.com', null::integer, null::integer, 10, null, true
+select 'Pastor Michael Ekemode', 'Superintendent', 'zonal_superintendent', null, null, 'Orlando', null, null, null::integer, null::integer, 10, null, true
 where not exists (select 1 from cacna.leaders l where l.full_name = 'Pastor Michael Ekemode' and l.category = 'zonal_superintendent');
 insert into cacna.leaders (full_name, title, category, bio, photo_url, zone_name, phone, email, tenure_start, tenure_end, sort_order, person_key, is_published)
 select 'Pastor Isaac Abiara', 'Superintendent', 'zonal_superintendent', 'A Statement of Introduction
@@ -152,21 +152,21 @@ In his exact words;"my Dad is a man of God to the core. I don’t see him as my 
 
 "Baba has so much compassion for people. Considering his pedigree, if he wants to be riding jet he will do so, but he shows compassion on people. If you give Baba ten million naira today right in your presence he will be sharing it to people because he genuinely cares for everyone.
 
-"I see more of his cares on how he took care of my late mum. He was there till the end for my mum. Throughout Mama’s sickness, Baba spent all he had to take care of her and that taught me a lot on how to be a better husband. He’s a man that generally cares for others."', '/images/leaders/isaac-abiara.jpg', 'VOC Texas', '469-360-9170', 'abiaraik@msn.com', null::integer, null::integer, 11, null, true
+"I see more of his cares on how he took care of my late mum. He was there till the end for my mum. Throughout Mama’s sickness, Baba spent all he had to take care of her and that taught me a lot on how to be a better husband. He’s a man that generally cares for others."', '/images/leaders/isaac-abiara.jpg', 'VOC Texas', null, null, null::integer, null::integer, 11, null, true
 where not exists (select 1 from cacna.leaders l where l.full_name = 'Pastor Isaac Abiara' and l.category = 'zonal_superintendent');
 insert into cacna.leaders (full_name, title, category, bio, photo_url, zone_name, phone, email, tenure_start, tenure_end, sort_order, person_key, is_published)
-select 'Pastor Bode Olatunji', 'Superintendent', 'zonal_superintendent', null, null, 'Tampa', '813-416-3562', 'bodeolatunji@gmail.com', null::integer, null::integer, 12, null, true
+select 'Pastor Bode Olatunji', 'Superintendent', 'zonal_superintendent', null, null, 'Tampa', null, null, null::integer, null::integer, 12, null, true
 where not exists (select 1 from cacna.leaders l where l.full_name = 'Pastor Bode Olatunji' and l.category = 'zonal_superintendent');
 
 -- ---------- dcc_superintendent ----------
 insert into cacna.leaders (full_name, title, category, bio, photo_url, zone_name, phone, email, tenure_start, tenure_end, sort_order, person_key, is_published)
-select 'Pastor Dr. T.O. Agbeja', 'Superintendent', 'dcc_superintendent', null, '/images/pastor-agbeja-portrait.jpg', 'WADCC', '301-802-0610', 'agbeja2010@gmail.com', null::integer, null::integer, 1, 'timothy-agbeja', true
+select 'Pastor Dr. T.O. Agbeja', 'Superintendent', 'dcc_superintendent', null, '/images/pastor-agbeja-portrait.jpg', 'WADCC', null, null, null::integer, null::integer, 1, 'timothy-agbeja', true
 where not exists (select 1 from cacna.leaders l where l.full_name = 'Pastor Dr. T.O. Agbeja' and l.category = 'dcc_superintendent');
 insert into cacna.leaders (full_name, title, category, bio, photo_url, zone_name, phone, email, tenure_start, tenure_end, sort_order, person_key, is_published)
-select 'Pastor David Adenodi, Ph.D.', 'Superintendent', 'dcc_superintendent', null, '/images/leaders/david-adenodi.jpg', 'Agbala Itura DCC, USA', '301-440-7033', 'dadenodi@aol.com', null::integer, null::integer, 2, 'david-adenodi', true
+select 'Pastor David Adenodi, Ph.D.', 'Superintendent', 'dcc_superintendent', null, '/images/leaders/david-adenodi.jpg', 'Agbala Itura DCC, USA', null, null, null::integer, null::integer, 2, 'david-adenodi', true
 where not exists (select 1 from cacna.leaders l where l.full_name = 'Pastor David Adenodi, Ph.D.' and l.category = 'dcc_superintendent');
 insert into cacna.leaders (full_name, title, category, bio, photo_url, zone_name, phone, email, tenure_start, tenure_end, sort_order, person_key, is_published)
-select 'Pastor Timothy Adelani', 'Superintendent', 'dcc_superintendent', null, '/images/leaders/timothy-adelani.jpg', 'Manhattan DCC', '917-684-9260', 'pastoradelani@gmail.com', null::integer, null::integer, 3, 'timothy-adelani', true
+select 'Pastor Timothy Adelani', 'Superintendent', 'dcc_superintendent', null, '/images/leaders/timothy-adelani.jpg', 'Manhattan DCC', null, null, null::integer, null::integer, 3, 'timothy-adelani', true
 where not exists (select 1 from cacna.leaders l where l.full_name = 'Pastor Timothy Adelani' and l.category = 'dcc_superintendent');
 insert into cacna.leaders (full_name, title, category, bio, photo_url, zone_name, phone, email, tenure_start, tenure_end, sort_order, person_key, is_published)
 select 'Pastor John Oluwatimilehin, Ph.D.', 'Superintendent', 'dcc_superintendent', 'About the Pastor
@@ -177,31 +177,31 @@ He served as Associate Pastor in CAC Bethel, OAU, Ile-Ife, Nigeria before reloca
 
 Pastor John is a man with great passion for prayer and a belief in the limitless power of God and His Words.  That is the bedrock of his faith and leadership.
 
-He''s married to Lady Evangelist Susan Oluwatimilehin and are blessed with four children and three grandchildren.', '/images/leaders/john-oluwatimilehin.jpg', 'Bethel DCC', '301-602-9442', 'joluwatimilehin@gmail.com', null::integer, null::integer, 4, 'john-oluwatimilehin', true
+He''s married to Lady Evangelist Susan Oluwatimilehin and are blessed with four children and three grandchildren.', '/images/leaders/john-oluwatimilehin.jpg', 'Bethel DCC', null, null, null::integer, null::integer, 4, 'john-oluwatimilehin', true
 where not exists (select 1 from cacna.leaders l where l.full_name = 'Pastor John Oluwatimilehin, Ph.D.' and l.category = 'dcc_superintendent');
 insert into cacna.leaders (full_name, title, category, bio, photo_url, zone_name, phone, email, tenure_start, tenure_end, sort_order, person_key, is_published)
-select 'Pastor Hezekiah Ilufoye, D.Min.', 'Superintendent', 'dcc_superintendent', null, '/images/leaders/hezekiah-ilufoye.jpg', 'Baltimore DCC', '443-226-8748', 'wilufoye@yahoo.com', null::integer, null::integer, 5, null, true
+select 'Pastor Hezekiah Ilufoye, D.Min.', 'Superintendent', 'dcc_superintendent', null, '/images/leaders/hezekiah-ilufoye.jpg', 'Baltimore DCC', null, null, null::integer, null::integer, 5, null, true
 where not exists (select 1 from cacna.leaders l where l.full_name = 'Pastor Hezekiah Ilufoye, D.Min.' and l.category = 'dcc_superintendent');
 insert into cacna.leaders (full_name, title, category, bio, photo_url, zone_name, phone, email, tenure_start, tenure_end, sort_order, person_key, is_published)
-select 'Pastor Rufus Adeagbo, Ph.D.', 'Superintendent', 'dcc_superintendent', null, null, 'New England DCC', '347-849-3023', 'pastoradeagbo@gmail.com', null::integer, null::integer, 6, null, true
+select 'Pastor Rufus Adeagbo, Ph.D.', 'Superintendent', 'dcc_superintendent', null, null, 'New England DCC', null, null, null::integer, null::integer, 6, null, true
 where not exists (select 1 from cacna.leaders l where l.full_name = 'Pastor Rufus Adeagbo, Ph.D.' and l.category = 'dcc_superintendent');
 insert into cacna.leaders (full_name, title, category, bio, photo_url, zone_name, phone, email, tenure_start, tenure_end, sort_order, person_key, is_published)
-select 'Pastor Sola Rotimi', 'Superintendent', 'dcc_superintendent', null, '/images/leaders/sola-rotimi.jpg', 'South Florida DCC', '718-971-4459', 'triplesministries@yahoo.com', null::integer, null::integer, 7, null, true
+select 'Pastor Sola Rotimi', 'Superintendent', 'dcc_superintendent', null, '/images/leaders/sola-rotimi.jpg', 'South Florida DCC', null, null, null::integer, null::integer, 7, null, true
 where not exists (select 1 from cacna.leaders l where l.full_name = 'Pastor Sola Rotimi' and l.category = 'dcc_superintendent');
 insert into cacna.leaders (full_name, title, category, bio, photo_url, zone_name, phone, email, tenure_start, tenure_end, sort_order, person_key, is_published)
-select 'Pastor Gabriel Idowu', 'Superintendent', 'dcc_superintendent', null, '/images/leaders/gabriel-idowu.jpg', 'California DCC', '708-953-0880', '2005gabriel@gmail.com', null::integer, null::integer, 8, null, true
+select 'Pastor Gabriel Idowu', 'Superintendent', 'dcc_superintendent', null, '/images/leaders/gabriel-idowu.jpg', 'California DCC', null, null, null::integer, null::integer, 8, null, true
 where not exists (select 1 from cacna.leaders l where l.full_name = 'Pastor Gabriel Idowu' and l.category = 'dcc_superintendent');
 insert into cacna.leaders (full_name, title, category, bio, photo_url, zone_name, phone, email, tenure_start, tenure_end, sort_order, person_key, is_published)
-select 'Pastor Olufemi Olaluwoye', 'Superintendent', 'dcc_superintendent', null, '/images/leaders/olufemi-olaluwoye.jpg', 'Eastern DCC', null, 'olaluwoye2471@yahoo.com', null::integer, null::integer, 9, null, true
+select 'Pastor Olufemi Olaluwoye', 'Superintendent', 'dcc_superintendent', null, '/images/leaders/olufemi-olaluwoye.jpg', 'Eastern DCC', null, null, null::integer, null::integer, 9, null, true
 where not exists (select 1 from cacna.leaders l where l.full_name = 'Pastor Olufemi Olaluwoye' and l.category = 'dcc_superintendent');
 insert into cacna.leaders (full_name, title, category, bio, photo_url, zone_name, phone, email, tenure_start, tenure_end, sort_order, person_key, is_published)
-select 'Pastor Joseph A. Olawale', 'Superintendent', 'dcc_superintendent', null, '/images/leaders/joseph-olawale.jpg', 'Texas DCC', '305-469-0346', 'olawalefl@yahoo.com', null::integer, null::integer, 10, 'joseph-olawale', true
+select 'Pastor Joseph A. Olawale', 'Superintendent', 'dcc_superintendent', null, '/images/leaders/joseph-olawale.jpg', 'Texas DCC', null, null, null::integer, null::integer, 10, 'joseph-olawale', true
 where not exists (select 1 from cacna.leaders l where l.full_name = 'Pastor Joseph A. Olawale' and l.category = 'dcc_superintendent');
 insert into cacna.leaders (full_name, title, category, bio, photo_url, zone_name, phone, email, tenure_start, tenure_end, sort_order, person_key, is_published)
-select 'Pastor Samuel Olomoniyi, Ph.D.', 'Acting Superintendent', 'dcc_superintendent', null, '/images/leaders/samuel-olomoniyi.jpg', 'Western DCC', '312-953-2106', 'livingbible@sbcglobal.net', null::integer, null::integer, 11, null, true
+select 'Pastor Samuel Olomoniyi, Ph.D.', 'Acting Superintendent', 'dcc_superintendent', null, '/images/leaders/samuel-olomoniyi.jpg', 'Western DCC', null, null, null::integer, null::integer, 11, null, true
 where not exists (select 1 from cacna.leaders l where l.full_name = 'Pastor Samuel Olomoniyi, Ph.D.' and l.category = 'dcc_superintendent');
 insert into cacna.leaders (full_name, title, category, bio, photo_url, zone_name, phone, email, tenure_start, tenure_end, sort_order, person_key, is_published)
-select 'Pastor Gbenga Famojuro, D.Min.', 'Superintendent', 'dcc_superintendent', null, '/images/leaders/gbenga-famojuro.jpg', 'First In The Americas DCC', '917-709-1892', 'ftimothy54@yahoo.com', null::integer, null::integer, 12, null, true
+select 'Pastor Gbenga Famojuro, D.Min.', 'Superintendent', 'dcc_superintendent', null, '/images/leaders/gbenga-famojuro.jpg', 'First In The Americas DCC', null, null, null::integer, null::integer, 12, null, true
 where not exists (select 1 from cacna.leaders l where l.full_name = 'Pastor Gbenga Famojuro, D.Min.' and l.category = 'dcc_superintendent');
 
 -- ---------- cacna_regional ----------
