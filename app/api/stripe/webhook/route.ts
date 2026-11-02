@@ -23,12 +23,17 @@ const SETTLED_PAYMENT_STATUSES = new Set(["paid", "no_payment_required"]);
 // handledSessions: fully recorded (sheet row + email); added only on success.
 // inFlightSessions: claimed synchronously, before the first await, so an
 //   overlapping delivery (a redelivery, or the completed +
-//   async_payment_succeeded pair) is skipped instead of recording twice.
-//   Released when the delivery ends, whatever the outcome.
+//   async_payment_succeeded pair) never records alongside it. The overlapping
+//   delivery waits for the in-flight one to settle and then re-checks: a
+//   duplicate if the session got recorded, otherwise it retrieves and records
+//   it itself. It is never acknowledged unprocessed, because the in-flight
+//   delivery may have retrieved the session while still unpaid and recorded
+//   nothing. Released when the delivery ends, whatever the outcome.
 // completedSteps: steps that succeeded in a delivery that then failed, so a
 //   retry to this instance redoes only the failed step (no second row).
 const handledSessions = new Set<string>();
-const inFlightSessions = new Set<string>();
+/** Settles (never rejects) when the in-flight delivery for the key ends. */
+const inFlightSessions = new Map<string, Promise<void>>();
 type RecordStep = "sheet" | "email";
 const completedSteps = new Map<string, Set<RecordStep>>();
 const MAX_TRACKED_SESSIONS = 1000;
@@ -96,18 +101,22 @@ export async function POST(request: Request) {
   // failed/abandoned payment attempts.
   if (event.type === "checkout.session.completed" || event.type === "checkout.session.async_payment_succeeded") {
     const sessionId = (event.data.object as { id: string }).id;
-    if (handledSessions.has(sessionId)) {
-      return NextResponse.json({ received: true, duplicate: true });
-    }
-    if (inFlightSessions.has(sessionId)) {
-      // Another delivery is recording this session right now; if it fails it
-      // returns 500 and Stripe retries that delivery.
-      return NextResponse.json({ received: true, duplicate: true, inProgress: true });
+    for (;;) {
+      if (handledSessions.has(sessionId)) {
+        return NextResponse.json({ received: true, duplicate: true });
+      }
+      const inFlight = inFlightSessions.get(sessionId);
+      if (!inFlight) break;
+      // Another delivery is recording this session right now: wait for it,
+      // then re-check (it may have found the payment unpaid and recorded
+      // nothing, or failed).
+      await inFlight;
     }
     // No await between the checks above and this claim.
-    inFlightSessions.add(sessionId);
+    const recording = recordCheckout(stripe, sessionId);
+    inFlightSessions.set(sessionId, recording.then(() => undefined, () => undefined));
     try {
-      return await recordCheckout(stripe, sessionId);
+      return await recording;
     } finally {
       inFlightSessions.delete(sessionId);
     }

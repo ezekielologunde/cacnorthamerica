@@ -38,32 +38,40 @@ delete process.env.SHEETS_WEBHOOK_SECRET;
 console.error = () => {}; // the handler logs every simulated failure
 
 // Fake Stripe: signature check just parses the body; retrieve is slow enough
-// that two deliveries started together overlap.
+// that two deliveries started together overlap. A retrieval returns the
+// session as it was when the call started, and calls onRetrieve[id] then.
 const sessions = {};
+const onRetrieve = {};
 globalThis.__fakeStripe = {
   webhooks: { constructEvent: (body) => JSON.parse(body) },
   checkout: {
     sessions: {
       retrieve: async (id) => {
+        const snapshot = sessions[id];
+        onRetrieve[id]?.();
         await new Promise((r) => setTimeout(r, 30));
-        if (!sessions[id]) throw new Error("No such checkout session");
-        return { line_items: { data: [] }, customer_details: { email: "giver@example.com" }, amount_total: 5000, ...sessions[id] };
+        if (!snapshot) throw new Error("No such checkout session");
+        return { line_items: { data: [] }, customer_details: { email: "giver@example.com" }, amount_total: 5000, ...snapshot };
       },
     },
   },
 };
 
 // Fake fetch: records accepted sheet rows and sent emails per session, and
-// fails the next N calls of a kind on request.
+// fails the next N calls of a kind on request. sheetReplies queues bodies the
+// Sheets webhook answers with HTTP 200 instead of accepting the row (the Apps
+// Script's {ok:false} on a bad secret or script error).
 const rows = [];
 const emails = [];
 const failNext = { sheet: 0, email: 0 };
+const sheetReplies = [];
 globalThis.fetch = async (url, init = {}) => {
   url = String(url);
   if (url === SHEETS_URL) {
     if (failNext.sheet > 0) { failNext.sheet--; throw new TypeError("fetch failed"); }
+    if (sheetReplies.length) return new Response(sheetReplies.shift(), { status: 200 });
     rows.push(JSON.parse(init.body)["Stripe Session"]);
-    return new Response("ok", { status: 200 });
+    return Response.json({ ok: true });
   }
   if (url.startsWith("https://api.resend.com/")) {
     if (failNext.email > 0) {
@@ -145,6 +153,34 @@ const settled = await deliver("cs_test_pending", "checkout.session.async_payment
 check("pending payment records nothing; the later settled event records it once",
   pending.status === 200 && !pending.body.duplicate && settled.status === 200 && !settled.body.duplicate &&
   count(rows, "cs_test_pending") === 1 && count(emails, "cs_test_pending") === 1);
+
+// Codex A: the completed delivery retrieves the session while still unpaid;
+// async_payment_succeeded arrives while that retrieval is in flight. The
+// overlapping delivery must not be acknowledged unprocessed.
+sessions.cs_test_deferred = giving("unpaid");
+const firstRetrieval = new Promise((r) => { onRetrieve.cs_test_deferred = r; });
+const completedRun = deliver("cs_test_deferred", "checkout.session.completed");
+await firstRetrieval;
+delete onRetrieve.cs_test_deferred;
+sessions.cs_test_deferred = giving("paid");
+const deferred = await Promise.all([completedRun, deliver("cs_test_deferred", "checkout.session.async_payment_succeeded")]);
+check("succeeded event overlapping an unpaid in-flight retrieval records the payment once",
+  deferred.every((r) => r.status === 200) && count(rows, "cs_test_deferred") === 1 && count(emails, "cs_test_deferred") === 1);
+
+// Codex B: the Apps Script answers 200 {ok:false} (bad secret, script error).
+sessions.cs_test_sheetrejected = giving();
+sheetReplies.push(JSON.stringify({ ok: false, error: "Invalid secret" }));
+const rejected = await deliver("cs_test_sheetrejected");
+check("sheet webhook {ok:false} returns 500 so Stripe retries", rejected.status === 500 && count(rows, "cs_test_sheetrejected") === 0);
+const rejectedRetry = await deliver("cs_test_sheetrejected");
+check("retry after {ok:false} writes the row once and sends one email",
+  rejectedRetry.status === 200 && !rejectedRetry.body.duplicate &&
+  count(rows, "cs_test_sheetrejected") === 1 && count(emails, "cs_test_sheetrejected") === 1);
+
+sessions.cs_test_sheetnonjson = giving();
+sheetReplies.push("<html>Script error</html>");
+const nonJson = await deliver("cs_test_sheetnonjson");
+check("sheet webhook non-JSON 200 body returns 500 so Stripe retries", nonJson.status === 500 && count(rows, "cs_test_sheetnonjson") === 0);
 
 process.stdout.write(failures ? `\n${failures} check(s) FAILED\n` : "\nAll checks passed\n");
 process.exit(failures ? 1 : 0);

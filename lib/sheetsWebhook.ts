@@ -21,8 +21,11 @@ export function logToSheet(formName: string, fields: Record<string, string>): vo
 /** Awaited variant of logToSheet for a caller that must know whether the row
  *  landed (the Stripe webhook returns 500 so Stripe retries). Resolves true
  *  when the webhook accepted the row, or when SHEETS_WEBHOOK isn't configured
- *  (nothing to write); false on a network error or a non-2xx response.
- *  Never throws. */
+ *  (nothing to write); false on a network error, a non-2xx response, or a
+ *  body other than {ok: true}. The Apps Script
+ *  (docs/google-apps-script/sheets-webhook.gs) answers HTTP 200 with
+ *  {ok: false, error} on a bad secret or a script error, so the status alone
+ *  doesn't mean the row landed. Never throws. */
 export async function logToSheetChecked(formName: string, fields: Record<string, string>): Promise<boolean> {
   const hook = process.env.SHEETS_WEBHOOK;
   if (!hook) return true;
@@ -31,6 +34,17 @@ export async function logToSheetChecked(formName: string, fields: Record<string,
     const res = await fetch(hook, sheetRequest(formName, fields));
     if (!res.ok) {
       console.error(`[${formName}] Sheets webhook returned ${res.status}`);
+      return false;
+    }
+    let reply: unknown;
+    try {
+      reply = await res.json();
+    } catch {
+      console.error(`[${formName}] Sheets webhook returned a non-JSON body`);
+      return false;
+    }
+    if ((reply as { ok?: unknown } | null)?.ok !== true) {
+      console.error(`[${formName}] Sheets webhook rejected the row:`, (reply as { error?: unknown } | null)?.error);
       return false;
     }
     return true;
