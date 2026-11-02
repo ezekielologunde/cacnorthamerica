@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type MouseEvent } from 'react';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Search, CalendarDays } from 'lucide-react';
@@ -25,6 +25,7 @@ const isExternalHref = (href: string) => href.startsWith('http');
 // nav's "Register" CTA automatically points at the next confirmed year.
 const nextConvention = currentOrNextConvention();
 const conventionCtaHref = nextConvention.registrationUrl ?? nextConvention.href;
+const noopSubscribe = () => () => {};
 
 
 interface NavProps {
@@ -95,14 +96,15 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [openMobileSection, setOpenMobileSection] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [conventionOpen, setConventionOpen] = useState(true);
-
   // Convention registration is CACNA's flagship annual CTA — keep it live in
   // the nav until the event itself has passed, then fall back to the general
-  // Events page instead of an outdated "Register" prompt.
-  useEffect(() => {
-    setConventionOpen(!isConventionPast(nextConvention));
-  }, []);
+  // Events page instead of an outdated "Register" prompt. The server render
+  // (and hydration) show it; the client then checks against today's date.
+  const conventionOpen = useSyncExternalStore(
+    noopSubscribe,
+    () => !isConventionPast(nextConvention),
+    () => true,
+  );
 
   useEffect(() => {
     const nav = navRef.current;
@@ -125,7 +127,13 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
     return () => window.removeEventListener('scroll', update);
   }, [dark, open]);
 
-  useEffect(() => { setOpen(false); setOpenMobileSection(null); }, [pathname]);
+  // Close the mobile menu on navigation (reset during render, not in an effect).
+  const [menuPath, setMenuPath] = useState(pathname);
+  if (menuPath !== pathname) {
+    setMenuPath(pathname);
+    setOpen(false);
+    setOpenMobileSection(null);
+  }
 
   useEffect(() => {
     if (!open) return;
@@ -162,6 +170,21 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
   // along its bottom edge — matches the reference nav's persistent red
   // underline, which only makes sense once there's a bar to underline.
   const hasSolidBg = open || scrolled || !heroDark;
+
+  const pillLinks: [string, string][] = [['/giving', t('give')], ['/store', t('store')]];
+  // Convention CTA: same props/content whether the href is internal (Link) or external (<a>).
+  const deskCtaProps = {
+    onClick: () => haptic('medium'),
+    className: 'btn-sheen press',
+    style: { display: 'inline-flex', alignItems: 'center', gap: 7, background: 'linear-gradient(135deg,var(--red-deep),var(--gold))', color: '#fff', fontWeight: 800, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '0 8px 22px rgba(122,17,40,.45)' } satisfies CSSProperties,
+  };
+  const deskCtaContent = <><CalendarDays size={14} strokeWidth={2.5} aria-hidden />{conventionCtaLabel} →</>;
+  const mobileCtaProps = {
+    onClick: () => { haptic('medium'); setOpen(false); },
+    className: 'press',
+    style: { display: 'flex', order: 1, alignItems: 'center', justifyContent: 'center', gap: 8, background: 'linear-gradient(135deg,var(--red-deep),var(--gold))', color: '#fff', fontWeight: 800, fontSize: 17, padding: '14px 24px', minHeight: 52, borderRadius: 999, textDecoration: 'none', boxShadow: '0 10px 24px rgba(122,17,40,.35)' } satisfies CSSProperties,
+  };
+  const mobileCtaContent = <><CalendarDays size={17} strokeWidth={2.5} aria-hidden />{conventionCtaLabel} →</>;
 
   return (
     <>
@@ -287,56 +310,29 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                 plain text link next to Store's outlined pill next to
                 Convention's gradient CTA, three different visual weights in
                 a row. Now there's exactly one strong CTA (Convention). */}
-            <Link
-              href={'/giving'}
-              style={{
-                display: 'inline-flex', alignItems: 'center',
-                border: `1.5px solid ${lightBar ? 'rgba(245,246,250,.4)' : 'var(--ink)'}`,
-                color: barInk, fontWeight: 700, fontSize: 13.5,
-                padding: '8px 16px', borderRadius: 999, textDecoration: 'none',
-                transition: 'color .4s, border-color .4s', whiteSpace: 'nowrap',
-              }}
-            >
-              {t('give')}
-            </Link>
-            <Link
-              href={'/store'}
-              style={{
-                display: 'inline-flex', alignItems: 'center',
-                border: `1.5px solid ${lightBar ? 'rgba(245,246,250,.4)' : 'var(--ink)'}`,
-                color: barInk, fontWeight: 700, fontSize: 13.5,
-                padding: '8px 16px', borderRadius: 999, textDecoration: 'none',
-                transition: 'color .4s, border-color .4s', whiteSpace: 'nowrap',
-              }}
-            >
-              {t('store')}
-            </Link>
+            {pillLinks.map(([href, label]) => (
+              <Link
+                key={href}
+                href={href}
+                style={{
+                  display: 'inline-flex', alignItems: 'center',
+                  border: `1.5px solid ${lightBar ? 'rgba(245,246,250,.4)' : 'var(--ink)'}`,
+                  color: barInk, fontWeight: 700, fontSize: 13.5,
+                  padding: '8px 16px', borderRadius: 999, textDecoration: 'none',
+                  transition: 'color .4s, border-color .4s', whiteSpace: 'nowrap',
+                }}
+              >
+                {label}
+              </Link>
+            ))}
             {conventionOpen && (
               <span aria-hidden style={{ width: 1, height: 20, background: lightBar ? 'rgba(245,246,250,.25)' : 'var(--line)', flexShrink: 0 }} />
             )}
             {conventionOpen && (
               isExternalHref(conventionCtaHref) ? (
-                <a
-                  href={conventionCtaHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => haptic('medium')}
-                  className="btn-sheen press"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: 'linear-gradient(135deg,var(--red-deep),var(--gold))', color: '#fff', fontWeight: 800, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '0 8px 22px rgba(122,17,40,.45)' }}
-                >
-                  <CalendarDays size={14} strokeWidth={2.5} aria-hidden />
-                  {conventionCtaLabel} →
-                </a>
+                <a href={conventionCtaHref} target="_blank" rel="noopener noreferrer" {...deskCtaProps}>{deskCtaContent}</a>
               ) : (
-                <Link
-                  href={conventionCtaHref}
-                  onClick={() => haptic('medium')}
-                  className="btn-sheen press"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: 'linear-gradient(135deg,var(--red-deep),var(--gold))', color: '#fff', fontWeight: 800, fontSize: 14, padding: '10px 18px', borderRadius: 999, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '0 8px 22px rgba(122,17,40,.45)' }}
-                >
-                  <CalendarDays size={14} strokeWidth={2.5} aria-hidden />
-                  {conventionCtaLabel} →
-                </Link>
+                <Link href={conventionCtaHref} {...deskCtaProps}>{deskCtaContent}</Link>
               )
             )}
           </div>
@@ -455,52 +451,27 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
 
           <div className="nav-m-actions" style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 24, position: 'sticky', bottom: 0, padding: '12px 0 calc(14px + env(safe-area-inset-bottom))', background: dark ? 'rgb(12,14,19)' : 'rgb(255,255,255)', borderTop: `1px solid ${dark ? 'rgba(245,246,250,.1)' : 'var(--line)'}` }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, order: 2 }}>
-            <Link
-              href={'/giving'}
-              onClick={() => setOpen(false)}
-              className="press"
-              style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                border: `1.5px solid ${ink}`, color: ink, fontWeight: 700, fontSize: 16,
-                padding: '12px 16px', minHeight: 48, borderRadius: 999, textDecoration: 'none',
-              }}
-            >
-              {t('give')}
-            </Link>
-            <Link
-              href={'/store'}
-              onClick={() => setOpen(false)}
-              className="press"
-              style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                border: `1.5px solid ${ink}`, color: ink, fontWeight: 700, fontSize: 16,
-                padding: '12px 16px', minHeight: 48, borderRadius: 999, textDecoration: 'none',
-              }}
-            >
-              {t('store')}
-            </Link>
+            {pillLinks.map(([href, label]) => (
+              <Link
+                key={href}
+                href={href}
+                onClick={() => setOpen(false)}
+                className="press"
+                style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  border: `1.5px solid ${ink}`, color: ink, fontWeight: 700, fontSize: 16,
+                  padding: '12px 16px', minHeight: 48, borderRadius: 999, textDecoration: 'none',
+                }}
+              >
+                {label}
+              </Link>
+            ))}
             </div>
             {conventionOpen && (
               isExternalHref(conventionCtaHref) ? (
-                <a
-                  href={conventionCtaHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => { haptic('medium'); setOpen(false); }}
-                  className="press"
-                  style={{ display: 'flex', order: 1, alignItems: 'center', justifyContent: 'center', gap: 8, background: 'linear-gradient(135deg,var(--red-deep),var(--gold))', color: '#fff', fontWeight: 800, fontSize: 17, padding: '14px 24px', minHeight: 52, borderRadius: 999, textDecoration: 'none', boxShadow: '0 10px 24px rgba(122,17,40,.35)' }}>
-                  <CalendarDays size={17} strokeWidth={2.5} aria-hidden />
-                  {conventionCtaLabel} →
-                </a>
+                <a href={conventionCtaHref} target="_blank" rel="noopener noreferrer" {...mobileCtaProps}>{mobileCtaContent}</a>
               ) : (
-                <Link
-                  href={conventionCtaHref}
-                  onClick={() => { haptic('medium'); setOpen(false); }}
-                  className="press"
-                  style={{ display: 'flex', order: 1, alignItems: 'center', justifyContent: 'center', gap: 8, background: 'linear-gradient(135deg,var(--red-deep),var(--gold))', color: '#fff', fontWeight: 800, fontSize: 17, padding: '14px 24px', minHeight: 52, borderRadius: 999, textDecoration: 'none', boxShadow: '0 10px 24px rgba(122,17,40,.35)' }}>
-                  <CalendarDays size={17} strokeWidth={2.5} aria-hidden />
-                  {conventionCtaLabel} →
-                </Link>
+                <Link href={conventionCtaHref} {...mobileCtaProps}>{mobileCtaContent}</Link>
               )
             )}
             <p style={{ fontSize: 12.5, color: dark ? 'rgba(245,246,250,.65)' : 'var(--ink-soft)', textAlign: 'center', margin: '0', order: 3 }}>
