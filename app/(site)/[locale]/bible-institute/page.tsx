@@ -3,11 +3,13 @@ import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
+import Link from "next/link";
 import { getLeaders } from "@/lib/leaders";
 import { GraduationCap } from "lucide-react";
 import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
+import { initials } from "@/lib/initials";
 
 export const revalidate = 3600;
 
@@ -17,11 +19,6 @@ export async function generateMetadata(): Promise<Metadata> {
     description: "CACNA's ministerial training arm — meet the Chancellor, Provost, Dean, Registrar, and Lecturer leading the Bible Institute.",
     alternates: { canonical: `${SITE_URL}/bible-institute` },
   };
-}
-
-function initials(name: string) {
-  const parts = name.replace(/^(Pastor|Prophet|Evangelist|Apostle)\s+(Dr\.?\s+)?(\(Mrs\.?\)\s+)?/i, "").trim().split(/\s+/);
-  return ((parts[0]?.[0] || "") + (parts[parts.length - 1]?.[0] || "")).toUpperCase();
 }
 
 const gradients = [
@@ -59,7 +56,7 @@ export default async function BibleInstitutePage({
           </Reveal>
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(16px,1.8vw,19px)", color: "rgba(245,246,250,.72)", lineHeight: 1.65, maxWidth: 620, margin: "0 auto" }}>
-              The CACNA Bible Institute is the region's ministerial training arm — equipping workers and ministers across CACNA's member churches for the work of the Gospel.
+              The CACNA Bible Institute is the region&apos;s ministerial training arm — equipping workers and ministers across CACNA&apos;s member churches for the work of the Gospel.
             </p>
           </Reveal>
         </div>
@@ -144,8 +141,8 @@ export default async function BibleInstitutePage({
           </Reveal>
           <Reveal delay={160}>
             <p style={{ fontSize: 15, color: "rgba(245,246,250,.6)", lineHeight: 1.7, margin: "28px 0 0" }}>
-              More course offerings and how to apply will be published here as they're finalized. For now, reach out through our{" "}
-              <a href="/contact" style={{ color: "var(--gold)" }}>contact page</a> for enquiries.
+              More course offerings and how to apply will be published here as they&apos;re finalized. For now, reach out through our{" "}
+              <Link href="/contact" style={{ color: "var(--gold)" }}>contact page</Link> for enquiries.
             </p>
           </Reveal>
         </div>

@@ -10,6 +10,7 @@ import { CAC_WORLDWIDE, CAC_ANOSIKE_EUROPE } from "@/lib/global";
 import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
+import { initials } from "@/lib/initials";
 
 export const revalidate = 3600;
 
@@ -32,11 +33,6 @@ async function combinedBio(leader: Leader): Promise<string | null> {
   const roles = await getLeaderRoles(leader.person_key);
   if (roles.length <= 1) return null;
   return roles.map((r) => r.title).join(" · ");
-}
-
-function initials(name: string) {
-  const parts = name.replace(/^(Pastor|Prophet|Evangelist|Apostle)\s+(Dr\.?\s+)?(\(Mrs\.?\)\s+)?/i, "").trim().split(/\s+/);
-  return ((parts[0]?.[0] || "") + (parts[parts.length - 1]?.[0] || "")).toUpperCase();
 }
 
 const gradients = [
@@ -263,7 +259,7 @@ export default async function LeadershipPage({
                 The CACNA Bible Institute.
               </h2>
               <p style={{ fontSize: 15.5, color: "rgba(245,246,250,.78)", margin: 0, lineHeight: 1.65, maxWidth: 520 }}>
-                CACNA's ministerial training arm, led by a Chancellor, Provost, Dean, Registrar, and Lecturer drawn from our regional leadership.
+                CACNA&apos;s ministerial training arm, led by a Chancellor, Provost, Dean, Registrar, and Lecturer drawn from our regional leadership.
               </p>
             </div>
             <Link href="/bible-institute" className="press" style={{
@@ -280,7 +276,7 @@ export default async function LeadershipPage({
       <section style={{ background: "var(--paper)", padding: "80px clamp(20px,5vw,64px)", textAlign: "center" }}>
         <Reveal>
           <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4.5vw,60px)", letterSpacing: "-1.2px", color: "var(--ink)", margin: "0 0 16px", lineHeight: .96 }}>Explore further.</h2>
-          <p style={{ fontSize: 17, color: "var(--ink-soft)", margin: "0 0 36px" }}>Find your zone's superintendent, or read about the leaders who came before.</p>
+          <p style={{ fontSize: 17, color: "var(--ink-soft)", margin: "0 0 36px" }}>Find your zone&apos;s superintendent, or read about the leaders who came before.</p>
           <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
             <Link href="/zones" style={{ background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(200,30,58,.4)" }}>Find Your Zone →</Link>
             <Link href="/leadership/past" style={{ background: "var(--cream-2)", color: "var(--ink)", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", border: "1px solid var(--line)" }}>Past Leaders</Link>
