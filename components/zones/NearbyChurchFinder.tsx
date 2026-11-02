@@ -60,8 +60,9 @@ export function NearbyChurchFinder({ leaders }: { leaders: Leader[] }) {
         setStatus("done");
       },
       (err) => {
-        // Keep any approximate results on screen; just note the refusal.
-        setStatus(coords ? "done" : err.code === err.PERMISSION_DENIED ? "denied" : "error");
+        // Results render whenever coords exist, so a refusal never hides an
+        // approximate lookup, whichever request finishes first.
+        setStatus(err.code === err.PERMISSION_DENIED ? "denied" : "error");
       },
       { enableHighAccuracy: false, timeout: 10000, maximumAge: 5 * 60 * 1000 }
     );
@@ -132,7 +133,7 @@ export function NearbyChurchFinder({ leaders }: { leaders: Leader[] }) {
           </p>
         )}
 
-        {status === "done" && (
+        {coords && status !== "locating" && (
           <div style={{ marginTop: 28 }}>
             <p role="status" style={{
               position: "absolute", width: 1, height: 1, padding: 0, margin: -1,
