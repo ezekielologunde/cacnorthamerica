@@ -3,6 +3,7 @@ import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import { PhotoStrip } from "@/components/ministries/PhotoStrip";
+import "@/components/ministries/ministries-mobile.css";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
@@ -12,7 +13,8 @@ export type AgendaItem = { time?: string; event: string; speaker?: string };
 export type ScheduleBlock = { dayLabel: string; timeRange?: string; agenda: AgendaItem[] };
 
 export type SubConferencePageProps = {
-  kicker: string;
+  /** Kept for callers; no longer rendered as an eyebrow above the h1. */
+  kicker?: string;
   headingLines: [string, string];
   intro: string;
   theme?: string;
@@ -41,7 +43,6 @@ export type SubConferencePageProps = {
 };
 
 export async function SubConferencePage({
-  kicker,
   headingLines,
   intro,
   theme,
@@ -64,13 +65,10 @@ export async function SubConferencePage({
       <Nav heroDark />
 
       {/* Hero */}
-      <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 80px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -100, left: "50%", transform: "translateX(-50%)", width: 760, height: 460, background: "radial-gradient(circle,rgba(200,30,58,.3),transparent 65%)", pointerEvents: "none" }} />
+      <section className="min-hero" style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 80px", position: "relative", overflow: "hidden" }}>
+        <div className="min-hero-glow" style={{ position: "absolute", top: -100, left: "50%", transform: "translateX(-50%)", width: 760, height: 460, background: "radial-gradient(circle,rgba(200,30,58,.3),transparent 65%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 820, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
-          <Reveal from="scale">
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>{kicker}</span>
-          </Reveal>
-          <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(40px,6vw,76px)", letterSpacing: "-0.03em", color: "#fff", margin: "16px 0", lineHeight: 1.02, textWrap: "balance" }}>
+          <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(36px,6vw,76px)", letterSpacing: "-0.03em", color: "#fff", margin: "0 0 16px", lineHeight: 1.02, textWrap: "balance" }}>
             <RevealText immediate>{headingLines[0]}</RevealText>
             <br />
             <RevealText immediate delay={0.15} style={{ color: "var(--red)" }}>
@@ -93,8 +91,8 @@ export async function SubConferencePage({
 
       {/* Identity: theme + leadership */}
       {(theme || (leaderNames && leaderNames.length > 0)) && (
-        <section style={{ background: "var(--cream)", padding: "clamp(48px,6vw,72px) clamp(20px,5vw,64px) 0" }}>
-          <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: theme && leaderNames?.length ? "repeat(auto-fit,minmax(240px,1fr))" : "1fr", gap: 14 }}>
+        <section className="min-section" style={{ background: "var(--cream)", padding: "clamp(28px,6vw,72px) clamp(20px,5vw,64px) 0" }}>
+          <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: theme && leaderNames?.length ? "repeat(auto-fit,minmax(min(240px,100%),1fr))" : "1fr", gap: 14 }}>
             {theme && (
               <Reveal>
                 <div style={{ borderRadius: 18, padding: "22px 24px", background: "var(--paper)", border: "1px solid var(--line)" }}>
@@ -119,11 +117,11 @@ export async function SubConferencePage({
 
       {/* Highlight quote */}
       {highlight && (
-        <section style={{ background: "var(--cream)", padding: "clamp(40px,5vw,56px) clamp(20px,5vw,64px)" }}>
+        <section className="min-section" style={{ background: "var(--cream)", padding: "clamp(28px,5vw,56px) clamp(20px,5vw,64px)" }}>
           <Reveal>
             <div style={{ maxWidth: 780, margin: "0 auto", borderRadius: 22, padding: "clamp(26px,3vw,36px)", background: "linear-gradient(140deg,var(--red-deep),var(--ink))", boxShadow: "0 18px 36px rgba(200,30,58,.2)" }}>
               <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 10 }}>{highlight.label}</div>
-              <p style={{ fontSize: 16.5, color: "#fff", lineHeight: 1.75, margin: 0 }}>{highlight.text}</p>
+              <p style={{ fontSize: 17, color: "#fff", lineHeight: 1.7, margin: 0 }}>{highlight.text}</p>
             </div>
           </Reveal>
         </section>
@@ -131,12 +129,10 @@ export async function SubConferencePage({
 
       {/* History */}
       {historyParagraphs && historyParagraphs.length > 0 && (
-        <section style={{ background: "var(--paper)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+        <section className="min-section sub-section" style={{ background: "var(--paper)", padding: "clamp(44px,7vw,90px) clamp(20px,5vw,64px)" }}>
           <div style={{ maxWidth: 760, margin: "0 auto" }}>
-            <Reveal>
-              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>History</span>
-            </Reveal>
-            <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 16 }}>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,4vw,38px)", letterSpacing: "-.8px", color: "var(--ink)", margin: 0, lineHeight: 1.05 }}>History</h2>
+            <div style={{ marginTop: 18, display: "flex", flexDirection: "column", gap: 16 }}>
               {historyParagraphs.map((p, i) => (
                 <Reveal key={i} delay={i * 60}>
                   <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.8, margin: 0 }}>{p}</p>
@@ -149,17 +145,15 @@ export async function SubConferencePage({
 
       {/* Executive committee */}
       {executive && executive.length > 0 && (
-        <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+        <section className="min-section sub-section" style={{ background: "var(--cream-2)", padding: "clamp(44px,7vw,90px) clamp(20px,5vw,64px)" }}>
           <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-            <Reveal style={{ textAlign: "center", marginBottom: 36 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>{resolvedExecutiveLabel}</span>
-            </Reveal>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 14 }}>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,4vw,38px)", letterSpacing: "-.8px", color: "var(--ink)", margin: "0 0 24px", lineHeight: 1.05 }}>{resolvedExecutiveLabel}</h2>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(240px,100%),1fr))", gap: 14 }}>
               {executive.map((m, i) => (
                 <Reveal key={m.name} delay={(i % 4) * 60}>
-                  <div style={{ height: "100%", borderRadius: 16, padding: "18px 20px", background: "var(--paper)", border: "1px solid var(--line)" }}>
+                  <div style={{ height: "100%", borderRadius: 16, padding: "16px 18px", background: "var(--paper)", border: "1px solid var(--line)" }}>
                     <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 15.5, color: "var(--ink)", lineHeight: 1.3, marginBottom: 4 }}>{m.name}</div>
-                    <div style={{ fontSize: 13, color: "var(--ink-soft)" }}>{m.title}</div>
+                    <div style={{ fontSize: 14, color: "var(--ink-soft)" }}>{m.title}</div>
                   </div>
                 </Reveal>
               ))}
@@ -170,31 +164,29 @@ export async function SubConferencePage({
 
       {/* Convention schedule */}
       {schedule && schedule.length > 0 && (
-        <section style={{ background: "var(--paper)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+        <section className="min-section sub-section" style={{ background: "var(--paper)", padding: "clamp(44px,7vw,90px) clamp(20px,5vw,64px)" }}>
           <div style={{ maxWidth: 780, margin: "0 auto" }}>
-            <Reveal style={{ textAlign: "center", marginBottom: 40 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>
-                {scheduleYear ? `${scheduleYear} Convention Schedule` : "Convention Schedule"}
-              </span>
-            </Reveal>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,4vw,38px)", letterSpacing: "-.8px", color: "var(--ink)", margin: "0 0 28px", lineHeight: 1.05 }}>
+              {scheduleYear ? `${scheduleYear} Convention Schedule` : "Convention Schedule"}
+            </h2>
             <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
               {schedule.map((block, i) => (
                 <Reveal key={`${block.dayLabel}-${i}`} delay={i * 60}>
                   <div>
                     <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: 10, marginBottom: 14 }}>
                       <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "var(--ink)", margin: 0 }}>{block.dayLabel}</h3>
-                      {block.timeRange && <span style={{ fontSize: 13, fontWeight: 600, color: "var(--red)" }}>{block.timeRange}</span>}
+                      {block.timeRange && <span style={{ fontSize: 14, fontWeight: 600, color: "var(--red)" }}>{block.timeRange}</span>}
                     </div>
                     <ol style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 0, borderLeft: "2px solid var(--line)" }}>
                       {block.agenda.map((item, j) => (
                         <li key={j} style={{ position: "relative", padding: "0 0 16px 22px" }}>
                           <span aria-hidden style={{ position: "absolute", left: -5, top: 4, width: 8, height: 8, borderRadius: "50%", background: "var(--red)" }} />
                           {item.time && (
-                            <div style={{ fontSize: 12, fontWeight: 700, color: "var(--ink-soft)", marginBottom: 2 }}>{item.time}</div>
+                            <div style={{ fontSize: 13, fontWeight: 700, color: "var(--ink-soft)", marginBottom: 2 }}>{item.time}</div>
                           )}
                           <div style={{ fontSize: 15, fontWeight: 600, color: "var(--ink)", lineHeight: 1.4 }}>{item.event}</div>
                           {item.speaker && (
-                            <div style={{ fontSize: 13, color: "var(--ink-soft)", marginTop: 2 }}>{item.speaker}</div>
+                            <div style={{ fontSize: 14, color: "var(--ink-soft)", marginTop: 2 }}>{item.speaker}</div>
                           )}
                         </li>
                       ))}
@@ -211,13 +203,13 @@ export async function SubConferencePage({
       {note && (
         <section style={{ background: "var(--paper)", padding: "0 clamp(20px,5vw,64px) clamp(56px,7vw,90px)" }}>
           <Reveal>
-            <p style={{ maxWidth: 680, margin: "0 auto", textAlign: "center", fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.7, fontStyle: "italic" }}>{note}</p>
+            <p style={{ maxWidth: 680, margin: "0 auto", textAlign: "center", fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.7, fontStyle: "italic" }}>{note}</p>
           </Reveal>
         </section>
       )}
 
       {/* CTA */}
-      <section style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)", textAlign: "center" }}>
+      <section className="min-section" style={{ background: "var(--ink)", padding: "clamp(44px,7vw,90px) clamp(20px,5vw,64px)", textAlign: "center" }}>
         <Reveal>
           <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4.5vw,54px)", letterSpacing: "-1.2px", color: "var(--cream)", margin: "0 0 16px", lineHeight: 0.98 }}>
             Connect with us.
@@ -225,7 +217,7 @@ export async function SubConferencePage({
           <p style={{ fontSize: 16, color: "rgba(245,246,250,.6)", margin: "0 0 32px" }}>
             Reach out to learn more or get involved.
           </p>
-          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 14 }}>
+          <div className="min-cta-row" style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 12 }}>
             <Link
               href="/contact"
               className="press-lg"

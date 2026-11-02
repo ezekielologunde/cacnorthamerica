@@ -21,7 +21,7 @@ export function DepartmentDirectory({ departments }: { departments: Department[]
 
   return (
     <div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center", marginBottom: 40 }}>
+      <div className="dept-tabs" role="group" aria-label="Departments">
         {departments.map((d) => {
           const isActive = d.key === active;
           return (
@@ -60,7 +60,7 @@ export function DepartmentDirectory({ departments }: { departments: Department[]
 
         {dept.photo && (
           <Reveal delay={80}>
-            <div style={{ position: "relative", width: "100%", height: "clamp(220px,26vw,340px)", borderRadius: 22, overflow: "hidden", boxShadow: "0 20px 44px rgba(18,20,30,.15)" }}>
+            <div style={{ position: "relative", width: "100%", height: "clamp(200px,26vw,340px)", borderRadius: 22, overflow: "hidden", boxShadow: "0 20px 44px rgba(18,20,30,.15)" }}>
               <ImageLightbox src={dept.photo.src} alt={dept.photo.alt} objectPosition={dept.photo.objectPosition ?? "center"} />
             </div>
           </Reveal>
@@ -69,10 +69,10 @@ export function DepartmentDirectory({ departments }: { departments: Department[]
 
       {dept.team && dept.team.length > 0 && (
         <div style={{ marginTop: 40 }}>
-          <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 18 }}>
+          <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, letterSpacing: "-.4px", color: "var(--ink)", margin: "0 0 16px" }}>
             Department leadership
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 16 }}>
+          </h3>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(220px,100%),1fr))", gap: 12 }}>
             {dept.team.map((p, i) => (
               <Reveal key={p.name} delay={(i % 6) * 40}>
                 <div className="card-lift" style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 18, padding: "18px 16px", display: "flex", alignItems: "center", gap: 12, height: "100%" }}>
@@ -81,7 +81,7 @@ export function DepartmentDirectory({ departments }: { departments: Department[]
                   </div>
                   <div>
                     <h4 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 14.5, letterSpacing: "-.2px", color: "var(--ink)", margin: "0 0 2px", lineHeight: 1.2 }}>{p.name}</h4>
-                    <div style={{ fontSize: 12, color: "var(--ink-soft)", lineHeight: 1.35 }}>{p.title}</div>
+                    <div style={{ fontSize: 13, color: "var(--ink-soft)", lineHeight: 1.35 }}>{p.title}</div>
                   </div>
                 </div>
               </Reveal>

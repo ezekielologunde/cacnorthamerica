@@ -8,6 +8,7 @@ import { MealRequestForm } from "@/components/youth/MealRequestForm";
 import { PhotoStrip } from "@/components/ministries/PhotoStrip";
 import { mainGalleryPhotos } from "@/lib/mainGalleryPhotos";
 import { currentOrNextConvention, dateRangeLabel, CONVENTION_VENUE } from "@/lib/conventions";
+import "@/components/ministries/ministries-mobile.css";
 import Link from "next/link";
 import { Compass, Target, HandHeart, BookOpen, Users, Mic2, Sparkles } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -115,13 +116,10 @@ export default async function YouthPage({
       <Nav heroDark />
 
       {/* Hero */}
-      <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 90px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -100, left: "50%", transform: "translateX(-50%)", width: 760, height: 460, background: "radial-gradient(circle,rgba(200,30,58,.3),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 16s ease-in-out infinite" }} />
+      <section className="min-hero" style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 90px", position: "relative", overflow: "hidden" }}>
+        <div className="min-hero-glow" style={{ position: "absolute", top: -100, left: "50%", transform: "translateX(-50%)", width: 760, height: 460, background: "radial-gradient(circle,rgba(200,30,58,.3),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 16s ease-in-out infinite" }} />
         <div style={{ maxWidth: 820, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
-          <Reveal from="scale">
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>{t("kicker")}</span>
-          </Reveal>
-          <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(44px,6.5vw,88px)", letterSpacing: "-0.03em", color: "#fff", margin: "16px 0", lineHeight: 0.98, textWrap: "balance" }}>
+          <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(44px,6.5vw,88px)", letterSpacing: "-0.03em", color: "#fff", margin: "0 0 16px", lineHeight: 0.98, textWrap: "balance" }}>
             <RevealText immediate>{t("heroHeading1")}</RevealText>
             <br />
             <RevealText immediate delay={0.15} style={{ color: "var(--red)" }}>
@@ -156,22 +154,22 @@ export default async function YouthPage({
         </div>
       </section>
 
-      <section style={{ background: "var(--cream)", paddingBottom: 10 }}>
+      <section className="min-section" style={{ background: "var(--cream)", paddingBottom: 10 }}>
         <PhotoStrip photos={mainGalleryPhotos.slice(0, 3)} caption="From the 2025 convention" />
       </section>
 
       {/* Convention identity: theme + coordinator */}
-      <section style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(48px,6vw,72px)" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 14 }}>
+      <section className="min-section" style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(48px,6vw,72px)" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(240px,100%),1fr))", gap: 14 }}>
           <Reveal>
             <div style={{ borderRadius: 18, padding: "22px 24px", background: "var(--paper)", border: "1px solid var(--line)" }}>
-              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 8 }}>{t("conventionThemeLabel")}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: ".03em", color: "var(--red)", marginBottom: 8 }}>{t("conventionThemeLabel")}</div>
               <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 17, color: "var(--ink)", margin: 0, lineHeight: 1.4 }}>&ldquo;{CONVENTION_THEME}&rdquo;</p>
             </div>
           </Reveal>
           <Reveal delay={80}>
             <div style={{ borderRadius: 18, padding: "22px 24px", background: "var(--paper)", border: "1px solid var(--line)" }}>
-              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 8 }}>{t("coordinatorLabel")}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: ".03em", color: "var(--red)", marginBottom: 8 }}>{t("coordinatorLabel")}</div>
               <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 17, color: "var(--ink)", margin: 0, lineHeight: 1.4 }}>{REGIONAL_COORDINATOR}</p>
             </div>
           </Reveal>
@@ -179,8 +177,8 @@ export default async function YouthPage({
       </section>
 
       {/* Vision / Mission / Values */}
-      <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: 20 }}>
+      <section className="min-section" style={{ background: "var(--cream-2)", padding: "clamp(40px,7vw,90px) clamp(20px,5vw,64px)" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(260px,100%),1fr))", gap: 20 }}>
           {pillars.map((p, i) => (
             <Reveal key={p.label} delay={i * 90}>
               <div style={{ height: "100%", borderRadius: 22, padding: "30px 26px", background: "var(--paper)", border: "1px solid var(--line)", boxShadow: "0 10px 26px rgba(18,20,30,.06)" }}>
@@ -196,11 +194,10 @@ export default async function YouthPage({
       </section>
 
       {/* History + photo */}
-      <section style={{ background: "var(--paper)", padding: "clamp(56px,7vw,96px) clamp(20px,5vw,64px)" }}>
+      <section className="min-section" style={{ background: "var(--paper)", padding: "clamp(40px,7vw,96px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 1080, margin: "0 auto", display: "grid", gridTemplateColumns: "1.1fr 1fr", gap: "clamp(28px,4vw,48px)", alignItems: "start" }} className="youth-history-grid">
           <Reveal>
             <div>
-              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>{t("historyKicker")}</span>
               <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.5vw,40px)", letterSpacing: "-.8px", color: "var(--ink)", margin: "14px 0 18px", lineHeight: 1.05 }}>
                 {t("historyHeading")}
               </h2>
@@ -223,15 +220,14 @@ export default async function YouthPage({
       </section>
 
       {/* Major Programs */}
-      <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+      <section className="min-section" style={{ background: "var(--cream-2)", padding: "clamp(40px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 1000, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 40 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>{t("programsKicker")}</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,44px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 0", lineHeight: 1 }}>
               {t("programsHeading")}
             </h2>
           </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 16 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(220px,100%),1fr))", gap: 16 }}>
             {programs.map((p, i) => (
               <Reveal key={p.name} delay={i * 80}>
                 <div style={{ height: "100%", borderRadius: 18, overflow: "hidden", background: "var(--paper)", border: "1px solid var(--line)" }}>
@@ -252,11 +248,10 @@ export default async function YouthPage({
       </section>
 
       {/* 2026 Convention Schedule */}
-      <section style={{ background: "var(--paper)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+      <section className="min-section" style={{ background: "var(--paper)", padding: "clamp(40px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 780, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 40 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>2026 Convention Schedule</span>
-          </Reveal>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,4vw,38px)", letterSpacing: "-.8px", color: "var(--ink)", margin: 0, lineHeight: 1.05 }}>2026 Convention Schedule</h2></Reveal>
           <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
             {schedule2026.map((block, i) => (
               <Reveal key={block.day} delay={i * 60}>
@@ -278,15 +273,14 @@ export default async function YouthPage({
       </section>
 
       {/* Moments */}
-      <section style={{ background: "var(--paper)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+      <section className="min-section" style={{ background: "var(--paper)", padding: "clamp(40px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 40 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>{t("momentsKicker")}</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,44px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 0", lineHeight: 1 }}>
               {t("momentsHeading")}
             </h2>
           </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 14 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(220px,100%),1fr))", gap: 14 }}>
             {moments.map((m, i) => (
               <Reveal key={m.src} delay={i * 80}>
                 <div style={{ position: "relative", width: "100%", height: 230, borderRadius: 18, overflow: "hidden", boxShadow: "0 12px 28px rgba(18,20,30,.1)" }}>
@@ -302,15 +296,14 @@ export default async function YouthPage({
           distinct youth event from the main Annual Convention. Year/dates/
           venue come from whatever convention is current or next, so this
           section doesn't quietly keep saying a past year's dates. */}
-      <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+      <section className="min-section" style={{ background: "var(--cream-2)", padding: "clamp(40px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 700, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 32 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>{t("mealHeading")}</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,4vw,42px)", letterSpacing: "-.8px", color: "var(--ink)", margin: "12px 0 14px", lineHeight: 1.05 }}>
               {t("mealSubheading", { year: nextCy.year })}
             </h2>
             <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.7 }}>
-              {t("mealBody", { dates: dateRangeLabel(nextCy), venue: CONVENTION_VENUE })} {t("mealQuestionsLead")} <a href="mailto:cacnayyam@outlook.com" style={{ color: "var(--red)" }}>cacnayyam@outlook.com</a>.
+              {t("mealBody", { dates: dateRangeLabel(nextCy), venue: CONVENTION_VENUE })} {t("mealQuestionsLead")} <a href="mailto:cacnayyam@outlook.com" style={{ color: "var(--red)", display: "inline-block", padding: "12px 0", fontWeight: 700 }}>cacnayyam@outlook.com</a>.
             </p>
           </Reveal>
           <Reveal delay={80}>
@@ -320,7 +313,7 @@ export default async function YouthPage({
       </section>
 
       {/* CTA */}
-      <section style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)", textAlign: "center" }}>
+      <section className="min-section" style={{ background: "var(--ink)", padding: "clamp(40px,7vw,90px) clamp(20px,5vw,64px)", textAlign: "center" }}>
         <Reveal>
           <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4.5vw,54px)", letterSpacing: "-1.2px", color: "var(--cream)", margin: "0 0 16px", lineHeight: 0.98 }}>
             {t("ctaHeading")}
