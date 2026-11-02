@@ -121,7 +121,8 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
                 const v = e.target.value;
                 setCustomAmount(v);
                 // Clearing the field falls back to the default preset instead of leaving no amount.
-                setAmount(v.trim() === "" ? PRESET_AMOUNTS[1] : null);
+                // A half-typed entry like "-" also reads as "", so only an empty field restores it.
+                setAmount(v.trim() === "" && !e.target.validity.badInput ? PRESET_AMOUNTS[1] : null);
               }}
             />
           </div>

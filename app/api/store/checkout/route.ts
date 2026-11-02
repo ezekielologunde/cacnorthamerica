@@ -107,7 +107,7 @@ export async function POST(request: Request) {
         },
         quantity: l.quantity,
       })),
-      customer_email: body.contactEmail,
+      customer_email: body.contactEmail.trim(),
       // Every item is a physical product (books, apparel) -- without this the
       // order has no address to ship to. Shipping cost is not charged here yet.
       shipping_address_collection: { allowed_countries: ["US", "CA"] },

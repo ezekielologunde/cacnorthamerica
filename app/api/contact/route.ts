@@ -125,9 +125,10 @@ export async function POST(req: Request) {
 
   // Save to Supabase. Store the same trimmed address the auto-reply lookup
   // uses, or a padded Email value would never match its own earlier row and
-  // dodge the daily cap. Awaited so a later email failure can tell whether
+  // dodge the daily cap. Runs alongside the email send (a slow insert never
+  // delays the email); it is only awaited if the send fails, to tell whether
   // the message is already safely stored.
-  const saved = await saveToSupabase({ ...fields, Email: replyToRaw }).catch((e) => {
+  const savedPromise = saveToSupabase({ ...fields, Email: replyToRaw }).catch((e) => {
     console.error("[contact] Supabase save failed:", e);
     return false;
   });
@@ -158,11 +159,11 @@ export async function POST(req: Request) {
     if (error) {
       console.error("[contact] Resend error:", error);
       // Already stored: opening the visitor's mail client too would send it twice.
-      return NextResponse.json(saved ? { success: true } : { method: "mailto" });
+      return NextResponse.json((await savedPromise) ? { success: true } : { method: "mailto" });
     }
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("[contact] send failed:", err);
-    return NextResponse.json(saved ? { success: true } : { method: "mailto" });
+    return NextResponse.json((await savedPromise) ? { success: true } : { method: "mailto" });
   }
 }

@@ -77,7 +77,7 @@ export async function POST(request: Request) {
         },
         quantity: 1,
       }],
-      customer_email: body.contactEmail,
+      customer_email: body.contactEmail.trim(),
       success_url: `${SITE_URL}/giving/confirmation?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}/giving`,
       metadata: { kind: "giving", contact_name: body.contactName, campaign_slug: campaign.slug, campaign_title: campaign.title },
