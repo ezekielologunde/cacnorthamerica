@@ -272,5 +272,33 @@ const adultEmail = emailBodies.find((e) => e.html?.includes("Adult Two"));
 check("adult (paid): the confirmation email shows each person's code next to their name",
   ["Adult One", "Adult Two"].every((n, i) => codeBesideName(adultEmail?.html, n, adultCodes[i])));
 
+// Adult zone / meals / allergies columns, before "Check-in Code".
+const adultIndividual = {
+  ...adultSummary, ref: "ref-adult-ind", registrationType: "individual", churchName: null, dcc: "Zone 3",
+  registrants: [{ n: "Ind One", c: "adult", m: 129, l: "Gluten" }, { n: "Ind Two", c: "adult", m: 0 }],
+};
+sessions.cs_test_adult_ind = {
+  payment_status: "paid",
+  metadata: { kind: "registration", convention_year: "2027", ...chunkForMetadata("d", encodeSummary(adultIndividual)) },
+};
+const indRes = await deliver("cs_test_adult_ind");
+const indRow = allRows.find((r) => r["Stripe Session"] === "cs_test_adult_ind");
+const indCols = Object.keys(indRow ?? {}).filter((k) => k !== "formName" && k !== "secret");
+check("adult individual (paid): DCC / Zone, Meals and Allergies cells, with Check-in Code still last",
+  indRes.status === 200 && indRow?.["DCC / Zone"] === "Zone 3" &&
+  indRow.Meals === "Ind One: Tuesday Lunch — 7/13, Friday Dinner — 7/16; Ind Two: None" && indRow.Allergies === "Ind One: Gluten" &&
+  lastColumn(indRow) === "Check-in Code" && indCols.indexOf("Allergies") === indCols.length - 2);
+const indEmail = emailBodies.find((e) => e.html?.includes("Ind Two"));
+check("adult individual (paid): email shows the zone and meals",
+  !!indEmail?.html?.includes("DCC / Zone: Zone 3") && indEmail.html.includes("Meals: None"));
+sessions.cs_test_adult_grp = {
+  payment_status: "paid",
+  metadata: { kind: "registration", convention_year: "2027", ...chunkForMetadata("d", encodeSummary({ ...adultSummary, ref: "ref-adult-grp", dcc: "Zone 9" })) },
+};
+await deliver("cs_test_adult_grp");
+const grpRow = allRows.find((r) => r["Stripe Session"] === "cs_test_adult_grp");
+check("adult group (paid): zone filled, Meals and Allergies blank",
+  grpRow?.["DCC / Zone"] === "Zone 9" && grpRow.Meals === "" && grpRow.Allergies === "" && lastColumn(grpRow) === "Check-in Code");
+
 process.stdout.write(failures ? `\n${failures} check(s) FAILED\n` : "\nAll checks passed\n");
 process.exit(failures ? 1 : 0);

@@ -221,7 +221,7 @@ export default async function RegisterPage({ params }: { params: Promise<{ local
       <section id="register-form" style={{ background: "var(--paper)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)", scrollMarginTop: 72 }}>
         <div style={{ maxWidth: 640, margin: "0 auto" }}>
           {isOpen ? (
-            <RegisterForm year={cy.year} priceMap={priceMap} />
+            <RegisterForm year={cy.year} startIso={cy.startIso} priceMap={priceMap} />
           ) : (
             <div style={{ textAlign: "center", background: "var(--cream)", border: "1px solid var(--line)", borderRadius: 20, padding: "clamp(32px,5vw,48px)" }}>
               <Sparkles size={28} strokeWidth={2} color="var(--gold)" aria-hidden style={{ marginBottom: 16 }} />

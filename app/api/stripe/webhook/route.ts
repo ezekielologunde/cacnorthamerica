@@ -8,7 +8,7 @@ import { sendGivingConfirmationEmail } from "@/lib/givingEmail";
 import { SITE_URL } from "@/lib/site";
 import { splitCheckoutAmount, isProcessingFeeLine } from "@/lib/processingFee";
 import { conventionYears } from "@/lib/conventions";
-import { youthSheetName, youthSheetRows } from "@/lib/youthRegistration";
+import { adultSheetExtras, youthSheetName, youthSheetRows } from "@/lib/youthRegistration";
 import { checkinCodesFor, checkinCodeSheetCell } from "@/lib/checkinCode";
 
 // checkout.session.completed also fires for delayed methods (ACH, etc.)
@@ -208,6 +208,11 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
         "Total": totalDollars,
         ...feeColumns,
         "Stripe Session": sessionId,
+        // New columns go before "Check-in Code" so it stays last; blank in
+        // the no-summary fallback.
+        ...(summary
+          ? adultSheetExtras(summary, conventionYears.find((cy) => cy.year === summary.year)?.startIso)
+          : { "DCC / Zone": "", "Meals": "", "Allergies": "" }),
         // "Name: CODE" pairs in "Registrants" order; blank in the no-summary
         // fallback (no ref).
         "Check-in Code": summary ? checkinCodeSheetCell(summary) : "",

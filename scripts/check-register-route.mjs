@@ -90,7 +90,12 @@ async function post(body, { header = true } = {}) {
 
 const adult = (category) => ({
   registrationType: "individual", churchName: "CAC Example", contactName: "A Adult", contactEmail: "a@example.com",
-  contactPhone: "4435550100", registrants: [{ firstName: "A", lastName: "Adult", category }],
+  contactPhone: "4435550100", dccZone: "Zone 3", registrants: [{ firstName: "A", lastName: "Adult", category, meals: ["tue_lunch"] }],
+});
+const adultPerson = (i, extra = {}) => ({ firstName: "Adult", lastName: `Person${i}`, category: "adult", meals: ["tue_lunch", "fri_dinner"], ...extra });
+const adultBody = (registrants, extra = {}) => ({
+  track: "adult", registrationType: "individual", churchName: null, contactName: "A Adult", contactEmail: "a@example.com",
+  contactPhone: "4435550100", dccZone: "Zone 3", registrants, ...extra,
 });
 const youth = (registrants, extra = {}) => ({
   track: "youth", contactName: "Parent Name", contactEmail: "parent@example.com", contactPhone: "(443) 555-0100",
@@ -106,6 +111,76 @@ for (const c of ["child", "young_adult"]) {
 const adultTrackExplicit = await post({ ...adult("child"), track: "adult" });
 check("explicit track 'adult' rejects category child", adultTrackExplicit.status === 400);
 check("unknown track rejected", (await post({ ...adult("adult"), track: "kids" })).status === 400);
+
+// Adult DCC / Zone, meals and allergies: validated on the server.
+created.length = 0;
+for (const [label, body] of [
+  ["missing DCC / Zone", adultBody([adultPerson(1)], { dccZone: undefined })],
+  ["blank DCC / Zone", adultBody([adultPerson(1)], { dccZone: "   " })],
+  ["over-long DCC / Zone", adultBody([adultPerson(1)], { dccZone: "D".repeat(121) })],
+]) {
+  const r = await post(body);
+  check(`adult ${label} rejected with 400`, r.status === 400 && /DCC . Zone|characters or fewer/.test(r.body.error ?? ""));
+}
+check("adult group without DCC / Zone rejected too",
+  (await post(adultBody([adultPerson(1)], { registrationType: "group", churchName: "CAC X", dccZone: "" }))).status === 400);
+check("adult individual with no meal choice rejected with 400",
+  /choose at least one meal/.test((await post(adultBody([adultPerson(1, { meals: [] })]))).body.error ?? ""));
+check("adult individual with meals and noMeals both rejected",
+  (await post(adultBody([adultPerson(1, { noMeals: true })]))).status === 400);
+check("adult individual unknown meal slot rejected", (await post(adultBody([adultPerson(1, { meals: ["sat_breakfast"] })]))).status === 400);
+check("adult individual allergies over 200 chars rejected",
+  /200 characters/.test((await post(adultBody([adultPerson(1, { allergies: "A".repeat(201) })]))).body.error ?? ""));
+check("rejected adult requests create no Stripe session", created.length === 0);
+
+// Paid adult individual: zone, meals and allergies travel in the summary; price and fee unchanged.
+created.length = 0;
+const adultPaid = await post(adultBody([adultPerson(1, { allergies: "  Gluten  " }), adultPerson(2, { meals: [], noMeals: true })], { dccZone: "  Zone 3  " }));
+const adultParams = created[0];
+const adultMeta = decodeSummary(unchunkFromMetadata(adultParams?.metadata, "d"));
+check("paid adult individual reaches Stripe with zone, meals and trimmed allergies in the summary",
+  adultPaid.status === 200 && adultMeta?.dcc === "Zone 3" && adultMeta.registrants[0].m === 129 &&
+  adultMeta.registrants[0].l === "Gluten" && adultMeta.registrants[1].m === 0 && !("l" in adultMeta.registrants[1]) && !adultMeta.youth);
+check("adult pricing and processing fee unchanged by the new fields",
+  adultMeta?.totalAmountCents === 2 * adultParams.line_items[0].price_data.unit_amount &&
+  adultParams.metadata.subtotal_cents === String(adultMeta.totalAmountCents) && adultParams.line_items.length === 3 &&
+  adultParams.line_items.at(-1).price_data.product_data.name === "Processing fee");
+
+// Group mode is names-only: meals / allergies sent anyway are ignored.
+created.length = 0;
+await post(adultBody([adultPerson(1, { allergies: "Nuts" }), adultPerson(2)], { registrationType: "group", churchName: "CAC Group" }));
+const groupMeta = decodeSummary(unchunkFromMetadata(created[0]?.metadata, "d"));
+check("adult group summary carries the zone but no meals or allergies",
+  groupMeta?.dcc === "Zone 3" && groupMeta.registrants.every((r) => !("m" in r) && !("l" in r)));
+
+// Largest allowed adult registration: 30 people, every field maxed, all meals.
+created.length = 0;
+const maxAdults = Array.from({ length: 30 }, (_, i) => adultPerson(i, {
+  firstName: "F".repeat(120), lastName: "L".repeat(118) + String(i).padStart(2, "0"), meals: ["tue_lunch", "tue_dinner", "wed_lunch", "wed_dinner", "thu_lunch", "thu_dinner", "fri_lunch", "fri_dinner"], allergies: "A".repeat(200),
+}));
+const maxAdultRes = await post(adultBody(maxAdults, { contactName: "N".repeat(120), dccZone: "D".repeat(120), contactPhone: "5".repeat(120) }));
+// ASCII-only it just fits; either way it must never reach Stripe over the limit.
+check(`30-person maxed adult registration fits (${Object.keys(created[0]?.metadata ?? {}).length}/${STRIPE_METADATA_MAX_KEYS} keys) or is refused, never over the limit`,
+  (maxAdultRes.status === 200 && created.length === 1 && Object.keys(created[0].metadata).length <= STRIPE_METADATA_MAX_KEYS) ||
+  (maxAdultRes.status === 400 && /split it/.test(maxAdultRes.body.error ?? "") && created.length === 0));
+// Multi-byte allergy notes (still 200 characters) push it past 50 keys: refused with a clear message.
+created.length = 0;
+const wideRes = await post(adultBody(maxAdults.map((p) => ({ ...p, allergies: "é".repeat(200) })), { contactName: "N".repeat(120), dccZone: "D".repeat(120), contactPhone: "5".repeat(120) }));
+check("oversize adult registration (multi-byte allergies) is refused with the split message, creating no Stripe session",
+  wideRes.status === 400 && /split it into two smaller registrations/.test(wideRes.body.error ?? "") && created.length === 0);
+created.length = 0;
+const typical = Array.from({ length: 30 }, (_, i) => adultPerson(i, { firstName: "Christopher", lastName: `Johnson-Williams${i}`, meals: ["tue_lunch", "tue_dinner", "wed_lunch", "wed_dinner", "thu_lunch", "thu_dinner", "fri_lunch", "fri_dinner"], allergies: "No dairy or shellfish, please" }));
+const typicalRes = await post(adultBody(typical));
+check(`30-person adult registration with all meals and allergy notes fits Stripe metadata (${Object.keys(created[0]?.metadata ?? {}).length}/${STRIPE_METADATA_MAX_KEYS} keys)`,
+  typicalRes.status === 200 && created.length === 1 && Object.keys(created[0].metadata).length <= STRIPE_METADATA_MAX_KEYS);
+
+// Adult email shows the zone and each person's meals and allergies.
+emails.length = 0;
+await sendRegistrationConfirmationEmail({ ...adultMeta, ref: "adult-ref" }, "https://example.invalid/c", true);
+const adultHtml = emails[0]?.html ?? "";
+check("adult email shows DCC / Zone, each person's meals and allergies",
+  adultHtml.includes("DCC / Zone: Zone 3") && adultHtml.includes("Meals: Tuesday Lunch — 7/13, Friday Dinner — 7/16") &&
+  adultHtml.includes("Meals: None") && adultHtml.includes("Allergies: Gluten"));
 
 // Youth validation.
 for (const age of [0, 30, "abc", 5.5]) {

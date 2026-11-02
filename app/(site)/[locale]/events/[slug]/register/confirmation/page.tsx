@@ -11,7 +11,7 @@ import { resolveRegistrationConfirmation } from "@/lib/registrationConfirmation"
 import { PaymentOptions } from "@/components/register/PaymentOptions";
 import { conventionYears, type ConventionYear, type RegistrantCategory } from "@/lib/conventions";
 import { setRequestLocale } from "next-intl/server";
-import { describeYouthRegistrant } from "@/lib/youthRegistration";
+import { describeMeals, describeYouthRegistrant } from "@/lib/youthRegistration";
 import { checkinCodesFor } from "@/lib/checkinCode";
 
 const CATEGORY_LABEL: Record<RegistrantCategory, string> = {
@@ -108,14 +108,19 @@ export default async function RegisterConfirmationPage({
               {summary.churchName && (
                 <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 16, color: "#fff", margin: "0 0 4px" }}>{summary.churchName}</p>
               )}
+              {summary.dcc && (
+                <p style={{ fontSize: 13.5, color: "rgba(245,246,250,.75)", margin: "0 0 4px" }}>DCC / Zone: {summary.dcc}</p>
+              )}
               <p style={{ fontSize: 13.5, color: "rgba(245,246,250,.6)", margin: 0 }}>{summary.contactEmail}</p>
             </div>
             {qrSvg && <QrCode svg={qrSvg} label="Check-in QR code" />}
           </div>
           <ul style={{ margin: "16px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8 }}>
             {summary.registrants.map((r, i) => {
-              // Youth & Child registrants show their age group and meals.
+              // Youth & Child registrants show their age group and meals;
+              // adult individual-mode registrants show their meals.
               const youth = describeYouthRegistrant(r, cy.startIso);
+              const meals = youth ? youth.meals : describeMeals(r.m, cy.startIso);
               const code = checkinCodes[i];
               return (
                 <li key={i} style={{ fontSize: 14.5 }}>
@@ -132,9 +137,9 @@ export default async function RegisterConfirmationPage({
                       {code}
                     </code>
                   </p>
-                  {youth && (
+                  {meals && (
                     <p style={{ fontSize: 12.5, color: "rgba(245,246,250,.55)", margin: "3px 0 0", lineHeight: 1.5 }}>
-                      Meals: {youth.meals.length > 0 ? youth.meals.join(", ") : "None"}
+                      Meals: {meals.length > 0 ? meals.join(", ") : "None"}
                     </p>
                   )}
                 </li>

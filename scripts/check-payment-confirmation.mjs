@@ -57,6 +57,7 @@ const sessions = {
   cs_test_giving1: { payment_status: "paid", metadata: { kind: "giving", campaign_title: "Building Fund", ...chunkForMetadata("d", forgedD) } },
   cs_test_regpaid: { payment_status: "paid", metadata: { kind: "registration", convention_year: String(YEAR), ...chunkForMetadata("d", encodeSummary({ ...childOnly, ref: "z", registrants: [{ n: "Real Adult", c: "adult" }], totalAmountCents: 20000 })) } },
   cs_test_regunpaid: { payment_status: "unpaid", metadata: { kind: "registration", ...chunkForMetadata("d", encodeSummary({ ...childOnly, registrants: [{ n: "Real Adult", c: "adult" }], totalAmountCents: 20000 })) } },
+  cs_test_regextras: { payment_status: "paid", metadata: { kind: "registration", convention_year: String(YEAR), ...chunkForMetadata("d", encodeSummary({ ...childOnly, ref: "w", dcc: "Zone 3", registrants: [{ n: "Real Adult", c: "adult", m: 3 }], totalAmountCents: 20000 })) } },
   cs_test_regother: { payment_status: "paid", metadata: { kind: "registration", ...chunkForMetadata("d", encodeSummary({ ...childOnly, year: 2026 })) } },
 };
 const retrieveSession = async (id) => {
@@ -93,6 +94,9 @@ check("genuine child-only sealed token renders Paid with a re-openable QR path",
 const paid = await resolve({ sessionId: "cs_test_regpaid", d: forgedD });
 check("paid registration session renders Paid from Stripe metadata, ignoring URL d",
   rendersPaid(paid) && paid.summary.registrants[0].n === "Real Adult" && paid.confirmationPath === `/events/cacna-${YEAR}/register/confirmation?session_id=cs_test_regpaid`);
+const extras = await resolve({ sessionId: "cs_test_regextras" });
+check("paid adult session keeps DCC / Zone and meals for the confirmation page",
+  rendersPaid(extras) && extras.summary.dcc === "Zone 3" && extras.summary.registrants[0].m === 3);
 const unpaid = await resolve({ sessionId: "cs_test_regunpaid" });
 check("unpaid registration session renders Pending (no Paid/QR)", !!unpaid && !unpaid.isPaid);
 check("no confirmation path contains readable PII",

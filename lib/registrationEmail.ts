@@ -5,7 +5,7 @@ import { emailShell, emailCard, sender } from "@/lib/email";
 import { paymentOptions } from "@/lib/registrationInfo";
 import type { RegistrationSummary } from "@/lib/checkoutSummary";
 import { conventionYears, type RegistrantCategory } from "@/lib/conventions";
-import { describeYouthRegistrant } from "@/lib/youthRegistration";
+import { describeMeals, describeYouthRegistrant } from "@/lib/youthRegistration";
 import { checkinCodesFor } from "@/lib/checkinCode";
 
 const CATEGORY_LABEL: Record<RegistrantCategory, string> = {
@@ -35,11 +35,12 @@ function buildHtml(summary: RegistrationSummary, confirmationUrl: string, isPaid
   const codes = checkinCodesFor(summary);
   const registrantRows = summary.registrants
     .map((r, i) => {
-      // Youth & Child registrants also list their age group, meals and
-      // allergy notes under their name.
+      // Youth & Child registrants, and adult individual-mode registrants,
+      // also list their meals and allergy notes under their name.
       const youth = describeYouthRegistrant(r, startIso);
-      const details = youth
-        ? `<div style="font-size:12.5px;color:#8a8983;margin-top:3px;line-height:1.5">Meals: ${escapeHtml(youth.meals.length > 0 ? youth.meals.join(", ") : "None")}${r.l ? `<br>Allergies: ${escapeHtml(r.l)}` : ""}</div>`
+      const meals = youth ? youth.meals : describeMeals(r.m, startIso);
+      const details = meals
+        ? `<div style="font-size:12.5px;color:#8a8983;margin-top:3px;line-height:1.5">Meals: ${escapeHtml(meals.length > 0 ? meals.join(", ") : "None")}${r.l ? `<br>Allergies: ${escapeHtml(r.l)}` : ""}</div>`
         : "";
       const label = youth ? youth.ageGroup : (CATEGORY_LABEL[r.c] ?? "Adult");
       const code = `<div style="font-size:12.5px;color:#8a8983;margin-top:3px">Check-in code: <span style="font-family:Consolas,Menlo,'Courier New',monospace;font-size:14px;font-weight:700;color:#12141E;letter-spacing:.5px">${escapeHtml(codes[i])}</span></div>`;
@@ -64,6 +65,7 @@ function buildHtml(summary: RegistrationSummary, confirmationUrl: string, isPaid
 
   const bodyHtml = `<div style="background:#fff;border:1px solid #ECE9E4;border-radius:16px;padding:24px 26px">
       ${summary.churchName ? `<p style="margin:0 0 4px;font-weight:700;font-size:16px;color:#12141E">${escapeHtml(summary.churchName)}</p>` : ""}
+      ${summary.dcc ? `<p style="margin:0 0 4px;font-size:13.5px;color:#5f5e5a">DCC / Zone: ${escapeHtml(summary.dcc)}</p>` : ""}
       <p style="margin:0 0 16px;font-size:13.5px;color:#8a8983">${escapeHtml(summary.contactEmail)}</p>
       <table style="width:100%;border-collapse:collapse">${registrantRows}</table>
       <table style="width:100%;border-collapse:collapse;margin-top:16px;padding-top:14px;border-top:1px solid #ECE9E4">
