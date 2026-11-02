@@ -7,13 +7,13 @@ import "./home-mobile.css";
 // imagery — every photo here has been visually confirmed as genuinely ours.
 const PHOTOS: { src: string; alt: string }[] = [
   { src: "/images/convention-2025-01.jpg", alt: "Ministers seated together at the 2025 CACNA Latunde Region General Convention" },
-  { src: "/images/cac-clergy-ceremony.jpg", alt: "CACNA clergy in an ordination-style ceremony" },
+  { src: "/photos/gallery-archive/dsc-8509-1567.jpg", alt: "A full sanctuary of worshipers seated for a CACNA service" },
   { src: "/images/convention-2025-05.jpg", alt: "Women of CACNA worshiping together at the 2025 Convention" },
   { src: "/images/bible-institute-graduation.jpg", alt: "CACNA Bible Institute graduation ceremony" },
   { src: "/images/convention-children-01.jpg", alt: "The Children's Department in an outdoor group session at the 2025 CACNA Convention" },
   { src: "/images/cacma-fellowship.jpg", alt: "CACMA fellowship gathering" },
   { src: "/images/convention-2025-03.jpg", alt: "Two ministers in academic regalia at the 2025 CACNA Convention" },
-  { src: "/images/cac-graduation-group.jpg", alt: "A CACNA graduation ceremony group photo" },
+  { src: "/photos/gallery-archive/dsc-8827-1541.jpg", alt: "Graduates in caps and gowns standing together on the lawn" },
   { src: "/images/convention-children-03.jpg", alt: "The Children's Department in an indoor session at the 2025 CACNA Convention" },
   { src: "/images/convention-2025-04.jpg", alt: "Pastors gathered at the pulpit during the 2025 CACNA Convention" },
 ];
