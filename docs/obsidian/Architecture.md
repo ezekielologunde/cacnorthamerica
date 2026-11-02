@@ -25,7 +25,7 @@ app/
                       [locale]; stays English-only, unaffected by i18n
   admin/login/       Supabase Auth login
   api/                contact, gallery, instagram, cloudinary/sign,
-                      register, store/checkout, stripe/webhook, meal-request
+                      register, store/checkout, stripe/webhook
                       -- also NOT under [locale] (route handlers, no UI)
   newsletter/actions.ts  Server action (not a page/route of its own)
 components/          admin/ blog/ calendar/ media/ ministries/ navigation/

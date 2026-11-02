@@ -309,8 +309,10 @@
     "historyBody": "Christ Apostolic Church allowed the togetherness and fellowship of her elites and youths right from her early days. As extra-constitutional organizations formed by young men and women with godly zeal, they operated within the Church under the strict supervision and control of the Church Authority.",
     "programsHeading": "Where we watch, learn, and pray.",
     "momentsHeading": "Life among CACNA's youth.",
-    "mealSubheading": "{year} Meal Request",
-    "mealBody": "RSVP for meals during the Convention, {dates} at {venue}.",
+    "registerHeading": "Youth & Child Registration {year}",
+    "registerBody": "Everyone under 30 registers for the Convention ({dates} at {venue}) on one form: add each child, youth or young adult and choose their meals in the same step.",
+    "registerCta": "Register a child or youth",
+    "registerSoon": "Registration opens here as soon as it goes live.",
     "mealQuestionsLead": "Questions? Email",
     "ctaHeading": "Follow along.",
     "ctaBody": "Programs, prayer, and updates from CACNA's youth and young adults."
