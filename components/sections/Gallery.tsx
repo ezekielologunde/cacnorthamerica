@@ -6,6 +6,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { X, ChevronLeft, ChevronRight, Images } from "lucide-react";
 import { haptic } from "@/lib/haptics";
 import { cloudinaryLoader } from "@/lib/cloudinary-loader";
+import { archiveGalleryPhotos } from "@/lib/archiveGalleryPhotos";
 
 // Real photos from the 2025 CACNA Latunde Region General Convention, pulled
 // from the dedicated Convention site's (cacna-convention.vercel.app) own
@@ -87,6 +88,8 @@ const STATIC_PHOTOS: Photo[] = [
   { id: "convention-2025-children-18", src: "/photos/gallery-children/cacna_children18.jpeg", alt: "Photo 18 of 20 from the 2025 CACNA Convention Children's Department" },
   { id: "convention-2025-children-19", src: "/photos/gallery-children/cacna_children19.jpeg", alt: "Photo 19 of 20 from the 2025 CACNA Convention Children's Department" },
   { id: "convention-2025-children-20", src: "/photos/gallery-children/cacna_children20.jpeg", alt: "Photo 20 of 20 from the 2025 CACNA Convention Children's Department" },
+  // Older photos recovered from the previous WordPress site's backup.
+  ...archiveGalleryPhotos,
 ];
 
 interface Photo { src: string; alt: string; id: string; }
