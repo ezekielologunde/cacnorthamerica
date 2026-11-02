@@ -1,3 +1,4 @@
+import "@/components/about-people-mobile.css";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
@@ -43,7 +44,7 @@ export default async function PastLeadersPage({
   const leaders = await getLeaders(["past_president", "past_superintendent", "past_evangelist", "past_secretary", "past_treasurer"]);
 
   return (
-    <main id="main-content">
+    <main id="main-content" className="ap-main">
       <Nav heroDark />
 
       {/* Hero */}
@@ -51,12 +52,9 @@ export default async function PastLeadersPage({
         <div aria-hidden style={{ position: "absolute", top: -120, right: -100, width: 640, height: 500, background: "radial-gradient(circle,rgba(253,200,65,.2),transparent 65%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 820, margin: "0 auto", position: "relative", zIndex: 2 }}>
           <Reveal>
-            <Link href="/leadership" style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 700, color: "rgba(245,246,250,.6)", textDecoration: "none", marginBottom: 28 }}>
+            <Link href="/leadership" style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 14, fontWeight: 700, color: "rgba(245,246,250,.6)", textDecoration: "none", marginBottom: 28 }}>
               <ArrowLeft size={14} strokeWidth={2.5} aria-hidden /> Leadership
             </Link>
-          </Reveal>
-          <Reveal delay={60}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Our history</span>
           </Reveal>
           <Reveal delay={120}>
             <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(40px,6vw,76px)", letterSpacing: "-2px", color: "#fff", margin: "16px 0", lineHeight: .95 }}>
@@ -73,7 +71,7 @@ export default async function PastLeadersPage({
 
       {/* Sections */}
       <section style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 1180, margin: "0 auto", display: "flex", flexDirection: "column", gap: 64 }}>
+        <div style={{ maxWidth: 1180, margin: "0 auto", display: "flex", flexDirection: "column", gap: 48 }}>
           {SECTIONS.map(({ category, label }) => {
             const people = leaders.filter((l) => l.category === category);
             if (people.length === 0) return null;
@@ -86,7 +84,7 @@ export default async function PastLeadersPage({
                   {people.map((p, i) => (
                     <Reveal key={p.id} delay={(i % 6) * 50}>
                       <div className="card-lift" style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 22, overflow: "hidden", height: "100%", display: "flex", flexDirection: "column" }}>
-                        <div style={{ position: "relative", width: "100%", height: 240, flexShrink: 0, background: "var(--ink)" }}>
+                        <div style={{ position: "relative", width: "100%", height: 280, flexShrink: 0, background: "var(--ink)" }}>
                           {p.photo_url ? (
                             <ImageLightbox src={p.photo_url} alt={p.full_name} />
                           ) : (
@@ -104,16 +102,16 @@ export default async function PastLeadersPage({
                               <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "var(--ink)", margin: "0 0 4px", lineHeight: 1.2 }}>{p.full_name}</h3>
                             </Link>
                             <div style={{ display: "flex", flexWrap: "wrap", gap: "3px 10px" }}>
-                              <span style={{ fontSize: 13, color: "var(--red)", fontWeight: 700 }}>{p.title}</span>
+                              <span style={{ fontSize: 14, color: "var(--red)", fontWeight: 700 }}>{p.title}</span>
                               {p.tenure_start && (
-                                <span style={{ fontSize: 12.5, color: "var(--ink-soft)" }}>
+                                <span style={{ fontSize: 13.5, color: "var(--ink-soft)" }}>
                                   {p.tenure_start}–{p.tenure_end ?? "present"}
                                 </span>
                               )}
                             </div>
                           </div>
-                          {p.bio && <p style={{ fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.65, margin: "0 0 14px", flex: 1 }}>{p.bio}</p>}
-                          <Link href={`/leadership/${slugifyLeaderName(p.full_name)}`} className="press" style={{ marginTop: "auto", display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 700, color: "var(--ink)", textDecoration: "none" }}>
+                          {p.bio && <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.65, margin: "0 0 14px", flex: 1 }}>{p.bio}</p>}
+                          <Link href={`/leadership/${slugifyLeaderName(p.full_name)}`} className="press" style={{ marginTop: "auto", display: "inline-flex", alignItems: "center", gap: 6, fontSize: 14, fontWeight: 700, color: "var(--ink)", textDecoration: "none" }}>
                             View full profile <span aria-hidden>→</span>
                           </Link>
                         </div>

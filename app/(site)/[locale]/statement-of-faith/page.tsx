@@ -1,3 +1,4 @@
+import "@/components/about-people-mobile.css";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
@@ -75,16 +76,13 @@ export default async function StatementOfFaithPage({
   setRequestLocale(locale);
 
   return (
-    <main id="main-content">
+    <main id="main-content" className="ap-main">
       <Nav />
 
       {/* Hero */}
       <section style={{ background: "var(--cream)", padding: "140px clamp(20px,5vw,64px) 70px", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: -60, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,var(--blue),var(--red) 70%)", opacity: 0.1, filter: "blur(6px)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 780, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
-          <Reveal>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>What We Believe</span>
-          </Reveal>
           <Reveal delay={80}>
             <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(42px,6vw,78px)", letterSpacing: "-0.03em", color: "var(--ink)", margin: "16px 0", lineHeight: 0.96, textWrap: "balance" }}>
               Statement of Faith.
@@ -108,16 +106,16 @@ export default async function StatementOfFaithPage({
         <div style={{ maxWidth: 780, margin: "0 auto", display: "flex", flexDirection: "column", gap: 8 }}>
           {articles.map((a, i) => (
             <Reveal key={a.title} delay={Math.min(i * 40, 280)}>
-              <div style={{ padding: "26px 0", borderBottom: i < articles.length - 1 ? "1px solid var(--line)" : "none" }}>
+              <div style={{ padding: "22px 0", borderBottom: i < articles.length - 1 ? "1px solid var(--line)" : "none" }}>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 14, marginBottom: 10 }}>
-                  <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 13, color: "var(--red)", letterSpacing: "1.5px", flexShrink: 0 }}>
+                  <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 14, color: "var(--red)", letterSpacing: "1.5px", flexShrink: 0 }}>
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 21, letterSpacing: "-.3px", color: "var(--ink)", margin: 0, lineHeight: 1.2 }}>
                     {a.title}
                   </h2>
                 </div>
-                <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.75, margin: "0 0 0 34px" }}>{a.text}</p>
+                <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.75, margin: "0 0 0 34px" }} className="ap-faith-text">{a.text}</p>
               </div>
             </Reveal>
           ))}
@@ -132,8 +130,8 @@ export default async function StatementOfFaithPage({
           </h2>
           <p style={{ fontSize: 16.5, color: "rgba(245,246,250,.6)", margin: "0 0 32px" }}>Find a CACNA member church near you — onsite or online.</p>
           <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
-            <Link href="/zones" style={{ background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(200,30,58,.4)" }}>Find a Zone →</Link>
-            <Link href="/about" style={{ background: "rgba(245,246,250,.1)", color: "var(--cream)", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(245,246,250,.2)" }}>About CACNA</Link>
+            <Link href="/zones" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(200,30,58,.4)" }}>Find a Zone →</Link>
+            <Link href="/about" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", background: "rgba(245,246,250,.1)", color: "var(--cream)", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(245,246,250,.2)" }}>About CACNA</Link>
           </div>
         </Reveal>
       </section>
