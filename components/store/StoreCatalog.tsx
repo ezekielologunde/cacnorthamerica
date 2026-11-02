@@ -97,6 +97,7 @@ export function StoreCatalog({ categories }: { categories: { key: string; label:
                   <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: "auto", paddingTop: 16 }}>
                     {product.sizes.length > 0 && (
                       <select
+                        aria-label={`Size for ${product.name}`}
                         value={selections[product.id] ?? product.sizes[0]}
                         onChange={(e) => setSelections((s) => ({ ...s, [product.id]: e.target.value }))}
                         style={{ ...inputStyle, width: "auto", padding: "8px 10px", cursor: "pointer" }}
@@ -146,12 +147,12 @@ export function StoreCatalog({ categories }: { categories: { key: string; label:
 
             <form onSubmit={handleCheckout}>
               <div style={{ marginBottom: 12 }}>
-                <label style={labelStyle}>{t("nameLabel")} <span style={{ color: "var(--red)" }}>*</span></label>
-                <input className="field-input" style={inputStyle} value={contactName} onChange={(e) => setContactName(e.target.value)} required autoComplete="name" />
+                <label htmlFor="store-name" style={labelStyle}>{t("nameLabel")} <span style={{ color: "var(--red)" }}>*</span></label>
+                <input id="store-name" className="field-input" style={inputStyle} value={contactName} onChange={(e) => setContactName(e.target.value)} required autoComplete="name" />
               </div>
               <div style={{ marginBottom: 16 }}>
-                <label style={labelStyle}>{t("emailLabel")} <span style={{ color: "var(--red)" }}>*</span></label>
-                <input className="field-input" style={inputStyle} type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} required autoComplete="email" />
+                <label htmlFor="store-email" style={labelStyle}>{t("emailLabel")} <span style={{ color: "var(--red)" }}>*</span></label>
+                <input id="store-email" className="field-input" style={inputStyle} type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} required autoComplete="email" />
               </div>
               {status === "error" && errorMessage && (
                 <p role="alert" style={{ color: "var(--red)", fontWeight: 600, fontSize: 14, marginBottom: 14 }}>{errorMessage}</p>

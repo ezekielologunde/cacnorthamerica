@@ -67,6 +67,7 @@ export default function ContactPageClient() {
   const [groups, setGroups] = useState<string[]>([]);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errMsg, setErrMsg] = useState("");
+  const [errField, setErrField] = useState<string | null>(null);
   const [honeypot, setHoneypot] = useState("");
 
   function update(k: keyof typeof BLANK_FIELDS) {
@@ -83,11 +84,18 @@ export default function ContactPageClient() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErrMsg("");
-    if (!fields.name.trim()) { setErrMsg("Please enter your name."); return; }
-    if (!fields.email.trim()) { setErrMsg("Please enter your email address."); return; }
-    if (!isValidEmail(fields.email)) { setErrMsg("Please enter a valid email address."); return; }
-    if (isMembershipSubject && !fields.phone.trim()) { setErrMsg("Please enter your phone number so we can reach you."); return; }
-    if (!fields.message.trim()) { setErrMsg("Please write a message."); return; }
+    // Show the message and move focus to the field it is about.
+    const invalid = (id: string, msg: string) => {
+      setErrMsg(msg);
+      setErrField(id);
+      document.getElementById(id)?.focus();
+    };
+    setErrField(null);
+    if (!fields.name.trim()) return invalid("c-name", "Please enter your name.");
+    if (!fields.email.trim()) return invalid("c-email", "Please enter your email address.");
+    if (!isValidEmail(fields.email)) return invalid("c-email", "Please enter a valid email address.");
+    if (isMembershipSubject && !fields.phone.trim()) return invalid("c-phone", "Please enter your phone number so we can reach you.");
+    if (!fields.message.trim()) return invalid("c-message", "Please write a message.");
     setStatus("loading");
     try {
       await submitLead(
@@ -173,11 +181,11 @@ export default function ContactPageClient() {
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,200px),1fr))", gap: 12, marginBottom: 12 }}>
                   <div>
                     <label htmlFor="c-name" style={labelStyle}>Your Name <span style={{ color: "var(--red)" }}>*</span></label>
-                    <input className="field-input" style={inputStyle} id="c-name" type="text" placeholder="Jane Smith" enterKeyHint="next" value={fields.name} onChange={update("name")} autoComplete="name" />
+                    <input className="field-input" style={inputStyle} id="c-name" aria-invalid={errField === "c-name" || undefined} aria-describedby={errField === "c-name" ? "c-error" : undefined} type="text" placeholder="Jane Smith" enterKeyHint="next" value={fields.name} onChange={update("name")} autoComplete="name" />
                   </div>
                   <div>
                     <label htmlFor="c-email" style={labelStyle}>Email Address <span style={{ color: "var(--red)" }}>*</span></label>
-                    <input className="field-input" style={inputStyle} id="c-email" type="email" inputMode="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} placeholder="you@example.com" enterKeyHint="next" value={fields.email} onChange={update("email")} autoComplete="email" />
+                    <input className="field-input" style={inputStyle} id="c-email" aria-invalid={errField === "c-email" || undefined} aria-describedby={errField === "c-email" ? "c-error" : undefined} type="email" inputMode="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} placeholder="you@example.com" enterKeyHint="next" value={fields.email} onChange={update("email")} autoComplete="email" />
                   </div>
                 </div>
 
@@ -197,7 +205,7 @@ export default function ContactPageClient() {
                         ? <span style={{ color: "var(--red)" }}>*</span>
                         : <span style={{ fontWeight: 400, opacity: .6 }}>(optional)</span>}
                     </label>
-                    <input className="field-input" style={inputStyle} id="c-phone" type="tel" inputMode="tel" placeholder="+1 (443) 000-0000" value={fields.phone} onChange={update("phone")} autoComplete="tel" />
+                    <input className="field-input" style={inputStyle} id="c-phone" aria-invalid={errField === "c-phone" || undefined} aria-describedby={errField === "c-phone" ? "c-error" : undefined} type="tel" inputMode="tel" placeholder="+1 (443) 000-0000" value={fields.phone} onChange={update("phone")} autoComplete="tel" />
                   </div>
                   {isMembershipSubject && (
                     <div>
@@ -264,11 +272,11 @@ export default function ContactPageClient() {
 
                 <div style={{ marginBottom: 18 }}>
                   <label htmlFor="c-message" style={labelStyle}>Message <span style={{ color: "var(--red)" }}>*</span></label>
-                  <textarea id="c-message" className="field-input" style={{ ...inputStyle, minHeight: 120, resize: "vertical", lineHeight: 1.6 }} placeholder="How can we help you?" value={fields.message} onChange={update("message")} required />
+                  <textarea id="c-message" aria-invalid={errField === "c-message" || undefined} aria-describedby={errField === "c-message" ? "c-error" : undefined} className="field-input" style={{ ...inputStyle, minHeight: 120, resize: "vertical", lineHeight: 1.6 }} placeholder="How can we help you?" value={fields.message} onChange={update("message")} required />
                 </div>
 
                 {errMsg && (
-                  <p role="alert" style={{ color: "var(--red)", fontSize: 15, fontWeight: 600, margin: "0 0 14px" }}>{errMsg}</p>
+                  <p id="c-error" role="alert" style={{ color: "var(--red)", fontSize: 15, fontWeight: 600, margin: "0 0 14px" }}>{errMsg}</p>
                 )}
 
                 <div style={{ position: "sticky", bottom: 0, margin: "0 calc(-1 * clamp(20px,3.5vw,40px)) calc(-1 * clamp(20px,3.5vw,40px))", padding: "12px clamp(20px,3.5vw,40px)", background: "linear-gradient(to top, var(--paper) 70%, transparent)", borderRadius: "0 0 20px 20px" }}>

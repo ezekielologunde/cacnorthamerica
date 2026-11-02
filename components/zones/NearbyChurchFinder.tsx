@@ -128,7 +128,7 @@ export function NearbyChurchFinder({ leaders }: { leaders: Leader[] }) {
         )}
         {(status === "unsupported" || status === "error") && (
           <p style={{ marginTop: 20, fontSize: 15, color: "rgba(245,246,250,.75)" }}>
-            We couldn't get your location just now. Browse every zone below instead.
+            We couldn&apos;t get your location just now. Browse every zone below instead.
           </p>
         )}
 
@@ -147,7 +147,7 @@ export function NearbyChurchFinder({ leaders }: { leaders: Leader[] }) {
             )}
             {results.length > 0 && results[0].miles > 150 && (
               <p style={{ fontSize: 15, color: "rgba(245,246,250,.65)", marginBottom: 16, lineHeight: 1.5 }}>
-                Coverage is still growing — the closest verified church we have is {Math.round(results[0].miles)} miles away. Browse the full directory below in case your zone's Superintendent knows of a closer assembly not yet listed here.
+                Coverage is still growing — the closest verified church we have is {Math.round(results[0].miles)} miles away. Browse the full directory below in case your zone&apos;s Superintendent knows of a closer assembly not yet listed here.
               </p>
             )}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(280px,100%),1fr))", gap: 14 }}>

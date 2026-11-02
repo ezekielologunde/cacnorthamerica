@@ -80,9 +80,19 @@ export async function POST(request: Request) {
   const signature = request.headers.get("stripe-signature") ?? "";
   const rawBody = await request.text();
 
+  // A missing secret is our misconfiguration, not a forged request: answer 500
+  // (Stripe retries) and log it, instead of the 400 a bad signature gets.
+  let webhookSecret: string;
+  try {
+    webhookSecret = requireEnv("STRIPE_WEBHOOK_SECRET");
+  } catch (err) {
+    console.error("[stripe webhook]", err);
+    return NextResponse.json({ error: "Webhook not configured" }, { status: 500 });
+  }
+
   let event;
   try {
-    event = stripe.webhooks.constructEvent(rawBody, signature, requireEnv("STRIPE_WEBHOOK_SECRET"));
+    event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
   } catch {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
