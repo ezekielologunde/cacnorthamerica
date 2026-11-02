@@ -277,6 +277,47 @@ export const MEMBER_CHURCHES: MemberChurch[] = [
     lng: -75.0127433,
     source: "Multiple aggregator/directory listings (Yelp, Google Business) naming this address for a Philadelphia-based \"Christ Apostolic Church\" congregation",
   },
+  {
+    name: "Christ Apostolic Church W.o.s.e.m. (Norfolk)",
+    address: "7919 Buffalo Avenue, Norfolk, VA 23518",
+    zoneName: "Zone to confirm (Norfolk, VA)",
+    lat: 36.9171053,
+    lng: -76.2341968,
+    source: "churcheslist.com listing (address, Sunday worship, cacva2@ contact) plus a second directory (disciplepair.com); WOSEM name matches the Houston church — CAC Nigeria tie not stated on the page, confirm with the church",
+  },
+  {
+    name: "Christ Apostolic Church (Vineyard of Comfort) Edmonton",
+    address: "1 - 5110 97A St NW, Edmonton, AB T6E 5E6",
+    zoneName: "Zone to confirm (Canada)",
+    lat: 53.4889869,
+    lng: -113.4818812,
+    approxLocation: true,
+    source: "CanadaHelps CRA-registered charity listing for this exact name and address; CAC affiliation inferred from the name only (page does not mention CAC Nigeria) — confirm with the church. Coordinates are the street, not the unit",
+  },
+  {
+    name: "Christ Apostolic Church (Vineyard of Comfort) Calgary",
+    address: "37 Copperstone Common SE, Calgary, AB T2Z 5E4",
+    zoneName: "Zone to confirm (Canada)",
+    lat: 50.9149205,
+    lng: -113.9152495,
+    source: "CanadaHelps CRA-registered charity listing for this exact name and address; CAC affiliation inferred from the name only (page does not mention CAC Nigeria) — confirm with the church",
+  },
+  {
+    name: "Christ Apostolic Church - C.A.C. Anim Temple",
+    address: "1880 Ormont Dr, North York, ON M9L 2V4",
+    zoneName: "Zone to confirm (Canada)",
+    lat: 43.76409,
+    lng: -79.5552,
+    source: "CanadaHelps CRA-registered charity listing for this exact name and address; CAC affiliation inferred from the name only (page does not mention CAC Nigeria) — confirm with the church",
+  },
+  {
+    name: "Christ Apostolic Church - Way To Life",
+    address: "325 Montreal Rd, Vanier (Ottawa), ON",
+    zoneName: "Zone to confirm (Canada)",
+    lat: 45.4377939,
+    lng: -75.6574491,
+    source: "CanadaHelps CRA-registered charity listing for this exact name and address; CAC affiliation inferred from the name only (page does not mention CAC Nigeria) — confirm with the church",
+  },
 ];
 
 /** Great-circle distance in miles between two lat/lng points (haversine). */
