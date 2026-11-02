@@ -11,6 +11,7 @@ import { resolveRegistrationConfirmation } from "@/lib/registrationConfirmation"
 import { PaymentOptions } from "@/components/register/PaymentOptions";
 import { conventionYears, type ConventionYear, type RegistrantCategory } from "@/lib/conventions";
 import { setRequestLocale } from "next-intl/server";
+import { describeYouthRegistrant } from "@/lib/youthRegistration";
 
 const CATEGORY_LABEL: Record<RegistrantCategory, string> = {
   adult: "Adult",
@@ -100,12 +101,23 @@ export default async function RegisterConfirmationPage({
             {qrSvg && <QrCode svg={qrSvg} label="Check-in QR code" />}
           </div>
           <ul style={{ margin: "16px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8 }}>
-            {summary.registrants.map((r, i) => (
-              <li key={i} style={{ display: "flex", justifyContent: "space-between", fontSize: 14.5 }}>
-                <span style={{ color: "var(--cream)" }}>{r.n}</span>
-                <span style={{ color: "rgba(245,246,250,.6)" }}>{CATEGORY_LABEL[r.c] ?? "Adult"}</span>
-              </li>
-            ))}
+            {summary.registrants.map((r, i) => {
+              // Youth & Child registrants show their age group and meals.
+              const youth = describeYouthRegistrant(r, cy.startIso);
+              return (
+                <li key={i} style={{ fontSize: 14.5 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+                    <span style={{ color: "var(--cream)" }}>{r.n}</span>
+                    <span style={{ color: "rgba(245,246,250,.6)" }}>{youth ? youth.ageGroup : (CATEGORY_LABEL[r.c] ?? "Adult")}</span>
+                  </div>
+                  {youth && (
+                    <p style={{ fontSize: 12.5, color: "rgba(245,246,250,.55)", margin: "3px 0 0", lineHeight: 1.5 }}>
+                      Meals: {youth.meals.length > 0 ? youth.meals.join(", ") : "None"}
+                    </p>
+                  )}
+                </li>
+              );
+            })}
           </ul>
           <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid rgba(245,246,250,.14)", marginTop: 16, paddingTop: 14 }}>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)" }}>

@@ -4,9 +4,10 @@ import { logToSheet } from "@/lib/sheetsWebhook";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
 import { SITE_URL } from "@/lib/site";
 import { currentOrNextConvention, activePricing, priceForCategory, type RegistrantCategory } from "@/lib/conventions";
-import { encodeSummary, chunkForMetadata, type RegistrationSummary } from "@/lib/checkoutSummary";
+import { encodeSummary, chunkForMetadata, fitsStripeMetadata, type RegistrationSummary } from "@/lib/checkoutSummary";
 import { sealRegistrationToken } from "@/lib/registrationToken";
 import { FORM_HEADER, HONEYPOT_FIELD, looksLikeSpam } from "@/lib/spam";
+import { categoryForAge, encodeMeals, parseYouthRegistration, youthSheetName, youthSheetRows } from "@/lib/youthRegistration";
 
 type RegisterRequestBody = {
   registrationType: "individual" | "group";
@@ -80,6 +81,11 @@ function validateRequestBody(body: unknown): string | null {
     if (typeof r.category !== "string" || !VALID_CATEGORIES.includes(r.category as RegistrantCategory)) {
       return `Invalid registrant category: ${String(r.category)}`;
     }
+    // Everyone under 30 registers through the youth track, which derives the
+    // fee category from their age on the server.
+    if (r.category !== "adult") {
+      return "This form is for adults 30 and over. Please register anyone under 30 through Youth & Child registration.";
+    }
   }
   if (b.isComplimentary !== undefined && typeof b.isComplimentary !== "boolean") {
     return "isComplimentary must be a boolean";
@@ -109,6 +115,14 @@ export async function POST(request: Request) {
   const honeypot = rawBody && typeof rawBody === "object" ? (rawBody as Record<string, unknown>)[HONEYPOT_FIELD] : undefined;
   if (typeof honeypot === "string" && honeypot !== "") {
     return NextResponse.json({ success: true });
+  }
+
+  const track = rawBody && typeof rawBody === "object" ? ((rawBody as Record<string, unknown>).track ?? "adult") : "adult";
+  if (track !== "adult" && track !== "youth") {
+    return NextResponse.json({ error: "track must be 'adult' or 'youth'" }, { status: 400 });
+  }
+  if (track === "youth") {
+    return registerYouth(rawBody);
   }
 
   const validationError = validateRequestBody(rawBody);
@@ -245,6 +259,139 @@ export async function POST(request: Request) {
       },
     });
 
+    return NextResponse.json({ checkoutUrl: session.url });
+  } catch {
+    return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 });
+  }
+}
+
+// Youth & Child track (everyone under 30). POST has already applied the rate
+// limit, FORM_HEADER and honeypot guards. Each person's fee category comes
+// from their age (lib/youthRegistration.ts), never from the client.
+async function registerYouth(rawBody: unknown): Promise<Response> {
+  const parsed = parseYouthRegistration(rawBody, { maxRegistrants: MAX_REGISTRANTS, maxFieldLength: MAX_FIELD_LENGTH });
+  if (!parsed.ok) {
+    return NextResponse.json({ error: parsed.error }, { status: 400 });
+  }
+  const complimentary = (rawBody as Record<string, unknown>).isComplimentary;
+  if (complimentary !== undefined && typeof complimentary !== "boolean") {
+    return NextResponse.json({ error: "isComplimentary must be a boolean" }, { status: 400 });
+  }
+  const input = parsed.value;
+
+  if (
+    looksLikeSpam([
+      input.contactName,
+      input.contactEmail,
+      input.contactPhone,
+      input.churchName,
+      input.youthLeaderName,
+      input.dccZone,
+      ...input.registrants.flatMap((r) => [r.firstName, r.lastName, r.allergies]),
+    ])
+  ) {
+    return NextResponse.json({ success: true });
+  }
+
+  // Same rule as the adult track: complimentary registration was removed.
+  if (complimentary === true) {
+    return NextResponse.json({ error: "Complimentary registration is not available" }, { status: 403 });
+  }
+
+  const cy = currentOrNextConvention();
+  const tiers = activePricing(cy);
+  if (tiers.length === 0) {
+    return NextResponse.json({ error: "Registration is not open" }, { status: 409 });
+  }
+
+  const priced: { registrant: RegistrationSummary["registrants"][number]; priceCents: number }[] = [];
+  for (const r of input.registrants) {
+    const category = categoryForAge(r.age);
+    const price = category === "child" ? 0 : priceForCategory(tiers, category);
+    if (price === null) {
+      return NextResponse.json({ error: `No active price for category ${category}` }, { status: 400 });
+    }
+    priced.push({
+      registrant: {
+        n: `${r.firstName} ${r.lastName}`,
+        c: category,
+        a: r.age,
+        m: encodeMeals(r.meals),
+        ...(r.allergies ? { l: r.allergies } : {}),
+      },
+      priceCents: price,
+    });
+  }
+
+  const totalAmountCents = priced.reduce((sum, p) => sum + p.priceCents, 0);
+  const summary: RegistrationSummary = {
+    ref: crypto.randomUUID(),
+    year: cy.year,
+    registrationType: priced.length > 1 ? "group" : "individual",
+    churchName: input.churchName,
+    contactName: input.contactName,
+    contactEmail: input.contactEmail,
+    contactPhone: input.contactPhone,
+    registrants: priced.map((p) => p.registrant),
+    totalAmountCents,
+    isComplimentary: false,
+    youth: { leader: input.youthLeaderName, dcc: input.dccZone, guardian: input.guardianConfirmed },
+  };
+
+  // Everyone 19 or under: free, handled like the adult track's free path --
+  // one sheet row per person, straight to the confirmation page, and no
+  // email, because nobody has proven they own contactEmail. The sealed token
+  // leaves allergy notes out (it lives in the URL); the sheet rows have them.
+  if (totalAmountCents === 0) {
+    let token: string;
+    try {
+      token = sealRegistrationToken({
+        ...summary,
+        registrants: summary.registrants.map((r) => ({ n: r.n, c: r.c, a: r.a, m: r.m })),
+      });
+    } catch {
+      return NextResponse.json({ error: "Registration is temporarily unavailable" }, { status: 500 });
+    }
+    for (const row of youthSheetRows(summary, { stripeSession: "", status: "free (email unverified)", startIso: cy.startIso })) {
+      logToSheet(youthSheetName(cy.year), row);
+    }
+    return NextResponse.json({ checkoutUrl: `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?t=${token}` });
+  }
+
+  // The full summary (allergies included) rides in the session metadata for
+  // the webhook's sheet rows and email. Refuse up front if it cannot fit
+  // rather than let Stripe reject the session (2 = kind + convention_year).
+  const encoded = encodeSummary(summary);
+  if (!fitsStripeMetadata(encoded, 2)) {
+    return NextResponse.json(
+      { error: "This registration has too many details to process in one payment. Please split it into two smaller registrations." },
+      { status: 400 }
+    );
+  }
+
+  const stripe = getStripeClient();
+  try {
+    const session = await stripe.checkout.sessions.create({
+      mode: "payment",
+      line_items: priced
+        .filter((p) => p.priceCents > 0)
+        .map((p) => ({
+          price_data: {
+            currency: "usd",
+            unit_amount: p.priceCents,
+            product_data: { name: `CACNA ${cy.year} Convention registration — ${p.registrant.n} (${p.registrant.c})` },
+          },
+          quantity: 1,
+        })),
+      customer_email: input.contactEmail,
+      success_url: `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${SITE_URL}/events/cacna-${cy.year}/register/youth`,
+      metadata: {
+        kind: "registration",
+        convention_year: String(cy.year),
+        ...chunkForMetadata("d", encoded),
+      },
+    });
     return NextResponse.json({ checkoutUrl: session.url });
   } catch {
     return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 });

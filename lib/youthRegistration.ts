@@ -88,6 +88,64 @@ export function decodeMeals(mask: number | undefined): MealSlot[] {
   return MEAL_SLOTS.filter((_, i) => (mask & (1 << i)) !== 0);
 }
 
+/** Age group and dated meal labels for one summary registrant (`a` = age,
+ *  `m` = meal mask), or null for an adult-track registrant with no age.
+ *  Shared by the confirmation page and the confirmation email. */
+export function describeYouthRegistrant(
+  r: { a?: number; m?: number },
+  startIso?: string
+): { ageGroup: string; meals: string[] } | null {
+  if (!isValidYouthAge(r.a)) return null;
+  return {
+    ageGroup: AGE_GROUP_LABEL[ageGroupFor(r.a)],
+    meals: decodeMeals(r.m).map((slot) => mealSlotLabel(slot, startIso)),
+  };
+}
+
+/** The Sheets tab (Apps Script formName) for Youth & Child registrations. */
+export function youthSheetName(year: number): string {
+  return `Youth & Child Registration — CACNA ${year}`;
+}
+
+/** One sheet row per person in a Youth & Child registration. Takes the
+ *  summary's structural shape (lib/checkoutSummary.ts's RegistrationSummary)
+ *  so this file stays free of Node APIs. Values are passed to logToSheet /
+ *  logToSheetChecked, which formula-escape every cell. */
+export function youthSheetRows(
+  summary: {
+    ref: string;
+    churchName: string | null;
+    contactName: string;
+    contactEmail: string;
+    contactPhone: string;
+    registrants: { n: string; c: string; a?: number; m?: number; l?: string }[];
+    youth?: { leader: string; dcc: string; guardian: boolean };
+  },
+  opts: { stripeSession: string; status: string; startIso?: string; contactEmail?: string }
+): Record<string, string>[] {
+  return summary.registrants.map((r) => {
+    const described = describeYouthRegistrant(r, opts.startIso);
+    return {
+      "Ref": summary.ref,
+      "Name": r.n,
+      "Age": typeof r.a === "number" ? String(r.a) : "",
+      "Age Group": described?.ageGroup ?? "",
+      "Fee Category": r.c,
+      "Meals": described && described.meals.length > 0 ? described.meals.join("; ") : "None",
+      "Allergies": r.l ?? "",
+      "Church": summary.churchName ?? "",
+      "Youth Leader": summary.youth?.leader ?? "",
+      "DCC / Zone": summary.youth?.dcc ?? "",
+      "Contact Name": summary.contactName,
+      "Contact Email": opts.contactEmail || summary.contactEmail,
+      "Contact Phone": summary.contactPhone,
+      "Guardian Confirmed": summary.youth?.guardian ? "Yes" : "No",
+      "Stripe Session": opts.stripeSession,
+      "Status": opts.status,
+    };
+  });
+}
+
 export type YouthRegistrantInput = {
   firstName: string;
   lastName: string;
