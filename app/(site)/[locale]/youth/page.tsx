@@ -1,59 +1,75 @@
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
-import { Reveal } from "@/components/ui/Reveal";
-import { RevealText } from "@/components/ui/RevealText";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
-import { InstagramIcon } from "@/components/ui/SocialIcons";
-import { PhotoStrip } from "@/components/ministries/PhotoStrip";
-import { mainGalleryPhotos } from "@/lib/mainGalleryPhotos";
-import { currentOrNextConvention, dateRangeLabel, CONVENTION_VENUE } from "@/lib/conventions";
-import "@/components/ministries/ministries-mobile.css";
+import { InstagramIcon, TikTokIcon, XIcon, WhatsAppIcon } from "@/components/ui/SocialIcons";
+import {
+  currentOrNextConvention,
+  dateRangeLabel,
+  CONVENTION_VENUE,
+  CONVENTION_VENUE_SHORT,
+  activePricing,
+} from "@/lib/conventions";
+import { MEAL_SLOTS, mealSlotLabel } from "@/lib/youthRegistration";
+import {
+  youthSocialLinks,
+  singlesSocialLinks,
+  YOUTH_INSTAGRAM_URL,
+  YOUTH_WHATSAPP_URL,
+  YOUTH_CONTACT_EMAIL,
+  type SocialPlatform,
+} from "@/lib/youthSocials";
+import Image from "next/image";
 import Link from "next/link";
-import { Compass, Target, HandHeart, BookOpen, Users, Mic2, Sparkles } from "lucide-react";
+import { Big_Shoulders } from "next/font/google";
+import { ArrowRight, ArrowDown } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { SITE_URL } from "@/lib/site";
+import "./youth.css";
+
+// The Youth page is its own world inside the site (owner request, 2026-11:
+// "its own Youthful Website ... bolder ... a complete different design
+// vibrant"): its sections carry their own palette and poster type, while the
+// global Nav and footer stay. Styles live in ./youth.css under .yy-page.
+const poster = Big_Shoulders({
+  subsets: ["latin"],
+  weight: "variable",
+  variable: "--font-yy",
+  display: "swap",
+});
+
+// Price tiers and "current or next convention" are date-driven, so re-render
+// hourly like the other convention-facing pages.
+export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Youth & Young Adult — Christ Apostolic Church North America (CACNA)",
     description:
-      "CACNA's Youth & Young Adult Ministry — vision, mission, values, history, and major programs raising Christ-centered youth across North America.",
+      "CACNA's Youth & Young Adult Ministry (YYAM): convention registration for children, youth and young adults, meals, programs, and where to follow us.",
     alternates: { canonical: `${SITE_URL}/youth` },
   };
 }
-
-// Real Instagram account for CACNA's Youth & Young Adult Ministry
-// (verified 2026-07-21), distinct from the org-wide account used elsewhere
-// on this site (FooterExperience, /online).
-const YOUTH_INSTAGRAM = "https://instagram.com/cacnayyam";
-
-// Sourced verbatim from cacnorthamerica.com/youth-young-adult/ (2026-07-21) --
-// label/body text comes from the Youth i18n namespace (see the component
-// body below), icons are the only thing fixed at module scope.
-const pillarIcons = [Compass, Target, HandHeart];
 
 // 2026 Annual Convention theme + coordinator, sourced from the Convention
 // site's own lib/content/youth-program.ts.
 const CONVENTION_THEME = "Did God Really Say...? Knowing God's Word for Yourself";
 const REGIONAL_COORDINATOR = "Pastor Adekunmi Browne";
 
-// Real program names from the source page -- no descriptions were given
-// there beyond the titles themselves, so none are invented here. Photos are
-// each program's own real thumbnail from cacnorthamerica.com/youth-young-adult/.
+// Real program names from cacnorthamerica.com/youth-young-adult/ -- no
+// descriptions were given there beyond the titles, so none are invented here.
+// Photos are each program's own real thumbnail from that page.
 const programs = [
-  { name: "Academic Conference", icon: BookOpen, photo: "/images/cac-youth-program-academic.jpg" },
-  { name: "Leadership Retreat", icon: Users, photo: "/images/cac-youth-program-retreat.jpg" },
-  { name: "Night of Divine Encounter", icon: Sparkles, photo: "/images/cac-youth-program-divine-encounter.jpg" },
-  { name: "Youth Conference", icon: Mic2, photo: "/images/cac-youth-program-conference.jpg" },
+  { name: "Academic Conference", photo: "/images/cac-youth-program-academic.jpg", alt: "Young women listening during a CACNA youth Academic Conference session" },
+  { name: "Leadership Retreat", photo: "/images/cac-youth-program-retreat.jpg", alt: "Leaders seated in conversation at a CACNA youth Leadership Retreat" },
+  { name: "Night of Divine Encounter", photo: "/images/cac-youth-program-divine-encounter.jpg", alt: "A young man with head bowed in prayer at a Night of Divine Encounter" },
+  { name: "Youth Conference", photo: "/images/cac-youth-program-conference.jpg", alt: "A large group of CACNA youth outdoors under the trees at a Youth Conference" },
 ];
 
 // Transcribed from the 2026 convention program book's "CAC North America
 // Youth and Young Ministry 2026 Convention Schedule" (ported from the
-// Convention site's lib/content/youth-program.ts during the Phase D
-// content merge, 2026-09). Speakers are embedded in the event text itself
-// where the source flyer printed them that way, rather than as a separate
-// field.
+// Convention site's lib/content/youth-program.ts, 2026-09).
 const schedule2026 = [
   {
     day: "Wednesday, July 15",
@@ -85,14 +101,44 @@ const schedule2026 = [
   },
 ];
 
-// Real event photos from cacnorthamerica.com/youth-young-adult/ (2026-07-21) --
-// no per-photo captions exist upstream, so alt text describes what's shown.
+// Real event photos from cacnorthamerica.com/youth-young-adult/ and the
+// recovered WordPress gallery archive; alt text describes what each shows.
 const moments = [
-  { src: "/images/cac-youth-unity-1.jpg", alt: "CACNA youth and pastors together in matching Unity t-shirts at a past gathering" },
-  { src: "/images/cac-youth-unity-2.jpg", alt: "CACNA youth from DCCs across North America gathered in Unity t-shirts" },
-  { src: "/images/cac-youth-worship.jpg", alt: "A CACNA youth leader in worship at a past gathering" },
-  { src: "/images/cac-youth-conference-group.jpg", alt: "CACNA youth and young adults gathered outdoors at a past conference" },
+  { src: "/images/cac-youth-unity-1.jpg", alt: "A huge group of CACNA youth and pastors in matching Unity t-shirts" },
+  { src: "/images/cac-youth-conference-group.jpg", alt: "Volunteers holding up a #ONECAC t-shirt at a youth registration table" },
+  { src: "/photos/gallery-archive/youth3-3266.jpg", alt: "Ministers presenting a framed award at a CACNA youth gathering" },
+  { src: "/photos/gallery-archive/youth-2-2567.jpg", alt: "Ministers clapping in worship at a CACNA youth service" },
 ];
+
+// A 14-point starburst for the hero sticker, computed once at module scope.
+const BURST = Array.from({ length: 28 }, (_, i) => {
+  const r = i % 2 === 0 ? 50 : 38;
+  const a = (Math.PI * i) / 14 - Math.PI / 2;
+  return `${(50 + r * Math.cos(a)).toFixed(1)},${(50 + r * Math.sin(a)).toFixed(1)}`;
+}).join(" ");
+
+function Star() {
+  return (
+    <svg className="yy-star" viewBox="0 0 24 24" aria-hidden>
+      <path d="M12 1.5l2.6 7.9 7.9 2.6-7.9 2.6-2.6 7.9-2.6-7.9-7.9-2.6 7.9-2.6z" fill="currentColor" />
+    </svg>
+  );
+}
+
+const PLATFORM: Record<SocialPlatform, { name: string; icon: (size: number) => ReactNode }> = {
+  instagram: { name: "Instagram", icon: (s) => <InstagramIcon size={s} /> },
+  tiktok: { name: "TikTok", icon: (s) => <TikTokIcon size={s} /> },
+  x: { name: "X", icon: (s) => <XIcon size={s} /> },
+  whatsapp: { name: "WhatsApp", icon: (s) => <WhatsAppIcon size={s} /> },
+};
+
+function dollars(cents: number): string {
+  return `$${cents % 100 === 0 ? cents / 100 : (cents / 100).toFixed(2)}`;
+}
+
+function shortDate(iso: string): string {
+  return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", timeZone: "UTC" }).format(new Date(`${iso}T12:00:00Z`));
+}
 
 export default async function YouthPage({
   params,
@@ -102,252 +148,339 @@ export default async function YouthPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("Youth");
-  const nextCy = currentOrNextConvention();
-  const youthRegisterHref =
-    nextCy.registrationUrl && nextCy.registrationUrl.startsWith("/") ? `${nextCy.registrationUrl}/youth` : undefined;
 
-  const pillars = [
-    { icon: pillarIcons[0], label: t("visionLabel"), body: t("visionBody") },
-    { icon: pillarIcons[1], label: t("missionLabel"), body: t("heroBody") },
-    { icon: pillarIcons[2], label: t("valuesLabel"), body: t("valuesBody") },
+  const cy = currentOrNextConvention();
+  const dates = dateRangeLabel(cy);
+  const venueShort = cy.venue ?? CONVENTION_VENUE_SHORT;
+  const internalReg = cy.registrationUrl && cy.registrationUrl.startsWith("/") ? cy.registrationUrl : undefined;
+  const youthRegisterHref = internalReg ? `${internalReg}/youth` : undefined;
+
+  const youngAdultTier = activePricing(cy).find((tier) => tier.category === "young_adult");
+  const youngAdultFee = youngAdultTier
+    ? t("feeYoungAdultUntil", { price: dollars(youngAdultTier.priceCents), date: shortDate(youngAdultTier.endsOn) })
+    : t("feeYoungAdultPlain");
+
+  const ages = [
+    { range: "1–10", label: t("ageChildren"), fee: t("feeFree"), tone: "lime" },
+    { range: "11–19", label: t("ageYouth"), fee: t("feeFree"), tone: "pink" },
+    { range: "20–29", label: t("ageYoungAdults"), fee: youngAdultFee, tone: "sun" },
   ];
 
+  // "Tuesday Lunch — 7/13" -> day "Tue", date "7/13", meal "Lunch".
+  const meals = MEAL_SLOTS.map((slot) => {
+    const label = mealSlotLabel(slot, cy.startIso);
+    const [dayMeal, date] = label.split(" — ");
+    const [day, meal] = dayMeal.split(" ");
+    return { slot, label, day: day.slice(0, 3), date, meal };
+  });
+
+  const socials = youthSocialLinks();
+  const singles = singlesSocialLinks();
+  const hasWhatsApp = YOUTH_WHATSAPP_URL.trim().length > 0;
+
+  const pillars = [
+    { label: t("visionLabel"), body: t("visionBody") },
+    { label: t("missionLabel"), body: t("heroBody") },
+    { label: t("valuesLabel"), body: t("valuesBody") },
+  ];
+
+  const ticker = [t("marqueeRegister"), dates, venueShort, t("marqueeForm"), t("heroTitleTag").replace(/[()]/g, "")];
+
   return (
-    <main id="main-content">
+    <main id="main-content" className={`yy-page ${poster.variable}`}>
       <Nav heroDark />
 
-      {/* Hero */}
-      <section className="min-hero" style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 90px", position: "relative", overflow: "hidden" }}>
-        <div className="min-hero-glow" style={{ position: "absolute", top: -100, left: "50%", transform: "translateX(-50%)", width: 760, height: 460, background: "radial-gradient(circle,rgba(200,30,58,.3),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 16s ease-in-out infinite" }} />
-        <div style={{ maxWidth: 820, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
-          <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(44px,6.5vw,88px)", letterSpacing: "-0.03em", color: "#fff", margin: "0 0 32px", lineHeight: 0.98, textWrap: "balance" }}>
-            <RevealText immediate>{t("heroHeading1")}</RevealText>
-            <br />
-            <RevealText immediate delay={0.15} style={{ color: "var(--red)" }}>
-              {t("heroHeading2")}
-            </RevealText>
-          </h1>
-          <Reveal delay={440}>
-            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 14 }}>
-              <a
-                href={YOUTH_INSTAGRAM}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-sheen press"
-                style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 15, padding: "15px 28px", borderRadius: 999, textDecoration: "none" }}
-              >
-                <InstagramIcon size={17} /> {t("followCta")}
+      {/* ── Hero ─────────────────────────────────────────────── */}
+      <section className="yy-hero" aria-labelledby="yy-title">
+        <svg className="yy-squiggle" viewBox="0 0 220 40" aria-hidden>
+          <path d="M4 20c14-16 28-16 42 0s28 16 42 0 28-16 42 0 28 16 42 0 28-16 42 0" fill="none" stroke="currentColor" strokeWidth="7" strokeLinecap="round" />
+        </svg>
+        <div className="yy-hero-inner">
+          <div className="yy-hero-copy">
+            <h1 id="yy-title" className="yy-h1">
+              <span className="yy-h1-org">{t("heroTitleOrg")}</span>
+              <span className="yy-h1-main">{t("heroTitleMain")}</span>
+              <span className="yy-h1-tag">{t("heroTitleTag")}</span>
+            </h1>
+            <p className="yy-tagline">
+              {t("heroHeading1")} {t("heroHeading2")}
+            </p>
+
+            <div className="yy-ticket">
+              <span className="yy-ticket-event">{t("heroConvention", { year: cy.year })}</span>
+              <span className="yy-ticket-dates">{dates}</span>
+              <span className="yy-ticket-venue">{venueShort}</span>
+            </div>
+
+            <div className="yy-hero-ctas">
+              {youthRegisterHref ? (
+                <Link href={youthRegisterHref} className="yy-btn yy-btn-lime yy-btn-xl">
+                  {t("heroRegisterCta")} <ArrowRight size={22} strokeWidth={2.6} aria-hidden />
+                </Link>
+              ) : (
+                <p className="yy-soon">{t("registerSoon")}</p>
+              )}
+              <a href="#socials" className="yy-btn yy-btn-ghost">
+                {t("heroSocialCta")} <ArrowDown size={18} strokeWidth={2.4} aria-hidden />
               </a>
-              <Link
-                href="/contact"
-                className="press"
-                style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(245,246,250,.09)", color: "var(--cream)", fontWeight: 700, fontSize: 15, padding: "15px 28px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(245,246,250,.2)" }}
-              >
-                {t("journeyWithUsCta")}
-              </Link>
             </div>
-          </Reveal>
-        </div>
-      </section>
+          </div>
 
-      <section className="min-section" style={{ background: "var(--cream)", paddingBottom: 10 }}>
-        <PhotoStrip photos={mainGalleryPhotos.slice(0, 3)} caption="From the 2025 convention" />
-      </section>
-
-      {/* Convention identity: theme + coordinator */}
-      <section className="min-section" style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(48px,6vw,72px)" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(240px,100%),1fr))", gap: 14 }}>
-          <Reveal>
-            <div style={{ borderRadius: 18, padding: "22px 24px", background: "var(--paper)", border: "1px solid var(--line)" }}>
-              <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: ".03em", color: "var(--red)", marginBottom: 8 }}>{t("conventionThemeLabel")}</div>
-              <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 17, color: "var(--ink)", margin: 0, lineHeight: 1.4 }}>&ldquo;{CONVENTION_THEME}&rdquo;</p>
+          <div className="yy-hero-art">
+            <div className="yy-hero-photo">
+              <Image
+                src="/images/cac-youth-worship.jpg"
+                alt="A CACNA youth leader in a Unity t-shirt worshipping out loud"
+                fill
+                priority
+                sizes="(max-width: 860px) 90vw, 46vw"
+                style={{ objectFit: "cover", objectPosition: "40% 30%" }}
+              />
             </div>
-          </Reveal>
-          <Reveal delay={80}>
-            <div style={{ borderRadius: 18, padding: "22px 24px", background: "var(--paper)", border: "1px solid var(--line)" }}>
-              <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: ".03em", color: "var(--red)", marginBottom: 8 }}>{t("coordinatorLabel")}</div>
-              <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 17, color: "var(--ink)", margin: 0, lineHeight: 1.4 }}>{REGIONAL_COORDINATOR}</p>
+            <div className="yy-hero-snap">
+              <Image
+                src="/images/cac-youth-unity-2.jpg"
+                alt="CACNA youth from across North America in Unity t-shirts"
+                fill
+                sizes="(max-width: 860px) 46vw, 20vw"
+                style={{ objectFit: "cover" }}
+              />
             </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* Vision / Mission / Values */}
-      <section className="min-section" style={{ background: "var(--cream-2)", padding: "clamp(40px,7vw,90px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(260px,100%),1fr))", gap: 20 }}>
-          {pillars.map((p, i) => (
-            <Reveal key={p.label} delay={i * 90}>
-              <div style={{ height: "100%", borderRadius: 22, padding: "30px 26px", background: "var(--paper)", border: "1px solid var(--line)", boxShadow: "0 10px 26px rgba(18,20,30,.06)" }}>
-                <div style={{ width: 48, height: 48, borderRadius: 13, background: "linear-gradient(140deg,var(--red),var(--flame))", display: "grid", placeItems: "center", marginBottom: 18 }}>
-                  <p.icon size={22} strokeWidth={2} color="#fff" aria-hidden />
-                </div>
-                <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "var(--ink)", margin: "0 0 8px" }}>{p.label}</h3>
-                <p style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.65, margin: 0 }}>{p.body}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      {/* History + photo */}
-      <section className="min-section" style={{ background: "var(--paper)", padding: "clamp(40px,7vw,96px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 1080, margin: "0 auto", display: "grid", gridTemplateColumns: "1.1fr 1fr", gap: "clamp(28px,4vw,48px)", alignItems: "start" }} className="youth-history-grid">
-          <Reveal>
-            <div>
-              <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.5vw,40px)", letterSpacing: "-.8px", color: "var(--ink)", margin: "14px 0 18px", lineHeight: 1.05 }}>
-                {t("historyHeading")}
-              </h2>
-              <p style={{ fontSize: 15.5, color: "var(--ink-soft)", lineHeight: 1.8, margin: 0 }}>
-                {t("historyBody")}
-              </p>
+            <div className="yy-burst" aria-hidden>
+              <svg viewBox="0 0 100 100"><polygon points={BURST} fill="currentColor" /></svg>
+              <span>{cy.year}</span>
             </div>
-          </Reveal>
-          <Reveal delay={80}>
-            <div style={{ position: "relative", width: "100%", height: "clamp(240px,28vw,360px)", borderRadius: 22, overflow: "hidden", boxShadow: "0 20px 44px rgba(18,20,30,.15)" }}>
-              <ImageLightbox src="/images/cac-youth-convention.jpg" alt="CACNA youth at a past Annual Convention" />
-            </div>
-          </Reveal>
-        </div>
-        <style>{`
-          @media (max-width: 760px) {
-            .youth-history-grid { grid-template-columns: 1fr !important; }
-          }
-        `}</style>
-      </section>
-
-      {/* Major Programs */}
-      <section className="min-section" style={{ background: "var(--cream-2)", padding: "clamp(40px,7vw,90px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-          <Reveal style={{ textAlign: "center", marginBottom: 40 }}>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,44px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 0", lineHeight: 1 }}>
-              {t("programsHeading")}
-            </h2>
-          </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(220px,100%),1fr))", gap: 16 }}>
-            {programs.map((p, i) => (
-              <Reveal key={p.name} delay={i * 80}>
-                <div style={{ height: "100%", borderRadius: 18, overflow: "hidden", background: "var(--paper)", border: "1px solid var(--line)" }}>
-                  <div style={{ position: "relative", width: "100%", height: 150 }}>
-                    <ImageLightbox src={p.photo} alt={`CACNA youth at a past ${p.name}`} />
-                  </div>
-                  <div style={{ padding: "18px 18px 22px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 10 }}>
-                    <div style={{ width: 40, height: 40, borderRadius: 11, background: "linear-gradient(140deg,var(--flame),var(--gold))", display: "grid", placeItems: "center", marginTop: -40, boxShadow: "0 6px 16px rgba(18,20,30,.2)" }}>
-                      <p.icon size={18} strokeWidth={2} color="#fff" aria-hidden />
-                    </div>
-                    <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 15.5, color: "var(--ink)", margin: 0, lineHeight: 1.3 }}>{p.name}</h3>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
           </div>
         </div>
       </section>
 
-      {/* 2026 Convention Schedule */}
-      <section className="min-section" style={{ background: "var(--paper)", padding: "clamp(40px,7vw,90px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 780, margin: "0 auto" }}>
-          <Reveal style={{ textAlign: "center", marginBottom: 40 }}>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,4vw,38px)", letterSpacing: "-.8px", color: "var(--ink)", margin: 0, lineHeight: 1.05 }}>2026 Convention Schedule</h2></Reveal>
-          <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
-            {schedule2026.map((block, i) => (
-              <Reveal key={block.day} delay={i * 60}>
-                <div>
-                  <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "var(--ink)", margin: "0 0 14px" }}>{block.day}</h3>
-                  <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10, borderLeft: "2px solid var(--line)" }}>
-                    {block.agenda.map((item, j) => (
-                      <li key={j} style={{ position: "relative", padding: "0 0 0 22px", fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.5 }}>
-                        <span aria-hidden style={{ position: "absolute", left: -5, top: 6, width: 8, height: 8, borderRadius: "50%", background: "var(--red)" }} />
-                        {item}
-                      </li>
+      {/* ── Ticker (decorative: every fact in it is stated elsewhere) ── */}
+      <div className="yy-ticker" aria-hidden>
+        <div className="yy-ticker-track">
+          {[0, 1].map((copy) => (
+            <div className="yy-ticker-run" key={copy}>
+              {ticker.map((item, i) => (
+                <span key={i} className="yy-ticker-item">
+                  {item}
+                  <Star />
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Who registers where ─────────────────────────────── */}
+      <section className="yy-who" id="register" aria-labelledby="yy-who-h">
+        <div className="yy-wrap">
+          <h2 id="yy-who-h" className="yy-h2">{t("whoHeading")}</h2>
+          <p className="yy-lead">{t("whoBody")}</p>
+
+          <div className="yy-ruler">
+            <div className="yy-ruler-group">
+              <ol className="yy-ruler-ages">
+                {ages.map((a) => (
+                  <li key={a.range} className={`yy-age yy-tone-${a.tone}`}>
+                    <span className="yy-age-range">{a.range}</span>
+                    <span className="yy-age-label">{a.label}</span>
+                    <span className="yy-age-fee">{a.fee}</span>
+                  </li>
+                ))}
+              </ol>
+              <div className="yy-ruler-dest">
+                {youthRegisterHref ? (
+                  <Link href={youthRegisterHref} className="yy-btn yy-btn-ink">
+                    {t("youthFormCta")} <ArrowRight size={20} strokeWidth={2.6} aria-hidden />
+                  </Link>
+                ) : (
+                  <p className="yy-soon yy-soon-dark">{t("registerSoon")}</p>
+                )}
+              </div>
+            </div>
+            <div className="yy-ruler-group yy-ruler-adults">
+              <ol className="yy-ruler-ages">
+                <li className="yy-age yy-tone-outline">
+                  <span className="yy-age-range">30+</span>
+                  <span className="yy-age-label">{t("ageAdults")}</span>
+                  <span className="yy-age-fee">{t("feeAdult")}</span>
+                </li>
+              </ol>
+              <div className="yy-ruler-dest">
+                {internalReg ? (
+                  <Link href={internalReg} className="yy-btn yy-btn-outline">
+                    {t("mainFormCta")} <ArrowRight size={20} strokeWidth={2.6} aria-hidden />
+                  </Link>
+                ) : (
+                  <p className="yy-soon yy-soon-dark">{t("registerSoon")}</p>
+                )}
+              </div>
+            </div>
+          </div>
+          <p className="yy-fine">{t("registerBody", { dates, venue: cy.venue ?? CONVENTION_VENUE })}</p>
+        </div>
+      </section>
+
+      {/* ── Food ────────────────────────────────────────────── */}
+      <section className="yy-food" aria-labelledby="yy-food-h">
+        <div className="yy-wrap yy-food-grid">
+          <div className="yy-food-copy">
+            <h2 id="yy-food-h" className="yy-h2">{t("foodHeading")}</h2>
+            <p className="yy-lead">{t("foodBody")}</p>
+            <p className="yy-food-note">{t("foodAllergies")}</p>
+            {youthRegisterHref ? (
+              <Link href={youthRegisterHref} className="yy-btn yy-btn-ink">
+                {t("foodCta")} <ArrowRight size={20} strokeWidth={2.6} aria-hidden />
+              </Link>
+            ) : (
+              <p className="yy-soon yy-soon-dark">{t("registerSoon")}</p>
+            )}
+            <p className="yy-food-mail">
+              {t("mealQuestionsLead")} <a href={`mailto:${YOUTH_CONTACT_EMAIL}`}>{YOUTH_CONTACT_EMAIL}</a>
+            </p>
+          </div>
+          <ul className="yy-menu" aria-label={t("foodListLabel")}>
+            {meals.map((m) => (
+              <li key={m.slot} className={`yy-meal yy-meal-${m.meal.toLowerCase()}`}>
+                <span className="yy-sr">{m.label}</span>
+                <span className="yy-meal-day" aria-hidden>{m.day}</span>
+                <span className="yy-meal-date" aria-hidden>{m.date}</span>
+                <span className="yy-meal-name" aria-hidden>{m.meal}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* ── Who we are + programs + moments ─────────────────── */}
+      <section className="yy-about" aria-labelledby="yy-about-h">
+        <div className="yy-wrap">
+          <h2 id="yy-about-h" className="yy-h2">{t("aboutHeading")}</h2>
+          <dl className="yy-pillars">
+            {pillars.map((p) => (
+              <div key={p.label} className="yy-pillar">
+                <dt>{p.label}</dt>
+                <dd>{p.body}</dd>
+              </div>
+            ))}
+          </dl>
+
+          <div className="yy-history">
+            <div>
+              <h3 className="yy-h3">{t("historyHeading")}</h3>
+              <p>{t("historyBody")}</p>
+            </div>
+            <div className="yy-history-photo">
+              <ImageLightbox src="/images/cac-youth-convention.jpg" alt="CACNA youth kneeling in custom team jerseys with their names on the back" />
+            </div>
+          </div>
+
+          <h2 className="yy-h2 yy-programs-h">{t("programsHeading")}</h2>
+          <ul className="yy-posters">
+            {programs.map((p, i) => (
+              <li key={p.name} className={`yy-poster yy-poster-${i}`}>
+                <div className="yy-poster-img">
+                  <ImageLightbox src={p.photo} alt={p.alt} />
+                </div>
+                <span className="yy-poster-name">{p.name}</span>
+              </li>
+            ))}
+          </ul>
+
+          <h2 className="yy-h2 yy-moments-h">{t("momentsHeading")}</h2>
+          <div className="yy-moments">
+            {moments.map((m, i) => (
+              <div key={m.src} className={`yy-moment yy-moment-${i}`}>
+                <ImageLightbox src={m.src} alt={m.alt} />
+              </div>
+            ))}
+          </div>
+
+          <details className="yy-lookback">
+            <summary>{t("lookBackSummary")}</summary>
+            <div className="yy-lookback-body">
+              <p>
+                <strong>{t("conventionThemeLabel")}:</strong> &ldquo;{CONVENTION_THEME}&rdquo;
+                <br />
+                <strong>{t("coordinatorLabel")}:</strong> {REGIONAL_COORDINATOR}
+              </p>
+              {schedule2026.map((block) => (
+                <div key={block.day}>
+                  <h3 className="yy-h4">{block.day}</h3>
+                  <ul>
+                    {block.agenda.map((item) => (
+                      <li key={item}>{item}</li>
                     ))}
                   </ul>
                 </div>
-              </Reveal>
-            ))}
-          </div>
+              ))}
+            </div>
+          </details>
         </div>
       </section>
 
-      {/* Moments */}
-      <section className="min-section" style={{ background: "var(--paper)", padding: "clamp(40px,7vw,90px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <Reveal style={{ textAlign: "center", marginBottom: 40 }}>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,44px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 0", lineHeight: 1 }}>
-              {t("momentsHeading")}
-            </h2>
-          </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(220px,100%),1fr))", gap: 14 }}>
-            {moments.map((m, i) => (
-              <Reveal key={m.src} delay={i * 80}>
-                <div style={{ position: "relative", width: "100%", height: 230, borderRadius: 18, overflow: "hidden", boxShadow: "0 12px 28px rgba(18,20,30,.1)" }}>
-                  <ImageLightbox src={m.src} alt={m.alt} />
-                </div>
-              </Reveal>
+      {/* ── Socials wall ────────────────────────────────────── */}
+      <section className="yy-socials" id="socials" aria-labelledby="yy-socials-h">
+        <div className="yy-wrap">
+          <h2 id="yy-socials-h" className="yy-h2">{t("socialsHeading")}</h2>
+          <p className="yy-lead">{t("ctaBody")}</p>
+          <ul className="yy-wall">
+            {socials.map((s) => (
+              <li key={s.platform} className={`yy-tile yy-tile-${s.platform}`}>
+                <a href={s.url} target="_blank" rel="noopener noreferrer">
+                  <span className="yy-tile-icon">{PLATFORM[s.platform].icon(40)}</span>
+                  <span className="yy-tile-name">{PLATFORM[s.platform].name}</span>
+                  <span className="yy-tile-handle">{s.handle}</span>
+                  <span className="yy-tile-owner">{s.owner === "cacna" ? t("ownerCacna") : t("ownerYouth")}</span>
+                </a>
+              </li>
             ))}
+          </ul>
+
+          <div className="yy-singles">
+            {singles.length > 0 ? (
+              <>
+                <h3 className="yy-h3">{t("singlesHeading")}</h3>
+                <ul className="yy-singles-links">
+                  {singles.map((s) => (
+                    <li key={s.platform}>
+                      <a href={s.url} target="_blank" rel="noopener noreferrer" className="yy-btn yy-btn-ghost">
+                        {PLATFORM[s.platform].icon(20)} {PLATFORM[s.platform].name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : (
+              <p className="yy-singles-soon">{t("singlesSoon")}</p>
+            )}
           </div>
+
+          <p className="yy-contact">
+            {t("mealQuestionsLead")} <a href={`mailto:${YOUTH_CONTACT_EMAIL}`}>{YOUTH_CONTACT_EMAIL}</a>
+            {" · "}
+            <Link href="/contact">{t("journeyWithUsCta")}</Link>
+          </p>
         </div>
-      </section>
-
-      {/* Youth & Child registration (replaces the old meal-request form:
-          meals are now chosen on the registration itself). Year/dates/venue
-          come from whatever convention is current or next; the button only
-          shows once that year has an on-site registration page. */}
-      <section className="min-section" style={{ background: "var(--cream-2)", padding: "clamp(40px,7vw,90px) clamp(20px,5vw,64px)" }}>
-        <Reveal style={{ maxWidth: 700, margin: "0 auto", textAlign: "center", background: "var(--paper)", border: "1px solid var(--line)", borderTop: "5px solid var(--gold)", borderRadius: 20, padding: "clamp(28px,5vw,44px) clamp(20px,4vw,40px)" }}>
-          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,4vw,40px)", letterSpacing: "-.8px", color: "var(--ink)", margin: "0 0 14px", lineHeight: 1.05 }}>
-            {t("registerHeading", { year: nextCy.year })}
-          </h2>
-          <p style={{ fontSize: 15.5, color: "var(--ink-soft)", lineHeight: 1.7, margin: "0 0 22px" }}>
-            {t("registerBody", { dates: dateRangeLabel(nextCy), venue: CONVENTION_VENUE })}
-          </p>
-          {youthRegisterHref ? (
-            <Link
-              href={youthRegisterHref}
-              className="press-lg"
-              style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", minHeight: 52, background: "var(--red)", color: "#fff", fontWeight: 800, fontSize: 16, padding: "0 30px", borderRadius: 999, textDecoration: "none" }}
-            >
-              {t("registerCta")}
-            </Link>
-          ) : (
-            <p style={{ fontSize: 15, fontWeight: 700, color: "var(--ink)", margin: 0 }}>{t("registerSoon")}</p>
-          )}
-          <p style={{ fontSize: 14.5, color: "var(--ink-soft)", margin: "18px 0 0" }}>
-            {t("mealQuestionsLead")} <a href="mailto:cacnayyam@outlook.com" style={{ color: "var(--red)", display: "inline-block", padding: "12px 0", fontWeight: 700 }}>cacnayyam@outlook.com</a>.
-          </p>
-        </Reveal>
-      </section>
-
-      {/* CTA */}
-      <section className="min-section" style={{ background: "var(--ink)", padding: "clamp(40px,7vw,90px) clamp(20px,5vw,64px)", textAlign: "center" }}>
-        <Reveal>
-          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4.5vw,54px)", letterSpacing: "-1.2px", color: "var(--cream)", margin: "0 0 16px", lineHeight: 0.98 }}>
-            {t("ctaHeading")}
-          </h2>
-          <p style={{ fontSize: 16, color: "rgba(245,246,250,.6)", margin: "0 0 32px" }}>
-            {t("ctaBody")}
-          </p>
-          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 14 }}>
-            <a
-              href={YOUTH_INSTAGRAM}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-sheen press-lg"
-              style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "17px 34px", borderRadius: 999, textDecoration: "none" }}
-            >
-              <InstagramIcon size={18} /> @cacnayyam
-            </a>
-            <Link
-              href="/contact"
-              className="press-lg"
-              style={{ display: "inline-block", background: "rgba(245,246,250,.09)", color: "var(--cream)", fontWeight: 700, fontSize: 16, padding: "17px 34px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(245,246,250,.2)" }}
-            >
-              Kàn Sí Wa →
-            </Link>
-          </div>
-        </Reveal>
       </section>
 
       <FooterExperience />
+
+      {/* ── Sticky mobile action bar (hidden from 768px up) ─────── */}
+      <nav className="yy-bar" aria-label={t("quickActions")}>
+        {youthRegisterHref && (
+          <Link href={youthRegisterHref} className="yy-bar-btn yy-bar-register">
+            {t("heroRegisterCta")}
+          </Link>
+        )}
+        {hasWhatsApp && (
+          <a href={YOUTH_WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="yy-bar-btn yy-bar-wa" aria-label="WhatsApp">
+            <WhatsAppIcon size={22} />
+          </a>
+        )}
+        <a href={YOUTH_INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="yy-bar-btn yy-bar-ig" aria-label="Instagram @cacnayyam">
+          <InstagramIcon size={22} />
+        </a>
+      </nav>
     </main>
   );
 }
