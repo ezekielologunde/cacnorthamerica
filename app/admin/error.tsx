@@ -8,11 +8,11 @@ export default function AdminError({ error, reset }: { error: Error & { digest?:
   }, [error]);
 
   return (
-    <div style={{
+    <div role="alert" className="err-rise" style={{
       display: "flex", flexDirection: "column", alignItems: "center",
       justifyContent: "center", minHeight: "60vh", textAlign: "center", padding: "40px 24px",
     }}>
-      <div style={{
+      <div className="err-shake" style={{
         width: 56, height: 56, borderRadius: "50%",
         background: "#fee2e2", display: "flex", alignItems: "center",
         justifyContent: "center", fontSize: 24, marginBottom: 20, color: "#dc2626",

@@ -9,12 +9,12 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
   }, [error]);
 
   return (
-    <div style={{
+    <div role="alert" style={{
       minHeight: "100vh", display: "flex", flexDirection: "column",
       alignItems: "center", justifyContent: "center", textAlign: "center",
       background: "var(--cream)", padding: "40px 24px",
     }}>
-      <div style={{
+      <div className="err-shake err-ripple" style={{
         width: 72, height: 72, borderRadius: "50%",
         background: "linear-gradient(140deg,var(--flame),var(--red))",
         display: "flex", alignItems: "center", justifyContent: "center",
@@ -23,22 +23,23 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
       }}>
         ✕
       </div>
-      <h1 style={{
+      <h1 className="err-rise err-d1" style={{
         fontFamily: "var(--font-display)", fontWeight: 800,
         fontSize: "clamp(28px,4vw,48px)", letterSpacing: "-1px",
         color: "var(--ink)", margin: "0 0 12px",
       }}>
         Something went wrong
       </h1>
-      <p style={{
+      <p className="err-rise err-d2" style={{
         fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.7,
         maxWidth: 420, margin: "0 auto 32px",
       }}>
         We&apos;re sorry — an unexpected error occurred. Please try again, or contact us if the problem continues.
       </p>
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
+      <div className="err-rise err-d3" style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
         <button
           onClick={reset}
+          className="press"
           style={{
             padding: "13px 28px", borderRadius: 999,
             background: "var(--red)", color: "#fff",
