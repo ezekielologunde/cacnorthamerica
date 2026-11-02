@@ -8,6 +8,7 @@ import { Search, CalendarDays } from 'lucide-react';
 import { haptic } from '@/lib/haptics';
 import { SearchModal } from '@/components/ui/SearchModal';
 import { currentOrNextConvention, isConventionPast } from '@/lib/conventions';
+import './chrome-mobile.css';
 
 interface NavItem {
   label: string;
@@ -127,6 +128,13 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
   useEffect(() => { setOpen(false); setOpenMobileSection(null); }, [pathname]);
 
   useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
+
+  useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [open]);
@@ -171,7 +179,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
             the <nav> itself stays full-bleed for its background/border. */}
         <div style={{ maxWidth: 1240, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         {/* Logo */}
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', color: barInk, flexShrink: 0, transition: 'color .4s' }}>
+        <Link href="/" className="nav-logo" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', color: barInk, flexShrink: 0, transition: 'color .4s' }}>
           <Image src="/images/logo.png" alt={t('logoAlt')} width={42} height={42} style={{ borderRadius: 12, objectFit: 'cover', flexShrink: 0 }} />
           <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
             <span style={{ fontSize: 10, letterSpacing: '2.5px', textTransform: 'uppercase', color: barAccent, fontWeight: 700, transition: 'color .4s' }}>{t('orgKicker')}</span>
@@ -336,7 +344,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
 
         {/* Mobile search icon */}
         <button
-          className="nav-hbg"
+          className="nav-hbg nav-tap"
           onClick={() => { haptic('light'); setSearchOpen(true); }}
           aria-label={t("search")}
           style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 8, color: barInk, flexDirection: 'row', gap: 0, alignItems: 'center', justifyContent: 'center', transition: 'color .4s' }}
@@ -346,10 +354,11 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
 
         {/* Hamburger */}
         <button
-          className="nav-hbg"
+          className="nav-hbg nav-tap"
           onClick={() => { haptic('light'); setOpen(o => !o); }}
           aria-label={open ? t('closeMenu') : t('openMenu')}
           aria-expanded={open}
+          aria-controls="mobile-menu"
           style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 8, color: barInk, gap: 5, alignItems: 'center', transition: 'color .4s' }}
         >
           <span style={{ display: 'block', width: 24, height: 2, background: 'currentColor', borderRadius: 2, transition: 'transform .25s', transform: open ? 'translateY(7px) rotate(45deg)' : 'none' }} />
@@ -370,13 +379,12 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
 
       {/* Mobile overlay */}
       {open && (
-        <div style={{
+        <div id="mobile-menu" className="nav-m-overlay" style={{
           position: 'fixed', inset: 0, zIndex: 99,
-          background: dark ? 'rgba(12,14,19,.97)' : 'rgba(255,255,255,.98)',
-          backdropFilter: 'blur(14px)',
+          background: dark ? 'rgb(12,14,19)' : 'rgb(255,255,255)',
           display: 'flex', flexDirection: 'column',
-          padding: '110px 32px 48px',
-          overflowY: 'auto',
+          padding: 'calc(var(--bar-h, 0px) + 76px) 20px 0',
+          overflowY: 'auto', overscrollBehavior: 'contain',
         }}>
           <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
             {navItems.map((item) => {
@@ -391,18 +399,22 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                       onClick={() => !item.dropdown && setOpen(false)}
                       style={{
                         fontFamily: 'var(--font-display)', fontWeight: 800,
-                        fontSize: 'clamp(28px,7vw,44px)',
+                        fontSize: 'clamp(24px,6.6vw,32px)',
                         color: active ? accent : ink,
-                        textDecoration: 'none', letterSpacing: '-1px',
-                        padding: '16px 0', flex: 1,
+                        textDecoration: 'none', letterSpacing: '-.5px',
+                        padding: '12px 0', flex: 1, minHeight: 56,
+                        display: 'flex', alignItems: 'center', gap: 10,
                       }}
+                      aria-current={active ? 'page' : undefined}
                     >
+                      {active && <span aria-hidden style={{ width: 8, height: 8, borderRadius: '50%', background: accent, flexShrink: 0 }} />}
                       {item.label}
                     </Link>
                     {item.dropdown && (
                       <button
                         onClick={() => setOpenMobileSection(mobileOpen ? null : item.label)}
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: ink, padding: '8px 4px' }}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: ink, width: 48, height: 48, display: 'grid', placeItems: 'center', flexShrink: 0 }}
+                        aria-expanded={mobileOpen}
                         aria-label={mobileOpen ? t('collapse') : t('expand')}
                       >
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ transform: mobileOpen ? 'rotate(180deg)' : 'none', transition: 'transform .2s' }}>
@@ -415,21 +427,23 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                     <div style={{ paddingBottom: 14, display: 'flex', flexDirection: 'column', gap: 4 }}>
                       {item.dropdown.map(d => {
                         const external = d.external || isExternalHref(d.href);
+                        const current = !external && pathname === d.href;
                         const style: CSSProperties = {
-                          display: 'block', padding: '10px 16px', borderRadius: 12,
+                          display: 'block', padding: '12px 16px', borderRadius: 12, minHeight: 52,
                           textDecoration: 'none',
-                          background: d.external ? (dark ? 'rgba(253,200,65,.14)' : 'rgba(253,200,65,.14)') : (dark ? 'rgba(255,255,255,.06)' : 'var(--cream-2)'),
+                          background: d.external || current ? 'rgba(253,200,65,.22)' : (dark ? 'rgba(255,255,255,.06)' : 'var(--cream-2)'),
+                          outline: current ? `1.5px solid ${accent}` : 'none', outlineOffset: -1.5,
                         };
                         const content = (
                           <>
                             <div style={{ fontWeight: d.external ? 800 : 700, fontSize: 16, color: ink }}>{d.label}</div>
-                            <div style={{ fontSize: 13, color: dark ? 'rgba(245,246,250,.5)' : 'var(--ink-soft)', marginTop: 2 }}>{d.desc}</div>
+                            <div style={{ fontSize: 13, color: dark ? 'rgba(245,246,250,.7)' : 'var(--ink-soft)', marginTop: 2 }}>{d.desc}</div>
                           </>
                         );
                         return external ? (
                           <a key={d.href} href={d.href} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)} style={style}>{content}</a>
                         ) : (
-                          <Link key={d.href} href={d.href} onClick={() => setOpen(false)} style={style}>{content}</Link>
+                          <Link key={d.href} href={d.href} onClick={() => setOpen(false)} style={style} aria-current={current ? 'page' : undefined}>{content}</Link>
                         );
                       })}
                     </div>
@@ -439,15 +453,16 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
             })}
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 32 }}>
+          <div className="nav-m-actions" style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 24, position: 'sticky', bottom: 0, padding: '12px 0 calc(14px + env(safe-area-inset-bottom))', background: dark ? 'rgb(12,14,19)' : 'rgb(255,255,255)', borderTop: `1px solid ${dark ? 'rgba(245,246,250,.1)' : 'var(--line)'}` }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, order: 2 }}>
             <Link
               href={'/giving'}
               onClick={() => setOpen(false)}
               className="press"
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                border: `1.5px solid ${dark ? 'rgba(245,246,250,.2)' : 'var(--line)'}`, color: ink, fontWeight: 700, fontSize: 15,
-                padding: '14px 24px', borderRadius: 999, textDecoration: 'none',
+                border: `1.5px solid ${ink}`, color: ink, fontWeight: 700, fontSize: 16,
+                padding: '12px 16px', minHeight: 48, borderRadius: 999, textDecoration: 'none',
               }}
             >
               {t('give')}
@@ -458,12 +473,13 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
               className="press"
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                border: `1.5px solid ${ink}`, color: ink, fontWeight: 700, fontSize: 15,
-                padding: '14px 24px', borderRadius: 999, textDecoration: 'none',
+                border: `1.5px solid ${ink}`, color: ink, fontWeight: 700, fontSize: 16,
+                padding: '12px 16px', minHeight: 48, borderRadius: 999, textDecoration: 'none',
               }}
             >
               {t('store')}
             </Link>
+            </div>
             {conventionOpen && (
               isExternalHref(conventionCtaHref) ? (
                 <a
@@ -472,7 +488,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                   rel="noopener noreferrer"
                   onClick={() => { haptic('medium'); setOpen(false); }}
                   className="press"
-                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'linear-gradient(135deg,var(--red-deep),var(--gold))', color: '#fff', fontWeight: 800, fontSize: 17, padding: '18px 24px', borderRadius: 999, textDecoration: 'none', boxShadow: '0 14px 30px rgba(122,17,40,.45)' }}>
+                  style={{ display: 'flex', order: 1, alignItems: 'center', justifyContent: 'center', gap: 8, background: 'linear-gradient(135deg,var(--red-deep),var(--gold))', color: '#fff', fontWeight: 800, fontSize: 17, padding: '14px 24px', minHeight: 52, borderRadius: 999, textDecoration: 'none', boxShadow: '0 10px 24px rgba(122,17,40,.35)' }}>
                   <CalendarDays size={17} strokeWidth={2.5} aria-hidden />
                   {conventionCtaLabel} →
                 </a>
@@ -481,13 +497,13 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                   href={conventionCtaHref}
                   onClick={() => { haptic('medium'); setOpen(false); }}
                   className="press"
-                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'linear-gradient(135deg,var(--red-deep),var(--gold))', color: '#fff', fontWeight: 800, fontSize: 17, padding: '18px 24px', borderRadius: 999, textDecoration: 'none', boxShadow: '0 14px 30px rgba(122,17,40,.45)' }}>
+                  style={{ display: 'flex', order: 1, alignItems: 'center', justifyContent: 'center', gap: 8, background: 'linear-gradient(135deg,var(--red-deep),var(--gold))', color: '#fff', fontWeight: 800, fontSize: 17, padding: '14px 24px', minHeight: 52, borderRadius: 999, textDecoration: 'none', boxShadow: '0 10px 24px rgba(122,17,40,.35)' }}>
                   <CalendarDays size={17} strokeWidth={2.5} aria-hidden />
                   {conventionCtaLabel} →
                 </Link>
               )
             )}
-            <p style={{ fontSize: 12.5, color: dark ? 'rgba(245,246,250,.4)' : 'var(--ink-soft)', textAlign: 'center', margin: '8px 0 0' }}>
+            <p style={{ fontSize: 12.5, color: dark ? 'rgba(245,246,250,.65)' : 'var(--ink-soft)', textAlign: 'center', margin: '0', order: 3 }}>
               {t('mobileFooterNote')}
             </p>
           </div>

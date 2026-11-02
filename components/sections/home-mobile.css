@@ -1,0 +1,51 @@
+/* Mobile-first overrides for the home page sections. Inline styles on the
+   section components win over normal rules, so overrides use !important and
+   are scoped to the hm-* hooks added in each component. */
+
+.hm-only-sm { display: none; }
+
+@media (max-width: 640px) {
+  .hm-only-sm { display: inline-flex; }
+  .hm-hide-sm { display: none !important; }
+
+  /* Hero: shorter than a full screen so the next section peeks in, headline
+     sized for 375px, primary CTA full width and thumb reachable. */
+  .hm-hero { min-height: min(88svh, 700px) !important; padding-top: 136px !important; padding-bottom: 88px !important; }
+  .hm-hero h1 { font-size: clamp(36px, 10.5vw, 48px) !important; margin-top: 0 !important; -webkit-text-stroke-width: 0 !important; }
+  .hm-hero-cta { width: 100%; justify-content: center !important; min-height: 52px; }
+  .hm-hero-cta-wrap { width: 100%; }
+  .hm-hero-link { min-height: 44px; display: inline-flex !important; align-items: center; }
+  .hm-dot { width: 28px !important; height: 44px !important; background: transparent !important; position: relative; }
+  .hm-dot::after { content: ""; position: absolute; left: 50%; top: 50%; height: 8px; width: var(--w, 8px); transform: translate(-50%, -50%); border-radius: 999px; background: var(--bg, rgba(255,255,255,.45)); transition: width .3s ease; }
+
+  /* Section rhythm */
+  .hm-section { padding-top: 56px !important; padding-bottom: 56px !important; }
+  .hm-head { margin-bottom: 24px !important; }
+  .hm-head h2 { font-size: clamp(30px, 9vw, 38px) !important; letter-spacing: -1px !important; }
+  .hm-link { min-height: 44px; display: inline-flex !important; align-items: center; }
+
+  /* Pastor welcome: compact portrait instead of a screen-tall card. */
+  .hm-pastor-portrait { height: 220px !important; border-radius: 22px !important; }
+  .hm-pastor-initials { font-size: 64px !important; }
+  .hm-pastor-badge { position: relative !important; left: auto !important; bottom: auto !important; margin: -26px 12px 0 !important; display: block; }
+  .hm-pastor-body { font-size: 17px !important; }
+
+  /* Latest news: two featured stories, the rest live behind "All posts". */
+  .hm-news-rest { display: none !important; }
+  .hm-news-media { height: 190px !important; }
+  .hm-news-body { padding: 20px !important; }
+
+  /* Ministries: compact rows (icon beside text) instead of tall cards. */
+  .hm-min-grid { gap: 12px !important; }
+  .hm-min-card { display: grid !important; grid-template-columns: 48px 1fr; column-gap: 16px; padding: 18px !important; border-radius: 20px !important; }
+  .hm-min-card > :first-child { grid-row: 1 / span 2; margin-bottom: 0 !important; width: 48px !important; height: 48px !important; }
+  .hm-min-card h3 { margin: 0 0 4px !important; }
+
+  /* Watch online: stack featured video and recent list. */
+  .hm-watch-grid { grid-template-columns: 1fr !important; gap: 14px !important; }
+
+  /* Prayer line and plan-a-visit: full width, thumb-sized actions. */
+  .hm-btn-block { display: flex !important; width: 100%; justify-content: center; min-height: 52px; box-sizing: border-box; }
+  .hm-contact-row { min-height: 52px; color: inherit; text-decoration: none; }
+  .hm-map { height: 280px !important; border-radius: 20px !important; }
+}

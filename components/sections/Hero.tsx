@@ -10,6 +10,7 @@ import { conventionToFeature, currentOrNextConvention, dateRangeLabel, CONVENTIO
 import { specialEvents, isEventPast } from "@/lib/events";
 import { POSTS } from "@/lib/blog";
 import { GIVING_CAMPAIGNS } from "@/lib/giving";
+import "./home-mobile.css";
 
 type SlideKind = "Welcome" | "Event" | "Ad" | "News";
 
@@ -196,6 +197,7 @@ export function Hero() {
   return (
     <header
       ref={ref}
+      className="hm-hero"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       style={{
@@ -266,16 +268,6 @@ export function Hero() {
                 <ImageLightbox src={slide.inlineImage.src} alt={slide.inlineImage.alt} objectPosition="center 15%" />
               </div>
             )}
-            <span style={{
-              display: "inline-flex", alignItems: "center", gap: 8,
-              background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.2)",
-              padding: "7px 16px", borderRadius: 999,
-              fontSize: 12, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase",
-              color: KIND_COLOR[slide.kind],
-              backdropFilter: "blur(8px)",
-            }}>
-              {slide.eyebrow}
-            </span>
 
             {/* 800 is Bricolage Grotesque's max available weight (its
                 variable axis tops out there too) -- font-weight can't push
@@ -284,13 +276,26 @@ export function Hero() {
                 sharper contrast against the video. */}
             <h1 style={{
               fontFamily: "var(--font-display)", fontWeight: 800,
-              fontSize: "clamp(52px,9vw,116px)", lineHeight: 0.96, letterSpacing: "-0.035em",
-              margin: "24px 0 0", color: "#fff", textWrap: "balance",
+              fontSize: "clamp(44px,9vw,116px)", lineHeight: 0.96, letterSpacing: "-0.035em",
+              margin: "0", color: "#fff", textWrap: "balance",
               WebkitTextStroke: "1px rgba(255,255,255,.6)",
               textShadow: "0 2px 10px rgba(0,0,0,.65), 0 14px 40px rgba(0,0,0,.5)",
             }}>
               {slide.title}
             </h1>
+
+            <div style={{ marginTop: 18 }}>
+            <span className="hm-hero-pill" style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.2)",
+              padding: "6px 14px", borderRadius: 999,
+              fontSize: 12, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase",
+              color: KIND_COLOR[slide.kind],
+              backdropFilter: "blur(8px)",
+            }}>
+              {slide.eyebrow}
+            </span>
+            </div>
 
             <p style={{
               fontSize: "clamp(16px,1.6vw,20px)", lineHeight: 1.65,
@@ -301,8 +306,8 @@ export function Hero() {
             </p>
 
             <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 30, justifyContent: "center" }}>
-              <Magnetic strength={0.4}>
-                <Link href={slide.cta.href} target={slide.cta.external ? "_blank" : undefined} rel={slide.cta.external ? "noopener noreferrer" : undefined} className="btn-sheen" style={{
+              <Magnetic strength={0.4} className="hm-hero-cta-wrap">
+                <Link href={slide.cta.href} target={slide.cta.external ? "_blank" : undefined} rel={slide.cta.external ? "noopener noreferrer" : undefined} className="btn-sheen hm-hero-cta" style={{
                   display: "inline-flex", alignItems: "center", gap: 10,
                   background: "var(--gold)", color: "var(--ink)",
                   fontWeight: 800, fontSize: 16,
@@ -318,7 +323,7 @@ export function Hero() {
             {slide.quickLinks && (
               <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 18, justifyContent: "center" }}>
                 {slide.quickLinks.map((link) => (
-                  <Link key={link.href} href={link.href} className="press" style={{
+                  <Link key={link.href} href={link.href} className="press hm-hero-link" style={{
                     fontSize: 13.5, fontWeight: 700, color: "rgba(255,255,255,.82)",
                     textDecoration: "none", padding: "8px 16px", borderRadius: 999,
                     border: "1px solid rgba(255,255,255,.22)", background: "rgba(255,255,255,.06)",
@@ -366,8 +371,9 @@ export function Hero() {
               <button
                 key={s.key} type="button" onClick={() => goTo(i)}
                 aria-label={`Go to slide ${i + 1}: ${s.title}`} aria-current={i === index}
-                className="press"
+                className="press hm-dot"
                 style={{
+                  ["--w" as string]: i === index ? "28px" : "8px", ["--bg" as string]: i === index ? "var(--gold)" : "rgba(255,255,255,.45)",
                   width: i === index ? 28 : 8, height: 8, borderRadius: 999,
                   background: i === index ? "var(--gold)" : "rgba(255,255,255,.4)",
                   border: "none", cursor: "pointer", padding: 0,

@@ -9,6 +9,7 @@ import { haptic } from '@/lib/haptics';
 import { Phone, Mail, ArrowUp, ArrowRight } from 'lucide-react';
 import { NewsletterForm } from '@/components/sections/NewsletterForm';
 import { currentOrNextConvention } from '@/lib/conventions';
+import '@/components/navigation/chrome-mobile.css';
 
 const socials = [
   { icon: <YoutubeIcon />, title: 'YouTube', href: 'https://youtube.com/@cacnorthamericalatunderegi1330' },
@@ -103,7 +104,7 @@ export function FooterExperience() {
 
   const registerCtaProps = {
     onClick: () => haptic('medium'),
-    className: 'press',
+    className: 'press ft-cta',
     style: {
       display: 'inline-flex' as const, alignItems: 'center' as const, gap: 7,
       background: 'var(--gold)', color: 'var(--ink)',
@@ -121,10 +122,10 @@ export function FooterExperience() {
           gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%,210px), 1fr))',
           gap: 'clamp(32px,4vw,48px)',
           paddingBottom: 44,
-        }}>
+        }} className="ft-grid">
 
           {/* Sidebar */}
-          <div>
+          <div className="ft-side">
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <Image src="/images/logo.png" alt={t('logoAlt')} width={42} height={42}
                 style={{ borderRadius: 12, objectFit: 'cover', flexShrink: 0 }} />
@@ -134,7 +135,7 @@ export function FooterExperience() {
               </div>
             </div>
 
-            <Link href={'/contact#convention-committee'} className="press" style={{
+            <Link href={'/contact#convention-committee'} className="press ft-cta" style={{
               display: 'inline-flex', alignItems: 'center', gap: 7, marginTop: 18,
               background: 'linear-gradient(135deg,var(--red),var(--red-deep))', color: '#fff',
               fontWeight: 700, fontSize: 13, padding: '11px 16px', borderRadius: 999, textDecoration: 'none',
@@ -175,7 +176,7 @@ export function FooterExperience() {
               )}
               {socials.map(s => (
                 <a key={s.title} href={s.href} target="_blank" rel="noopener noreferrer"
-                  aria-label={s.title} onClick={() => haptic('selection')} className="press"
+                  aria-label={s.title} onClick={() => haptic('selection')} className="press ft-social"
                   style={{ width: 38, height: 38, borderRadius: 10, background: 'rgba(245,246,250,.07)', border: '1px solid rgba(245,246,250,.11)', display: 'grid', placeItems: 'center', textDecoration: 'none', color: 'rgba(245,246,250,.75)', flexShrink: 0 }}>
                   {s.icon}
                 </a>
@@ -186,8 +187,8 @@ export function FooterExperience() {
           {/* Link columns */}
           {columns.map((col) => (
             <div key={col.heading}>
-              <div style={{ fontWeight: 800, fontSize: 12, textTransform: 'uppercase', letterSpacing: '1.8px', color: 'rgba(245,246,250,.4)', marginBottom: 18 }}>{col.heading}</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 14 }}>
+              <div style={{ fontWeight: 800, fontSize: 12, textTransform: 'uppercase', letterSpacing: '1.8px', color: 'rgba(245,246,250,.6)', marginBottom: 12 }}>{col.heading}</div>
+              <div className="ft-links" style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 14 }}>
                 {col.links.map(([href, label]) => (
                   isExternalHref(href) ? (
                     <a key={href} href={href} target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(245,246,250,.65)', textDecoration: 'none' }}>{label}</a>
@@ -200,9 +201,9 @@ export function FooterExperience() {
           ))}
 
           {/* Contact */}
-          <div>
-            <div style={{ fontWeight: 800, fontSize: 12, textTransform: 'uppercase', letterSpacing: '1.8px', color: 'rgba(245,246,250,.4)', marginBottom: 18 }}>{t('contactHeading')}</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 14 }}>
+          <div className="ft-contact">
+            <div style={{ fontWeight: 800, fontSize: 12, textTransform: 'uppercase', letterSpacing: '1.8px', color: 'rgba(245,246,250,.6)', marginBottom: 12 }}>{t('contactHeading')}</div>
+            <div className="ft-links" style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 14 }}>
               <Link href={'/contact'} style={{ color: 'rgba(245,246,250,.65)', textDecoration: 'none' }}>{t('contact')}</Link>
               <a href="tel:+13054690346" style={{ display: 'flex', alignItems: 'center', gap: 9, color: 'rgba(245,246,250,.65)', textDecoration: 'none' }}>
                 <Phone size={14} strokeWidth={2} style={{ flexShrink: 0 }} aria-hidden /> (305) 469-0346
@@ -224,9 +225,8 @@ export function FooterExperience() {
           display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 24,
         }}>
           <div style={{ flex: '1 1 260px' }}>
-            <div style={{ fontWeight: 800, fontSize: 11.5, textTransform: 'uppercase', letterSpacing: '1.8px', color: 'var(--gold)', marginBottom: 8 }}>{t('stayConnected')}</div>
             <p style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(20px,2.4vw,26px)', color: '#fff', margin: '0 0 6px', letterSpacing: '-.4px' }}>{t('newsletterHeading')}</p>
-            <p style={{ fontSize: 13.5, color: 'rgba(245,246,250,.5)', margin: 0 }}>{t('newsletterBody')}</p>
+            <p style={{ fontSize: 14, color: 'rgba(245,246,250,.7)', margin: 0 }}>{t('newsletterBody')}</p>
           </div>
           <div style={{ flex: '1 1 340px' }}>
             <NewsletterForm />
@@ -234,14 +234,14 @@ export function FooterExperience() {
         </div>
 
         {/* Bottom bar */}
-        <div style={{ maxWidth: 1240, margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 16, padding: '24px 0 28px', fontSize: 12.5, color: 'rgba(245,246,250,.3)', borderTop: '1px solid rgba(245,246,250,.1)' }}>
+        <div className="ft-bottom" style={{ maxWidth: 1240, margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 16, padding: '24px 0 28px', fontSize: 12.5, color: 'rgba(245,246,250,.6)', borderTop: '1px solid rgba(245,246,250,.1)' }}>
           <span>{t('copyright')}</span>
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px 20px' }}>
-            <Link href={'/about#tenets'} style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>{t('ourTenets')}</Link>
-            <Link href={'/statement-of-faith'} style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>{t('statementOfFaith')}</Link>
-            <Link href={'/leadership/past'} style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>{t('pastLeaders')}</Link>
-            <Link href={'/contact'} style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>{t('contact')}</Link>
-            <Link href={'/sitemap'} style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>{t('sitemap')}</Link>
+            <Link href={'/about#tenets'} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{t('ourTenets')}</Link>
+            <Link href={'/statement-of-faith'} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{t('statementOfFaith')}</Link>
+            <Link href={'/leadership/past'} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{t('pastLeaders')}</Link>
+            <Link href={'/contact'} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{t('contact')}</Link>
+            <Link href={'/sitemap'} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{t('sitemap')}</Link>
             <BackToTop label={t('backToTop')} />
           </div>
         </div>
