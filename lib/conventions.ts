@@ -123,13 +123,6 @@ export const conventionYears: ConventionYear[] = [
   { year: 2030, startIso: "2030-07-15", endIso: "2030-07-20", href: "/events/cacna-2030" },
 ];
 
-/** The venue to display for a given year -- almost always CONVENTION_VENUE,
- *  except a year with its own `venue` override (currently only 2020,
- *  virtual due to COVID). */
-export function venueFor(cy: ConventionYear): string {
-  return cy.venue ?? CONVENTION_VENUE;
-}
-
 /** True only when `registrationUrl` is set AND points off-site — an
  *  internal path like "/convention/register" should render as a normal
  *  same-site link, not an `<a target="_blank">`. */
@@ -215,16 +208,6 @@ export function getConventionState(cy: ConventionYear): ConventionState {
   return daysSince <= CONCLUDED_RECENT_DAYS ? "concluded-recent" : "concluded";
 }
 
-/** Which day of the convention "today" is (1-indexed), or null when not live.
- *  Powers the Hero's "Day X of 6" live-state indicator. */
-export function conventionDayNumber(cy: ConventionYear): number | null {
-  if (getConventionState(cy) !== "live") return null;
-  const [y, m, d] = cy.startIso.split("-").map(Number);
-  const startUtc = Date.UTC(y, m - 1, d);
-  const daysElapsed = Math.floor((Date.now() - startUtc) / 86400000);
-  return Math.min(RECURRING_SESSION_PATTERN.length, Math.max(1, daysElapsed + 1));
-}
-
 /** The convention year most relevant to feature RIGHT NOW. Unlike
  *  currentOrNextConvention() (which rolls to next year the instant the
  *  current one is past), this holds onto a just-concluded convention through
@@ -282,14 +265,6 @@ export function activePricing(cy: ConventionYear, onDate: Date = new Date()): Pr
 
 export function priceForCategory(tiers: PricingTier[], category: RegistrantCategory): number | null {
   return tiers.find((t) => t.category === category)?.priceCents ?? null;
-}
-
-/** True once a category has ever had a priced tier for `cy` — used to tell
- *  "this year's registration isn't open yet" apart from "this category
- *  simply isn't offered" (not currently a distinction this data models,
- *  but kept as a single choke point in case that changes). */
-export function registrationIsOpen(cy: ConventionYear): boolean {
-  return activePricing(cy).length > 0;
 }
 
 // ---------------------------------------------------------------------------

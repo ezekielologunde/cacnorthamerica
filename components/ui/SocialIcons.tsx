@@ -1,14 +1,6 @@
 // Inline brand glyphs — lucide-react removed its brand icons, so we ship our own.
 // Color follows `currentColor`; size via the `size` prop.
 
-export function FacebookIcon({ size = 18 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-      <path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.95c0-.9.25-1.5 1.55-1.5h1.65V3.65c-.3-.04-1.3-.13-2.45-.13-2.43 0-4.1 1.48-4.1 4.2v2.18H7.45V13h2.7v8h3.35z" />
-    </svg>
-  );
-}
-
 export function InstagramIcon({ size = 18 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden>
