@@ -556,6 +556,15 @@ export default async function BlogSlugPage({
               {post.image && post.image.orientation === "portrait" && (
                 <div style={{ clear: "both" }} />
               )}
+              {post.gallery && post.gallery.length > 0 && (
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 14, marginTop: 28 }}>
+                  {post.gallery.map((g) => (
+                    <div key={g.url} style={{ position: "relative", aspectRatio: "4 / 3", borderRadius: 14, overflow: "hidden", boxShadow: "0 8px 22px rgba(18,20,30,.12)" }}>
+                      <ImageLightbox src={g.url} alt={g.alt} />
+                    </div>
+                  ))}
+                </div>
+              )}
             </article>
           </Reveal>
 
