@@ -196,6 +196,11 @@ await settleEmail();
 check("a 30-person free group still gets its confirmation email even if the QR cannot be encoded",
   bigGroup.status === 200 && emails.length === 1 && recipients(emails[0])[0] === "biggroup@example.com");
 
+emails.length = 0;
+const prompt = await post(youth([kid(7)], { contactEmail: "prompt@example.com" }));
+check("the free youth email has been sent by the time the response returns (not left to run after it)",
+  prompt.status === 200 && emails.length === 1);
+
 // Paid path: anyone 20-29.
 created.length = 0; rows.length = 0;
 const paid = await post(youth([kid(22, { allergies: "Shellfish" }), kid(8)]));

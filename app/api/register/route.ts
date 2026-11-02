@@ -374,11 +374,11 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
     }
     const confirmationUrl = `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?t=${token}`;
     if (emailed) {
-      // Fire-and-forget: never throws, and a failed send never fails the
-      // registration, which is already logged.
-      void sendRegistrationConfirmationEmail(summary, confirmationUrl, true).then((sent) => {
-        if (!sent) console.error(`[register] youth confirmation email failed for ref ${summary.ref}`);
-      });
+      // Awaited so the serverless function cannot be suspended before the
+      // send finishes. The helper never throws, and a failed send never fails
+      // the registration, which is already logged.
+      const sent = await sendRegistrationConfirmationEmail(summary, confirmationUrl, true);
+      if (!sent) console.error(`[register] youth confirmation email failed for ref ${summary.ref}`);
     }
     return NextResponse.json({ checkoutUrl: confirmationUrl });
   }
