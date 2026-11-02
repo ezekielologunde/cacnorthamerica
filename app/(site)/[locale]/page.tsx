@@ -11,6 +11,9 @@ import { HomepageAnnouncements } from "@/components/ui/HomepageAnnouncements";
 import { createServiceClient } from "@/lib/supabase/server";
 import { CacWorldNewsStrip } from "@/components/sections/CacWorldNewsStrip";
 import { ConventionRegister } from "@/components/sections/ConventionRegister";
+import { HistoryTeaser } from "@/components/sections/HistoryTeaser";
+import { FaqTeaser } from "@/components/sections/FaqTeaser";
+import { SocialsRow } from "@/components/sections/SocialsRow";
 
 // Below-fold sections split into separate JS chunks — browser parses them
 // incrementally instead of one blocking task, cutting TBT significantly.
@@ -108,11 +111,14 @@ export default async function Home({
       <PhotoMarquee />
       <PastorWelcome />
       <Watchword />
+      <HistoryTeaser />
       <LatestNews />
       <CacWorldNewsStrip limit={3} />
       <OurMinistries />
       <Impact />
       <GlobalChurches />
+      <FaqTeaser />
+      <SocialsRow />
       <PlanVisit />
       <FooterExperience />
     </main>
