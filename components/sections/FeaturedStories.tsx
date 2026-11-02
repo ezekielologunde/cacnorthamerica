@@ -23,6 +23,8 @@ export function FeaturedStories({
   const heading = dark ? "#fff" : "var(--ink)";
   const body = dark ? "rgba(255,255,255,.6)" : "var(--ink-soft)";
   const link = dark ? "var(--gold)" : "var(--red)";
+  // The channel credit is a link, so on dark it gets more contrast than body copy.
+  const channelLink = dark ? "rgba(255,255,255,.85)" : "var(--ink-soft)";
 
   return (
     <section
@@ -50,7 +52,7 @@ export function FeaturedStories({
               </h3>
               <p style={{ fontSize: 14, color: body, lineHeight: 1.6, margin: 0 }}>
                 Credit:{" "}
-                <a href={s.channelUrl} target="_blank" rel="noopener noreferrer" style={{ color: body, fontWeight: 700 }}>
+                <a href={s.channelUrl} target="_blank" rel="noopener noreferrer" style={{ color: channelLink, fontWeight: 700 }}>
                   {s.channel} (YouTube)
                 </a>
                 <span aria-hidden> · </span>

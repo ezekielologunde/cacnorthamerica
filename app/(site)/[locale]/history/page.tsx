@@ -46,18 +46,22 @@ const institutions: { year: string; text: string }[] = [
 const pStyle = { fontSize: 16.5, color: "var(--ink-soft)", lineHeight: 1.8, margin: 0 } as const;
 const strong = { color: "var(--ink)" } as const;
 
+/**
+ * A chapter is a timeline jump target, so it is deliberately not wrapped in
+ * <Reveal>: Reveal server-renders at opacity 0 and only fades in once JS has
+ * hydrated and the block has scrolled into view, which would leave a chapter
+ * blank after a #anchor jump on a slow load, or for good without JS.
+ */
 function Chapter({ id, year, title, children }: { id: string; year?: string; title: string; children: ReactNode }) {
   return (
     <section id={id} aria-labelledby={`${id}-heading`} style={{ padding: "30px 0", borderBottom: "1px solid var(--line)", scrollMarginTop: 96 }}>
-      <Reveal>
-        <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap", columnGap: 14, rowGap: 4, marginBottom: 14 }}>
-          {year && <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 15, color: "var(--red)", letterSpacing: ".5px", flexShrink: 0 }}>{year}</span>}
-          <h2 id={`${id}-heading`} style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,2.6vw,28px)", letterSpacing: "-.4px", color: "var(--ink)", margin: 0, lineHeight: 1.2, textWrap: "balance" }}>
-            {title}
-          </h2>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>{children}</div>
-      </Reveal>
+      <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap", columnGap: 14, rowGap: 4, marginBottom: 14 }}>
+        {year && <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 15, color: "var(--red)", letterSpacing: ".5px", flexShrink: 0 }}>{year}</span>}
+        <h2 id={`${id}-heading`} style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,2.6vw,28px)", letterSpacing: "-.4px", color: "var(--ink)", margin: 0, lineHeight: 1.2, textWrap: "balance" }}>
+          {title}
+        </h2>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>{children}</div>
     </section>
   );
 }
@@ -129,19 +133,19 @@ export default async function HistoryPage({
 
           <Chapter id="faith-tabernacle" title="Faith Tabernacle">
             <p style={pStyle}>
-              The group&apos;s convictions put it at odds with the Anglican leadership: it believed in divine healing, rejected infant baptism, gave weight to dreams and visions, and kept away from revelry, alcohol, gambling and idolatry. Its members faced persecution for it.
+              Staying inside the Anglican fold grew harder. These believers shunned idol worship, drink, betting and riotous celebration; they looked for guidance in visions and dreams; they would not baptise babies; and they trusted God for healing. Church authorities objected, and the members were made to suffer for their stand.
             </p>
             <p style={pStyle}>
-              Odubanjo corresponded with <strong style={strong}>Faith Tabernacle</strong> of Philadelphia, USA, led by Pastor A. Clark and associated with the tract <em>The Sword of the Spirit</em>. The group affiliated with Faith Tabernacle, and its branches spread through Nigeria and across West Africa.
+              Help came by post from America. Odubanjo exchanged letters with Pastor A. Clark of <strong style={strong}>Faith Tabernacle</strong>, a Philadelphia congregation linked with the tract <em>The Sword of the Spirit</em>, and the Ijebu-Ode believers joined that fellowship. Under the Faith Tabernacle name, new branches opened in Nigeria and further afield in West Africa.
             </p>
           </Chapter>
 
           <Chapter id="babalola" year="1928" title="Joseph Ayo Babalola's call">
             <p style={pStyle}>
-              <strong style={strong}>Joseph Ayo Babalola</strong> was a roller driver working on the Akure–Ilesa road when, between 9 and 11 October 1928, he heard a voice calling him. He left his job, fasted for seven days and saw a vision of Christ.
+              Over three days in October 1928, the 9th to the 11th, a voice spoke to <strong style={strong}>Joseph Ayo Babalola</strong>, then employed to drive a road roller on the route between Akure and Ilesa. Answering it cost him that job: he resigned, gave a week to fasting, and saw Christ in a vision.
             </p>
             <p style={pStyle}>
-              Pastor Esinsinade baptised him in 1929, and Pastor Babatope connected him with the Faith Tabernacle group.
+              It was Pastor Babatope who brought him into contact with the Faith Tabernacle believers, and in 1929 he went through baptism at the hands of Pastor Esinsinade.
             </p>
           </Chapter>
 
@@ -174,10 +178,10 @@ export default async function HistoryPage({
 
           <Chapter id="judgment" year="1972" title="The Supreme Court judgment">
             <p style={pStyle}>
-              On 27 April 1972 the Supreme Court of Nigeria gave judgment in Suit No. SC.223/70, before Justices Ademola (Chief Justice of Nigeria), Madarikan and Sowemimo. The court held that Christ Apostolic Church was the main body and that The Apostolic Church had seceded from it.
+              Which church was the original, and which had broken away, was finally settled in Nigeria&apos;s highest court. Three justices heard Suit No. SC.223/70: Chief Justice Ademola, with Madarikan and Sowemimo. Their ruling, handed down on 27 April 1972, found that The Apostolic Church was the body that had left, and that Christ Apostolic Church remained the main body.
             </p>
             <p style={pStyle}>
-              Even so, CAC released many assets, an approach its history calls &ldquo;the Abraham-Lot solution.&rdquo; In 1985 the two churches met as brothers, and the history also records the forming of the Christian Pentecostal Fellowship of Nigeria.
+              Having won the case, CAC did not insist on keeping everything; it let go of a large share of the property. Relations between the two churches healed in time: by 1985 they were meeting on brotherly terms, and the history also notes that the Christian Pentecostal Fellowship of Nigeria was founded.
             </p>
           </Chapter>
 
