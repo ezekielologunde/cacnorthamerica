@@ -3,6 +3,7 @@ import { RevealText } from "@/components/ui/RevealText";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { PartyPopper } from "lucide-react";
 import { specialEvents, isEventPast } from "@/lib/events";
+import "./home-mobile.css";
 
 // Same facts as the dedicated event page (app/events/cacna-50th-anniversary-2026)
 // and the Hero carousel's rotating slide -- this is the third, most
@@ -14,7 +15,7 @@ export function AnniversaryCelebration() {
   if (isEventPast(ev)) return null;
 
   return (
-    <section style={{ position: "relative", overflow: "hidden", background: "var(--gradient-band)", padding: "clamp(72px,9vw,120px) clamp(20px,5vw,64px)" }}>
+    <section className="hm-section" style={{ position: "relative", overflow: "hidden", background: "var(--gradient-band)", padding: "clamp(72px,9vw,120px) clamp(20px,5vw,64px)" }}>
       {/* This used to be a per-slide hero background (the anniversary slide,
           before the hero moved to one persistent video for every slide) --
           featured here full-bleed instead of shrunk into the photo marquee. */}
@@ -49,7 +50,7 @@ export function AnniversaryCelebration() {
           <Magnetic strength={0.35}>
             <a
               href={ev.href}
-              className="btn-sheen press"
+              className="btn-sheen press hm-btn-block"
               style={{
                 display: "inline-flex", alignItems: "center", gap: 9,
                 background: "var(--gold)", color: "var(--ink)",

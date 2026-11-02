@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Reveal } from "@/components/ui/Reveal";
 import { POSTS, isArchivePost, badgeTextColor, type BlogPost, type PostCategory } from "@/lib/blog";
+import "./home-mobile.css";
 
 const CATEGORIES: PostCategory[] = ["Event Spotlight", "Ministry Update", "Devotional", "Reflection"];
 
@@ -28,7 +29,7 @@ function NewsCard({ p, delay, featured }: { p: BlogPost; delay: number; featured
   return (
     <Reveal delay={delay}>
       <Link href={p.href ?? `/blog/${p.slug}`} className="card-lift" style={{ textDecoration: "none", color: "inherit", background: "var(--paper)", borderRadius: 24, overflow: "hidden", boxShadow: "0 10px 26px rgba(18,20,30,.06)", display: "flex", flexDirection: "column", height: "100%" }}>
-        <div style={{
+        <div className="hm-news-media" style={{
           position: "relative", height: featured ? 280 : 168,
           ...(p.image ? {
             backgroundImage: `url(${p.image.url})`, backgroundSize: "cover",
@@ -44,7 +45,7 @@ function NewsCard({ p, delay, featured }: { p: BlogPost; delay: number; featured
             {p.category}
           </span>
         </div>
-        <div style={{ padding: featured ? 32 : 26, display: "flex", flexDirection: "column", flex: 1, gap: featured ? 14 : 12 }}>
+        <div className="hm-news-body" style={{ padding: featured ? 32 : 26, display: "flex", flexDirection: "column", flex: 1, gap: featured ? 14 : 12 }}>
           <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: featured ? "clamp(22px,2.2vw,28px)" : 20, letterSpacing: "-.3px", lineHeight: 1.2, margin: 0, textWrap: "balance" }}>{p.title}</h3>
           <p style={{
             fontSize: featured ? 15.5 : 14, color: "var(--ink-soft)", lineHeight: 1.65, margin: 0, flex: 1,
@@ -64,14 +65,13 @@ export function LatestNews() {
   const [featured, rest] = [posts.slice(0, 2), posts.slice(2)];
 
   return (
-    <section style={{ background: "var(--cream)", padding: "clamp(70px,9vw,120px) clamp(20px,5vw,64px)" }}>
+    <section className="hm-section" style={{ background: "var(--cream)", padding: "clamp(70px,9vw,120px) clamp(20px,5vw,64px)" }}>
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <Reveal style={{ marginBottom: 46, display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 20 }}>
+        <Reveal className="hm-head" style={{ marginBottom: 46, display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 20 }}>
           <div>
-            <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>From CACNA</span>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(36px,5vw,68px)", letterSpacing: "-1.5px", margin: "12px 0 0", lineHeight: 1 }}>Latest News</h2>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(36px,5vw,68px)", letterSpacing: "-1.5px", margin: "0", lineHeight: 1 }}>Latest News</h2>
           </div>
-          <Link href="/blog" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 8, fontWeight: 700, fontSize: 15, color: "var(--red)", textDecoration: "none" }}>
+          <Link href="/blog" className="press hm-link" style={{ display: "inline-flex", alignItems: "center", gap: 8, fontWeight: 700, fontSize: 15, color: "var(--red)", textDecoration: "none" }}>
             All posts <span aria-hidden style={{ fontSize: 17 }}>→</span>
           </Link>
         </Reveal>
@@ -83,10 +83,13 @@ export function LatestNews() {
         )}
 
         {rest.length > 0 && (
-          <div className="r3" style={{ gap: 22 }}>
+          <div className="r3 hm-news-rest" style={{ gap: 22 }}>
             {rest.map((p, i) => <NewsCard key={p.slug} p={p} delay={(featured.length + i) * 80} />)}
           </div>
         )}
+        <Link href="/blog" className="press hm-only-sm hm-btn-block" style={{ marginTop: 22, alignItems: "center", fontWeight: 800, fontSize: 16, color: "var(--red)", textDecoration: "none", border: "1.5px solid var(--red)", borderRadius: 999 }}>
+          See all news <span aria-hidden style={{ marginLeft: 8 }}>→</span>
+        </Link>
       </div>
     </section>
   );

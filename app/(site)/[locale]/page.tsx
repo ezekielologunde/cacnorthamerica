@@ -95,15 +95,15 @@ export default async function Home({
       <Nav heroDark />
       {announcements && announcements.length > 0 && <HomepageAnnouncements announcements={announcements} />}
       <Hero />
-      {/* Right after the hero's video, while the visitor is still in a
-          "watching CACNA" mindset — a stronger visual follow-through than
-          waiting until after five text-heavy sections. */}
-      <PhotoMarquee />
+      {/* Phone-first order: what a visitor most often came for (what is
+          coming up, then watching a service) sits right under the hero;
+          the photo strip and the superintendent's letter follow. */}
+      <UpcomingPrograms />
+      <WatchOnline />
       <AnniversaryCelebration />
+      <PhotoMarquee />
       <PastorWelcome />
       <Watchword />
-      <WatchOnline />
-      <UpcomingPrograms />
       <LatestNews />
       <OurMinistries />
       <Impact />

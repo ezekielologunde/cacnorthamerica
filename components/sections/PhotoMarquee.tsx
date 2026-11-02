@@ -1,6 +1,7 @@
 "use client";
 import { Reveal } from "@/components/ui/Reveal";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
+import "./home-mobile.css";
 
 // Real, individually-verified CACNA photos not used elsewhere on the
 // homepage (convention 2025, Bible Institute, CACMA fellowship). No stock
@@ -40,10 +41,7 @@ export function PhotoMarquee() {
     <section style={{ background: "var(--paper)", padding: "clamp(48px,6vw,80px) 0", overflow: "hidden" }}>
       <Reveal>
         <div style={{ textAlign: "center", padding: "0 clamp(20px,5vw,64px)", marginBottom: 30 }}>
-          <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>
-            Life Across CACNA
-          </span>
-          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.6vw,42px)", letterSpacing: "-1px", margin: "10px 0 0", color: "var(--ink)" }}>
+          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.6vw,42px)", letterSpacing: "-1px", margin: "0", color: "var(--ink)" }}>
             Moments from the family.
           </h2>
         </div>

@@ -1,0 +1,17 @@
+/* Shared chrome (Nav, Footer) mobile rules. Inline styles on the components
+   win over normal rules, so the overrides use !important. */
+
+.nav-logo { min-height: 44px; }
+.nav-tap { min-width: 44px; min-height: 44px; justify-content: center; }
+
+@media (max-width: 640px) {
+  .ft-grid { grid-template-columns: 1fr 1fr !important; gap: 28px 16px !important; }
+  .ft-side, .ft-contact { grid-column: 1 / -1; }
+  .ft-links { gap: 0 !important; }
+  .ft-links a { display: flex !important; align-items: center; min-height: 44px; }
+  .ft-social { width: 44px !important; height: 44px !important; }
+  .ft-cta { min-height: 48px; box-sizing: border-box; }
+  .ft-side > div:nth-of-type(2) a { min-height: 44px; }
+  .ft-bottom { gap: 8px 16px !important; }
+  .ft-bottom a, .ft-bottom button { min-height: 44px; display: inline-flex; align-items: center; }
+}

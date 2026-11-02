@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Reveal } from "@/components/ui/Reveal";
 import { specialEvents, splitByDate } from "@/lib/events";
+import "./home-mobile.css";
 
 export function UpcomingPrograms() {
   const { upcoming } = splitByDate(specialEvents);
@@ -9,14 +10,13 @@ export function UpcomingPrograms() {
   if (events.length === 0) return null;
 
   return (
-    <section style={{ background: "var(--paper)", padding: "clamp(70px,9vw,120px) clamp(20px,5vw,64px)" }}>
+    <section className="hm-section" style={{ background: "var(--paper)", padding: "clamp(70px,9vw,120px) clamp(20px,5vw,64px)" }}>
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <Reveal style={{ marginBottom: 46, display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 20 }}>
+        <Reveal className="hm-head" style={{ marginBottom: 46, display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 20 }}>
           <div>
-            <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>What&apos;s Next</span>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(36px,5vw,68px)", letterSpacing: "-1.5px", margin: "12px 0 0", lineHeight: 1 }}>Upcoming Programs</h2>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(36px,5vw,68px)", letterSpacing: "-1.5px", margin: "0", lineHeight: 1 }}>Upcoming Programs</h2>
           </div>
-          <Link href="/calendar" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 8, fontWeight: 700, fontSize: 15, color: "var(--red)", textDecoration: "none" }}>
+          <Link href="/calendar" className="press hm-link" style={{ display: "inline-flex", alignItems: "center", gap: 8, fontWeight: 700, fontSize: 15, color: "var(--red)", textDecoration: "none" }}>
             Full calendar <span aria-hidden style={{ fontSize: 17 }}>→</span>
           </Link>
         </Reveal>
