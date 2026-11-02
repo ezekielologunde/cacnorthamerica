@@ -12,12 +12,9 @@ export function StoreNews() {
     <section style={{ background: "var(--paper)", padding: "clamp(48px,6vw,72px) clamp(20px,5vw,64px)" }}>
       <div style={{ maxWidth: 1180, margin: "0 auto" }}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 26 }}>
-          <div>
-            <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>From the family</span>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3.2vw,34px)", letterSpacing: "-.6px", margin: "8px 0 0", color: "var(--ink)" }}>
-              Latest news
-            </h2>
-          </div>
+          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3.2vw,34px)", letterSpacing: "-.6px", margin: 0, color: "var(--ink)" }}>
+            Latest news
+          </h2>
           <Link href="/blog" className="press" style={{ fontSize: 13.5, fontWeight: 700, color: "var(--red)", textDecoration: "none" }}>
             See all news →
           </Link>

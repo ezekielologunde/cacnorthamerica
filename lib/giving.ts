@@ -19,7 +19,7 @@ export const GIVING_CAMPAIGNS: GivingCampaign[] = [
     eyebrow: "Featured Campaign",
     title: "CAC Centenary Building Project",
     description:
-      "Conceived in 2018 to commemorate the Church's 100th anniversary, this project helps solve accommodation challenges on the prayer camp at Ikeji-Arakeji, Nigeria. CACNA members are warmly encouraged to give toward it.",
+      "Conceived in 2018 to commemorate the Church's 100th anniversary, this project helps solve accommodation challenges on the prayer camp at Ikeji-Arakeji, Nigeria.",
     adBlurb: "Marking 100 years of Christ Apostolic Church — help fund accommodation at the Ikeji-Arakeji prayer camp.",
     accounts: [
       { label: "First Bank — Naira", value: "2046703336" },
@@ -33,15 +33,12 @@ export const GIVING_CAMPAIGNS: GivingCampaign[] = [
     eyebrow: "CAC Village",
     title: "CAC Village Pay Off",
     description:
-      "Help pay down the mortgage on CAC Village, Blue Ridge Summit, PA — the home of our Annual Convention. Kindly send your donations to the CAC Village account below.",
+      "Help pay down the mortgage on CAC Village, Blue Ridge Summit, PA — the home of our Annual Convention.",
     adBlurb: "Help pay down the mortgage on CAC Village — the home of our Annual Convention, every year.",
     accounts: [
       { label: "Chase Bank", value: "Ac# 823986275" },
       { label: "Zelle", value: "cacna@hotmail.com" },
     ],
-    // Adapted from Convention's own already-reviewed Give.villageBody --
-    // that site's account paragraph says "the account below" where CACNA's
-    // English says "the CAC Village account below"; adjusted to match.
   },
   {
     slug: "hope-for-all",

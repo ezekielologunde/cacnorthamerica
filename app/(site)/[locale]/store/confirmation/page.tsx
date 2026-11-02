@@ -66,7 +66,7 @@ export default async function StoreConfirmationPage({
           Thank you for your order!
         </h1>
         <p style={{ fontSize: 15.5, color: "rgba(245,246,250,.65)", maxWidth: 480, margin: "0 auto 32px", lineHeight: 1.7 }}>
-          We&apos;ve received your order. A confirmation email is on its way.
+          A confirmation email is on its way.
         </p>
 
         {sessionId && (

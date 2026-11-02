@@ -148,12 +148,10 @@
     "afternoonLabel": "Afternoon"
   },
   "Store": {
-    "title": "Store",
     "apparelHeading": "Apparel & Merchandise",
     "conventionApparel": "Convention Apparel",
     "goodWomenApparel": "Good Women Association Apparel",
     "youthApparel": "Youth & Young Adult Apparel",
-    "materialsHeading": "Christian Education Materials",
     "addCta": "Add",
     "cartHeading": "Your cart",
     "emptyCart": "Your cart is empty.",
@@ -175,9 +173,6 @@
   "About": {
     "biblicallyBasedHeading": "Biblically Based",
     "kingdomFocusedHeading": "Kingdom Focused"
-  },
-  "Give": {
-    "title": "Give"
   },
   "OfficerTitle": {
     "leader": "Leader",

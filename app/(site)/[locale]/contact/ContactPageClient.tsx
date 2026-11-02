@@ -135,7 +135,7 @@ export default function ContactPageClient() {
           </Reveal>
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(15px,1.6vw,17px)", color: "var(--ink-soft)", lineHeight: 1.6, maxWidth: 480, margin: "0 auto" }}>
-              Fill in the form below — whether it&apos;s a question, a prayer request, or you&apos;re looking for a CACNA member church near you.
+              Send a question or prayer request, or ask for help finding a CACNA member church near you.
             </p>
           </Reveal>
           <Reveal delay={220}>
