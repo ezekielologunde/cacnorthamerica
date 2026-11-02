@@ -1,6 +1,7 @@
 import "@/components/about-people-mobile.css";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
+import { FeaturedStories } from "@/components/sections/FeaturedStories";
 import { Reveal } from "@/components/ui/Reveal";
 import { IconBadge } from "@/components/ui/IconBadge";
 import { TenetsToggle } from "@/components/about-tenets-toggle";
@@ -248,10 +249,15 @@ export default async function AboutPage({
               <p style={{ fontSize: 16.5, color: "var(--ink-soft)", lineHeight: 1.8, margin: 0 }}>
                 In the decades since, the Church has planted Bible training colleges — including at Iperu and Ilesa — a theological seminary at Ijebu-Ife, and grammar schools across Nigeria, and today operates <strong style={{ color: "var(--ink)" }}>Joseph Ayo Babalola University (JABU)</strong> in Ikeji-Arakeji, Osun State. Over a little more than six decades, Christ Apostolic Church has grown from a small band of persecuted believers into a denomination with many millions of adherents across the world.
               </p>
+              <Link href="/history" style={{ display: "inline-flex", alignItems: "center", gap: 8, alignSelf: "flex-start", color: "var(--red)", fontWeight: 700, fontSize: 16, textDecoration: "none" }}>
+                Read the full history →
+              </Link>
             </div>
           </Reveal>
         </div>
       </section>
+
+      <FeaturedStories />
 
       {/* About the Annual Convention -- ported from the Convention site's own
           "About" content (lib/content/about-convention.ts) during the
