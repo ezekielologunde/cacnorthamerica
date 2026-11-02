@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from 
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { FORM_HEADER, HONEYPOT_FIELD } from "@/lib/spam";
+import { FeeBreakdown } from "@/components/checkout/FeeBreakdown";
 
 export type RegistrantCategory = "adult" | "young_adult" | "child";
 // Adults (30+) only: everyone under 30 registers on the Youth & Child form
@@ -345,15 +346,20 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
       {/* Sticky on phones: the running total and the pay button stay in thumb
           reach however long the list of people gets. The total is computed
           from the same tiers the server re-prices with, so what is shown here
-          is what Stripe will charge. */}
+          is what Stripe will charge, plus the disclosed processing fee. */}
       <div className="reg-sticky">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
-          <span style={{ fontSize: 13.5, fontWeight: 700, color: "var(--ink-soft)" }} aria-live="polite">
-            {registrants.length} {registrants.length === 1 ? "registrant" : "registrants"}
-          </span>
-          <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--ink)" }}>
-            {formatPrice(total)}
-          </span>
+        <span style={{ display: "block", fontSize: 13.5, fontWeight: 700, color: "var(--ink-soft)", marginBottom: 6 }} aria-live="polite">
+          {registrants.length} {registrants.length === 1 ? "registrant" : "registrants"}
+        </span>
+        <div style={{ marginBottom: 10 }}>
+          {total > 0 ? (
+            <FeeBreakdown subtotalCents={total} />
+          ) : (
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+              <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", color: "var(--ink-soft)" }}>Total</span>
+              <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--ink)" }}>{formatPrice(0)}</span>
+            </div>
+          )}
         </div>
         <button
           type="submit"

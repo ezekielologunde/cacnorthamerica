@@ -3,6 +3,7 @@ import { getStripeClient } from "@/lib/stripe";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
 import { SITE_URL } from "@/lib/site";
 import { GIVING_CAMPAIGNS } from "@/lib/giving";
+import { processingFeeLineItem, processingFeeMetadata } from "@/lib/processingFee";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_FIELD_LENGTH = 120;
@@ -76,11 +77,13 @@ export async function POST(request: Request) {
           product_data: { name: `Gift — ${campaign.title}` },
         },
         quantity: 1,
-      }],
+      // The gift line stays exactly the amount the donor chose; the fee is
+      // a separate line after it.
+      }, processingFeeLineItem(body.amountCents)],
       customer_email: body.contactEmail.trim(),
       success_url: `${SITE_URL}/giving/confirmation?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}/giving`,
-      metadata: { kind: "giving", contact_name: body.contactName, campaign_slug: campaign.slug, campaign_title: campaign.title },
+      metadata: { kind: "giving", contact_name: body.contactName, campaign_slug: campaign.slug, campaign_title: campaign.title, ...processingFeeMetadata(body.amountCents) },
     });
 
     return NextResponse.json({ checkoutUrl: session.url });

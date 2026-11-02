@@ -5,6 +5,7 @@ import { useEffect, useId, useMemo, useRef, useState, type CSSProperties, type F
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { FORM_HEADER, HONEYPOT_FIELD } from "@/lib/spam";
+import { FeeBreakdown } from "@/components/checkout/FeeBreakdown";
 import {
   ADULT_AGE,
   AGE_GROUP_LABEL,
@@ -471,16 +472,24 @@ export function YouthRegisterForm({
         </p>
       )}
 
-      {/* Same sticky total + submit bar as RegisterForm. */}
+      {/* Same sticky total + submit bar as RegisterForm, including the
+          disclosed processing fee whenever anything is owed. */}
       <div className="reg-sticky">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
           <span style={{ fontSize: 13.5, fontWeight: 700, color: "var(--ink-soft)" }} aria-live="polite">
             {t("peopleCount", { count: people.length })}
           </span>
-          <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--ink)" }}>
-            {total > 0 ? formatPrice(total) : t("free")}
-          </span>
+          {total === 0 && (
+            <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--ink)" }}>
+              {t("free")}
+            </span>
+          )}
         </div>
+        {total > 0 && (
+          <div style={{ marginBottom: 10 }}>
+            <FeeBreakdown subtotalCents={total} />
+          </div>
+        )}
         <button
           type="submit"
           disabled={status === "loading"}

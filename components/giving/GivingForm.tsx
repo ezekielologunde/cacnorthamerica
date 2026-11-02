@@ -2,6 +2,7 @@
 
 import { useState, type CSSProperties, type FormEvent } from "react";
 import type { GivingCampaign } from "@/lib/giving";
+import { FeeBreakdown } from "@/components/checkout/FeeBreakdown";
 
 const PRESET_AMOUNTS = [25, 50, 100, 250];
 
@@ -135,6 +136,12 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
             <label htmlFor="give-email" style={labelStyle}>Email <span style={{ color: "var(--gold)" }}>*</span></label>
             <input id="give-email" inputMode="email" className="field-input on-dark" style={inputStyle} type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} required autoComplete="email" />
           </div>
+
+          {amountCents ? (
+            <div style={{ marginBottom: 18 }}>
+              <FeeBreakdown subtotalCents={amountCents} subtotalLabel="Gift" tone="dark" />
+            </div>
+          ) : null}
 
           {status === "error" && errorMessage && (
             <p role="alert" style={{ color: "#FF9E9E", fontWeight: 600, fontSize: 14, marginBottom: 14 }}>{errorMessage}</p>

@@ -136,6 +136,7 @@ check("youth rows carry age, group, fee category, meals and allergies",
   r14["Youth Leader"] === "Leader" && r14["DCC / Zone"] === "Zone 1" && r14.Status === "free (email unverified)" &&
   r5.Ref && r5.Ref === r14.Ref);
 check("free youth path creates no Stripe session", created.length === 0);
+check("free youth rows carry no processing fee columns", rows.every((r) => !("Processing Fee" in r) && !("Amount Charged" in r)));
 const freeHtml0 = emails[0]?.html ?? "";
 check("free youth registration sends exactly one email, to the contact address",
   emails.length === 1 && recipients(emails[0]).length === 1 && recipients(emails[0])[0] === "parent@example.com");
@@ -207,15 +208,30 @@ const paid = await post(youth([kid(22, { allergies: "Shellfish" }), kid(8)]));
 await settle();
 const params = created[0];
 check("paid youth registration creates a Stripe session", paid.status === 200 && paid.body.checkoutUrl === "https://checkout.invalid/s" && !!params);
-check("only the young adult is a Stripe line item, at the young_adult rate",
-  params?.line_items.length === 1 && params.line_items[0].price_data.unit_amount === 10000 &&
-  params.line_items[0].price_data.product_data.name.endsWith("Kid Age22 (young_adult)"));
+const feeLines = (params?.line_items ?? []).filter((li) => li.price_data.product_data.name === "Processing fee");
+const realLines = (params?.line_items ?? []).filter((li) => li.price_data.product_data.name !== "Processing fee");
+check("only the young adult is a registration line item, at the young_adult rate",
+  realLines.length === 1 && realLines[0].price_data.unit_amount === 10000 &&
+  realLines[0].price_data.product_data.name.endsWith("Kid Age22 (young_adult)"));
+// ceil((10000 + 30) / 0.971) = 10330, so the fee on a $100.00 subtotal is $3.30.
+check("paid youth session has exactly one 'Processing fee' line item, after the registration lines, for $3.30",
+  feeLines.length === 1 && feeLines[0].price_data.unit_amount === 330 && feeLines[0].quantity === 1 &&
+  params.line_items.at(-1) === feeLines[0]);
+check("paid youth metadata records subtotal_cents and processing_fee_cents",
+  params?.metadata.subtotal_cents === "10000" && params.metadata.processing_fee_cents === "330");
 check("paid youth cancel_url returns to the youth registration page", params?.cancel_url.endsWith("/events/cacna-2027/register/youth"));
 const meta = decodeSummary(unchunkFromMetadata(params?.metadata, "d"));
 check("paid youth metadata carries the full summary, allergies included",
   meta?.youth?.leader === "Leader" && meta.registrants[0].l === "Shellfish" && meta.registrants[0].c === "young_adult" &&
   meta.registrants[1].c === "child" && meta.totalAmountCents === 10000);
 check("paid youth path logs no rows before payment", rows.length === 0);
+const paidConfirmation = await resolveRegistrationConfirmation({
+  year: 2027, sessionId: "cs_test_paidyouth",
+  retrieveSession: async () => ({ metadata: params?.metadata, payment_status: "paid", amount_total: 10330 }),
+});
+check("paid youth confirmation reads back the fee and keeps age and meals",
+  paidConfirmation?.processingFeeCents === 330 && paidConfirmation.summary.totalAmountCents === 10000 &&
+  paidConfirmation.summary.registrants[0].a === 22 && paidConfirmation.summary.registrants[0].m === 129);
 
 // A 10-person, every-field-maxed paid registration still fits Stripe metadata.
 created.length = 0;
@@ -227,6 +243,15 @@ const big = Array.from({ length: 10 }, (_, i) => ({
 const bigRes = await post(youth(big, { contactName: "N".repeat(120), churchName: "C".repeat(120), youthLeaderName: "Y".repeat(120), dccZone: "D".repeat(120) }));
 check(`10-person maxed registration passes fitsStripeMetadata and reaches Stripe (${Object.keys(created[0]?.metadata ?? {}).length}/${STRIPE_METADATA_MAX_KEYS} keys)`,
   bigRes.status === 200 && created.length === 1 && Object.keys(created[0].metadata).length <= STRIPE_METADATA_MAX_KEYS);
+
+// 30 people with every field maxed need more summary chunks than fit beside
+// kind, convention_year and the two fee keys (50 keys max), so the guard (which
+// must count the fee keys) refuses it before Stripe would.
+created.length = 0;
+const huge = Array.from({ length: 30 }, (_, i) => ({ ...big[0], lastName: "L".repeat(118) + String(i).padStart(2, "0"), age: 20 + (i % 10) }));
+const hugeRes = await post(youth(huge, { contactEmail: `${"e".repeat(108)}@example.com`, contactPhone: "5".repeat(120), contactName: "N".repeat(120), churchName: "C".repeat(120), youthLeaderName: "Y".repeat(120), dccZone: "D".repeat(120) }));
+check("30-person maxed paid registration is refused with the split message and creates no Stripe session",
+  hugeRes.status === 400 && /split it/.test(hugeRes.body.error ?? "") && created.length === 0);
 
 // Email: per-person details, escaped, and Payment Options only when owed.
 emails.length = 0;
@@ -249,6 +274,13 @@ check("email escapes names and allergy notes",
   paidHtml?.includes("Allergies: &lt;script&gt;alert(1)&lt;/script&gt;") && paidHtml.includes("Kid &lt;i&gt;One&lt;/i&gt;") && !paidHtml.includes("<script>"));
 check("email shows Payment Options only when the total is over $0",
   paidHtml?.includes("Payment Options") && freeHtml !== undefined && !freeHtml.includes("Payment Options"));
+emails.length = 0;
+await sendRegistrationConfirmationEmail(emailSummary, "https://example.invalid/c", true, undefined, 330);
+const feeHtml = emails[0]?.html ?? "";
+check("paid youth email shows Subtotal, Processing fee and the charged total, and keeps age groups and meals",
+  feeHtml.includes("Subtotal") && feeHtml.includes("$100.00") && feeHtml.includes("Processing fee") && feeHtml.includes("$3.30") &&
+  feeHtml.includes("$103.30") && feeHtml.includes("Young Adult (20–29)") && feeHtml.includes("Tuesday Lunch — 7/13"));
+check("free youth email has no processing fee row", !freeHtml?.includes("Processing fee"));
 
 console.log(failures ? `\n${failures} check(s) FAILED` : "\nAll checks passed");
 process.exit(failures ? 1 : 0);

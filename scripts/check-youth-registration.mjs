@@ -85,14 +85,25 @@ function bigSummary(n) {
     youth: { leader: "Y".repeat(120), dcc: "D".repeat(120), guardian: true },
   };
 }
-for (const n of [10, 30]) {
+// A paid session carries 4 keys besides the summary chunks: kind,
+// convention_year, subtotal_cents, processing_fee_cents.
+for (const n of [10, 29]) {
   const encoded = encodeSummary(bigSummary(n));
   const chunks = chunkForMetadata("d", encoded);
-  const keys = Object.keys(chunks).length + 2; // + kind, convention_year
+  const keys = Object.keys(chunks).length + 4;
   check(`${n}-person worst-case summary fits Stripe metadata (${keys}/${STRIPE_METADATA_MAX_KEYS} keys, values <= 500 chars)`,
-    fitsStripeMetadata(encoded, 2) && keys <= STRIPE_METADATA_MAX_KEYS && Object.values(chunks).every((v) => v.length <= 500));
+    fitsStripeMetadata(encoded, 4) && keys <= STRIPE_METADATA_MAX_KEYS && Object.values(chunks).every((v) => v.length <= 500));
   const back = decodeSummary(Object.values(chunks).join(""));
   check(`${n}-person summary decodes back intact`, back?.registrants.length === n && back.registrants[0].m === 255 && back.youth?.guardian === true);
+}
+// With the two fee keys, a 30-person registration with every field at its
+// maximum needs one key too many; the guard must say so (the route then asks
+// the visitor to split it) instead of letting Stripe reject the session.
+{
+  const encoded = encodeSummary(bigSummary(30));
+  const keys = Object.keys(chunkForMetadata("d", encoded)).length + 4;
+  check(`30-person every-field-maxed summary is reported as not fitting (${keys}/${STRIPE_METADATA_MAX_KEYS} keys)`,
+    keys > STRIPE_METADATA_MAX_KEYS && !fitsStripeMetadata(encoded, 4));
 }
 check("an oversized value is reported as not fitting", !fitsStripeMetadata("x".repeat(450 * 49), 2));
 

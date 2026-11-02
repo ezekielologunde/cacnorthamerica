@@ -9,7 +9,11 @@ export type GivingConfirmationInput = {
   contactName: string;
   contactEmail: string;
   campaignTitle: string;
+  /** The gift amount the donor chose. */
   totalLabel: string;
+  /** Processing fee and amount actually charged; omitted when no fee. */
+  feeLabel?: string;
+  chargedLabel?: string;
 };
 
 function buildHtml(input: GivingConfirmationInput): string {
@@ -21,6 +25,14 @@ function buildHtml(input: GivingConfirmationInput): string {
         <td style="font-size:11.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#C81E3A">Given</td>
         <td style="font-size:18px;font-weight:800;color:#12141E;text-align:right">${input.totalLabel}</td>
       </tr>
+      ${input.feeLabel ? `<tr>
+        <td style="padding-top:8px;font-size:13.5px;color:#5f5e5a">Processing fee</td>
+        <td style="padding-top:8px;font-size:13.5px;color:#5f5e5a;text-align:right">${input.feeLabel}</td>
+      </tr>
+      <tr>
+        <td style="padding-top:4px;font-size:13.5px;color:#5f5e5a">Total charged</td>
+        <td style="padding-top:4px;font-size:13.5px;color:#5f5e5a;text-align:right">${input.chargedLabel ?? input.totalLabel}</td>
+      </tr>` : ""}
     </table>
   </div>`;
 

@@ -202,7 +202,11 @@ const youthSummary = {
 };
 sessions.cs_test_youth = {
   payment_status: "paid",
-  metadata: { kind: "registration", convention_year: "2027", ...chunkForMetadata("d", encodeSummary(youthSummary)) },
+  amount_total: 10330, // $100.00 young-adult subtotal + $3.30 processing fee
+  metadata: {
+    kind: "registration", convention_year: "2027", ...chunkForMetadata("d", encodeSummary(youthSummary)),
+    subtotal_cents: "10000", processing_fee_cents: "330",
+  },
 };
 failRowNamed = "Ben Kid";
 const youthFail = await deliver("cs_test_youth");
@@ -220,6 +224,10 @@ const ada = youthRows.find((r) => r.Name === "Ada Young");
 check("youth: rows go to the youth tab with per-person details and status paid",
   ada?.formName === "Youth & Child Registration — CACNA 2027" && ada.Allergies === "Peanuts" && ada.Age === "22" &&
   ada.Meals === "Tuesday Lunch — 7/13" && ada.Status === "paid" && ada["Contact Email"] === "giver@example.com");
+const youthSessionRows = youthRows.filter((r) => r["Stripe Session"] === "cs_test_youth");
+check("youth: the first row carries the registration's Processing Fee and Amount Charged, the rest leave them blank",
+  ada?.["Processing Fee"] === "$3.30" && ada["Amount Charged"] === "$103.30" &&
+  youthSessionRows.filter((r) => r !== ada).every((r) => r["Processing Fee"] === "" && r["Amount Charged"] === ""));
 
 process.stdout.write(failures ? `\n${failures} check(s) FAILED\n` : "\nAll checks passed\n");
 process.exit(failures ? 1 : 0);

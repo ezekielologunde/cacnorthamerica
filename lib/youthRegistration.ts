@@ -121,9 +121,19 @@ export function youthSheetRows(
     registrants: { n: string; c: string; a?: number; m?: number; l?: string }[];
     youth?: { leader: string; dcc: string; guardian: boolean };
   },
-  opts: { stripeSession: string; status: string; startIso?: string; contactEmail?: string }
+  opts: {
+    stripeSession: string;
+    status: string;
+    startIso?: string;
+    contactEmail?: string;
+    /** A paid registration's "Processing Fee" / "Amount Charged" cells (as
+     *  on the adult tab). They are per registration, not per person, so only
+     *  the first row carries the values and the rest leave them blank, which
+     *  keeps a column sum equal to what Stripe charged. */
+    feeColumns?: { "Processing Fee": string; "Amount Charged": string };
+  }
 ): Record<string, string>[] {
-  return summary.registrants.map((r) => {
+  return summary.registrants.map((r, i) => {
     const described = describeYouthRegistrant(r, opts.startIso);
     return {
       "Ref": summary.ref,
@@ -142,6 +152,11 @@ export function youthSheetRows(
       "Guardian Confirmed": summary.youth?.guardian ? "Yes" : "No",
       "Stripe Session": opts.stripeSession,
       "Status": opts.status,
+      ...(opts.feeColumns
+        ? i === 0
+          ? opts.feeColumns
+          : { "Processing Fee": "", "Amount Charged": "" }
+        : {}),
     };
   });
 }

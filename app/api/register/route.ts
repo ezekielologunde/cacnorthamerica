@@ -8,6 +8,7 @@ import { encodeSummary, chunkForMetadata, fitsStripeMetadata, type RegistrationS
 import { sealRegistrationToken } from "@/lib/registrationToken";
 import { sendRegistrationConfirmationEmail } from "@/lib/registrationEmail";
 import { FORM_HEADER, HONEYPOT_FIELD, looksLikeSpam } from "@/lib/spam";
+import { processingFeeLineItem, processingFeeMetadata } from "@/lib/processingFee";
 import { categoryForAge, encodeMeals, parseYouthRegistration, youthSheetName, youthSheetRows } from "@/lib/youthRegistration";
 
 type RegisterRequestBody = {
@@ -243,14 +244,14 @@ export async function POST(request: Request) {
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
-      line_items: payableRegistrants.map((r) => ({
+      line_items: [...payableRegistrants.map((r) => ({
         price_data: {
           currency: "usd",
           unit_amount: r.priceCents,
           product_data: { name: `CACNA ${cy.year} Convention registration — ${r.fullName} (${r.category})` },
         },
         quantity: 1,
-      })),
+      })), processingFeeLineItem(totalAmountCents)],
       customer_email: body.contactEmail,
       // Only the opaque session id travels in the URL; the confirmation page
       // reads the registration back from this session's own metadata.
@@ -260,6 +261,9 @@ export async function POST(request: Request) {
         kind: "registration",
         convention_year: String(cy.year),
         ...chunkForMetadata("d", encoded),
+        // totalAmountCents (and the summary) stay the subtotal; the fee is
+        // its own line item and recorded separately here.
+        ...processingFeeMetadata(totalAmountCents),
       },
     });
 
@@ -385,9 +389,10 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
 
   // The full summary (allergies included) rides in the session metadata for
   // the webhook's sheet rows and email. Refuse up front if it cannot fit
-  // rather than let Stripe reject the session (2 = kind + convention_year).
+  // rather than let Stripe reject the session (4 = kind, convention_year,
+  // subtotal_cents, processing_fee_cents).
   const encoded = encodeSummary(summary);
-  if (!fitsStripeMetadata(encoded, 2)) {
+  if (!fitsStripeMetadata(encoded, 4)) {
     return NextResponse.json(
       { error: "This registration has too many details to process in one payment. Please split it into two smaller registrations." },
       { status: 400 }
@@ -398,16 +403,19 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
-      line_items: priced
-        .filter((p) => p.priceCents > 0)
-        .map((p) => ({
-          price_data: {
-            currency: "usd",
-            unit_amount: p.priceCents,
-            product_data: { name: `CACNA ${cy.year} Convention registration — ${p.registrant.n} (${p.registrant.c})` },
-          },
-          quantity: 1,
-        })),
+      line_items: [
+        ...priced
+          .filter((p) => p.priceCents > 0)
+          .map((p) => ({
+            price_data: {
+              currency: "usd",
+              unit_amount: p.priceCents,
+              product_data: { name: `CACNA ${cy.year} Convention registration — ${p.registrant.n} (${p.registrant.c})` },
+            },
+            quantity: 1,
+          })),
+        processingFeeLineItem(totalAmountCents),
+      ],
       customer_email: input.contactEmail,
       success_url: `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}/events/cacna-${cy.year}/register/youth`,
@@ -415,6 +423,9 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
         kind: "registration",
         convention_year: String(cy.year),
         ...chunkForMetadata("d", encoded),
+        // Same split as the adult track: the summary keeps the subtotal and
+        // the fee is its own line item, recorded here.
+        ...processingFeeMetadata(totalAmountCents),
       },
     });
     return NextResponse.json({ checkoutUrl: session.url });

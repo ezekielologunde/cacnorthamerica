@@ -3,6 +3,7 @@ import { getStripeClient } from "@/lib/stripe";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
 import { SITE_URL } from "@/lib/site";
 import { storeProducts } from "@/lib/conventions";
+import { processingFeeLineItem, processingFeeMetadata } from "@/lib/processingFee";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_FIELD_LENGTH = 120;
@@ -94,26 +95,27 @@ export async function POST(request: Request) {
     });
   }
 
+  const subtotalCents = lines.reduce((sum, l) => sum + l.unitPriceCents * l.quantity, 0);
   const stripe = getStripeClient();
 
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
-      line_items: lines.map((l) => ({
+      line_items: [...lines.map((l) => ({
         price_data: {
           currency: "usd",
           unit_amount: l.unitPriceCents,
           product_data: { name: l.size ? `${l.name} — ${l.size}` : l.name },
         },
         quantity: l.quantity,
-      })),
+      })), processingFeeLineItem(subtotalCents)],
       customer_email: body.contactEmail.trim(),
       // Every item is a physical product (books, apparel) -- without this the
       // order has no address to ship to. Shipping cost is not charged here yet.
       shipping_address_collection: { allowed_countries: ["US", "CA"] },
       success_url: `${SITE_URL}/store/confirmation?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}/store`,
-      metadata: { kind: "store_order", contact_name: body.contactName },
+      metadata: { kind: "store_order", contact_name: body.contactName, ...processingFeeMetadata(subtotalCents) },
     });
 
     return NextResponse.json({ checkoutUrl: session.url });
