@@ -32,7 +32,7 @@ export function Impact() {
             {PRAYER_LINE.name}
           </h2>
           <p style={{ fontSize: 16, color: "rgba(255,255,255,.75)", lineHeight: 1.7, maxWidth: 420 }}>
-            {PRAYER_LINE.tagline} — come as you are, wherever you are.
+            {PRAYER_LINE.tagline}.
           </p>
           <p style={{ fontSize: 14, color: "rgba(255,255,255,.7)", margin: "12px 0 0" }}>{PRAYER_LINE.org}</p>
         </Reveal>

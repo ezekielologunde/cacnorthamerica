@@ -28,7 +28,7 @@ export function GlobalChurches() {
             Find a CAC church near you.
           </h2>
           <p style={{ fontSize: 16.5, color: 'rgba(245,246,250,.78)', lineHeight: 1.7, margin: '18px auto 0', maxWidth: 560 }}>
-            CACNA organizes its member churches into Zones and DCCs (District Church Councils), each shepherded by a Superintendent. Search or browse the full directory to find the one nearest you.
+            CACNA organizes its member churches into Zones and DCCs (District Church Councils), each shepherded by a Superintendent.
           </p>
           <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--gold)', margin: '14px 0 0' }}>24 Zones &amp; DCCs · U.S., Canada &amp; South America</p>
         </Reveal>

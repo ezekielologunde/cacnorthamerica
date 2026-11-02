@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useRef, useState, useEffect, useMemo } from "react";
+import { useRef, useState, useEffect, useMemo, useSyncExternalStore } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Magnetic } from "@/components/ui/Magnetic";
@@ -11,8 +11,6 @@ import { specialEvents, isEventPast } from "@/lib/events";
 import { POSTS } from "@/lib/blog";
 import { GIVING_CAMPAIGNS } from "@/lib/giving";
 import "./home-mobile.css";
-
-type SlideKind = "Welcome" | "Event" | "Ad" | "News";
 
 // The hero's one persistent background -- every slide's text crossfades on
 // top of the same clip instead of each slide bringing its own photo/video/
@@ -30,8 +28,8 @@ const HERO_BG_VIDEO = { videoId: "SFXZsCZPD0I", start: 212, poster: "/images/cac
 
 interface Slide {
   key: string;
-  kind: SlideKind;
-  eyebrow: string;
+  /** Omitted where it would only repeat the title. */
+  eyebrow?: string;
   title: string;
   desc: string;
   cta: { label: string; href: string; external?: boolean };
@@ -44,13 +42,6 @@ interface Slide {
   quickLinks?: { label: string; href: string }[];
 }
 
-const KIND_COLOR: Record<SlideKind, string> = {
-  Welcome: "var(--gold)",
-  Event: "var(--gold)",
-  Ad: "var(--gold)",
-  News: "var(--gold)",
-};
-
 /** Builds the rotating slide deck — a real news-and-events carousel (the
  *  "college homepage" pattern) instead of one fixed hero message. Every
  *  slide is real CACNA content: the adaptive convention state, real
@@ -62,10 +53,8 @@ function useSlides(): Slide[] {
 
     slides.push({
       key: "welcome",
-      kind: "Welcome",
-      eyebrow: "Welcome Home",
       title: "Welcome to CACNA",
-      desc: "The corporate home of Christ Apostolic Church across North America — part of a global family headquartered in Nigeria. Explore who we are, watch a service online, or find your zone.",
+      desc: "The corporate home of Christ Apostolic Church across North America — part of a global family headquartered in Nigeria.",
       cta: { label: "About CACNA", href: "/about" },
       quickLinks: [
         { label: "Our Ministries", href: "/ministries" },
@@ -80,11 +69,10 @@ function useSlides(): Slide[] {
     const recapPost = POSTS.find((p) => p.slug === "cacna-2026-closing-appreciation");
     slides.push({
       key: "convention",
-      kind: "Event",
       eyebrow: showRecap ? (state === "live" ? "Live Now" : "Just Concluded") : "Save the Date",
       title: showRecap ? `CACNA ${featuredCy.year} Convention` : `CACNA ${nextCy.year} National Convention`,
       desc: showRecap
-        ? "Read the Convention Chairman's closing message of thanks to every speaker, volunteer, and family."
+        ? "The Convention Chairman's closing message of thanks to every speaker, volunteer, and family."
         : `${dateRangeLabel(nextCy)} · ${CONVENTION_VENUE_SHORT}`,
       cta: showRecap
         ? { label: "Read the Closing Message", href: recapPost ? (recapPost.href ?? `/blog/${recapPost.slug}`) : featuredCy.href }
@@ -95,10 +83,9 @@ function useSlides(): Slide[] {
     if (anniversary && !isEventPast(anniversary)) {
       slides.push({
         key: "anniversary",
-        kind: "Event",
-        eyebrow: "50 Years Strong",
+        eyebrow: "1976–2026",
         title: "50th Anniversary Celebration",
-        desc: `${anniversary.dateLabel} · ${anniversary.timeLabel} — five decades of ministry across North America.`,
+        desc: `${anniversary.dateLabel} · ${anniversary.timeLabel}`,
         cta: { label: "Celebrate With Us", href: anniversary.href ?? "/calendar" },
       });
     }
@@ -107,7 +94,6 @@ function useSlides(): Slide[] {
     if (pilgrimage && !isEventPast(pilgrimage)) {
       slides.push({
         key: "pilgrimage",
-        kind: "Ad",
         eyebrow: "Holy Land Pilgrimage",
         title: `Israel & Egypt, ${pilgrimage.dateLabel}`,
         desc: "Flights, hotels & a private guide included · $4,549 · $500 deposit to register.",
@@ -119,7 +105,6 @@ function useSlides(): Slide[] {
     if (givingCampaign) {
       slides.push({
         key: "giving",
-        kind: "Ad",
         eyebrow: givingCampaign.eyebrow,
         title: givingCampaign.title,
         desc: givingCampaign.adBlurb,
@@ -138,7 +123,6 @@ function useSlides(): Slide[] {
       const isPortrait = latestPost.image?.orientation === "portrait";
       slides.push({
         key: "news",
-        kind: "News",
         eyebrow: "Latest News",
         title: latestPost.title,
         desc: latestPost.excerpt,
@@ -161,15 +145,17 @@ function useSlides(): Slide[] {
  *  the reduced-motion fallback) is more reliable than gambling on
  *  autoplay support. */
 function useIsNarrowViewport(breakpoint: number): boolean {
-  const [narrow, setNarrow] = useState(false);
-  useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${breakpoint}px)`);
-    setNarrow(mql.matches);
-    const onChange = (e: MediaQueryListEvent) => setNarrow(e.matches);
-    mql.addEventListener("change", onChange);
-    return () => mql.removeEventListener("change", onChange);
-  }, [breakpoint]);
-  return narrow;
+  const query = `(max-width: ${breakpoint}px)`;
+  return useSyncExternalStore(
+    (onChange) => {
+      const mql = window.matchMedia(query);
+      mql.addEventListener("change", onChange);
+      return () => mql.removeEventListener("change", onChange);
+    },
+    () => window.matchMedia(query).matches,
+    // Server render (and hydration) assume a wide viewport, as before.
+    () => false,
+  );
 }
 
 export function Hero() {
@@ -284,18 +270,20 @@ export function Hero() {
               {slide.title}
             </h1>
 
+            {slide.eyebrow && (
             <div style={{ marginTop: 18 }}>
             <span className="hm-hero-pill" style={{
               display: "inline-flex", alignItems: "center", gap: 8,
               background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.2)",
               padding: "6px 14px", borderRadius: 999,
               fontSize: 12, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase",
-              color: KIND_COLOR[slide.kind],
+              color: "var(--gold)",
               backdropFilter: "blur(8px)",
             }}>
               {slide.eyebrow}
             </span>
             </div>
+            )}
 
             <p style={{
               fontSize: "clamp(16px,1.6vw,20px)", lineHeight: 1.65,

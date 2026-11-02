@@ -27,7 +27,7 @@ export function OurMinistries() {
             Our Ministries
           </h2>
           <p style={{ fontSize: 16, color: "var(--ink-soft)", maxWidth: 560, margin: "16px auto 0" }}>
-            CACNA is the corporate family of Christ Apostolic Church across North America — part of the wider CAC movement headquartered in Nigeria. These departments carry that work into every zone.
+            These departments carry CACNA&apos;s work into every zone.
           </p>
         </Reveal>
 

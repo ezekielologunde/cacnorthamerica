@@ -10,10 +10,10 @@ export function PlanVisit() {
       <div className="r2c" style={{ maxWidth: 1240, margin: '0 auto', gap: 56 }}>
         <Reveal>
           <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(36px,5vw,64px)', letterSpacing: '-1.5px', margin: '0 0 22px', lineHeight: 1 }}>
-            The corporate home of the CACNA family.
+            Visit CAC Village.
           </h2>
           <p style={{ fontSize: 16, lineHeight: 1.7, opacity: .8, maxWidth: 440 }}>
-            As the North America arm of Christ Apostolic Church&apos;s global family — headquartered in Nigeria — CACNA&apos;s administrative office sits at CAC Village, also home to our Annual Convention. For Sunday worship and pastoral care, connect with a member church in your zone.
+            CACNA&apos;s administrative office sits at CAC Village, also home to our Annual Convention. For Sunday worship and pastoral care, connect with a member church in your zone.
           </p>
           <Link href="/contact" className="hm-btn-block" style={{
             display: 'inline-flex', alignItems: 'center', gap: 10,

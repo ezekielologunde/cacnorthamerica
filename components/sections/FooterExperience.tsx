@@ -151,13 +151,6 @@ export function FooterExperience() {
               }}>
                 {t('anniversaryBadge')}
               </Link>
-              <a href="https://cacworld.org/" target="_blank" rel="noopener noreferrer" style={{
-                display: 'inline-flex', alignItems: 'center', gap: 6,
-                border: '1px solid rgba(245,246,250,.2)', borderRadius: 999, padding: '6px 14px',
-                fontSize: 11, fontWeight: 800, color: 'rgba(245,246,250,.8)', textDecoration: 'none',
-              }}>
-                CAC Worldwide ↗
-              </a>
             </div>
 
             <p style={{ fontSize: 14, color: 'rgba(245,246,250,.55)', margin: '16px 0 20px', lineHeight: 1.7, maxWidth: 260 }}>
@@ -240,7 +233,6 @@ export function FooterExperience() {
             <Link href={'/about#tenets'} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{t('ourTenets')}</Link>
             <Link href={'/statement-of-faith'} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{t('statementOfFaith')}</Link>
             <Link href={'/leadership/past'} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{t('pastLeaders')}</Link>
-            <Link href={'/contact'} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{t('contact')}</Link>
             <Link href={'/privacy'} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{t('privacy')}</Link>
             <Link href={'/terms'} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{t('terms')}</Link>
             <Link href={'/refunds'} style={{ color: 'rgba(245,246,250,.6)', textDecoration: 'none' }}>{t('refunds')}</Link>
