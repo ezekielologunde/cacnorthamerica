@@ -26,14 +26,27 @@ function buildHtml(rows: [string, string][]): string {
 </body></html>`;
 }
 
-async function saveToSupabase(fields: Record<string, string>): Promise<void> {
+const OWN_COLUMNS = new Set(["Name", "Email", "Subject", "Message"]);
+
+/** True only when the insert actually went through (supabase-js reports
+ *  failures in `error` rather than throwing). The table has no column for
+ *  Phone, Address, Groups and the rest, so they are appended to the message:
+ *  a stored row must hold everything the mailto fallback would have carried,
+ *  since a successful save suppresses that fallback. */
+async function saveToSupabase(fields: Record<string, string>): Promise<boolean> {
+  const extras = Object.entries(fields)
+    .filter(([k, v]) => !OWN_COLUMNS.has(k) && v.trim())
+    .map(([k, v]) => `${k}: ${v.trim()}`);
+  const message = extras.length ? `${fields["Message"]}\n\n---\n${extras.join("\n")}` : fields["Message"];
   const supabase = await createServiceClient();
-  await supabase.from("contact_submissions").insert({
-    name: fields["Name"] || "Unknown",
-    email: fields["Email"] || "",
+  const { error } = await supabase.from("contact_submissions").insert({
+    name: fields["Name"],
+    email: fields["Email"],
     subject: fields["Subject"] || null,
-    message: fields["Message"] || "",
+    message,
   });
+  if (error) console.error("[contact] Supabase insert error:", error.message);
+  return !error;
 }
 
 /** The auto-reply goes to an address nobody has verified, so each address
@@ -105,19 +118,29 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true });
   }
 
+  // The form always sends these three; refuse blank or malformed ones so an
+  // empty post can't save a blank row or reach the inbox.
+  const replyToRaw = (fields["Email"] || "").trim();
+  if (!fields["Name"]?.trim() || !fields["Message"]?.trim() || !EMAIL_RE.test(replyToRaw)) {
+    return NextResponse.json({ error: "Name, a valid email address and a message are required" }, { status: 400 });
+  }
+
   const subject = `${formName} — CACNA`;
   const rows = Object.entries(fields).filter(([, v]) => v.trim());
 
-  // Only use email as replyTo if it's a valid address
-  const replyToRaw = (fields["Email"] || "").trim();
-  const replyTo = EMAIL_RE.test(replyToRaw) ? replyToRaw : undefined;
+  const replyTo = replyToRaw;
   const key = process.env.RESEND_API_KEY;
   const autoReply = key && replyTo ? await mayAutoReply(replyTo) : false;
 
-  // Save to Supabase — fire-and-forget
-  // Store the same trimmed address the auto-reply lookup uses, or a padded
-  // Email value would never match its own earlier row and dodge the daily cap.
-  saveToSupabase({ ...fields, Email: replyToRaw }).catch((e) => console.error("[contact] Supabase save failed:", e));
+  // Save to Supabase. Store the same trimmed address the auto-reply lookup
+  // uses, or a padded Email value would never match its own earlier row and
+  // dodge the daily cap. Runs alongside the email send (a slow insert never
+  // delays the email); it is only awaited if the send fails, to tell whether
+  // the message is already safely stored.
+  const savedPromise = saveToSupabase({ ...fields, Email: replyToRaw }).catch((e) => {
+    console.error("[contact] Supabase save failed:", e);
+    return false;
+  });
 
   // Log to Google Sheets — fire-and-forget (formula-escaped in logToSheet).
   logToSheet(formName, fields);
@@ -144,11 +167,12 @@ export async function POST(req: Request) {
     });
     if (error) {
       console.error("[contact] Resend error:", error);
-      return NextResponse.json({ method: "mailto" });
+      // Already stored: opening the visitor's mail client too would send it twice.
+      return NextResponse.json((await savedPromise) ? { success: true } : { method: "mailto" });
     }
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("[contact] send failed:", err);
-    return NextResponse.json({ method: "mailto" });
+    return NextResponse.json((await savedPromise) ? { success: true } : { method: "mailto" });
   }
 }
