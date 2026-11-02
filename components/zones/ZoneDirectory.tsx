@@ -5,6 +5,7 @@ import { MapPin, Landmark, Phone, Mail, Church } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import type { Leader } from "@/lib/leaders";
 import { MEMBER_CHURCHES } from "@/lib/churches";
+import { initials } from "@/lib/initials";
 
 type Category = "all" | "zonal_superintendent" | "dcc_superintendent";
 
@@ -20,11 +21,6 @@ const gradients = [
   "linear-gradient(135deg,var(--blue),var(--gold))",
   "linear-gradient(135deg,var(--ink),var(--red-deep))",
 ];
-
-function initials(name: string) {
-  const parts = name.replace(/^(Pastor|Prophet|Evangelist|Apostle)\s+(Dr\.?\s+)?(\(Mrs\.?\)\s+)?/i, "").trim().split(/\s+/);
-  return ((parts[0]?.[0] || "") + (parts[parts.length - 1]?.[0] || "")).toUpperCase();
-}
 
 export function ZoneDirectory({ leaders }: { leaders: Leader[] }) {
   const [category, setCategory] = useState<Category>("all");

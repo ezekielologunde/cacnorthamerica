@@ -177,7 +177,7 @@ export default async function PilgrimagePage({
                 width={1600}
                 height={1035}
                 style={{ width: "100%", height: "auto", display: "block" }}
-                priority
+                preload
               />
             </div>
           </Reveal>

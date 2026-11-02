@@ -8,13 +8,9 @@ import { ArrowLeft, Mail, Phone, MapPin } from "lucide-react";
 import { getLeaderBySlug } from "@/lib/leaders";
 import { setRequestLocale } from "next-intl/server";
 import { SITE_URL } from "@/lib/site";
+import { initials } from "@/lib/initials";
 
 export const revalidate = 3600;
-
-function initials(name: string) {
-  const parts = name.replace(/^(Pastor|Prophet|Evangelist|Apostle)\s+(Dr\.?\s+)?(\(Mrs\.?\)\s+)?/i, "").trim().split(/\s+/);
-  return ((parts[0]?.[0] || "") + (parts[parts.length - 1]?.[0] || "")).toUpperCase();
-}
 
 const CATEGORY_LABEL: Record<string, string> = {
   cacna_regional: "CACNA Regional Leadership",

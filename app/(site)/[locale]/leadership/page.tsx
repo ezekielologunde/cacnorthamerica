@@ -10,6 +10,7 @@ import { CAC_WORLDWIDE, CAC_ANOSIKE_EUROPE } from "@/lib/global";
 import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
+import { initials } from "@/lib/initials";
 
 export const revalidate = 3600;
 
@@ -32,11 +33,6 @@ async function combinedBio(leader: Leader): Promise<string | null> {
   const roles = await getLeaderRoles(leader.person_key);
   if (roles.length <= 1) return null;
   return roles.map((r) => r.title).join(" · ");
-}
-
-function initials(name: string) {
-  const parts = name.replace(/^(Pastor|Prophet|Evangelist|Apostle)\s+(Dr\.?\s+)?(\(Mrs\.?\)\s+)?/i, "").trim().split(/\s+/);
-  return ((parts[0]?.[0] || "") + (parts[parts.length - 1]?.[0] || "")).toUpperCase();
 }
 
 const gradients = [

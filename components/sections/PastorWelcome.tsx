@@ -5,11 +5,7 @@ import { Parallax } from "@/components/ui/Parallax";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { getLeaders } from "@/lib/leaders";
 import "./home-mobile.css";
-
-function initials(name: string) {
-  const parts = name.replace(/^(Pastor|Prophet|Evangelist|Apostle)\s+(Dr\.?\s+)?(\(Mrs\.?\)\s+)?/i, "").trim().split(/\s+/);
-  return ((parts[0]?.[0] || "") + (parts[parts.length - 1]?.[0] || "")).toUpperCase();
-}
+import { initials } from "@/lib/initials";
 
 export async function PastorWelcome() {
   const regional = await getLeaders(["cacna_regional"]);
