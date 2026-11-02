@@ -114,7 +114,9 @@ export async function POST(req: Request) {
   const autoReply = key && replyTo ? await mayAutoReply(replyTo) : false;
 
   // Save to Supabase — fire-and-forget
-  saveToSupabase(fields).catch((e) => console.error("[contact] Supabase save failed:", e));
+  // Store the same trimmed address the auto-reply lookup uses, or a padded
+  // Email value would never match its own earlier row and dodge the daily cap.
+  saveToSupabase({ ...fields, Email: replyToRaw }).catch((e) => console.error("[contact] Supabase save failed:", e));
 
   // Log to Google Sheets — fire-and-forget (formula-escaped in logToSheet).
   logToSheet(formName, fields);
