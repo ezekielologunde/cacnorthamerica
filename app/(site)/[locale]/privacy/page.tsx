@@ -75,7 +75,7 @@ const sections: LegalSection[] = [
           <li><strong>Resend</strong> sends our confirmation and newsletter emails.</li>
           <li><strong>Google Sheets</strong> (through a Google Apps Script) keeps a copy of form submissions and completed payments for the committee&apos;s records.</li>
           <li><strong>Cloudinary</strong> hosts the photos shown on the site.</li>
-          <li><strong>Google Analytics</strong> measures site visits.</li>
+          <li><strong>Google Analytics</strong> measures site visits. If we run Google Ads or AdSense, their tags may also load and use cookies.</li>
           <li><strong>Vercel</strong> hosts the site. Our zone finder can use Vercel&apos;s rough, city-level estimate of your location from your IP address; we do not store it.</li>
         </ul>
       </>
