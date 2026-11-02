@@ -3,6 +3,7 @@ import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { IconBadge } from "@/components/ui/IconBadge";
+import { TenetsToggle } from "@/components/about-tenets-toggle";
 import { Church, HeartHandshake, Globe } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -116,7 +117,7 @@ export default async function AboutPage({
           </Reveal>
           <Reveal delay={180}>
             <div style={{ marginTop: 36 }}>
-              <Link href="/zones" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--ink)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "16px 28px", borderRadius: 999, textDecoration: "none", boxShadow: "0 12px 28px rgba(18,20,30,.18)" }}>
+              <Link href="/leadership" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--ink)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "16px 28px", borderRadius: 999, textDecoration: "none", boxShadow: "0 12px 28px rgba(18,20,30,.18)" }}>
                 Meet our leadership →
               </Link>
             </div>
@@ -355,7 +356,7 @@ export default async function AboutPage({
               Read our full Statement of Faith →
             </Link>
           </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
+          <div id="tenets-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
             {[
               { n: "01", t: "The Unity of the Godhead", d: "The unity of the Godhead and the trinity of the persons therein — Father, Son, and Holy Spirit.", s: "Matthew 28:19, 2 Corinthians 13:14, 1 John 5:7" },
               { n: "02", t: "The Fall of Man", d: "The utter depravity of human nature, the necessity for repentance and regeneration, and the eternal doom of the finally impenitent.", s: "Romans 3:23, Ephesians 2, Acts 20:21, 2 Corinthians 5:17, Revelation 20:11-15, John 3:16-17" },
@@ -381,9 +382,7 @@ export default async function AboutPage({
               </Reveal>
             ))}
           </div>
-          <Link href="/statement-of-faith" className="ap-tenet-link" style={{ alignItems: "center", justifyContent: "center", marginTop: 20, minHeight: 48, borderRadius: 999, background: "var(--ink)", color: "#fff", fontWeight: 700, fontSize: 16, textDecoration: "none" }}>
-            Read all thirteen tenets →
-          </Link>
+          <TenetsToggle />
         </div>
       </section>
 

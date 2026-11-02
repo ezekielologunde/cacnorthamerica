@@ -9,7 +9,7 @@
   background: rgba(245,246,250,.1); color: #fff; border: 1px solid rgba(245,246,250,.22);
 }
 .ap-main .ap-dir-bar { display: none; }
-.ap-main .ap-tenet-link { display: none; }
+.ap-main .ap-tenet-toggle { display: none; }
 
 @media (max-width: 700px) {
   .ap-main { padding-bottom: calc(0px + env(safe-area-inset-bottom)); }
@@ -41,8 +41,8 @@
   }
   .ap-main .ap-map { height: 240px !important; }
 
-  .ap-main .ap-tenet-more { display: none; }
-  .ap-main .ap-tenet-link { display: flex; }
+  .ap-main #tenets:not([data-open="true"]) .ap-tenet-more { display: none; }
+  .ap-main .ap-tenet-toggle { display: flex; }
   .ap-main .ap-faith-text { margin-left: 0 !important; }
   .ap-main .ap-clamp {
     display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
