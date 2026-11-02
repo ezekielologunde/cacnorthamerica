@@ -4,7 +4,6 @@ import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { InstagramIcon } from "@/components/ui/SocialIcons";
-import { MealRequestForm } from "@/components/youth/MealRequestForm";
 import { PhotoStrip } from "@/components/ministries/PhotoStrip";
 import { mainGalleryPhotos } from "@/lib/mainGalleryPhotos";
 import { currentOrNextConvention, dateRangeLabel, CONVENTION_VENUE } from "@/lib/conventions";
@@ -104,6 +103,8 @@ export default async function YouthPage({
   setRequestLocale(locale);
   const t = await getTranslations("Youth");
   const nextCy = currentOrNextConvention();
+  const youthRegisterHref =
+    nextCy.registrationUrl && nextCy.registrationUrl.startsWith("/") ? `${nextCy.registrationUrl}/youth` : undefined;
 
   const pillars = [
     { icon: pillarIcons[0], label: t("visionLabel"), body: t("visionBody") },
@@ -287,24 +288,33 @@ export default async function YouthPage({
         </div>
       </section>
 
-      {/* CACNA YYAM Convention meal RSVP -- a separate, address-and-dates
-          distinct youth event from the main Annual Convention. Year/dates/
-          venue come from whatever convention is current or next, so this
-          section doesn't quietly keep saying a past year's dates. */}
+      {/* Youth & Child registration (replaces the old meal-request form:
+          meals are now chosen on the registration itself). Year/dates/venue
+          come from whatever convention is current or next; the button only
+          shows once that year has an on-site registration page. */}
       <section className="min-section" style={{ background: "var(--cream-2)", padding: "clamp(40px,7vw,90px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 700, margin: "0 auto" }}>
-          <Reveal style={{ textAlign: "center", marginBottom: 32 }}>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,4vw,42px)", letterSpacing: "-.8px", color: "var(--ink)", margin: "12px 0 14px", lineHeight: 1.05 }}>
-              {t("mealSubheading", { year: nextCy.year })}
-            </h2>
-            <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.7 }}>
-              {t("mealBody", { dates: dateRangeLabel(nextCy), venue: CONVENTION_VENUE })} {t("mealQuestionsLead")} <a href="mailto:cacnayyam@outlook.com" style={{ color: "var(--red)", display: "inline-block", padding: "12px 0", fontWeight: 700 }}>cacnayyam@outlook.com</a>.
-            </p>
-          </Reveal>
-          <Reveal delay={80}>
-            <MealRequestForm />
-          </Reveal>
-        </div>
+        <Reveal style={{ maxWidth: 700, margin: "0 auto", textAlign: "center", background: "var(--paper)", border: "1px solid var(--line)", borderTop: "5px solid var(--gold)", borderRadius: 20, padding: "clamp(28px,5vw,44px) clamp(20px,4vw,40px)" }}>
+          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,4vw,40px)", letterSpacing: "-.8px", color: "var(--ink)", margin: "0 0 14px", lineHeight: 1.05 }}>
+            {t("registerHeading", { year: nextCy.year })}
+          </h2>
+          <p style={{ fontSize: 15.5, color: "var(--ink-soft)", lineHeight: 1.7, margin: "0 0 22px" }}>
+            {t("registerBody", { dates: dateRangeLabel(nextCy), venue: CONVENTION_VENUE })}
+          </p>
+          {youthRegisterHref ? (
+            <Link
+              href={youthRegisterHref}
+              className="press-lg"
+              style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", minHeight: 52, background: "var(--red)", color: "#fff", fontWeight: 800, fontSize: 16, padding: "0 30px", borderRadius: 999, textDecoration: "none" }}
+            >
+              {t("registerCta")}
+            </Link>
+          ) : (
+            <p style={{ fontSize: 15, fontWeight: 700, color: "var(--ink)", margin: 0 }}>{t("registerSoon")}</p>
+          )}
+          <p style={{ fontSize: 14.5, color: "var(--ink-soft)", margin: "18px 0 0" }}>
+            {t("mealQuestionsLead")} <a href="mailto:cacnayyam@outlook.com" style={{ color: "var(--red)", display: "inline-block", padding: "12px 0", fontWeight: 700 }}>cacnayyam@outlook.com</a>.
+          </p>
+        </Reveal>
       </section>
 
       {/* CTA */}
