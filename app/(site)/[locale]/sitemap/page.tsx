@@ -79,6 +79,14 @@ export default async function SitemapPage({
         { label: "Giving", href: "/giving" },
       ],
     },
+    {
+      title: "Legal",
+      pages: [
+        { label: "Privacy Policy", href: "/privacy" },
+        { label: "Terms of Service", href: "/terms" },
+        { label: "Refund & Cancellation", href: "/refunds" },
+      ],
+    },
   ];
 
   return (

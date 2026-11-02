@@ -76,6 +76,9 @@ export const ROUTES: { path: string; priority: number }[] = [
   { path: "/business-group", priority: 0.5 },
   { path: "/children", priority: 0.5 },
   { path: "/contact", priority: 0.9 },
+  { path: "/privacy", priority: 0.3 },
+  { path: "/terms", priority: 0.3 },
+  { path: "/refunds", priority: 0.3 },
 ];
 
 /** schema.org structured data (@graph: Church + WebSite) for rich results,
