@@ -33,6 +33,7 @@ export default async function SitemapPage({
       title: "Who We Are",
       pages: [
         { label: "About CACNA", href: "/about" },
+        { label: "Our History", href: "/history" },
         { label: "Leadership", href: "/leadership" },
         { label: "Past Leaders", href: "/leadership/past" },
         { label: "Zones & DCCs", href: "/zones" },
