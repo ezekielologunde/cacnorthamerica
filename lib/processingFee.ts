@@ -25,6 +25,58 @@ export function feeCents(subtotalCents: number): number {
   return total - subtotalCents;
 }
 
+/** How a payer pays: the card path (fee above) or a US bank debit (ACH). */
+export type PaymentMethod = "card" | "bank";
+
+/** Stripe's US bank debit (ACH) pricing: 0.8% of the charge, capped at $5. */
+export const BANK_PERCENT_FEE = 0.008;
+export const BANK_FEE_CAP_CENTS = 500;
+/** Stripe also bills $1.50 for each successful instant bank verification. */
+export const BANK_VERIFICATION_FEE_CENTS = 150;
+/** Largest gift taken by bank debit ($10,000). A consumer can dispute an ACH
+ *  debit for up to 60 days, so a very large gift goes by Zelle or wire. */
+export const BANK_MAX_CENTS = 1_000_000;
+
+/** The processing fee, in whole cents, charged on top of a bank-debit gift.
+ *  Card gifts pass their full cost on (feeCents above); this decides what a
+ *  bank gift passes on. Stripe's cost to the church is
+ *  min(BANK_PERCENT_FEE * charge, BANK_FEE_CAP_CENTS) plus
+ *  BANK_VERIFICATION_FEE_CENTS, so pass-through is
+ *  ceil((BANK_PERCENT_FEE * subtotal + verification) / (1 - BANK_PERCENT_FEE)),
+ *  with the percentage part capped. */
+export function bankFeeCents(subtotalCents: number): number {
+  if (!Number.isFinite(subtotalCents) || subtotalCents <= 0) return 0;
+  // TODO(human): decide the bank-gift fee policy and return it in whole cents.
+  // 0 means the church absorbs Stripe's cost (best for encouraging bank gifts);
+  // the pass-through formula above means donors cover it, as with cards.
+  return 0;
+}
+
+/** The fee for a subtotal under the chosen payment method. */
+export function feeCentsFor(subtotalCents: number, method: PaymentMethod = "card"): number {
+  return method === "bank" ? bankFeeCents(subtotalCents) : feeCents(subtotalCents);
+}
+
+/** Fee line items for a method: none when the method carries no fee, because
+ *  Checkout would reject a zero-amount line. Spread into line_items. */
+export function feeLineItems(subtotalCents: number, method: PaymentMethod = "card") {
+  const fee = feeCentsFor(subtotalCents, method);
+  if (fee <= 0) return [];
+  return [{
+    price_data: {
+      currency: "usd",
+      unit_amount: fee,
+      product_data: { name: PROCESSING_FEE_LABEL },
+    },
+    quantity: 1,
+  }];
+}
+
+/** Session metadata for a method, same shape as processingFeeMetadata. */
+export function feeMetadataFor(subtotalCents: number, method: PaymentMethod = "card"): { subtotal_cents: string; processing_fee_cents: string } {
+  return { subtotal_cents: String(subtotalCents), processing_fee_cents: String(feeCentsFor(subtotalCents, method)) };
+}
+
 /** The fee as a Checkout Session line item, added after the real lines. */
 export function processingFeeLineItem(subtotalCents: number) {
   return {

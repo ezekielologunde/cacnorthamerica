@@ -386,6 +386,10 @@ export async function POST(request: Request) {
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
+      // Pinned to card: the processing fee is sized for cards, so a method
+      // with a different cost (bank debit) must not appear here until the fee
+      // follows it.
+      payment_method_types: ["card"],
       line_items: [...payableRegistrants.map((r) => ({
         price_data: {
           currency: "usd",
@@ -570,6 +574,10 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
+      // Pinned to card: the processing fee is sized for cards, so a method
+      // with a different cost (bank debit) must not appear here until the fee
+      // follows it.
+      payment_method_types: ["card"],
       line_items: [
         ...priced
           .filter((p) => p.priceCents > 0)

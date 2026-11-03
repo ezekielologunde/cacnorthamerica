@@ -3,7 +3,7 @@ import { getStripeClient } from "@/lib/stripe";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
 import { SITE_URL } from "@/lib/site";
 import { GIVING_CAMPAIGNS } from "@/lib/giving";
-import { processingFeeLineItem, processingFeeMetadata } from "@/lib/processingFee";
+import { BANK_MAX_CENTS, feeLineItems, feeMetadataFor, type PaymentMethod } from "@/lib/processingFee";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_FIELD_LENGTH = 120;
@@ -16,6 +16,7 @@ type CheckoutRequestBody = {
   contactEmail: string;
   campaignSlug: string;
   amountCents: number;
+  paymentMethod?: PaymentMethod;
 };
 
 function validateRequestBody(body: unknown): string | null {
@@ -42,6 +43,12 @@ function validateRequestBody(body: unknown): string | null {
   if (typeof b.amountCents !== "number" || !Number.isInteger(b.amountCents) || b.amountCents < MIN_CENTS || b.amountCents > MAX_CENTS) {
     return `amountCents must be an integer between ${MIN_CENTS} and ${MAX_CENTS}`;
   }
+  if (b.paymentMethod !== undefined && b.paymentMethod !== "card" && b.paymentMethod !== "bank") {
+    return "Unknown payment method";
+  }
+  if (b.paymentMethod === "bank" && b.amountCents > BANK_MAX_CENTS) {
+    return "Bank gifts are limited to $10,000. For a larger gift, please use Zelle or wire, or contact us.";
+  }
   return null;
 }
 
@@ -65,11 +72,15 @@ export async function POST(request: Request) {
   const body = rawBody as CheckoutRequestBody;
   const campaign = GIVING_CAMPAIGNS.find((c) => c.slug === body.campaignSlug)!;
 
+  const method: PaymentMethod = body.paymentMethod === "bank" ? "bank" : "card";
   const stripe = getStripeClient();
 
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
+      // Pinned to the chosen method so the fee below always matches what the
+      // payer actually uses.
+      payment_method_types: [method === "bank" ? "us_bank_account" : "card"],
       line_items: [{
         price_data: {
           currency: "usd",
@@ -79,11 +90,11 @@ export async function POST(request: Request) {
         quantity: 1,
       // The gift line stays exactly the amount the donor chose; the fee is
       // a separate line after it.
-      }, processingFeeLineItem(body.amountCents)],
+      }, ...feeLineItems(body.amountCents, method)],
       customer_email: body.contactEmail.trim(),
       success_url: `${SITE_URL}/giving/confirmation?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}/giving`,
-      metadata: { kind: "giving", contact_name: body.contactName, campaign_slug: campaign.slug, campaign_title: campaign.title, ...processingFeeMetadata(body.amountCents) },
+      metadata: { kind: "giving", contact_name: body.contactName, campaign_slug: campaign.slug, campaign_title: campaign.title, ...feeMetadataFor(body.amountCents, method) },
     });
 
     return NextResponse.json({ checkoutUrl: session.url });

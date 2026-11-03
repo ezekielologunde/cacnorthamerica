@@ -3,6 +3,7 @@
 import { useState, type CSSProperties, type FormEvent } from "react";
 import type { GivingCampaign } from "@/lib/giving";
 import { FeeBreakdown } from "@/components/checkout/FeeBreakdown";
+import type { PaymentMethod } from "@/lib/processingFee";
 
 const PRESET_AMOUNTS = [25, 50, 100, 250];
 
@@ -26,6 +27,7 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
   const [customAmount, setCustomAmount] = useState("");
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
+  const [method, setMethod] = useState<PaymentMethod>("card");
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -45,7 +47,7 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
       const response = await fetch("/api/giving/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contactName, contactEmail, campaignSlug, amountCents }),
+        body: JSON.stringify({ contactName, contactEmail, campaignSlug, amountCents, paymentMethod: method }),
       });
       const data = await response.json().catch(() => null);
       if (!response.ok || !data?.checkoutUrl) {
@@ -70,7 +72,7 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
       <div style={{ position: "relative", zIndex: 2, maxWidth: 480, margin: "0 auto" }}>
 
         <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.4vw,38px)", letterSpacing: "-1px", color: "#fff", margin: "0 0 20px", lineHeight: 1.1 }}>
-          Make a gift by card.
+          Make a gift online.
         </h2>
 
         <form onSubmit={handleSubmit}>
@@ -128,6 +130,34 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
             />
           </div>
 
+          <fieldset style={{ border: "none", padding: 0, margin: "0 0 18px", minWidth: 0 }}>
+            <legend style={{ ...labelStyle, padding: 0 }}>How would you like to give?</legend>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,200px),1fr))", gap: 8 }}>
+              {([
+                ["card", "Card", "Received right away"],
+                ["bank", "Bank account", "Takes about 4 business days to clear"],
+              ] as const).map(([value, title, note]) => {
+                const active = method === value;
+                return (
+                  <label
+                    key={value}
+                    style={{
+                      display: "flex", alignItems: "flex-start", gap: 10, minHeight: 48, padding: "12px 14px", borderRadius: 12, cursor: "pointer", color: "#fff",
+                      border: active ? "1.5px solid var(--gold)" : "1.5px solid rgba(255,255,255,.25)",
+                      background: active ? "rgba(253,200,65,.16)" : "rgba(255,255,255,.06)",
+                    }}
+                  >
+                    <input type="radio" name="give-method" value={value} checked={active} onChange={() => setMethod(value)} style={{ marginTop: 4, accentColor: "var(--gold)" }} />
+                    <span>
+                      <strong style={{ display: "block", fontSize: 15 }}>{title}</strong>
+                      <span style={{ fontSize: 13, color: "rgba(255,255,255,.72)" }}>{note}</span>
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          </fieldset>
+
           <div style={{ marginBottom: 14 }}>
             <label htmlFor="give-name" style={labelStyle}>Your Name <span style={{ color: "var(--gold)" }}>*</span></label>
             <input id="give-name" className="field-input on-dark" style={inputStyle} value={contactName} onChange={(e) => setContactName(e.target.value)} required autoComplete="name" />
@@ -139,7 +169,7 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
 
           {amountCents ? (
             <div style={{ marginBottom: 18 }}>
-              <FeeBreakdown subtotalCents={amountCents} subtotalLabel="Gift" tone="dark" />
+              <FeeBreakdown subtotalCents={amountCents} subtotalLabel="Gift" tone="dark" method={method} />
             </div>
           ) : null}
 
@@ -161,7 +191,9 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
             {status === "loading" ? "Redirecting…" : `Give ${amountCents ? `$${(amountCents / 100).toFixed(2)}` : "Now"} →`}
           </button>
           <p style={{ fontSize: 13, color: "rgba(255,255,255,.7)", textAlign: "center", marginTop: 14 }}>
-            Securely processed by Stripe. You&apos;ll get an email receipt.
+            {method === "bank"
+              ? "Securely processed by Stripe. Your bank will ask you to confirm the account, and we\u2019ll email you when the gift clears."
+              : "Securely processed by Stripe. You\u2019ll get an email receipt."}
           </p>
         </form>
       </div>

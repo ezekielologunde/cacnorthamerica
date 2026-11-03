@@ -48,7 +48,8 @@ const sections: LegalSection[] = [
         Registration fees, store orders and online gifts are paid through Stripe. You enter your card details on
         Stripe&apos;s secure checkout page, not on our site. We never see or store your full card number. Stripe
         shares with us the details we need to confirm the payment, such as your name, email, the amount and, for
-        store orders, your shipping address.
+        store orders, your shipping address. If you give from a bank account, Stripe may ask you to log in to your
+        bank to confirm the account; we never see your bank login or your full account number.
       </p>
     ),
   },
