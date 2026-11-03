@@ -66,7 +66,8 @@ check("the Zelle route limits by IP, by normalised inbox per day, and overall", 
 check("the Zelle route takes the recipient from the campaign, never the body", route.includes("const recipient = zelleRecipientFor(campaign);") && (route.match(/\brecipient\s*=/g) ?? []).length === 1 && !/\bbody\.recipient\b/.test(route));
 check("the Zelle route refuses a campaign with no Zelle", route.includes("if (!recipient)") && route.includes("Zelle isn't available"));
 check("the Zelle route rejects a web address in the name", route.includes("countLinks([body.contactName]) > 0"));
-check("the Zelle route fails when the pledge was recorded nowhere", route.includes("!sheetOk && !emails.committeeSent"));
+check("the Zelle route sends the donor email only through the record-first helper", route.includes("recordPledgeThenNotifyDonor(") && route.includes("if (!outcome.recorded)") && !route.includes("sendZelleGiftEmails"));
+check("the Zelle route does not email the donor outside the helper", (route.match(/sendZelleDonorEmail\(/g) ?? []).length === 1 && route.includes("emailDonor: () => sendZelleDonorEmail(mail)"));
 check("the Zelle route awaits the sheet write", route.includes("logToSheetChecked(") && !route.includes("logToSheet("));
 
 const email = read("../lib/givingEmail.ts");
@@ -85,5 +86,29 @@ check("the giving form only lists Zelle for a campaign that has it", form.includ
 check("the giving form moves focus to the Zelle result", form.includes("resultHeadingRef.current?.focus()"));
 check("the giving form never claims the gift is complete before payment", !form.includes("is complete once"));
 
+// Record first, then tell the donor: every failure combination, against fakes.
+const { recordPledgeThenNotifyDonor } = await import("../lib/zellePledge.ts");
+const TF = [true, false];
+for (const sheet of TF) for (const committee of TF) for (const donor of TF) {
+  const calls = [];
+  const step = (name, ok) => async () => { calls.push(name); return ok; };
+  const out = await recordPledgeThenNotifyDonor({
+    recordInSheet: step("sheet", sheet),
+    emailCommittee: step("committee", committee),
+    emailDonor: step("donor", donor),
+  });
+  const recorded = sheet || committee;
+  const label = `sheet=${sheet} committee=${committee} donor=${donor}`;
+  check(`pledge outcome matches the records (${label})`, out.recorded === recorded);
+  check(`donor is emailed only when the pledge is recorded (${label})`, calls.includes("donor") === recorded);
+  if (recorded) check(`donor email goes out last (${label})`, calls[calls.length - 1] === "donor" && out.donorSent === donor);
+}
+{
+  const out = await recordPledgeThenNotifyDonor({ recordInSheet: async () => { throw new Error("x"); }, emailCommittee: async () => false, emailDonor: async () => { throw new Error("donor must not run"); } });
+  check("a throwing record step counts as failed and the donor is not emailed", out.recorded === false);
+  const out2 = await recordPledgeThenNotifyDonor({ recordInSheet: async () => true, emailCommittee: async () => { throw new Error("x"); }, emailDonor: async () => { throw new Error("y"); } });
+  check("a throwing donor email is reported as not sent, not as a failure", out2.recorded === true && out2.donorSent === false);
+}
+
 console.log(failures ? `\n${failures} check(s) FAILED` : "\nAll checks passed");
-process.exit(failures ? 1 : 0);
+process.exitCode = failures ? 1 : 0;
