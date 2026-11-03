@@ -6,8 +6,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { haptic } from "@/lib/haptics";
-import { conventionToFeature, currentOrNextConvention, dateRangeLabel, CONVENTION_VENUE_SHORT } from "@/lib/conventions";
-import { specialEvents, isEventPast } from "@/lib/events";
+import { conventionToFeature, currentOrNextConvention, dateRangeLabel, hasExternalRegistrationUrl, CONVENTION_VENUE_SHORT } from "@/lib/conventions";
+import { specialEvents, isEventPast, hasEventStarted } from "@/lib/events";
 import { POSTS } from "@/lib/blog";
 import { GIVING_CAMPAIGNS } from "@/lib/giving";
 import "./home-mobile.css";
@@ -69,14 +69,16 @@ function useSlides(): Slide[] {
     const recapPost = POSTS.find((p) => p.slug === "cacna-2026-closing-appreciation");
     slides.push({
       key: "convention",
-      eyebrow: showRecap ? (state === "live" ? "Live Now" : "Just Concluded") : "Save the Date",
+      eyebrow: showRecap ? (state === "live" ? "Live Now" : "Just Concluded") : nextCy.registrationUrl ? "Registration Open" : "Save the Date",
       title: showRecap ? `CACNA ${featuredCy.year} Convention` : `CACNA ${nextCy.year} National Convention`,
       desc: showRecap
         ? "The Convention Chairman's closing message of thanks to every speaker, volunteer, and family."
         : `${dateRangeLabel(nextCy)} · ${CONVENTION_VENUE_SHORT}`,
       cta: showRecap
         ? { label: "Read the Closing Message", href: recapPost ? (recapPost.href ?? `/blog/${recapPost.slug}`) : featuredCy.href }
-        : { label: "Event Details", href: nextCy.href },
+        : nextCy.registrationUrl && !hasExternalRegistrationUrl(nextCy)
+          ? { label: "Register Now", href: nextCy.registrationUrl }
+          : { label: "Event Details", href: nextCy.href },
     });
 
     const anniversary = specialEvents.find((e) => e.id === "cacna-50th-anniversary-2026");
@@ -91,7 +93,7 @@ function useSlides(): Slide[] {
     }
 
     const pilgrimage = specialEvents.find((e) => e.id === "holy-land-pilgrimage-2026");
-    if (pilgrimage && !isEventPast(pilgrimage)) {
+    if (pilgrimage && !isEventPast(pilgrimage) && !hasEventStarted(pilgrimage)) {
       slides.push({
         key: "pilgrimage",
         eyebrow: "Holy Land Pilgrimage",

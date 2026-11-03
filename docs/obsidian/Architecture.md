@@ -25,7 +25,7 @@ app/
                       [locale]; stays English-only, unaffected by i18n
   admin/login/       Supabase Auth login
   api/                contact, gallery, instagram, cloudinary/sign,
-                      register, store/checkout, stripe/webhook, meal-request
+                      register, store/checkout, stripe/webhook
                       -- also NOT under [locale] (route handlers, no UI)
   newsletter/actions.ts  Server action (not a page/route of its own)
 components/          admin/ blog/ calendar/ media/ ministries/ navigation/
@@ -133,8 +133,105 @@ layer: `archive.ts`, `blog.ts`, `cacWorldNews.ts`, `churches.ts`,
   -- ported from Convention's own version during Phase B of the Convention
   merge (see [[Decisions]]). The register API also gates a "Complimentary"
   tab behind a server-checked `STAFF_PASSCODE` env var, and the confirmation
-  page renders a check-in QR (`lib/qr.ts`, `components/register/QrCode.tsx`)
-  once payment (or a free/comp registration) is confirmed.
+  page and email show each person's 4-character check-in code
+  (`lib/checkinCode.ts`, `components/register/RegistrantCheckinList.tsx`),
+  the only check-in method (the earlier check-in QR was dropped).
 - Resend — transactional email (contact form, likely)
 - Behold — Instagram feed via `/api/instagram`
 - Google Analytics / Ads, YouTube Data API, a Google Sheets webhook
+
+## Check-in lookup table (`cacna.checkin_people`)
+
+One row per registrant of every successful convention registration
+(`supabase/migrations/0015_checkin_people.sql`), so the admin check-in page
+can find a person by name prefix or by their 4-character check-in code.
+Rows carry the year, the registration `ref` and the person's position
+(`idx`, unique together), the code from `lib/checkinCode.ts`, category, age,
+church, DCC / zone, contact details, sheet-style meals, allergies, payment
+status (`free` / `paid`), the Stripe session, and `checked_in_at` /
+`checked_in_by` for the door. Codes are not globally unique, so staff still
+verify the name.
+
+Written only server-side by `recordCheckinPeople()` in
+`lib/checkinStore.ts` (service-role client): from `api/register` on the free
+adult and free Youth & Child paths, and from `api/stripe/webhook` for paid
+registrations once the sheet row is written. It upserts on `(ref, idx)` with
+do-nothing on conflict, so Stripe retries never duplicate a row or reset a
+check-in. It is best-effort: a missing `SUPABASE_SERVICE_ROLE_KEY`, a
+database error or anything thrown is logged with the ref only and never
+fails a registration or a webhook. The Google Sheet stays the record staff
+already use; this table is a lookup copy of it. PII: RLS on, no anon access,
+admins read it through a `cacna.is_admin()` select policy. Pinned by
+`node scripts/check-checkin-store.mjs`.
+
+## Staff check-in page (`/admin/check-in`)
+
+`app/admin/(protected)/check-in/` (nav: "Check-in"). Volunteers at the door
+type a name or a 4-character code into a plain GET form (`?q=`, optional
+`?year=`, default `currentOrNextConvention()`), so it works on a phone
+without JavaScript. `lib/checkinSearch.ts` classifies the query: trimmed,
+capped at 60 characters; exactly 4 characters that normalise to a valid
+code also search `code`, and every query searches `full_name` and
+`contact_name` with `ilike` on an escaped `%q%` pattern (`%`, `_`, `\`
+escaped, `*` dropped). Results are merged by id, ordered by name, capped at
+50. Cards show the code, age group, church / DCC, contact, paid / free,
+meals and allergies (highlighted), and flag codes shared within the results.
+`checkInPerson` / `undoCheckIn` call `requireAdmin()` themselves; check-in
+only updates where `checked_in_at is null` (a double tap never overwrites
+who or when), undo clears both columns, then each redirects back to the same
+search. If the table is missing (0015 not applied) the page shows a setup
+notice instead of failing. Pinned by `node scripts/check-checkin-admin.mjs`.
+
+## Paying by Zelle (registration)
+
+Zelle is the recommended way to pay (no card fee) and the forms' default.
+End to end:
+
+1. **Form.** `RegisterForm` and `YouthRegisterForm` start from
+   `DEFAULT_PAYMENT_METHOD` (`"zelle"`, `components/register/PaymentMethodChoice.tsx`)
+   and show the "How would you like to pay?" radios only when `total > 0`.
+   They send `paymentMethod` (`"zelle"` | `"card"`) to `POST /api/register`.
+2. **Route.** With `paymentMethod: "zelle"` and a total over $0, both tracks
+   go through `confirmByZelle` in `app/api/register/route.ts`: no Stripe and
+   no processing fee. Absent means card; any other value is a 400; a $0
+   registration takes the free path whatever the method.
+3. **Token.** The visitor gets a sealed confirmation token carrying
+   `pay: "zelle"` and `zelleRef` (`ZEL-` plus 8 Crockford characters,
+   deterministic per ref, `lib/zelleReference.ts`), plus `emailed` when a
+   confirmation email was attempted (per-address cap of 3 a day, key
+   `zelle-confirm:<email>` with the address trimmed and lower-cased; an
+   address containing whitespace, `<`, `>`, `,` or `;` is a 400).
+4. **Confirmation page and email.** `lib/registrationConfirmation.ts` opens
+   the token as `payment: "awaiting_zelle"`; the page shows
+   `ZellePaymentPanel` (amount due = subtotal, the recipient from
+   `paymentOptions`' Zelle entry, the memo reference, one-tap copy) and an
+   "Awaiting Zelle payment" chip. `sendRegistrationConfirmationEmail(...,
+   { zelleRef })` sends the matching "Awaiting payment" email, with every
+   visitor-typed value escaped. `paymentOptions` (`lib/registrationInfo.ts`)
+   is the single source of the Zelle address and lists Zelle first.
+5. **Sheet.** Rows have Status `awaiting Zelle (unverified email)`, Total =
+   subtotal, Processing Fee `$0.00`, blank Amount Charged and Stripe
+   Session, and a `Zelle Reference` column just before `Check-in Code`
+   (which stays last).
+6. **Check-in table.** `checkin_people.payment_status` is one of `free`,
+   `paid` or `awaiting_zelle`; Zelle rows carry `zelle_ref`.
+7. **Staff.** On `/admin/check-in` an `awaiting_zelle` person shows a
+   "Payment not received yet" warning and a **Mark paid** button
+   (`markZellePaid`: `requireAdmin()`, then sets `paid` only where the status
+   is still `awaiting_zelle`). Staff match the Zelle memo to the reference.
+
+**Deploy order:** apply migration `0016_checkin_awaiting_zelle.sql` (widens
+the `payment_status` check, adds `zelle_ref`) **before** deploying this code:
+the check-in page selects `zelle_ref`. Pinned by
+`node scripts/check-zelle-registration.mjs` (route, token, sheet, check-in
+rows, email and cap, admin action, the Apps Script's column placement) and
+`node scripts/check-zelle-ui.mjs` (forms, confirmation page, panel, email
+escaping).
+
+**Sheets webhook:** the repo copy of `docs/google-apps-script/sheets-webhook.gs`
+inserts a column the tab has not seen just before a trailing `Check-in Code`
+column (anywhere else it is added at the far right), so the first Zelle row on
+an existing tab puts `Zelle Reference` before `Check-in Code`. The live script
+does not do this yet. Re-paste this into the live Apps Script project
+(Extensions > Apps Script) and redeploy a new version for it to take effect;
+until then, add the 'Zelle Reference' header by hand before 'Check-in Code'.

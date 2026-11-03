@@ -33,12 +33,14 @@ export default async function SitemapPage({
       title: "Who We Are",
       pages: [
         { label: "About CACNA", href: "/about" },
+        { label: "Our History", href: "/history" },
         { label: "Leadership", href: "/leadership" },
         { label: "Past Leaders", href: "/leadership/past" },
         { label: "Zones & DCCs", href: "/zones" },
         { label: "Ministries", href: "/ministries" },
         { label: "Bible Institute", href: "/bible-institute" },
         { label: "Statement of Faith", href: "/statement-of-faith" },
+        { label: "FAQs", href: "/faq" },
       ],
     },
     {

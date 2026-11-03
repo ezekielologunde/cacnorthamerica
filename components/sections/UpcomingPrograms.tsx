@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { Reveal } from "@/components/ui/Reveal";
-import { specialEvents, splitByDate } from "@/lib/events";
+import { specialEvents, splitByDate, hasEventStarted } from "@/lib/events";
 import "./home-mobile.css";
 
 export function UpcomingPrograms() {
   const { upcoming } = splitByDate(specialEvents);
-  const events = upcoming.slice(0, 4);
+  const events = upcoming.filter((e) => !hasEventStarted(e)).slice(0, 4);
 
   if (events.length === 0) return null;
 

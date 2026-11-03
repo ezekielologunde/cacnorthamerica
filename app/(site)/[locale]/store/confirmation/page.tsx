@@ -5,6 +5,7 @@ import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { getStripeClient } from "@/lib/stripe";
 import { isPaidCheckout } from "@/lib/registrationConfirmation";
+import { splitCheckoutAmount, isProcessingFeeLine } from "@/lib/processingFee";
 import { setRequestLocale } from "next-intl/server";
 
 // A per-person receipt reached from Stripe: never indexed, and no inherited
@@ -29,6 +30,8 @@ export default async function StoreConfirmationPage({
 
   let contactEmail: string | null = null;
   let totalCents: number | null = null;
+  let subtotalCents = 0;
+  let feeCents = 0;
   let items: { description: string; amountCents: number }[] = [];
   // Only a paid session of this page's own kind is a completed checkout; an
   // abandoned or unpaid session, another kind's session, or no session at
@@ -41,8 +44,11 @@ export default async function StoreConfirmationPage({
       const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: ["line_items"] });
       if (!isPaidCheckout(session, "store_order")) throw new Error("not a paid store_order session");
       contactEmail = session.customer_details?.email ?? session.customer_email ?? null;
-      totalCents = session.amount_total ?? 0;
-      items = (session.line_items?.data ?? []).map((li) => ({ description: li.description ?? "", amountCents: li.amount_total ?? 0 }));
+      const split = splitCheckoutAmount(session.amount_total ?? 0, session.metadata);
+      totalCents = split.totalCents;
+      subtotalCents = split.subtotalCents;
+      feeCents = split.processingFeeCents;
+      items = (session.line_items?.data ?? []).filter((li) => !isProcessingFeeLine(li.description)).map((li) => ({ description: li.description ?? "", amountCents: li.amount_total ?? 0 }));
     } catch {
       notFound = true;
     }
@@ -89,6 +95,18 @@ export default async function StoreConfirmationPage({
                 </li>
               ))}
             </ul>
+            {feeCents > 0 && (
+              <div style={{ borderTop: "1px solid rgba(245,246,250,.14)", paddingTop: 12, marginBottom: 10 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, color: "rgba(245,246,250,.6)", marginTop: 0 }}>
+                <span>Subtotal</span>
+                <span>{`$${(subtotalCents / 100).toFixed(2)}`}</span>
+              </div>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, color: "rgba(245,246,250,.6)", marginTop: 4 }}>
+                <span>Processing fee</span>
+                <span>{`$${(feeCents / 100).toFixed(2)}`}</span>
+              </div>
+              </div>
+            )}
             {totalCents !== null && (
               <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid rgba(245,246,250,.14)", paddingTop: 14 }}>
                 <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)" }}>Paid</span>

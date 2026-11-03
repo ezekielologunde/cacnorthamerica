@@ -45,18 +45,36 @@ export const SITE = {
 export const ROUTES: { path: string; priority: number }[] = [
   { path: "/", priority: 1 },
   { path: "/about", priority: 0.8 },
+  { path: "/history", priority: 0.5 },
   { path: "/leadership", priority: 0.7 },
   { path: "/leadership/past", priority: 0.5 },
   { path: "/zones", priority: 0.7 },
   { path: "/ministries", priority: 0.7 },
   { path: "/bible-institute", priority: 0.6 },
   { path: "/statement-of-faith", priority: 0.5 },
+  { path: "/faq", priority: 0.5 },
   { path: "/online", priority: 0.9 },
   { path: "/giving", priority: 0.8 },
   { path: "/store", priority: 0.5 },
   { path: "/watchwords", priority: 0.5 },
-  ...conventionYears.map((cy) => ({ path: cy.href, priority: cy.year === 2026 ? 0.75 : 0.5 })),
+  // Years with a dedicated page and real content (a theme or a registration
+  // link). Archived years point at /archive, listed once below, and the
+  // 2028+ placeholders have nothing to index yet.
+  ...conventionYears
+    .filter((cy) => cy.href !== "/archive" && (cy.theme || cy.registrationUrl))
+    .map((cy) => ({ path: cy.href, priority: cy.year === 2026 ? 0.75 : 0.9 })),
+  // On-site registration for any year that has it (adult form + youth form).
+  ...conventionYears.flatMap((cy) =>
+    cy.registrationUrl && !/^https?:\/\//.test(cy.registrationUrl)
+      ? [
+          { path: cy.registrationUrl, priority: 0.9 },
+          { path: `${cy.registrationUrl}/youth`, priority: 0.8 },
+        ]
+      : []
+  ),
   { path: "/events/pilgrimage-2026", priority: 0.7 },
+  { path: "/events/beyond-the-swipe-2026", priority: 0.5 },
+  { path: "/events/hope-for-all-summit-2026", priority: 0.5 },
   { path: "/events/cacna-50th-anniversary-2026", priority: 0.6 },
   { path: "/events/ministers-retreat-2027", priority: 0.6 },
   { path: "/events/beyond-the-swipe-2026", priority: 0.5 },
@@ -81,6 +99,7 @@ export const ROUTES: { path: string; priority: number }[] = [
   { path: "/contact", priority: 0.9 },
   { path: "/privacy", priority: 0.3 },
   { path: "/terms", priority: 0.3 },
+  { path: "/accessibility", priority: 0.3 },
   { path: "/refunds", priority: 0.3 },
 ];
 

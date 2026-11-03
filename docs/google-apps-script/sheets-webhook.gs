@@ -29,7 +29,13 @@
  * are also created automatically from whatever fields a submission sends,
  * and grow if a later submission includes a field the tab hasn't seen
  * before (the Contact form does this: membership inquiries send a few
- * extra fields general inquiries don't).
+ * extra fields general inquiries don't). A new column goes just before a
+ * trailing "Check-in Code" column, so that column stays last; on any other
+ * tab it is added at the far right.
+ *
+ * Re-paste this into the live Apps Script project (Extensions > Apps Script)
+ * and redeploy a new version for it to take effect; until then, add the
+ * 'Zelle Reference' header by hand before 'Check-in Code'.
  */
 
 function doPost(e) {
@@ -78,8 +84,16 @@ function appendRow(sheet, data) {
     return headers.indexOf(k) === -1;
   });
   if (newKeys.length > 0) {
-    sheet.getRange(1, headers.length + 1, 1, newKeys.length).setValues([newKeys.map(plainText)]);
-    headers = headers.concat(newKeys);
+    var last = headers.length;
+    if (headers[last - 1] === "Check-in Code") {
+      // Keep a trailing "Check-in Code" last: new columns go just before it.
+      sheet.insertColumnsBefore(last, newKeys.length);
+      sheet.getRange(1, last, 1, newKeys.length).setValues([newKeys.map(plainText)]);
+      headers = headers.slice(0, last - 1).concat(newKeys, ["Check-in Code"]);
+    } else {
+      sheet.getRange(1, last + 1, 1, newKeys.length).setValues([newKeys.map(plainText)]);
+      headers = headers.concat(newKeys);
+    }
   }
 
   var row = headers.map(function (h) {

@@ -2,6 +2,7 @@
 
 import { useState, type CSSProperties, type FormEvent } from "react";
 import type { GivingCampaign } from "@/lib/giving";
+import { FeeBreakdown } from "@/components/checkout/FeeBreakdown";
 
 const PRESET_AMOUNTS = [25, 50, 100, 250];
 
@@ -117,7 +118,13 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
               type="number" min="1" step="1" inputMode="decimal" aria-label="Custom amount in dollars"
               placeholder="Or enter a custom amount ($)"
               value={customAmount}
-              onChange={(e) => { setCustomAmount(e.target.value); setAmount(null); }}
+              onChange={(e) => {
+                const v = e.target.value;
+                setCustomAmount(v);
+                // Clearing the field falls back to the default preset instead of leaving no amount.
+                // A half-typed entry like "-" also reads as "", so only an empty field restores it.
+                setAmount(v.trim() === "" && !e.target.validity.badInput ? PRESET_AMOUNTS[1] : null);
+              }}
             />
           </div>
 
@@ -129,6 +136,12 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
             <label htmlFor="give-email" style={labelStyle}>Email <span style={{ color: "var(--gold)" }}>*</span></label>
             <input id="give-email" inputMode="email" className="field-input on-dark" style={inputStyle} type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} required autoComplete="email" />
           </div>
+
+          {amountCents ? (
+            <div style={{ marginBottom: 18 }}>
+              <FeeBreakdown subtotalCents={amountCents} subtotalLabel="Gift" tone="dark" />
+            </div>
+          ) : null}
 
           {status === "error" && errorMessage && (
             <p role="alert" style={{ color: "#FF9E9E", fontWeight: 600, fontSize: 14, marginBottom: 14 }}>{errorMessage}</p>

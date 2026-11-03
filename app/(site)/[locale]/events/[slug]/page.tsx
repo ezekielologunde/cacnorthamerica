@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   if (!cy) return {};
   return {
     title: `CACNA ${cy.year} Annual Convention — Christ Apostolic Church North America`,
-    description: `Save the date: the CACNA ${cy.year} National Convention runs ${dateRangeLabel(cy)} at ${CONVENTION_VENUE}. Full schedule and registration details are announced closer to the date.`,
+    description: `Save the date: the CACNA ${cy.year} National Convention runs ${dateRangeLabel(cy)} at ${CONVENTION_VENUE}. ${cy.registrationUrl ? "Registration is open." : "Full schedule and registration details are announced closer to the date."}`,
     alternates: { canonical: `${SITE_URL}/events/cacna-${cy.year}` },
   };
 }

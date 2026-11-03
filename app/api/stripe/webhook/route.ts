@@ -6,6 +6,11 @@ import { sendRegistrationConfirmationEmail } from "@/lib/registrationEmail";
 import { sendStoreOrderConfirmationEmail } from "@/lib/storeOrderEmail";
 import { sendGivingConfirmationEmail } from "@/lib/givingEmail";
 import { SITE_URL } from "@/lib/site";
+import { splitCheckoutAmount, isProcessingFeeLine } from "@/lib/processingFee";
+import { conventionYears } from "@/lib/conventions";
+import { adultSheetExtras, youthSheetName, youthSheetRows } from "@/lib/youthRegistration";
+import { checkinCodesFor, checkinCodeSheetCell } from "@/lib/checkinCode";
+import { recordCheckinPeople } from "@/lib/checkinStore";
 
 // checkout.session.completed also fires for delayed methods (ACH, etc.)
 // before the money has moved; only these statuses mean the checkout is
@@ -34,7 +39,10 @@ const SETTLED_PAYMENT_STATUSES = new Set(["paid", "no_payment_required"]);
 const handledSessions = new Set<string>();
 /** Settles (never rejects) when the in-flight delivery for the key ends. */
 const inFlightSessions = new Map<string, Promise<void>>();
-type RecordStep = "sheet" | "email";
+// A Youth & Child registration writes one row per person, each its own step
+// (`sheet-${i}`), so a retry after a partial failure appends only the rows
+// that are still missing.
+type RecordStep = "sheet" | "email" | `sheet-${number}`;
 const completedSteps = new Map<string, Set<RecordStep>>();
 const MAX_TRACKED_SESSIONS = 1000;
 
@@ -79,9 +87,19 @@ export async function POST(request: Request) {
   const signature = request.headers.get("stripe-signature") ?? "";
   const rawBody = await request.text();
 
+  // A missing secret is our misconfiguration, not a forged request: answer 500
+  // (Stripe retries) and log it, instead of the 400 a bad signature gets.
+  let webhookSecret: string;
+  try {
+    webhookSecret = requireEnv("STRIPE_WEBHOOK_SECRET");
+  } catch (err) {
+    console.error("[stripe webhook]", err);
+    return NextResponse.json({ error: "Webhook not configured" }, { status: 500 });
+  }
+
   let event;
   try {
-    event = stripe.webhooks.constructEvent(rawBody, signature, requireEnv("STRIPE_WEBHOOK_SECRET"));
+    event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
   } catch {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
@@ -152,8 +170,15 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
 
   try {
     const contactEmail = full.customer_details?.email ?? full.customer_email ?? "";
-    const totalDollars = `$${((full.amount_total ?? 0) / 100).toFixed(2)}`;
-    const lineDescriptions = (full.line_items?.data ?? []).map((li) => li.description ?? "");
+    // "Total" stays the subtotal (registration/order/gift amount); the
+    // processing fee and the amount actually charged get their own columns.
+    const { subtotalCents, processingFeeCents, totalCents } = splitCheckoutAmount(full.amount_total ?? 0, metadata);
+    const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
+    const totalDollars = dollars(subtotalCents);
+    const feeColumns = { "Processing Fee": dollars(processingFeeCents), "Amount Charged": dollars(totalCents) };
+    const feeLabels = processingFeeCents > 0 ? { feeLabel: dollars(processingFeeCents), chargedLabel: dollars(totalCents) } : {};
+    const realLines = (full.line_items?.data ?? []).filter((li) => !isProcessingFeeLine(li.description));
+    const lineDescriptions = realLines.map((li) => li.description ?? "");
 
     if (kind === "registration") {
       // The full registration -- including free registrants Stripe never
@@ -164,7 +189,15 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
       const encoded = unchunkFromMetadata(metadata, "d");
       const summary: RegistrationSummary | null = encoded ? decodeSummary(encoded) : null;
 
-      sheetOk = await runStep(sessionId, "sheet", () => logToSheetChecked(`Registration — CACNA ${summary?.year ?? metadata?.convention_year ?? ""}`, {
+      if (summary?.youth) {
+        // In order, stopping at the first failure so a retry resumes there.
+        const startIso = conventionYears.find((cy) => cy.year === summary.year)?.startIso;
+        const rows = youthSheetRows(summary, { stripeSession: sessionId, status: "paid", startIso, contactEmail, feeColumns, checkinCodes: checkinCodesFor(summary) });
+        for (const [i, row] of rows.entries()) {
+          sheetOk = await runStep(sessionId, `sheet-${i}`, () => logToSheetChecked(youthSheetName(summary.year), row));
+          if (!sheetOk) break;
+        }
+      } else sheetOk = await runStep(sessionId, "sheet", () => logToSheetChecked(`Registration — CACNA ${summary?.year ?? metadata?.convention_year ?? ""}`, {
         "Registration Type": summary?.registrationType ?? "",
         "Church Name": summary?.churchName ?? "",
         "Contact Name": summary?.contactName ?? "",
@@ -174,8 +207,24 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
           ? summary.registrants.map((r) => `${r.n} (${r.c})`).join("; ")
           : lineDescriptions.join("; "),
         "Total": totalDollars,
+        ...feeColumns,
         "Stripe Session": sessionId,
+        // New columns go before "Check-in Code" so it stays last; blank in
+        // the no-summary fallback.
+        ...(summary
+          ? adultSheetExtras(summary, conventionYears.find((cy) => cy.year === summary.year)?.startIso)
+          : { "DCC / Zone": "", "Meals": "", "Allergies": "" }),
+        // "Name: CODE" pairs in "Registrants" order; blank in the no-summary
+        // fallback (no ref).
+        "Check-in Code": summary ? checkinCodeSheetCell(summary) : "",
       }));
+
+      // Check-in lookup rows (lib/checkinStore.ts), once the sheet has the
+      // registration. Best effort and idempotent: never throws, never changes
+      // sheetOk / emailOk, and a retry inserts nothing new.
+      if (summary && sheetOk) {
+        await recordCheckinPeople(summary, { paymentStatus: "paid", stripeSession: sessionId, contactEmail });
+      }
 
       // Stripe's own customer_details email is more authoritative than
       // whatever the registrant originally typed into the form (matches
@@ -188,11 +237,11 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
         if (emailTo) {
           const confirmationUrl = `${SITE_URL}/events/cacna-${summary.year}/register/confirmation?session_id=${sessionId}`;
           emailOk = await runStep(sessionId, "email", () =>
-            sendRegistrationConfirmationEmail({ ...summary, contactEmail: emailTo }, confirmationUrl, true, idempotencyKey));
+            sendRegistrationConfirmationEmail({ ...summary, contactEmail: emailTo }, confirmationUrl, true, idempotencyKey, processingFeeCents));
         }
       }
     } else if (kind === "store_order") {
-      const itemsSummary = (full.line_items?.data ?? [])
+      const itemsSummary = realLines
         .map((li) => `${li.description ?? ""} × ${li.quantity ?? 1}`)
         .join("; ");
 
@@ -207,14 +256,16 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
         "Ship To": shippingAddress,
         "Items": itemsSummary,
         "Total": totalDollars,
+        ...feeColumns,
         "Stripe Session": sessionId,
       }));
 
       emailOk = await runStep(sessionId, "email", () => sendStoreOrderConfirmationEmail({
         contactName: metadata?.contact_name ?? "",
         contactEmail,
-        items: (full.line_items?.data ?? []).map((li) => `${li.description ?? ""} × ${li.quantity ?? 1}`),
+        items: realLines.map((li) => `${li.description ?? ""} × ${li.quantity ?? 1}`),
         totalLabel: totalDollars,
+        ...feeLabels,
         shippingAddress,
         idempotencyKey,
       }));
@@ -226,6 +277,7 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
         "Contact Name": metadata?.contact_name ?? "",
         "Contact Email": contactEmail,
         "Total": totalDollars,
+        ...feeColumns,
         "Stripe Session": sessionId,
       }));
 
@@ -234,6 +286,7 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
         contactEmail,
         campaignTitle,
         totalLabel: totalDollars,
+        ...feeLabels,
         idempotencyKey,
       }));
     } else {

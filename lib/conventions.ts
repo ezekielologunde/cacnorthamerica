@@ -241,7 +241,7 @@ export function conventionChurchEvent(cy: ConventionYear): ConventionChurchEvent
     title: `CACNA ${cy.year} Annual Convention`,
     desc: cy.theme
       ? `Christ Apostolic Church North America Annual Convention — theme “${cy.theme}.” Six days of worship, teaching, and family at ${CONVENTION_VENUE}.`
-      : `Christ Apostolic Church North America Annual Convention — six days of worship, teaching, and family at ${CONVENTION_VENUE}. Registration details announced closer to the date.`,
+      : `Christ Apostolic Church North America Annual Convention — six days of worship, teaching, and family at ${CONVENTION_VENUE}.${cy.registrationUrl ? " Registration is open." : " Registration details announced closer to the date."}`,
     dateLabel: dateRangeLabel(cy), timeLabel: "All week", month: "JUL", day: startDay,
     startLocal: `${cy.startIso.replace(/-/g, "")}T180000`, endLocal: `${cy.endIso.replace(/-/g, "")}T220000`,
     href: cy.href, navLabel: `CACNA ${cy.year}`,

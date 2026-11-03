@@ -32,12 +32,13 @@ const sections: LegalSection[] = [
       <>
         <p style={p}>
           Registration fees are set by registrant category and are shown on the registration page before you pay.
-          Payment is taken through Stripe&apos;s secure checkout. A payment processing fee, shown before you pay,
-          may be added.
+          You can pay by Zelle or by card through Stripe&apos;s secure checkout. A processing fee is added to card
+          payments at checkout and shown before you pay; there is no processing fee on Zelle.
         </p>
         <p style={{ margin: 0 }}>
-          Free or complimentary registrations are not available through the website. If you believe you qualify
-          for one, contact the committee at <MailLink address={SITE.email} />.
+          Registration is free for children and youth ages 1&ndash;19, who register on the Youth &amp; Child form.
+          No other free or complimentary registrations are available through the website. If you believe you
+          qualify for one, contact the committee at <MailLink address={SITE.email} />.
         </p>
       </>
     ),
@@ -46,7 +47,7 @@ const sections: LegalSection[] = [
     heading: "Store orders",
     body: (
       <p style={{ margin: 0 }}>
-        Store prices are shown before you check out, and payment is taken through Stripe. We ship to the addresses
+        Store prices are shown before you check out, and payment is taken through Stripe. A payment processing fee is added at checkout and shown before you pay. We ship to the addresses
         you give us at checkout. Items and availability may change without notice.
       </p>
     ),
@@ -55,7 +56,7 @@ const sections: LegalSection[] = [
     heading: "Giving",
     body: (
       <p style={{ margin: 0 }}>
-        Gifts and donations are voluntary. Online gifts are processed by Stripe, and you will receive an email
+        Gifts and donations are voluntary. Online gifts are processed by Stripe; a payment processing fee is added at checkout, shown before you pay, and kept separate from your gift. You will receive an email
         confirmation of your gift. For other ways to give, see the <Link href="/giving" style={link}>Giving page</Link>.
       </p>
     ),

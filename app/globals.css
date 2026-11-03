@@ -45,6 +45,15 @@
 
   html {
     scroll-behavior: auto; /* Lenis handles smooth scrolling */
+    /* Reserve the scrollbar's width so locking scroll (mobile menu, modals)
+       doesn't shift the page and the fixed header sideways. */
+    scrollbar-gutter: stable;
+  }
+
+  /* Anchored targets land below the fixed header (bar + announcement strip)
+     instead of under it. Per-section inline scrollMarginTop still wins. */
+  [id] {
+    scroll-margin-top: calc(var(--bar-h, 0px) + 88px);
   }
 
   body {
@@ -189,7 +198,10 @@ html.lenis body { height: auto; }
  * cleanly, so it now takes over earlier instead of the bar clipping. */
 .nav-desktop { display: flex; }
 .nav-hbg     { display: none; flex-direction: column; }
-@media (max-width: 1200px) {
+/* Measured 2026-11-02: logo (252px) + full desktop row (1066px) + bar padding
+   (128px) + a Windows scrollbar (~17px) needs ~1465px; below that the row ran
+   off the right edge and hid the Register CTA. */
+@media (max-width: 1480px) {
   .nav-desktop { display: none; }
   .nav-hbg     { display: flex; }
 }
@@ -327,3 +339,10 @@ textarea.reg-input { padding: 12px 14px; }
 .reg-sticky { position: sticky; bottom: 0; z-index: 5; margin: 20px -8px 0; padding: 14px 8px calc(14px + env(safe-area-inset-bottom)); background: color-mix(in srgb, var(--paper) 92%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid var(--line); }
 .reg-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 @media (max-width: 560px) { .reg-row2 { grid-template-columns: 1fr; } }
+.reg-input[aria-invalid="true"] { border-color: var(--red); }
+/* Checkbox rows (meals, guardian confirmation): the whole row is the 48px tap target. */
+.reg-check { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 8px 12px; box-sizing: border-box; border-radius: 12px; border: 1.5px solid var(--line); background: var(--cream); font-size: 15px; font-weight: 600; color: var(--ink); cursor: pointer; line-height: 1.35; }
+.reg-check > input { width: 20px; height: 20px; flex-shrink: 0; margin: 0; accent-color: var(--red); cursor: pointer; }
+.reg-check:has(> input:checked) { border-color: var(--red); background: var(--paper); }
+.reg-check:has(> input[aria-invalid="true"]) { border-color: var(--red); }
+.reg-meals { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap: 8px; }

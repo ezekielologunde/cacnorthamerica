@@ -1,12 +1,21 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type CSSProperties, type FormEvent } from "react";
+import Link from "next/link";
+import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { FORM_HEADER, HONEYPOT_FIELD } from "@/lib/spam";
+import { FeeBreakdown } from "@/components/checkout/FeeBreakdown";
+import { DEFAULT_PAYMENT_METHOD, PaymentMethodChoice, ZelleTotal, paidSubmitLabel, type PaymentMethod } from "@/components/register/PaymentMethodChoice";
+import { MAX_ALLERGIES_LENGTH, MEAL_SLOTS, mealSlotLabel, type MealSlot } from "@/lib/youthRegistration";
 
 export type RegistrantCategory = "adult" | "young_adult" | "child";
-type RegistrantRow = { firstName: string; lastName: string; category: RegistrantCategory | "" };
+// Adults (30+) only: everyone under 30 registers on the Youth & Child form
+// (YouthRegisterForm), so every row here is the "adult" category.
+// Individual mode also asks each person's meals (an explicit choice, as on
+// the youth form) and allergy notes; group mode is a names-only list.
+type RegistrantRow = { firstName: string; lastName: string; meals: MealSlot[]; noMeals: boolean; allergies: string };
+const emptyRow = (): RegistrantRow => ({ firstName: "", lastName: "", meals: [], noMeals: false, allergies: "" });
 type Mode = "individual" | "group";
 
 // 16px text stops iOS Safari zooming the page on focus; 48px height is a
@@ -37,21 +46,24 @@ function StepHeading({ n, title }: { n: number; title: string }) {
   );
 }
 
-export function RegisterForm({ year, priceMap }: { year: number; priceMap: Partial<Record<RegistrantCategory, number>> }) {
+export function RegisterForm({ year, startIso, priceMap }: { year: number; startIso?: string; priceMap: Partial<Record<RegistrantCategory, number>> }) {
   const t = useTranslations("Register");
+  // Meal, allergy and DCC / Zone copy is shared with the youth form.
+  const ty = useTranslations("YouthRegister");
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("individual");
   const [churchName, setChurchName] = useState("");
-  const [registrants, setRegistrants] = useState<RegistrantRow[]>([{ firstName: "", lastName: "", category: "" }]);
+  const [registrants, setRegistrants] = useState<RegistrantRow[]>([emptyRow()]);
   const [bulkNames, setBulkNames] = useState("");
-  const [bulkCategory, setBulkCategory] = useState<RegistrantCategory | "">("");
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
+  const [dccZone, setDccZone] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(DEFAULT_PAYMENT_METHOD);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // After "+ Add" / "Duplicate", jump straight into the new row's name field
+  // After "+ Add", jump straight into the new row's name field
   // so a phone user keeps typing instead of hunting for it.
   const nameRefs = useRef<(HTMLInputElement | null)[]>([]);
   const focusRow = useRef<number | null>(null);
@@ -70,10 +82,7 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
 
   // Individual and Group both support registering any number of people; the
   // only difference between them is whether a church name is collected.
-  const total = useMemo(
-    () => registrants.reduce((sum, r) => sum + (r.category ? priceMap[r.category] ?? 0 : 0), 0),
-    [registrants, priceMap]
-  );
+  const total = registrants.length * (priceMap.adult ?? 0);
 
   function updateRegistrant(index: number, patch: Partial<RegistrantRow>) {
     setRegistrants((current) => current.map((r, i) => (i === index ? { ...r, ...patch } : r)));
@@ -81,17 +90,7 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
 
   function addRegistrant() {
     focusRow.current = registrants.length;
-    setRegistrants((current) => [...current, { firstName: "", lastName: "", category: "" }]);
-  }
-
-  function duplicateRegistrant(index: number) {
-    focusRow.current = index + 1;
-    setRegistrants((current) => {
-      const source = current[index];
-      const copy = [...current];
-      copy.splice(index + 1, 0, { firstName: "", lastName: "", category: source.category });
-      return copy;
-    });
+    setRegistrants((current) => [...current, emptyRow()]);
   }
 
   function removeRegistrant(index: number) {
@@ -99,20 +98,19 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
   }
 
   // Pastes a block of names (one per line) into that many new registrant
-  // rows at once, all set to `bulkCategory` -- built for a church signing up
+  // rows at once -- built for a church signing up
   // a whole busload of members without clicking "+ Add" dozens of times.
   const bulkCount = bulkNames.split("\n").map((n) => n.trim()).filter(Boolean).length;
   function addBulkNames() {
     const names = bulkNames.split("\n").map((n) => n.trim()).filter(Boolean);
     if (names.length === 0) return;
-    if (!bulkCategory) return;
     // "Jane Mary Doe" -> first "Jane Mary", last "Doe"; a single word leaves the
     // last name empty so the row is flagged as required.
     const newRows: RegistrantRow[] = names.map((full) => {
       const parts = full.split(/\s+/);
       const lastName = parts.length > 1 ? parts[parts.length - 1] : "";
       const firstName = parts.length > 1 ? parts.slice(0, -1).join(" ") : parts[0];
-      return { firstName, lastName, category: bulkCategory };
+      return { ...emptyRow(), firstName, lastName };
     });
     setRegistrants((current) =>
       current.length === 1 && current[0].firstName.trim() === "" && current[0].lastName.trim() === "" ? newRows : [...current, ...newRows]
@@ -120,11 +118,18 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
     setBulkNames("");
   }
 
+  function toggleMeal(index: number, slot: MealSlot) {
+    const r = registrants[index];
+    // Picking a meal undoes "No meals needed" -- the two never coexist.
+    updateRegistrant(index, { meals: r.meals.includes(slot) ? r.meals.filter((m) => m !== slot) : [...r.meals, slot], noMeals: false });
+  }
+
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    const missing = registrants.findIndex((r) => !r.category);
-    if (missing !== -1) {
-      setErrorMessage(registrants.length > 1 ? `Choose a category for Person ${missing + 1}.` : "Choose a category from the list.");
+    // Same explicit-choice rule the server enforces (parseMealsAndAllergies).
+    const missingMeals = mode === "individual" ? registrants.findIndex((r) => !r.noMeals && r.meals.length === 0) : -1;
+    if (missingMeals !== -1) {
+      setErrorMessage(`${registrants.length > 1 ? `Person ${missingMeals + 1}` : "This person"}: ${ty("errMeals")}`);
       setStatus("error");
       return;
     }
@@ -138,16 +143,22 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
         headers: { "Content-Type": "application/json", [FORM_HEADER]: "1" },
         body: JSON.stringify({
           [HONEYPOT_FIELD]: typeof honeypot === "string" ? honeypot : "",
+          track: "adult",
+          paymentMethod,
           registrationType: mode,
           churchName: mode === "group" ? churchName : null,
           contactName,
           contactEmail,
           contactPhone,
+          dccZone: dccZone.trim(),
           registrants: registrants.map((r) => ({
             firstName: r.firstName.trim(),
             lastName: r.lastName.trim(),
             fullName: `${r.firstName.trim()} ${r.lastName.trim()}`,
-            category: r.category,
+            category: "adult",
+            ...(mode === "individual"
+              ? { meals: MEAL_SLOTS.filter((m) => r.meals.includes(m)), noMeals: r.noMeals, allergies: r.allergies.trim() }
+              : {}),
           })),
         }),
       });
@@ -170,19 +181,17 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
     }
   }
 
-  const categoryOptions = (
-    <>
-      <option value="" disabled>{t("categoryPlaceholder")}</option>
-      <option value="adult">{t("categoryAdult")}</option>
-      <option value="young_adult">{t("categoryYoungAdult")}</option>
-      <option value="child">{t("categoryChild")}</option>
-    </>
-  );
-
-  const submitLabel = status === "loading" ? t("submitting") : `${t("submit")} — CACNA ${year}`;
+  const submitLabel =
+    status === "loading" ? t("submitting") : total > 0 ? paidSubmitLabel(paymentMethod) : `${t("submit")} — CACNA ${year}`;
 
   return (
     <form onSubmit={handleSubmit}>
+      <p style={{ margin: "0 0 20px", padding: "14px 16px", borderRadius: 14, background: "var(--cream)", borderLeft: "4px solid var(--gold)", fontSize: 15, lineHeight: 1.5, color: "var(--ink)" }}>
+        {t("youthCalloutLead")}{" "}
+        <Link href={`/events/cacna-${year}/register/youth`} style={{ color: "var(--red)", fontWeight: 800, display: "inline-block", padding: "10px 0" }}>
+          {t("youthCalloutLink")}
+        </Link>
+      </p>
       <input type="text" name={HONEYPOT_FIELD} tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }} />
       {/* Two big, equal tabs. */}
       <div role="tablist" aria-label="Registration type" className="reg-seg">
@@ -228,9 +237,6 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
               {registrants.length > 1 ? `Person ${i + 1}` : "Registrant"}
             </span>
             <div style={{ display: "flex", gap: 4 }}>
-              <button type="button" onClick={() => duplicateRegistrant(i)} className="reg-linkbtn" style={{ color: "var(--ink-soft)" }}>
-                Duplicate
-              </button>
               {registrants.length > 1 && (
                 <button type="button" onClick={() => removeRegistrant(i)} className="reg-linkbtn" style={{ color: "var(--red)" }}>
                   {t("removeRegistrant")}
@@ -267,20 +273,42 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
               />
             </label>
           </div>
-          <label style={{ display: "block", marginTop: 12 }}>
-            <span style={labelStyle}>{t("category")} <span style={{ color: "var(--red)" }}>*</span></span>
-            <select
-              className="field-input reg-input"
-              name={`registrant-${i}-category`}
-              style={{ cursor: "pointer" }}
-              value={r.category}
-              onChange={(e) => updateRegistrant(i, { category: e.target.value as RegistrantCategory })}
-              required
-            >
-              {categoryOptions}
-            </select>
-            {!r.category && <span style={hintStyle}>{t("categoryHint")}</span>}
-          </label>
+          {mode === "individual" && (
+            <>
+              <fieldset style={{ border: "none", padding: 0, margin: "16px 0 0", minWidth: 0 }}>
+                <legend style={{ ...labelStyle, padding: 0, marginBottom: 8 }}>
+                  {ty("mealsLegend", { who: r.firstName.trim() || (registrants.length > 1 ? `Person ${i + 1}` : "this person") })} <span style={{ color: "var(--red)" }}>*</span>
+                </legend>
+                <div className="reg-meals">
+                  {MEAL_SLOTS.map((slot) => (
+                    <label key={slot} className="reg-check">
+                      <input type="checkbox" checked={r.meals.includes(slot)} onChange={() => toggleMeal(i, slot)} />
+                      {mealSlotLabel(slot, startIso)}
+                    </label>
+                  ))}
+                </div>
+                <label className="reg-check" style={{ marginTop: 8 }}>
+                  <input
+                    type="checkbox"
+                    checked={r.noMeals}
+                    onChange={() => updateRegistrant(i, { noMeals: !r.noMeals, meals: r.noMeals ? r.meals : [] })}
+                  />
+                  {ty("noMeals")}
+                </label>
+              </fieldset>
+              <label style={{ display: "block", marginTop: 14 }}>
+                <span style={labelStyle}>{ty("allergies")}</span>
+                <textarea
+                  className="field-input reg-input"
+                  style={{ minHeight: 72, resize: "vertical" }}
+                  maxLength={MAX_ALLERGIES_LENGTH}
+                  value={r.allergies}
+                  onChange={(e) => updateRegistrant(i, { allergies: e.target.value })}
+                />
+                <span style={hintStyle}>{ty("allergiesHint", { count: r.allergies.length, max: MAX_ALLERGIES_LENGTH })}</span>
+              </label>
+            </>
+          )}
         </div>
       ))}
 
@@ -306,24 +334,15 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
               />
             </label>
             <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10, marginTop: 10 }}>
-              <select
-                aria-label="Category for pasted names"
-                className="field-input reg-input"
-                style={{ width: "auto", flex: "1 1 160px", cursor: "pointer" }}
-                value={bulkCategory}
-                onChange={(e) => setBulkCategory(e.target.value as RegistrantCategory | "")}
-              >
-                {categoryOptions}
-              </select>
               <button
                 type="button"
                 onClick={addBulkNames}
-                disabled={bulkCount === 0 || !bulkCategory}
+                disabled={bulkCount === 0}
                 className="press"
                 style={{
                   flex: "1 1 140px", minHeight: 48, background: "var(--ink)", color: "#fff", fontWeight: 700, fontSize: 14.5,
                   padding: "0 18px", borderRadius: 999, border: "none",
-                  cursor: bulkCount === 0 || !bulkCategory ? "not-allowed" : "pointer", opacity: bulkCount === 0 || !bulkCategory ? 0.5 : 1,
+                  cursor: bulkCount === 0 ? "not-allowed" : "pointer", opacity: bulkCount === 0 ? 0.5 : 1,
                 }}
               >
                 + Add {bulkCount || ""} {bulkCount === 1 ? "person" : "people"}
@@ -334,7 +353,7 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
 
       <StepHeading n={2} title="Your contact details" />
       <p style={{ margin: "-6px 0 14px", fontSize: 13.5, color: "var(--ink-soft)", lineHeight: 1.5 }}>
-        We email your confirmation and QR code here.
+        We email your confirmation and check-in codes here.
       </p>
 
       <label style={{ display: "block", marginBottom: 14 }}>
@@ -368,6 +387,19 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
         />
       </label>
       <label style={{ display: "block", marginBottom: 14 }}>
+        <span style={labelStyle}>{ty("dccZone")} <span style={{ color: "var(--red)" }}>*</span></span>
+        <input
+          className="field-input reg-input"
+          name="dcc-zone"
+          value={dccZone}
+          onChange={(e) => setDccZone(e.target.value)}
+          required
+          autoComplete="off"
+          autoCapitalize="words"
+          enterKeyHint="next"
+        />
+      </label>
+      <label style={{ display: "block", marginBottom: 14 }}>
         <span style={labelStyle}>{t("contactPhone")}</span>
         <input
           className="field-input reg-input"
@@ -382,6 +414,10 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
         <span style={hintStyle}>Only used if we need to reach you about your registration.</span>
       </label>
 
+      {total > 0 && (
+        <PaymentMethodChoice name="payment-method" value={paymentMethod} onChange={setPaymentMethod} legendStyle={labelStyle} />
+      )}
+
       {status === "error" && errorMessage && (
         <p ref={errorRef} role="alert" style={{ color: "var(--red)", fontWeight: 700, fontSize: 14.5, margin: "4px 0 12px", padding: "12px 14px", borderRadius: 12, background: "rgba(200,30,58,.08)" }}>
           {errorMessage}
@@ -391,15 +427,23 @@ export function RegisterForm({ year, priceMap }: { year: number; priceMap: Parti
       {/* Sticky on phones: the running total and the pay button stay in thumb
           reach however long the list of people gets. The total is computed
           from the same tiers the server re-prices with, so what is shown here
-          is what Stripe will charge. */}
+          is what Stripe will charge, plus the disclosed processing fee (or,
+          paying by Zelle, the subtotal with no fee). */}
       <div className="reg-sticky">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
-          <span style={{ fontSize: 13.5, fontWeight: 700, color: "var(--ink-soft)" }} aria-live="polite">
-            {registrants.length} {registrants.length === 1 ? "registrant" : "registrants"}
-          </span>
-          <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--ink)" }}>
-            {formatPrice(total)}
-          </span>
+        <span style={{ display: "block", fontSize: 13.5, fontWeight: 700, color: "var(--ink-soft)", marginBottom: 6 }} aria-live="polite">
+          {registrants.length} {registrants.length === 1 ? "registrant" : "registrants"}
+        </span>
+        <div style={{ marginBottom: 10 }}>
+          {total > 0 && paymentMethod === "zelle" ? (
+            <ZelleTotal subtotalCents={total} />
+          ) : total > 0 ? (
+            <FeeBreakdown subtotalCents={total} />
+          ) : (
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+              <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", color: "var(--ink-soft)" }}>Total</span>
+              <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, color: "var(--ink)" }}>{formatPrice(0)}</span>
+            </div>
+          )}
         </div>
         <button
           type="submit"
