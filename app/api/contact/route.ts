@@ -22,7 +22,7 @@ function buildHtml(rows: [string, string][]): string {
   return `<!DOCTYPE html><html><body style="font-family:sans-serif;max-width:640px;margin:40px auto;background:#f9f8f6;border-radius:12px;overflow:hidden">
 <div style="background:#12141E;padding:24px 32px"><p style="margin:0;font-size:18px;font-weight:700;color:#fff">CACNA</p></div>
 <table style="width:100%;border-collapse:collapse;background:#fff">${trs}</table>
-<p style="padding:16px 32px;font-size:12px;color:#888;margin:0">Sent via cacnorthamerica.com</p>
+<p style="padding:16px 32px;font-size:12px;color:#888;margin:0">Sent via cacna.org</p>
 </body></html>`;
 }
 
