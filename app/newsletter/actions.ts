@@ -7,7 +7,7 @@ import { clientIp, rateLimit } from "@/lib/rateLimit";
 import { HONEYPOT_FIELD } from "@/lib/spam";
 import { SITE_URL } from "@/lib/site";
 import { logToSheet } from "@/lib/sheetsWebhook";
-import { sender } from "@/lib/email";
+import { sender, emailLogoHtml } from "@/lib/email";
 
 export type SubscribeState = { ok: boolean; message: string } | null;
 
@@ -20,6 +20,7 @@ function welcomeHtml(): string {
 <body style="margin:0;padding:0;background:#F9F8F6;font-family:Georgia,serif">
   <div style="max-width:600px;margin:40px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(18,20,30,.10)">
     <div style="background:#12141E;padding:36px 40px;text-align:center">
+      ${emailLogoHtml()}
       <p style="margin:0 0 10px;font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,246,250,.45)">CACNA</p>
       <h1 style="margin:0;font-size:34px;font-weight:800;color:#fff;letter-spacing:-0.5px;line-height:1.1">You're in the family.</h1>
     </div>
