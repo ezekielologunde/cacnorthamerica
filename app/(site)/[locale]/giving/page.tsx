@@ -77,6 +77,9 @@ export default async function GivingPage({
             <p style={{ fontSize: "clamp(16px,1.8vw,19px)", color: "var(--ink-soft)", lineHeight: 1.55, maxWidth: 580, margin: "0 auto" }}>
               Gifts support CACNA&apos;s ministries and the Annual Convention.
             </p>
+            <p style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.6, maxWidth: 580, margin: "14px auto 0" }}>
+              CACNA is a 501(c)(3) church (EIN 27-2632984). Gifts made to CACNA may be tax deductible in the U.S. as the law allows; please check with your tax adviser. A gift sent straight to a bank account in Nigeria is not made through CACNA, so ask us before assuming a U.S. receipt.
+            </p>
           </Reveal>
 
         </div>
