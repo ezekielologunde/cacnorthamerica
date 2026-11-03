@@ -57,8 +57,24 @@ export const ROUTES: { path: string; priority: number }[] = [
   { path: "/giving", priority: 0.8 },
   { path: "/store", priority: 0.5 },
   { path: "/watchwords", priority: 0.5 },
-  ...conventionYears.map((cy) => ({ path: cy.href, priority: cy.year === 2026 ? 0.75 : 0.5 })),
+  // Years with a dedicated page and real content (a theme or a registration
+  // link). Archived years point at /archive, listed once below, and the
+  // 2028+ placeholders have nothing to index yet.
+  ...conventionYears
+    .filter((cy) => cy.href !== "/archive" && (cy.theme || cy.registrationUrl))
+    .map((cy) => ({ path: cy.href, priority: cy.year === 2026 ? 0.75 : 0.9 })),
+  // On-site registration for any year that has it (adult form + youth form).
+  ...conventionYears.flatMap((cy) =>
+    cy.registrationUrl && !/^https?:\/\//.test(cy.registrationUrl)
+      ? [
+          { path: cy.registrationUrl, priority: 0.9 },
+          { path: `${cy.registrationUrl}/youth`, priority: 0.8 },
+        ]
+      : []
+  ),
   { path: "/events/pilgrimage-2026", priority: 0.7 },
+  { path: "/events/beyond-the-swipe-2026", priority: 0.5 },
+  { path: "/events/hope-for-all-summit-2026", priority: 0.5 },
   { path: "/events/cacna-50th-anniversary-2026", priority: 0.6 },
   { path: "/events/ministers-retreat-2027", priority: 0.6 },
   { path: "/calendar", priority: 0.8 },
