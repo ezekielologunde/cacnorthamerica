@@ -49,7 +49,9 @@ const sections: LegalSection[] = [
         Stripe&apos;s secure checkout page, not on our site. We never see or store your full card number. Stripe
         shares with us the details we need to confirm the payment, such as your name, email, the amount and, for
         store orders, your shipping address. If you give from a bank account, Stripe may ask you to log in to your
-        bank to confirm the account; we never see your bank login or your full account number.
+        bank to confirm the account; we never see your bank login or your full account number. If you choose to give
+        by Zelle, we keep the name, email, amount and campaign you enter, along with the reference we show you, so we
+        can match your payment; the payment itself happens in your own bank, and we never see your bank login.
       </p>
     ),
   },

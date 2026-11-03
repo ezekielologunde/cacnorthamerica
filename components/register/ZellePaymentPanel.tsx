@@ -11,9 +11,12 @@ import { CopiedAnnouncer, CopyButton, useCopied } from "@/components/register/Co
 
 const zelle = paymentOptions.find((o) => o.kind === "zelle");
 
-export function ZellePaymentPanel({ amountDueCents, zelleRef }: { amountDueCents: number; zelleRef: string }) {
+/** `recipient` overrides the registration address, for a gift to a campaign
+ *  that has its own Zelle (lib/giving.ts). */
+export function ZellePaymentPanel({ amountDueCents, zelleRef, recipient }: { amountDueCents: number; zelleRef: string; recipient?: string }) {
   const { copied, copy } = useCopied();
-  if (!zelle) return null;
+  const sendTo = recipient ?? zelle?.copyValue ?? zelle?.detail;
+  if (!sendTo) return null;
   const soft = "rgba(245,246,250,.7)";
   const step = { fontSize: 11.5, fontWeight: 700, letterSpacing: "1.2px", textTransform: "uppercase", color: "var(--gold)", margin: "0 0 4px" } as const;
 
@@ -40,10 +43,8 @@ export function ZellePaymentPanel({ amountDueCents, zelleRef }: { amountDueCents
 
       <div style={{ borderTop: "1px solid rgba(245,246,250,.14)", paddingTop: 14 }}>
         <p style={step}>1. Send it by Zelle to</p>
-        <p style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#fff", overflowWrap: "anywhere" }}>{zelle.copyValue ?? zelle.detail}</p>
-        {zelle.copyValue && (
-          <CopyButton dark label={zelle.copyLabel ?? "Copy"} isCopied={copied === "zelle"} onCopy={() => copy("zelle", zelle.copyValue!)} />
-        )}
+        <p style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#fff", overflowWrap: "anywhere" }}>{sendTo}</p>
+        <CopyButton dark label={recipient ? "Copy address" : zelle?.copyLabel ?? "Copy"} isCopied={copied === "zelle"} onCopy={() => copy("zelle", recipient ?? zelle?.copyValue ?? sendTo)} />
       </div>
 
       <div style={{ borderTop: "1px solid rgba(245,246,250,.14)", paddingTop: 14, marginTop: 16 }}>
