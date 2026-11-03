@@ -5,11 +5,24 @@
 // installed (see package.json), so this stays a plain template-literal
 // builder like everything else in this file's family.
 
+import { SITE_URL } from "@/lib/site";
+
 // Each kind of mail goes out from its own address on the Resend-verified
 // cacnorthamerica.com domain, with replies routed to a matching mailbox
 // (forwarded to the team's Gmail). Resend can send from any address on a
 // verified domain, but the reply-to mailbox must exist or replies bounce.
 const DOMAIN = "cacnorthamerica.com";
+
+// The church logo in every designed email's header. A small (176x151, ~13 KB)
+// JPEG hosted on the site (public/email/cac-logo.jpg), not the 181 KB site
+// logo: Gmail blocks data: images, so it has to be a normal https URL, and a
+// small file keeps the mail light. Shown at 88px wide (2x for sharp screens)
+// on a white badge so the dark lettering stays readable on the dark header.
+export const EMAIL_LOGO_URL = `${SITE_URL}/email/cac-logo.jpg`;
+
+export function emailLogoHtml(): string {
+  return `<img src="${EMAIL_LOGO_URL}" width="88" height="76" alt="Christ Apostolic Church North America" style="display:block;margin:0 auto 14px;width:88px;height:76px;border:0;border-radius:14px;background:#fff" />`;
+}
 
 const SENDERS = {
   general: { name: "CACNA", address: `info@${DOMAIN}` },
@@ -50,6 +63,7 @@ export function emailShell(opts: {
   <div style="max-width:560px;margin:0 auto;background:#F5F6FA">
     <div style="height:5px;background:linear-gradient(90deg,#7A1128,#C81E3A,#FDC841)"></div>
     <div style="background:#12141E;padding:30px 32px;text-align:center">
+      ${emailLogoHtml()}
       <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:2.5px;color:#FDC841;text-transform:uppercase">Christ Apostolic Church</p>
       <p style="margin:4px 0 0;font-size:20px;font-weight:700;color:#fff">North America</p>
     </div>
