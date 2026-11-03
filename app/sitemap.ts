@@ -20,9 +20,11 @@ function entry(
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const lastModified = new Date();
+  // No lastModified on static pages: stamping every URL with "now" on each
+  // build teaches crawlers to ignore the field, so only blog posts (which
+  // have a real date) carry one.
   const staticRoutes: MetadataRoute.Sitemap = ROUTES.map(({ path, priority }) =>
-    entry(path, { lastModified, changeFrequency: WEEKLY.has(path) ? "weekly" : "monthly", priority })
+    entry(path, { changeFrequency: WEEKLY.has(path) ? "weekly" : "monthly", priority })
   );
 
   // Static blog posts (source of truth for the current blog)
