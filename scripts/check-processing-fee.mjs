@@ -6,7 +6,7 @@
 // Node 24 strips TypeScript types natively. Exits 1 if any check fails.
 const {
   feeCents, STRIPE_PERCENT_FEE, STRIPE_FIXED_FEE_CENTS, splitCheckoutAmount,
-  bankFeeCents, feeCentsFor, feeLineItems, feeMetadataFor, BANK_FEE_CAP_CENTS, BANK_VERIFICATION_FEE_CENTS, BANK_MAX_CENTS,
+  bankFeeCents, feeCentsFor, feeLineItems, feeMetadataFor, BANK_PERCENT_FEE, BANK_FEE_CAP_CENTS, BANK_VERIFICATION_FEE_CENTS, BANK_MAX_CENTS,
 } = await import("../lib/processingFee.ts");
 
 let failures = 0;
@@ -40,7 +40,10 @@ check("no bank fee on a $0 or negative subtotal", bankFeeCents(0) === 0 && bankF
 for (const subtotal of [100, 2500, 10000, 30000, 120000, BANK_MAX_CENTS]) {
   const fee = bankFeeCents(subtotal);
   check(`bank fee for ${subtotal} is a non-negative whole number (${fee})`, Number.isInteger(fee) && fee >= 0);
-  check(`bank fee for ${subtotal} never exceeds the card fee`, fee <= feeCents(subtotal));
+  // The payer covers Stripe's cost: the church keeps the gift (within a cent), and the payer is not overcharged.
+  const total = subtotal + fee;
+  const stripeCost = Math.min(Math.round(BANK_PERCENT_FEE * total), BANK_FEE_CAP_CENTS) + BANK_VERIFICATION_FEE_CENTS;
+  check(`bank fee for ${subtotal} covers Stripe's cost without overcharging (net ${total - stripeCost})`, total - stripeCost >= subtotal - 1 && total - stripeCost <= subtotal + 2);
   check(`bank fee for ${subtotal} never exceeds Stripe's capped cost`, fee <= BANK_FEE_CAP_CENTS + BANK_VERIFICATION_FEE_CENTS);
 }
 check("a card fee line item matches feeCents", feeLineItems(10000, "card").length === 1 && feeLineItems(10000, "card")[0].price_data.unit_amount === feeCents(10000));

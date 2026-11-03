@@ -46,10 +46,13 @@ export const BANK_MAX_CENTS = 1_000_000;
  *  with the percentage part capped. */
 export function bankFeeCents(subtotalCents: number): number {
   if (!Number.isFinite(subtotalCents) || subtotalCents <= 0) return 0;
-  // TODO(human): decide the bank-gift fee policy and return it in whole cents.
-  // 0 means the church absorbs Stripe's cost (best for encouraging bank gifts);
-  // the pass-through formula above means donors cover it, as with cards.
-  return 0;
+  // Policy: the payer covers Stripe's whole cost, as with cards. Stripe takes
+  // the percentage on the total charged (gift + fee), so gross the fee up. Once
+  // that percentage reaches the cap the fee stops growing, so cap it too.
+  const grossedUp = Math.ceil(
+    (BANK_PERCENT_FEE * subtotalCents + BANK_VERIFICATION_FEE_CENTS) / (1 - BANK_PERCENT_FEE),
+  );
+  return Math.min(grossedUp, BANK_FEE_CAP_CENTS + BANK_VERIFICATION_FEE_CENTS);
 }
 
 /** The fee for a subtotal under the chosen payment method. */
