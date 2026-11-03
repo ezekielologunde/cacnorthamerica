@@ -264,6 +264,7 @@ export function FooterExperience() {
                 ))}
               </ul>
             </nav>
+            <p style={{ margin: 0 }}>{t('taxStatus')}</p>
             <div className="ft-bottom-row">
               <span>{t('copyright')}</span>
               <BackToTop label={t('backToTop')} />
