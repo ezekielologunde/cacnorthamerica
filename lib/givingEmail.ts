@@ -119,12 +119,14 @@ function zelleCommitteeHtml(input: ZelleGiftInput): string {
   });
 }
 
+export type ZelleEmailResult = { donorSent: boolean; committeeSent: boolean };
+
 /** Emails the donor their Zelle instructions and tells the committee to expect
- *  the payment. Never throws. Resolves true when the donor's email was sent,
- *  so the page can say whether to copy the details down now. */
-export async function sendZelleGiftEmails(input: ZelleGiftInput): Promise<boolean> {
+ *  the payment. Never throws. `donorSent` lets the page say whether to copy the
+ *  details down now; `committeeSent` is one of the two records of the pledge. */
+export async function sendZelleGiftEmails(input: ZelleGiftInput): Promise<ZelleEmailResult> {
   const key = process.env.RESEND_API_KEY;
-  if (!key || !input.contactEmail) return false;
+  if (!key || !input.contactEmail) return { donorSent: false, committeeSent: false };
 
   const oneLine = (value: string) => value.replace(/[\r\n]+/g, " ");
   try {
@@ -145,13 +147,10 @@ export async function sendZelleGiftEmails(input: ZelleGiftInput): Promise<boolea
       }),
     ]);
     if (committee.error) console.error("[giving zelle] committee email failed:", committee.error);
-    if (donor.error) {
-      console.error("[giving zelle] donor email failed:", donor.error);
-      return false;
-    }
-    return true;
+    if (donor.error) console.error("[giving zelle] donor email failed:", donor.error);
+    return { donorSent: !donor.error, committeeSent: !committee.error };
   } catch (err) {
     console.error("[giving zelle] email send failed:", err);
-    return false;
+    return { donorSent: false, committeeSent: false };
   }
 }

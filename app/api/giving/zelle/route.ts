@@ -1,20 +1,26 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
-import { FORM_HEADER } from "@/lib/spam";
+import { FORM_HEADER, countLinks } from "@/lib/spam";
 import { GIVING_CAMPAIGNS, zelleRecipientFor } from "@/lib/giving";
-import { validateGiftBasics, type GiftBasics } from "@/lib/givingRequest";
+import { emailLimitKey, validateGiftBasics, type GiftBasics } from "@/lib/givingRequest";
 import { giftZelleReference } from "@/lib/zelleReference";
 import { sendZelleGiftEmails } from "@/lib/givingEmail";
-import { logToSheet } from "@/lib/sheetsWebhook";
+import { logToSheetChecked } from "@/lib/sheetsWebhook";
 
 const HOUR_MS = 60 * 60 * 1000;
+const DAY_MS = 24 * HOUR_MS;
 
 // A Zelle gift has no checkout: the donor sends it from their own bank app.
 // This records the pledge (a sheet row plus an email to the committee), hands
 // back the recipient and a memo reference so the treasurer can match the
 // payment, and emails the same details to the donor. The recipient always
 // comes from lib/giving.ts, never from the request.
+//
+// Every accepted submission sends the donor a mail from the church's own
+// address, so the limits below are the real defence against using this form to
+// mail someone else: per IP, per inbox (normalised, one per day, like
+// registration's Zelle confirmation) and for the route as a whole.
 export async function POST(request: Request) {
   // Only the site's own form sends this header; a bot posting straight to the
   // API usually omits it.
@@ -37,6 +43,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: validationError }, { status: 400 });
   }
   const body = rawBody as GiftBasics;
+  // The name is echoed in the mail the donor gets, so a web address in it would
+  // turn our own email into a link-carrying message to a stranger.
+  if (countLinks([body.contactName]) > 0) {
+    return NextResponse.json({ error: "Please enter your name without a web address" }, { status: 400 });
+  }
   const campaign = GIVING_CAMPAIGNS.find((c) => c.slug === body.campaignSlug)!;
 
   const recipient = zelleRecipientFor(campaign);
@@ -47,11 +58,12 @@ export async function POST(request: Request) {
     );
   }
 
-  // Each submission emails the donor and the committee, so cap it per address
-  // as well, which stops the form being used to mail someone else.
   const contactEmail = body.contactEmail.trim();
-  if (!rateLimit(`giving-zelle:${contactEmail.toLowerCase()}`, 3, HOUR_MS)) {
-    return NextResponse.json({ error: "Too many requests for this email. Please try again later." }, { status: 429 });
+  if (!rateLimit(`giving-zelle:${emailLimitKey(contactEmail)}`, 3, DAY_MS)) {
+    return NextResponse.json({ error: "Too many requests for this email. Please try again tomorrow." }, { status: 429 });
+  }
+  if (!rateLimit("giving-zelle:all", 60, HOUR_MS)) {
+    return NextResponse.json({ error: "Too many requests. Please try again later." }, { status: 429 });
   }
 
   let zelleRef: string;
@@ -65,23 +77,33 @@ export async function POST(request: Request) {
   const contactName = body.contactName.trim();
   const amountLabel = `$${(body.amountCents / 100).toFixed(2)}`;
 
-  logToSheet("Giving Zelle", {
-    "Campaign": campaign.title,
-    "Contact Name": contactName,
-    "Contact Email": contactEmail,
-    "Amount": amountLabel,
-    "Zelle Reference": zelleRef,
-    "Status": "awaiting Zelle (unverified)",
-  });
+  const [sheetOk, emails] = await Promise.all([
+    logToSheetChecked("Giving Zelle", {
+      "Campaign": campaign.name,
+      "Contact Name": contactName,
+      "Contact Email": contactEmail,
+      "Amount": amountLabel,
+      "Zelle Reference": zelleRef,
+      "Status": "awaiting Zelle (unverified)",
+    }),
+    sendZelleGiftEmails({
+      contactName,
+      contactEmail,
+      campaignTitle: campaign.name,
+      amountLabel,
+      recipient,
+      zelleRef,
+    }),
+  ]);
 
-  const emailed = await sendZelleGiftEmails({
-    contactName,
-    contactEmail,
-    campaignTitle: campaign.title,
-    amountLabel,
-    recipient,
-    zelleRef,
-  });
+  // Payments can't be reversed and are matched by reference, so the pledge must
+  // be recorded somewhere the committee will see. If neither record landed,
+  // fail before the donor sends money rather than hand out a reference nobody
+  // can match.
+  if (!sheetOk && !emails.committeeSent) {
+    console.error(`[giving zelle] pledge not recorded: ${zelleRef} ${amountLabel} ${campaign.name} ${contactEmail}`);
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
+  }
 
-  return NextResponse.json({ zelleRef, recipient, amountCents: body.amountCents, emailed });
+  return NextResponse.json({ zelleRef, recipient, amountCents: body.amountCents, emailed: emails.donorSent });
 }

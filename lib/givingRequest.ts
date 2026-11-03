@@ -9,6 +9,16 @@ export const MAX_EMAIL_LENGTH = 254;
 export const MIN_CENTS = 100; // $1
 export const MAX_CENTS = 5_000_000; // $50,000 -- generous ceiling against a typo/abuse, not a real donation cap
 
+/** A key that stays the same across the ways one inbox can be written, so a
+ *  per-address limit can't be dodged with a +tag or (for Gmail) dots. */
+export function emailLimitKey(email: string): string {
+  const [rawLocal = "", rawDomain = ""] = email.trim().toLowerCase().split("@");
+  const domain = rawDomain === "googlemail.com" ? "gmail.com" : rawDomain;
+  let local = rawLocal.split("+")[0];
+  if (domain === "gmail.com") local = local.replace(/\./g, "");
+  return `${local}@${domain}`;
+}
+
 export type GiftBasics = {
   contactName: string;
   contactEmail: string;

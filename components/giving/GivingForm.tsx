@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type CSSProperties, type FormEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
 import { zelleRecipientFor, type GivingCampaign } from "@/lib/giving";
 import { FeeBreakdown } from "@/components/checkout/FeeBreakdown";
 import { ZellePaymentPanel } from "@/components/register/ZellePaymentPanel";
@@ -53,6 +53,21 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [zelleResult, setZelleResult] = useState<ZelleResult | null>(null);
+  const resultHeadingRef = useRef<HTMLHeadingElement>(null);
+  const formHeadingRef = useRef<HTMLHeadingElement>(null);
+  const focusFormAfterReset = useRef(false);
+
+  // The form unmounts when the Zelle details appear (and the other way round),
+  // which would drop focus to the page body; move it to the new heading so
+  // keyboard and screen-reader users land on the change.
+  useEffect(() => {
+    if (zelleResult) {
+      resultHeadingRef.current?.focus();
+    } else if (focusFormAfterReset.current) {
+      focusFormAfterReset.current = false;
+      formHeadingRef.current?.focus();
+    }
+  }, [zelleResult]);
 
   const effectiveDollars = customAmount.trim() !== "" ? Number(customAmount) : amount;
   const amountCents = effectiveDollars && effectiveDollars > 0 ? Math.round(effectiveDollars * 100) : null;
@@ -91,7 +106,7 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
           recipient: data.recipient,
           amountCents: typeof data.amountCents === "number" ? data.amountCents : amountCents,
           emailed: data.emailed === true,
-          campaignTitle: campaign?.title ?? "",
+          campaignTitle: campaign?.name ?? "",
         });
         setStatus("idle");
       } catch {
@@ -131,14 +146,15 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
 
         {zelleResult ? (
           <div>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.4vw,38px)", letterSpacing: "-1px", color: "#fff", margin: "0 0 12px", lineHeight: 1.1 }}>
+            <h2 ref={resultHeadingRef} tabIndex={-1} style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.4vw,38px)", letterSpacing: "-1px", color: "#fff", margin: "0 0 12px", lineHeight: 1.1, outline: "none" }}>
               Now send it by Zelle.
             </h2>
             <p style={{ fontSize: 15, color: "rgba(255,255,255,.78)", lineHeight: 1.6, margin: "0 0 18px" }}>
-              Your gift to {zelleResult.campaignTitle} is complete once you send the payment from your bank app.
+              Your gift to {zelleResult.campaignTitle} isn&rsquo;t made until you send the payment from your bank app.
+              We&rsquo;ll match it to your reference when it arrives.
             </p>
             <ZellePaymentPanel amountDueCents={zelleResult.amountCents} zelleRef={zelleResult.zelleRef} recipient={zelleResult.recipient} />
-            <p role="status" style={{ fontSize: 13.5, color: "rgba(255,255,255,.78)", lineHeight: 1.6, margin: "16px 0 0" }}>
+            <p style={{ fontSize: 13.5, color: "rgba(255,255,255,.78)", lineHeight: 1.6, margin: "16px 0 0" }}>
               Zelle payments can&rsquo;t be reversed, so check the address before you send.{" "}
               {zelleResult.emailed
                 ? "We’ve also emailed these details to you."
@@ -146,7 +162,7 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
             </p>
             <button
               type="button"
-              onClick={() => setZelleResult(null)}
+              onClick={() => { focusFormAfterReset.current = true; setZelleResult(null); }}
               className="press"
               style={{
                 marginTop: 18, minHeight: 48, padding: "0 22px", borderRadius: 999, cursor: "pointer",
@@ -159,7 +175,7 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
           </div>
         ) : (
         <>
-        <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.4vw,38px)", letterSpacing: "-1px", color: "#fff", margin: "0 0 20px", lineHeight: 1.1 }}>
+        <h2 ref={formHeadingRef} tabIndex={-1} style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.4vw,38px)", letterSpacing: "-1px", color: "#fff", margin: "0 0 20px", lineHeight: 1.1, outline: "none" }}>
           Make a gift online.
         </h2>
 
