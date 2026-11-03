@@ -101,6 +101,10 @@ export async function POST(request: Request) {
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
+      // Pinned to card: the processing fee is sized for cards, so a method
+      // with a different cost (bank debit) must not appear here until the fee
+      // follows it.
+      payment_method_types: ["card"],
       line_items: [...lines.map((l) => ({
         price_data: {
           currency: "usd",

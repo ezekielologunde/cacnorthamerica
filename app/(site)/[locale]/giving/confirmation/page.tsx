@@ -28,12 +28,26 @@ export default async function GivingConfirmationPage({
   // abandoned or unpaid session, another kind's session, or no session at
   // all gets the not-found state rather than a receipt.
   let notFound = !sessionId;
+  // A bank gift is complete at checkout but not paid until the debit clears,
+  // about 4 business days later; the webhook records it and sends the receipt
+  // only then.
+  let pending = false;
 
   if (sessionId) {
     try {
       const stripe = getStripeClient();
-      const session = await stripe.checkout.sessions.retrieve(sessionId);
-      if (!isPaidCheckout(session, "giving")) throw new Error("not a paid giving session");
+      const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: ["payment_intent"] });
+      const paid = isPaidCheckout(session, "giving");
+      // Pending only while the debit is genuinely in flight: after a failed
+      // debit the session stays complete and unpaid, and must not promise an
+      // email that will never come.
+      const intent = typeof session.payment_intent === "object" ? session.payment_intent : null;
+      pending = !paid
+        && session.metadata?.kind === "giving"
+        && session.status === "complete"
+        && (session.payment_method_types ?? []).includes("us_bank_account")
+        && intent?.status === "processing";
+      if (!paid && !pending) throw new Error("not a paid giving session");
       contactEmail = session.customer_details?.email ?? session.customer_email ?? null;
       // "Given" is the gift the donor chose; the fee is shown on its own.
       const split = splitCheckoutAmount(session.amount_total ?? 0, session.metadata);
@@ -73,7 +87,9 @@ export default async function GivingConfirmationPage({
           Thank you for your gift!
         </h1>
         <p style={{ fontSize: 15.5, color: "rgba(245,246,250,.65)", maxWidth: 480, margin: "0 auto 32px", lineHeight: 1.7 }}>
-          A confirmation email is on its way.
+          {pending
+            ? "Your bank payment is processing. It usually clears in about 4 business days, and we\u2019ll email you a confirmation when it does."
+            : "A confirmation email is on its way."}
         </p>
 
         {sessionId && (totalCents !== null || campaignTitle) && (
@@ -87,7 +103,7 @@ export default async function GivingConfirmationPage({
             )}
             {totalCents !== null && (
               <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid rgba(245,246,250,.14)", paddingTop: 14 }}>
-                <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)" }}>Given</span>
+                <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)" }}>{pending ? "Pending" : "Given"}</span>
                 <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "#fff" }}>${(totalCents / 100).toFixed(2)}</span>
               </div>
             )}
