@@ -1,5 +1,4 @@
 import "server-only";
-import type { SupabaseClient } from "@supabase/supabase-js";
 import { createServiceClient } from "@/lib/supabase/server";
 import { checkinCodesFor } from "@/lib/checkinCode";
 import { conventionYears } from "@/lib/conventions";
@@ -91,9 +90,7 @@ export async function recordCheckinPeople(
     }
     const rows = checkinRows(summary, opts);
     if (rows.length === 0) return;
-    // types/database.types.ts does not list checkin_people yet, hence the
-    // untyped client.
-    const db = createServiceClient() as unknown as SupabaseClient;
+    const db = createServiceClient();
     const { error } = await db
       .from("checkin_people")
       .upsert(rows, { onConflict: "ref,idx", ignoreDuplicates: true });

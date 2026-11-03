@@ -163,3 +163,21 @@ fails a registration or a webhook. The Google Sheet stays the record staff
 already use; this table is a lookup copy of it. PII: RLS on, no anon access,
 admins read it through a `cacna.is_admin()` select policy. Pinned by
 `node scripts/check-checkin-store.mjs`.
+
+## Staff check-in page (`/admin/check-in`)
+
+`app/admin/(protected)/check-in/` (nav: "Check-in"). Volunteers at the door
+type a name or a 4-character code into a plain GET form (`?q=`, optional
+`?year=`, default `currentOrNextConvention()`), so it works on a phone
+without JavaScript. `lib/checkinSearch.ts` classifies the query: trimmed,
+capped at 60 characters; exactly 4 characters that normalise to a valid
+code also search `code`, and every query searches `full_name` and
+`contact_name` with `ilike` on an escaped `%q%` pattern (`%`, `_`, `\`
+escaped, `*` dropped). Results are merged by id, ordered by name, capped at
+50. Cards show the code, age group, church / DCC, contact, paid / free,
+meals and allergies (highlighted), and flag codes shared within the results.
+`checkInPerson` / `undoCheckIn` call `requireAdmin()` themselves; check-in
+only updates where `checked_in_at is null` (a double tap never overwrites
+who or when), undo clears both columns, then each redirects back to the same
+search. If the table is missing (0015 not applied) the page shows a setup
+notice instead of failing. Pinned by `node scripts/check-checkin-admin.mjs`.

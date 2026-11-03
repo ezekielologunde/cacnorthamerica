@@ -162,6 +162,75 @@ export type Database = {
         }
         Relationships: []
       }
+      checkin_people: {
+        Row: {
+          age: number | null
+          allergies: string | null
+          category: string
+          checked_in_at: string | null
+          checked_in_by: string | null
+          church_name: string | null
+          code: string
+          contact_email: string
+          contact_name: string
+          contact_phone: string | null
+          created_at: string
+          dcc: string | null
+          full_name: string
+          id: string
+          idx: number
+          meals: string | null
+          payment_status: string
+          ref: string
+          stripe_session: string | null
+          year: number
+        }
+        Insert: {
+          age?: number | null
+          allergies?: string | null
+          category: string
+          checked_in_at?: string | null
+          checked_in_by?: string | null
+          church_name?: string | null
+          code: string
+          contact_email: string
+          contact_name: string
+          contact_phone?: string | null
+          created_at?: string
+          dcc?: string | null
+          full_name: string
+          id?: string
+          idx: number
+          meals?: string | null
+          payment_status: string
+          ref: string
+          stripe_session?: string | null
+          year: number
+        }
+        Update: {
+          age?: number | null
+          allergies?: string | null
+          category?: string
+          checked_in_at?: string | null
+          checked_in_by?: string | null
+          church_name?: string | null
+          code?: string
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string | null
+          created_at?: string
+          dcc?: string | null
+          full_name?: string
+          id?: string
+          idx?: number
+          meals?: string | null
+          payment_status?: string
+          ref?: string
+          stripe_session?: string | null
+          year?: number
+        }
+        Relationships: []
+      }
       churches: {
         Row: {
           address: string
