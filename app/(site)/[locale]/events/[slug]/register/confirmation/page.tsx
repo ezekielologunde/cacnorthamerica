@@ -1,12 +1,13 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { CheckCircle2, XCircle } from "lucide-react";
+import { CheckCircle2, Clock, XCircle } from "lucide-react";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { getStripeClient } from "@/lib/stripe";
 import { resolveRegistrationConfirmation } from "@/lib/registrationConfirmation";
 import { PaymentOptions } from "@/components/register/PaymentOptions";
 import { RegistrantCheckinList } from "@/components/register/RegistrantCheckinList";
+import { ZellePaymentPanel } from "@/components/register/ZellePaymentPanel";
 import { conventionYears, type ConventionYear } from "@/lib/conventions";
 import { setRequestLocale } from "next-intl/server";
 
@@ -60,29 +61,44 @@ export default async function RegisterConfirmationPage({
     );
   }
 
-  const { summary, isPaid, isFree, processingFeeCents } = confirmation;
+  const { summary, isPaid, isFree, processingFeeCents, payment, zelleRef } = confirmation;
   const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
-  // Only a free Youth & Child token the server sealed with `emailed` says a
+  // Registered by Zelle, payment not confirmed by staff yet: show what to
+  // send and the memo reference instead of the generic payment options.
+  const awaitingZelle = payment === "awaiting_zelle" && !!zelleRef;
+  // Only a free or Zelle token the server sealed with `emailed` says a
   // confirmation email was attempted; the page never claims delivery.
-  const emailAttempted = isFree && summary.emailed === true;
+  const emailAttempted = (isFree || awaitingZelle) && summary.emailed === true;
 
   return (
     <main id="main-content">
       <Nav heroDark />
       <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 100px", textAlign: "center" }}>
-        <CheckCircle2 size={48} strokeWidth={1.8} color="var(--gold)" aria-hidden style={{ marginBottom: 20 }} />
+        {awaitingZelle ? (
+          <Clock size={48} strokeWidth={1.8} color="var(--gold)" aria-hidden style={{ marginBottom: 20 }} />
+        ) : (
+          <CheckCircle2 size={48} strokeWidth={1.8} color="var(--gold)" aria-hidden style={{ marginBottom: 20 }} />
+        )}
         <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,44px)", color: "#fff", margin: "0 0 14px" }}>
-          {`You're registered for CACNA ${cy.year}!`}
+          {awaitingZelle ? "Registration received. Now send your payment" : `You're registered for CACNA ${cy.year}!`}
         </h1>
         <p style={{ fontSize: 15.5, color: "rgba(245,246,250,.65)", maxWidth: 480, margin: `0 auto ${emailAttempted ? 12 : 32}px`, lineHeight: 1.7 }}>
-          {isFree
-            ? "Save this page and show your check-in code at check-in."
-            : "A confirmation email is on its way."}
+          {awaitingZelle
+            ? "Your spot is held and your check-in codes below work now. Staff confirm your payment when the Zelle arrives; we match payments to the reference."
+            : isFree
+              ? "Save this page and show your check-in code at check-in."
+              : "A confirmation email is on its way."}
         </p>
         {emailAttempted && (
           <p style={{ fontSize: 14, color: "rgba(245,246,250,.6)", maxWidth: 480, margin: "0 auto 32px", lineHeight: 1.7 }}>
             We are emailing a confirmation to {summary.contactEmail}; check your spam folder if it does not arrive.
           </p>
+        )}
+
+        {awaitingZelle && (
+          <div style={{ maxWidth: 460, margin: "0 auto 24px", textAlign: "left" }}>
+            <ZellePaymentPanel amountDueCents={summary.totalAmountCents} zelleRef={zelleRef} />
+          </div>
         )}
 
         <div style={{ maxWidth: 460, margin: "0 auto", textAlign: "left", background: "rgba(245,246,250,.06)", border: "1px solid rgba(245,246,250,.14)", borderRadius: 18, padding: "24px clamp(16px, 5vw, 26px)" }}>
@@ -108,18 +124,25 @@ export default async function RegisterConfirmationPage({
               </div>
             </div>
           )}
-          <div style={{ display: "flex", justifyContent: "space-between", borderTop: processingFeeCents > 0 ? "none" : "1px solid rgba(245,246,250,.14)", marginTop: processingFeeCents > 0 ? 8 : 16, paddingTop: processingFeeCents > 0 ? 0 : 14 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)" }}>
-              {summary.isComplimentary ? "Complimentary" : isPaid ? "Paid" : "Pending"}
-            </span>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, borderTop: processingFeeCents > 0 ? "none" : "1px solid rgba(245,246,250,.14)", marginTop: processingFeeCents > 0 ? 8 : 16, paddingTop: processingFeeCents > 0 ? 0 : 14 }}>
+            {awaitingZelle ? (
+              <span style={{ fontSize: 11.5, fontWeight: 800, letterSpacing: "1px", textTransform: "uppercase", color: "#7a4b00", background: "#fff4dc", borderRadius: 999, padding: "5px 10px" }}>
+                Awaiting Zelle payment
+              </span>
+            ) : (
+              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)" }}>
+                {summary.isComplimentary ? "Complimentary" : isPaid ? "Paid" : "Pending"}
+              </span>
+            )}
             <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "#fff" }}>
               {dollars(summary.totalAmountCents + processingFeeCents)}
             </span>
           </div>
         </div>
 
-        {/* Nothing to pay on a $0 registration, so no payment options. */}
-        {summary.totalAmountCents > 0 && (
+        {/* Nothing to pay on a $0 registration, so no payment options; a Zelle
+            registration has its own panel above. */}
+        {summary.totalAmountCents > 0 && !awaitingZelle && (
           <div style={{ maxWidth: 460, margin: "24px auto 0", textAlign: "left" }}>
             <h2 style={{ fontSize: 12, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)", margin: "0 0 14px" }}>
               Payment Options

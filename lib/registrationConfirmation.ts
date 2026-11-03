@@ -1,6 +1,7 @@
 import { decodeSummary, unchunkFromMetadata, type RegistrationSummary } from "./checkoutSummary";
 import { openRegistrationToken } from "./registrationToken";
 import { splitCheckoutAmount } from "./processingFee";
+import { isWellFormedZelleReference } from "./zelleReference";
 
 // Decides what the registration confirmation page may show. The URL is never
 // trusted as proof of anything:
@@ -11,6 +12,9 @@ import { splitCheckoutAmount } from "./processingFee";
 //   - Free registrations render from a server-sealed token (`?t=`, see
 //     lib/registrationToken.ts) that must open, belong to this year, total
 //     $0 and contain only children.
+//   - Zelle registrations (total > 0, no Stripe) render from the same kind
+//     of sealed token, marked pay: "zelle" with the registration's Zelle
+//     reference; they show as awaiting payment, never as paid.
 
 export type SessionLike = {
   metadata?: Record<string, string | null | undefined> | null;
@@ -26,6 +30,13 @@ export type RegistrationConfirmation = {
   processingFeeCents: number;
   /** Path (no origin) that re-opens this confirmation. */
   confirmationPath: string;
+  /** How this registration is (or will be) paid: a Stripe Checkout Session
+   *  (see isPaid for whether it has settled), nothing owed, or a Zelle
+   *  transfer staff have not confirmed yet. */
+  payment: "card" | "free" | "awaiting_zelle";
+  /** The memo reference to send with the Zelle payment ("ZEL-XXXXXXXX");
+   *  set only when payment is "awaiting_zelle". */
+  zelleRef?: string;
 };
 
 const SESSION_ID_RE = /^cs_(live|test)_[A-Za-z0-9]{1,255}$/;
@@ -85,13 +96,28 @@ export async function resolveRegistrationConfirmation(input: {
       isFree: false,
       processingFeeCents: splitCheckoutAmount(session.amount_total ?? 0, session.metadata).processingFeeCents,
       confirmationPath: `${basePath}?session_id=${input.sessionId}`,
+      payment: "card",
     };
   }
 
   if (typeof input.token === "string" && input.token !== "") {
     const summary = openRegistrationToken(input.token);
-    if (!isRegistrationSummary(summary) || !isFreeChildOnlySummary(summary, input.year)) return null;
-    return { summary, isPaid: true, isFree: true, processingFeeCents: 0, confirmationPath: `${basePath}?t=${input.token}` };
+    if (!isRegistrationSummary(summary)) return null;
+    const confirmationPath = `${basePath}?t=${input.token}`;
+    const sealed = summary as RegistrationSummary & { pay?: unknown; zelleRef?: unknown };
+    if (sealed.pay === "zelle") {
+      if (
+        summary.year !== input.year ||
+        summary.isComplimentary ||
+        !(summary.totalAmountCents > 0) ||
+        !isWellFormedZelleReference(sealed.zelleRef)
+      ) {
+        return null;
+      }
+      return { summary, isPaid: false, isFree: false, processingFeeCents: 0, confirmationPath, payment: "awaiting_zelle", zelleRef: sealed.zelleRef };
+    }
+    if (!isFreeChildOnlySummary(summary, input.year)) return null;
+    return { summary, isPaid: true, isFree: true, processingFeeCents: 0, confirmationPath, payment: "free" };
   }
 
   return null;

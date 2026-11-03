@@ -62,8 +62,8 @@ check("actions.ts is a server actions module", /^"use server";/.test(actions.tri
 const actionBodies = Object.fromEntries(
   actions.split(/export async function /).slice(1).map((chunk) => [chunk.match(/^\w+/)[0], chunk])
 );
-check("actions.ts exports exactly checkInPerson and undoCheckIn",
-  Object.keys(actionBodies).sort().join(",") === "checkInPerson,undoCheckIn");
+check("actions.ts exports exactly checkInPerson, markZellePaid and undoCheckIn",
+  Object.keys(actionBodies).sort().join(",") === "checkInPerson,markZellePaid,undoCheckIn");
 for (const [name, body] of Object.entries(actionBodies)) {
   check(`${name} calls await requireAdmin() first, then validates the id`,
     /^\w+\([^)]*\) \{\s*const \{[^}]*\} = await requireAdmin\(\);\s*if \(!isCheckinId\(id\)\) throw new Error\(/.test(body));

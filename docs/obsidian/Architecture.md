@@ -181,3 +181,57 @@ only updates where `checked_in_at is null` (a double tap never overwrites
 who or when), undo clears both columns, then each redirects back to the same
 search. If the table is missing (0015 not applied) the page shows a setup
 notice instead of failing. Pinned by `node scripts/check-checkin-admin.mjs`.
+
+## Paying by Zelle (registration)
+
+Zelle is the recommended way to pay (no card fee) and the forms' default.
+End to end:
+
+1. **Form.** `RegisterForm` and `YouthRegisterForm` start from
+   `DEFAULT_PAYMENT_METHOD` (`"zelle"`, `components/register/PaymentMethodChoice.tsx`)
+   and show the "How would you like to pay?" radios only when `total > 0`.
+   They send `paymentMethod` (`"zelle"` | `"card"`) to `POST /api/register`.
+2. **Route.** With `paymentMethod: "zelle"` and a total over $0, both tracks
+   go through `confirmByZelle` in `app/api/register/route.ts`: no Stripe and
+   no processing fee. Absent means card; any other value is a 400; a $0
+   registration takes the free path whatever the method.
+3. **Token.** The visitor gets a sealed confirmation token carrying
+   `pay: "zelle"` and `zelleRef` (`ZEL-` plus 8 Crockford characters,
+   deterministic per ref, `lib/zelleReference.ts`), plus `emailed` when a
+   confirmation email was attempted (per-address cap of 3 a day, key
+   `zelle-confirm:<email>` with the address trimmed and lower-cased; an
+   address containing whitespace, `<`, `>`, `,` or `;` is a 400).
+4. **Confirmation page and email.** `lib/registrationConfirmation.ts` opens
+   the token as `payment: "awaiting_zelle"`; the page shows
+   `ZellePaymentPanel` (amount due = subtotal, the recipient from
+   `paymentOptions`' Zelle entry, the memo reference, one-tap copy) and an
+   "Awaiting Zelle payment" chip. `sendRegistrationConfirmationEmail(...,
+   { zelleRef })` sends the matching "Awaiting payment" email, with every
+   visitor-typed value escaped. `paymentOptions` (`lib/registrationInfo.ts`)
+   is the single source of the Zelle address and lists Zelle first.
+5. **Sheet.** Rows have Status `awaiting Zelle (unverified email)`, Total =
+   subtotal, Processing Fee `$0.00`, blank Amount Charged and Stripe
+   Session, and a `Zelle Reference` column just before `Check-in Code`
+   (which stays last).
+6. **Check-in table.** `checkin_people.payment_status` is one of `free`,
+   `paid` or `awaiting_zelle`; Zelle rows carry `zelle_ref`.
+7. **Staff.** On `/admin/check-in` an `awaiting_zelle` person shows a
+   "Payment not received yet" warning and a **Mark paid** button
+   (`markZellePaid`: `requireAdmin()`, then sets `paid` only where the status
+   is still `awaiting_zelle`). Staff match the Zelle memo to the reference.
+
+**Deploy order:** apply migration `0016_checkin_awaiting_zelle.sql` (widens
+the `payment_status` check, adds `zelle_ref`) **before** deploying this code:
+the check-in page selects `zelle_ref`. Pinned by
+`node scripts/check-zelle-registration.mjs` (route, token, sheet, check-in
+rows, email and cap, admin action, the Apps Script's column placement) and
+`node scripts/check-zelle-ui.mjs` (forms, confirmation page, panel, email
+escaping).
+
+**Sheets webhook:** the repo copy of `docs/google-apps-script/sheets-webhook.gs`
+inserts a column the tab has not seen just before a trailing `Check-in Code`
+column (anywhere else it is added at the far right), so the first Zelle row on
+an existing tab puts `Zelle Reference` before `Check-in Code`. The live script
+does not do this yet. Re-paste this into the live Apps Script project
+(Extensions > Apps Script) and redeploy a new version for it to take effect;
+until then, add the 'Zelle Reference' header by hand before 'Check-in Code'.

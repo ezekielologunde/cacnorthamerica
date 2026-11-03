@@ -8,10 +8,11 @@ import { encodeSummary, chunkForMetadata, fitsStripeMetadata, type RegistrationS
 import { sealRegistrationToken } from "@/lib/registrationToken";
 import { checkinCodesFor, checkinCodeSheetCell } from "@/lib/checkinCode";
 import { recordCheckinPeople } from "@/lib/checkinStore";
+import { zelleReferenceFor } from "@/lib/zelleReference";
 import { sendRegistrationConfirmationEmail } from "@/lib/registrationEmail";
 import { FORM_HEADER, HONEYPOT_FIELD, looksLikeSpam } from "@/lib/spam";
 import { processingFeeLineItem, processingFeeMetadata } from "@/lib/processingFee";
-import { adultSheetExtras, categoryForAge, encodeMeals, parseMealsAndAllergies, parseYouthRegistration, youthSheetName, youthSheetRows } from "@/lib/youthRegistration";
+import { adultSheetExtras, categoryForAge, EMAIL_RE, encodeMeals, parseMealsAndAllergies, parseYouthRegistration, youthSheetName, youthSheetRows } from "@/lib/youthRegistration";
 
 type RegisterRequestBody = {
   registrationType: "individual" | "group";
@@ -26,7 +27,11 @@ type RegisterRequestBody = {
   registrants: { firstName: string; lastName: string; category: RegistrantCategory }[];
   isComplimentary?: boolean;
   staffPasscode?: string;
+  /** Absent means "card". Ignored when the total is $0. */
+  paymentMethod?: PaymentMethod;
 };
+
+type PaymentMethod = "zelle" | "card";
 
 const VALID_CATEGORIES: RegistrantCategory[] = ["adult", "young_adult", "child"];
 const VALID_REGISTRATION_TYPES: RegisterRequestBody["registrationType"][] = ["individual", "group"];
@@ -35,7 +40,62 @@ const MAX_FIELD_LENGTH = 120;
 /** Free Youth & Child confirmation emails per recipient address per day. */
 const YOUTH_CONFIRM_MAX = 3;
 const DAY_MS = 24 * 60 * 60 * 1000;
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+/** A per-address confirmation cap key: one allowance per address however it
+ *  was padded or cased. */
+const confirmCapKey = (prefix: string, email: string) => `${prefix}:${email.trim().toLowerCase()}`;
+const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
+/** Sheet Status for a Zelle registration until staff mark it paid. */
+const ZELLE_STATUS = "awaiting Zelle (unverified email)";
+
+/** The body's paymentMethod ("card" when absent), or null if it is invalid. */
+function parsePaymentMethod(body: unknown): PaymentMethod | null {
+  const value = (body as Record<string, unknown>).paymentMethod;
+  if (value === undefined) return "card";
+  return value === "zelle" || value === "card" ? value : null;
+}
+
+// Zelle (either track, total > 0): no Stripe session and no processing fee,
+// so the amount due is the subtotal. Like the free paths, the visitor goes
+// straight to a confirmation page carrying a sealed token, here with
+// pay: "zelle" and the registration's Zelle reference (lib/zelleReference.ts)
+// so the page can show what to send and the memo to use. Nobody has proven
+// they own contactEmail, the same risk as the free youth path, so the same
+// per-address daily cap (own key) decides whether `emailed` is sealed.
+// `logRows` writes the track's own sheet row(s) with the reference.
+async function confirmByZelle(
+  summary: RegistrationSummary,
+  sealedRegistrants: RegistrationSummary["registrants"],
+  logRows: (zelleRef: string) => void
+): Promise<Response> {
+  const emailed =
+    !!process.env.RESEND_API_KEY &&
+    rateLimit(confirmCapKey("zelle-confirm", summary.contactEmail), YOUTH_CONFIRM_MAX, DAY_MS);
+  let zelleRef: string;
+  let token: string;
+  try {
+    zelleRef = zelleReferenceFor(summary.ref);
+    token = sealRegistrationToken({
+      ...summary,
+      registrants: sealedRegistrants,
+      pay: "zelle",
+      zelleRef,
+      ...(emailed ? { emailed: true } : {}),
+    });
+  } catch {
+    return NextResponse.json({ error: "Registration is temporarily unavailable" }, { status: 500 });
+  }
+  logRows(zelleRef);
+  // Awaited, never throws, never fails the registration (as on the free paths).
+  await recordCheckinPeople(summary, { paymentStatus: "awaiting_zelle", zelleRef });
+  const checkoutUrl = `${SITE_URL}/events/cacna-${summary.year}/register/confirmation?t=${token}`;
+  if (emailed) {
+    // Awaited like the free youth path so the function cannot be suspended
+    // mid-send. The helper never throws; a failed send is only logged.
+    const sent = await sendRegistrationConfirmationEmail(summary, checkoutUrl, false, undefined, 0, { zelleRef });
+    if (!sent) console.error(`[register] Zelle confirmation email failed for ref ${summary.ref}`);
+  }
+  return NextResponse.json({ checkoutUrl });
+}
 
 // Plain, explicit checks rather than a schema library -- matches
 // app/api/contact/route.ts's existing hand-rolled validation style.
@@ -105,6 +165,9 @@ function validateRequestBody(body: unknown): string | null {
   if (b.isComplimentary !== undefined && typeof b.isComplimentary !== "boolean") {
     return "isComplimentary must be a boolean";
   }
+  if (parsePaymentMethod(b) === null) {
+    return "paymentMethod must be 'zelle' or 'card'";
+  }
   return null;
 }
 
@@ -145,7 +208,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: validationError }, { status: 400 });
   }
 
-  const body = rawBody as RegisterRequestBody;
+  // The contact fields are trimmed once here, as the youth track's parser
+  // does, so every writer below (cap key, sheet, check-in rows, Stripe,
+  // email) sees the address the validator checked.
+  const raw = rawBody as RegisterRequestBody;
+  const body: RegisterRequestBody = {
+    ...raw,
+    contactName: raw.contactName.trim(),
+    contactEmail: raw.contactEmail.trim(),
+    churchName: typeof raw.churchName === "string" ? raw.churchName.trim() : null,
+    contactPhone: (raw.contactPhone ?? "").trim(),
+  };
   const dccZone = body.dccZone.trim();
 
   // Individual mode: each person's meals (an explicit choice) and allergy
@@ -268,6 +341,30 @@ export async function POST(request: Request) {
     return NextResponse.json({ checkoutUrl });
   }
 
+  if (parsePaymentMethod(body) === "zelle") {
+    return confirmByZelle(
+      summary,
+      summary.registrants.map((r) => ({ n: r.n, c: r.c, ...(r.m !== undefined ? { m: r.m } : {}) })),
+      (zelleRef) => logToSheet(`Registration — CACNA ${cy.year}`, {
+        "Registration Type": body.registrationType,
+        "Church Name": body.churchName ?? "",
+        "Contact Name": body.contactName,
+        "Contact Email": body.contactEmail,
+        "Contact Phone": body.contactPhone || "",
+        "Registrants": summary.registrants.map((r) => `${r.n} (${r.c})`).join("; "),
+        "Total": dollars(totalAmountCents),
+        "Processing Fee": dollars(0),
+        "Amount Charged": "",
+        "Stripe Session": "",
+        "Status": ZELLE_STATUS,
+        ...adultSheetExtras(summary, cy.startIso),
+        // New columns go before "Check-in Code" so it stays last.
+        "Zelle Reference": zelleRef,
+        "Check-in Code": checkinCodeSheetCell(summary),
+      })
+    );
+  }
+
   // The full summary (meals and allergies included) rides in the session
   // metadata for the webhook's sheet row and email. Refuse up front if it
   // cannot fit rather than let Stripe reject the session (4 = kind,
@@ -329,6 +426,10 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
   const complimentary = (rawBody as Record<string, unknown>).isComplimentary;
   if (complimentary !== undefined && typeof complimentary !== "boolean") {
     return NextResponse.json({ error: "isComplimentary must be a boolean" }, { status: 400 });
+  }
+  const paymentMethod = parsePaymentMethod(rawBody);
+  if (paymentMethod === null) {
+    return NextResponse.json({ error: "paymentMethod must be 'zelle' or 'card'" }, { status: 400 });
   }
   const input = parsed.value;
 
@@ -407,7 +508,7 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
     // slot), like every other optional integration here.
     const emailed =
       !!process.env.RESEND_API_KEY &&
-      rateLimit(`youth-confirm:${input.contactEmail.toLowerCase()}`, YOUTH_CONFIRM_MAX, DAY_MS);
+      rateLimit(confirmCapKey("youth-confirm", input.contactEmail), YOUTH_CONFIRM_MAX, DAY_MS);
     let token: string;
     try {
       token = sealRegistrationToken({
@@ -432,6 +533,25 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
       if (!sent) console.error(`[register] youth confirmation email failed for ref ${summary.ref}`);
     }
     return NextResponse.json({ checkoutUrl: confirmationUrl });
+  }
+
+  if (paymentMethod === "zelle") {
+    return confirmByZelle(
+      summary,
+      summary.registrants.map((r) => ({ n: r.n, c: r.c, a: r.a, m: r.m })),
+      (zelleRef) => {
+        for (const row of youthSheetRows(summary, {
+          stripeSession: "",
+          status: ZELLE_STATUS,
+          startIso: cy.startIso,
+          feeColumns: { "Processing Fee": dollars(0), "Amount Charged": "" },
+          zelleReference: zelleRef,
+          checkinCodes: checkinCodesFor(summary),
+        })) {
+          logToSheet(youthSheetName(cy.year), row);
+        }
+      }
+    );
   }
 
   // The full summary (allergies included) rides in the session metadata for

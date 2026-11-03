@@ -131,6 +131,9 @@ export function youthSheetRows(
      *  the first row carries the values and the rest leave them blank, which
      *  keeps a column sum equal to what Stripe charged. */
     feeColumns?: { "Processing Fee": string; "Amount Charged": string };
+    /** A Zelle registration's reference (lib/zelleReference.ts), on every
+     *  row so each person can be matched to the payment. */
+    zelleReference?: string;
     /** Per-person check-in codes in registrants order (lib/checkinCode.ts's
      *  checkinCodesFor; passed in so this file stays free of Node APIs). */
     checkinCodes: readonly string[];
@@ -160,6 +163,8 @@ export function youthSheetRows(
           ? opts.feeColumns
           : { "Processing Fee": "", "Amount Charged": "" }
         : {}),
+      // New columns go before "Check-in Code" so it stays last.
+      ...(opts.zelleReference ? { "Zelle Reference": opts.zelleReference } : {}),
       "Check-in Code": opts.checkinCodes[i] ?? "",
     };
   });
@@ -184,7 +189,11 @@ export type YouthRegistrationInput = {
   registrants: YouthRegistrantInput[];
 };
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+/** One plain address, tested after trimming. Whitespace, angle brackets,
+ *  commas and semicolons are refused anywhere in it: "<a@x.com>" or
+ *  "a,b@x.com" is not one address we can cap or send to. Both registration
+ *  tracks use this. */
+export const EMAIL_RE = /^[^\s@<>,;]+@[^\s@<>,;]+\.[^\s@<>,;]+$/;
 
 function requiredString(value: unknown, label: string, max: number): string | { error: string } {
   if (typeof value !== "string" || value.trim() === "") return { error: `${label} is required` };

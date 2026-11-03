@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { FORM_HEADER, HONEYPOT_FIELD } from "@/lib/spam";
 import { FeeBreakdown } from "@/components/checkout/FeeBreakdown";
+import { DEFAULT_PAYMENT_METHOD, PaymentMethodChoice, ZelleTotal, paidSubmitLabel, type PaymentMethod } from "@/components/register/PaymentMethodChoice";
 import { MAX_ALLERGIES_LENGTH, MEAL_SLOTS, mealSlotLabel, type MealSlot } from "@/lib/youthRegistration";
 
 export type RegistrantCategory = "adult" | "young_adult" | "child";
@@ -58,6 +59,7 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
   const [dccZone, setDccZone] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(DEFAULT_PAYMENT_METHOD);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -142,6 +144,7 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
         body: JSON.stringify({
           [HONEYPOT_FIELD]: typeof honeypot === "string" ? honeypot : "",
           track: "adult",
+          paymentMethod,
           registrationType: mode,
           churchName: mode === "group" ? churchName : null,
           contactName,
@@ -178,7 +181,8 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
     }
   }
 
-  const submitLabel = status === "loading" ? t("submitting") : `${t("submit")} — CACNA ${year}`;
+  const submitLabel =
+    status === "loading" ? t("submitting") : total > 0 ? paidSubmitLabel(paymentMethod) : `${t("submit")} — CACNA ${year}`;
 
   return (
     <form onSubmit={handleSubmit}>
@@ -410,6 +414,10 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
         <span style={hintStyle}>Only used if we need to reach you about your registration.</span>
       </label>
 
+      {total > 0 && (
+        <PaymentMethodChoice name="payment-method" value={paymentMethod} onChange={setPaymentMethod} legendStyle={labelStyle} />
+      )}
+
       {status === "error" && errorMessage && (
         <p ref={errorRef} role="alert" style={{ color: "var(--red)", fontWeight: 700, fontSize: 14.5, margin: "4px 0 12px", padding: "12px 14px", borderRadius: 12, background: "rgba(200,30,58,.08)" }}>
           {errorMessage}
@@ -419,13 +427,16 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
       {/* Sticky on phones: the running total and the pay button stay in thumb
           reach however long the list of people gets. The total is computed
           from the same tiers the server re-prices with, so what is shown here
-          is what Stripe will charge, plus the disclosed processing fee. */}
+          is what Stripe will charge, plus the disclosed processing fee (or,
+          paying by Zelle, the subtotal with no fee). */}
       <div className="reg-sticky">
         <span style={{ display: "block", fontSize: 13.5, fontWeight: 700, color: "var(--ink-soft)", marginBottom: 6 }} aria-live="polite">
           {registrants.length} {registrants.length === 1 ? "registrant" : "registrants"}
         </span>
         <div style={{ marginBottom: 10 }}>
-          {total > 0 ? (
+          {total > 0 && paymentMethod === "zelle" ? (
+            <ZelleTotal subtotalCents={total} />
+          ) : total > 0 ? (
             <FeeBreakdown subtotalCents={total} />
           ) : (
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>

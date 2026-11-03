@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { FORM_HEADER, HONEYPOT_FIELD } from "@/lib/spam";
 import { FeeBreakdown } from "@/components/checkout/FeeBreakdown";
+import { DEFAULT_PAYMENT_METHOD, PaymentMethodChoice, ZelleTotal, paidSubmitLabel, type PaymentMethod } from "@/components/register/PaymentMethodChoice";
 import {
   ADULT_AGE,
   AGE_GROUP_LABEL,
@@ -93,6 +94,7 @@ export function YouthRegisterForm({
     contactName: "", contactEmail: "", contactPhone: "", churchName: "", youthLeaderName: "", dccZone: "",
   });
   const [guardianConfirmed, setGuardianConfirmed] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(DEFAULT_PAYMENT_METHOD);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [serverError, setServerError] = useState<string | null>(null);
@@ -208,6 +210,7 @@ export function YouthRegisterForm({
         body: JSON.stringify({
           [HONEYPOT_FIELD]: typeof honeypot === "string" ? honeypot : "",
           track: "youth",
+          paymentMethod,
           contactName: shared.contactName.trim(),
           contactEmail: shared.contactEmail.trim(),
           contactPhone: shared.contactPhone.trim(),
@@ -271,7 +274,8 @@ export function YouthRegisterForm({
     { name: "dccZone", label: t("dccZone"), autoComplete: "off" },
   ];
 
-  const submitLabel = status === "loading" ? t("submitting") : `${total > 0 ? t("submitPay") : t("submitFree")} — CACNA ${year}`;
+  const submitLabel =
+    status === "loading" ? t("submitting") : total > 0 ? paidSubmitLabel(paymentMethod) : `${t("submitFree")} — CACNA ${year}`;
 
   return (
     <form onSubmit={handleSubmit} noValidate>
@@ -466,6 +470,11 @@ export function YouthRegisterForm({
         </div>
       )}
 
+      {/* Only when someone is 20+ (the young-adult rate); 19 and under is free. */}
+      {total > 0 && (
+        <PaymentMethodChoice name={fid("payment-method")} value={paymentMethod} onChange={setPaymentMethod} legendStyle={labelStyle} />
+      )}
+
       {status === "error" && serverError && (
         <p ref={serverErrorRef} role="alert" style={{ color: "var(--red)", fontWeight: 700, fontSize: 14.5, margin: "4px 0 12px", padding: "12px 14px", borderRadius: 12, background: "rgba(200,30,58,.08)" }}>
           {serverError}
@@ -473,7 +482,7 @@ export function YouthRegisterForm({
       )}
 
       {/* Same sticky total + submit bar as RegisterForm, including the
-          disclosed processing fee whenever anything is owed. */}
+          disclosed processing fee whenever a card payment is owed. */}
       <div className="reg-sticky">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
           <span style={{ fontSize: 13.5, fontWeight: 700, color: "var(--ink-soft)" }} aria-live="polite">
@@ -487,7 +496,7 @@ export function YouthRegisterForm({
         </div>
         {total > 0 && (
           <div style={{ marginBottom: 10 }}>
-            <FeeBreakdown subtotalCents={total} />
+            {paymentMethod === "zelle" ? <ZelleTotal subtotalCents={total} /> : <FeeBreakdown subtotalCents={total} />}
           </div>
         )}
         <button
