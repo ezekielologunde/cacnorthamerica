@@ -32,12 +32,13 @@ const sections: LegalSection[] = [
       <>
         <p style={p}>
           Registration fees are set by registrant category and are shown on the registration page before you pay.
-          Payment is taken through Stripe&apos;s secure checkout. A payment processing fee is added at checkout
-          and shown before you pay.
+          You can pay by Zelle or by card through Stripe&apos;s secure checkout. A processing fee is added to card
+          payments at checkout and shown before you pay; there is no processing fee on Zelle.
         </p>
         <p style={{ margin: 0 }}>
-          Free or complimentary registrations are not available through the website. If you believe you qualify
-          for one, contact the committee at <MailLink address={SITE.email} />.
+          Registration is free for children and youth ages 1&ndash;19, who register on the Youth &amp; Child form.
+          No other free or complimentary registrations are available through the website. If you believe you
+          qualify for one, contact the committee at <MailLink address={SITE.email} />.
         </p>
       </>
     ),
