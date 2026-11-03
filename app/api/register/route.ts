@@ -7,6 +7,7 @@ import { currentOrNextConvention, activePricing, priceForCategory, type Registra
 import { encodeSummary, chunkForMetadata, fitsStripeMetadata, type RegistrationSummary } from "@/lib/checkoutSummary";
 import { sealRegistrationToken } from "@/lib/registrationToken";
 import { checkinCodesFor, checkinCodeSheetCell } from "@/lib/checkinCode";
+import { recordCheckinPeople } from "@/lib/checkinStore";
 import { sendRegistrationConfirmationEmail } from "@/lib/registrationEmail";
 import { FORM_HEADER, HONEYPOT_FIELD, looksLikeSpam } from "@/lib/spam";
 import { processingFeeLineItem, processingFeeMetadata } from "@/lib/processingFee";
@@ -260,6 +261,9 @@ export async function POST(request: Request) {
       ...adultSheetExtras(summary, cy.startIso),
       "Check-in Code": checkinCodeSheetCell(summary),
     });
+    // Awaited so the serverless function cannot be suspended mid-write; the
+    // helper never throws, and a failed write never fails the registration.
+    await recordCheckinPeople(summary, { paymentStatus: "free" });
     const checkoutUrl = `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?t=${token}`;
     return NextResponse.json({ checkoutUrl });
   }
@@ -417,6 +421,8 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
     for (const row of youthSheetRows(summary, { stripeSession: "", status: "free (email unverified)", startIso: cy.startIso, checkinCodes: checkinCodesFor(summary) })) {
       logToSheet(youthSheetName(cy.year), row);
     }
+    // Awaited, never throws, never fails the registration (as above).
+    await recordCheckinPeople(summary, { paymentStatus: "free" });
     const confirmationUrl = `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?t=${token}`;
     if (emailed) {
       // Awaited so the serverless function cannot be suspended before the

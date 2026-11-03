@@ -17,7 +17,9 @@ registerHooks({
   resolve(specifier, context, next) {
     if (specifier === "@/lib/stripe") return { url: FAKE_STRIPE_MODULE, shortCircuit: true };
     // next has no "exports" map, so ESM needs the file extension.
-    if (specifier === "next/server") return next("next/server.js", context);
+    if (specifier === "next/server" || specifier === "next/headers") return next(`${specifier}.js`, context);
+    // Next's bundler provides "server-only"; plain Node has no such package.
+    if (specifier === "server-only") return { url: "data:text/javascript,", shortCircuit: true };
     let target = null;
     if (specifier.startsWith("@/")) target = path.join(root, specifier.slice(2));
     else if (specifier.startsWith(".") && context.parentURL?.startsWith("file:") && !path.extname(specifier)) {

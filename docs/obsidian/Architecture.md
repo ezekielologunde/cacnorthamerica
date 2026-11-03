@@ -139,3 +139,27 @@ layer: `archive.ts`, `blog.ts`, `cacWorldNews.ts`, `churches.ts`,
 - Resend — transactional email (contact form, likely)
 - Behold — Instagram feed via `/api/instagram`
 - Google Analytics / Ads, YouTube Data API, a Google Sheets webhook
+
+## Check-in lookup table (`cacna.checkin_people`)
+
+One row per registrant of every successful convention registration
+(`supabase/migrations/0015_checkin_people.sql`), so the admin check-in page
+can find a person by name prefix or by their 4-character check-in code.
+Rows carry the year, the registration `ref` and the person's position
+(`idx`, unique together), the code from `lib/checkinCode.ts`, category, age,
+church, DCC / zone, contact details, sheet-style meals, allergies, payment
+status (`free` / `paid`), the Stripe session, and `checked_in_at` /
+`checked_in_by` for the door. Codes are not globally unique, so staff still
+verify the name.
+
+Written only server-side by `recordCheckinPeople()` in
+`lib/checkinStore.ts` (service-role client): from `api/register` on the free
+adult and free Youth & Child paths, and from `api/stripe/webhook` for paid
+registrations once the sheet row is written. It upserts on `(ref, idx)` with
+do-nothing on conflict, so Stripe retries never duplicate a row or reset a
+check-in. It is best-effort: a missing `SUPABASE_SERVICE_ROLE_KEY`, a
+database error or anything thrown is logged with the ref only and never
+fails a registration or a webhook. The Google Sheet stays the record staff
+already use; this table is a lookup copy of it. PII: RLS on, no anon access,
+admins read it through a `cacna.is_admin()` select policy. Pinned by
+`node scripts/check-checkin-store.mjs`.
