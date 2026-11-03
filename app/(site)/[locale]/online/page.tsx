@@ -24,6 +24,16 @@ const YOUTUBE_LIVE_URL = "https://www.youtube.com/@cacnorthamericalatunderegi133
 // shown only while the convention is actually underway.
 const CONVENTION_SESSIONS_PLAYLIST_ID = "PLhXt6OVepbyjadJt8WufxY-5Mt5OAjsSf";
 
+// Event playlists on the channel (created 2026-11-03), oldest session first so
+// each one plays in order. Linked as plain playlist pages: they stay accurate
+// without the YouTube Data API, and keep working if the channel handle changes.
+const eventPlaylists = [
+  { id: "PLb-ihZD68x5U", name: "Annual Convention 2026", desc: "Every session from CAC Village, July 2026" },
+  { id: "PLYJXaS50eCkI", name: "Annual Convention 2025", desc: "Revival nights, ministering sessions, graduation" },
+  { id: "PLbILm1457uD8", name: "Annual Convention 2024", desc: "Revival nights, Sunday School, Holy Communion" },
+  { id: "PLQw6OoF9wSdk", name: "Good Women Marathon Fasting & Prayer 2026", desc: "Days 1 to 7, February 2026" },
+];
+
 const platforms = [
   { name: "YouTube", desc: "The Annual Convention & message replays", href: YOUTUBE_URL },
   { name: "Instagram", desc: "Updates from across CACNA", href: "https://instagram.com/cacnorthamericalatunderegion" },
@@ -162,6 +172,35 @@ export default async function OnlinePage({
         </Reveal>
       </section>
       )}
+
+      {/* Browse by event: one playlist per convention / fast */}
+      <section style={{ padding: "0 clamp(20px,5vw,64px) 56px" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <Reveal>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,36px)", letterSpacing: "-.8px", color: "#fff", margin: "0 0 20px" }}>
+              Watch by event
+            </h2>
+          </Reveal>
+          <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,260px),1fr))", gap: 16 }}>
+            {eventPlaylists.map((p) => (
+              <li key={p.id}>
+                <a
+                  href={`https://www.youtube.com/playlist?list=${p.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="card-lift"
+                  aria-label={`${p.name}, opens in a new tab`}
+                  style={{ display: "block", height: "100%", background: "#161B22", border: "1px solid rgba(253,200,65,.25)", borderRadius: 20, padding: "22px 24px", textDecoration: "none" }}
+                >
+                  <span style={{ display: "block", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "#fff" }}>{p.name}</span>
+                  <span style={{ display: "block", marginTop: 6, fontSize: 14, color: "rgba(255,255,255,.7)" }}>{p.desc}</span>
+                  <span style={{ display: "block", marginTop: 14, fontSize: 13, fontWeight: 700, color: "var(--gold)" }}>Watch playlist →</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
 
       {/* Past messages grid */}
       {pastSermons.length > 0 && (
