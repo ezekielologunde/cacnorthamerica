@@ -36,12 +36,17 @@ export default async function GivingConfirmationPage({
   if (sessionId) {
     try {
       const stripe = getStripeClient();
-      const session = await stripe.checkout.sessions.retrieve(sessionId);
+      const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: ["payment_intent"] });
       const paid = isPaidCheckout(session, "giving");
+      // Pending only while the debit is genuinely in flight: after a failed
+      // debit the session stays complete and unpaid, and must not promise an
+      // email that will never come.
+      const intent = typeof session.payment_intent === "object" ? session.payment_intent : null;
       pending = !paid
         && session.metadata?.kind === "giving"
         && session.status === "complete"
-        && (session.payment_method_types ?? []).includes("us_bank_account");
+        && (session.payment_method_types ?? []).includes("us_bank_account")
+        && intent?.status === "processing";
       if (!paid && !pending) throw new Error("not a paid giving session");
       contactEmail = session.customer_details?.email ?? session.customer_email ?? null;
       // "Given" is the gift the donor chose; the fee is shown on its own.

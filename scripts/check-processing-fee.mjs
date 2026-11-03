@@ -50,6 +50,26 @@ check("a card fee line item matches feeCents", feeLineItems(10000, "card").lengt
 check("a zero bank fee adds no line item (Checkout rejects a zero line)", (bankFeeCents(10000) > 0) === (feeLineItems(10000, "bank").length === 1));
 check("fee metadata records the method's fee", feeMetadataFor(10000, "bank").processing_fee_cents === String(bankFeeCents(10000)) && feeMetadataFor(10000, "card").processing_fee_cents === String(feeCents(10000)));
 check("the bank gift ceiling is $10,000", BANK_MAX_CENTS === 1_000_000);
+// Hand-computed against Stripe's published rates, so a changed constant is caught.
+check("bank fee on $100.00 is $2.32", bankFeeCents(10000) === 232);
+check("bank fee on $1,000.00 is the $6.50 maximum", bankFeeCents(100000) === 650);
+check("a $0 bank gift adds no fee line item", feeLineItems(0, "bank").length === 0);
+
+// Each checkout is pinned to the rail its fee was sized for: registration and
+// the store to card (so turning on ACH in the Dashboard can't expose a bank
+// option there), giving to the chosen method.
+import { readFileSync } from "node:fs";
+const src = (p) => readFileSync(new URL(p, import.meta.url), "utf8");
+const count = (text, needle) => text.split(needle).length - 1;
+const CARD_PIN = 'payment_method_types: ["card"]';
+const regSrc = src("../app/api/register/route.ts");
+check("every registration checkout session is pinned to card", count(regSrc, "checkout.sessions.create") > 0 && count(regSrc, "checkout.sessions.create") === count(regSrc, CARD_PIN));
+const storeSrc = src("../app/api/store/checkout/route.ts");
+check("the store checkout session is pinned to card", count(storeSrc, "checkout.sessions.create") > 0 && count(storeSrc, "checkout.sessions.create") === count(storeSrc, CARD_PIN));
+const givingSrc = src("../app/api/giving/checkout/route.ts");
+check("the giving checkout session pins its payment method", givingSrc.includes('payment_method_types: [method === "bank"'));
+check("bank gifts require instant verification", givingSrc.includes('verification_method: "instant"'));
+check("the giving route rejects a bank gift over the ceiling", givingSrc.includes("BANK_MAX_CENTS"));
 
 console.log(failures ? `\n${failures} check(s) FAILED` : "\nAll checks passed");
 process.exit(failures ? 1 : 0);

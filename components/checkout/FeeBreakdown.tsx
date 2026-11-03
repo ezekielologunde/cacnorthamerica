@@ -42,7 +42,7 @@ export function FeeBreakdown({
       </div>
       <p style={{ fontSize: 12.5, color: soft, margin: "6px 0 0" }}>
         {method === "bank"
-          ? fee > 0 ? "Covers bank-debit processing costs; shown before you pay." : "No processing fee on bank gifts."
+          ? "Covers bank-debit processing costs; shown before you pay."
           : "Covers card processing costs; shown before you pay."}
       </p>
     </div>

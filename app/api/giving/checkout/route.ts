@@ -81,6 +81,11 @@ export async function POST(request: Request) {
       // Pinned to the chosen method so the fee below always matches what the
       // payer actually uses.
       payment_method_types: [method === "bank" ? "us_bank_account" : "card"],
+      // Instant bank login only: the bank fee is sized for it, and a manual
+      // account entry would leave the gift waiting on micro-deposits.
+      ...(method === "bank"
+        ? { payment_method_options: { us_bank_account: { verification_method: "instant" as const } } }
+        : {}),
       line_items: [{
         price_data: {
           currency: "usd",
