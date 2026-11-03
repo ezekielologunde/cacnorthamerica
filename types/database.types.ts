@@ -184,6 +184,7 @@ export type Database = {
           ref: string
           stripe_session: string | null
           year: number
+          zelle_ref: string | null
         }
         Insert: {
           age?: number | null
@@ -206,6 +207,7 @@ export type Database = {
           ref: string
           stripe_session?: string | null
           year: number
+          zelle_ref?: string | null
         }
         Update: {
           age?: number | null
@@ -228,6 +230,7 @@ export type Database = {
           ref?: string
           stripe_session?: string | null
           year?: number
+          zelle_ref?: string | null
         }
         Relationships: []
       }

@@ -32,9 +32,14 @@ type CheckinPersonRow = {
   contact_phone: string | null;
   meals: string | null;
   allergies: string | null;
-  payment_status: "free" | "paid";
+  payment_status: CheckinPaymentStatus;
   stripe_session: string | null;
+  /** Only sent for Zelle registrations (migration 0016 adds the column). */
+  zelle_ref?: string | null;
 };
+
+export type CheckinPaymentStatus = "free" | "paid" | "awaiting_zelle";
+type CheckinOpts = { paymentStatus: CheckinPaymentStatus; stripeSession?: string; contactEmail?: string; zelleRef?: string };
 
 /** Trimmed and length-capped; "" stays "" (for not-null columns). */
 function text(value: unknown, max: number): string {
@@ -46,10 +51,7 @@ function optionalText(value: unknown, max: number): string | null {
   return text(value, max) || null;
 }
 
-function checkinRows(
-  summary: RegistrationSummary,
-  opts: { paymentStatus: "free" | "paid"; stripeSession?: string; contactEmail?: string }
-): CheckinPersonRow[] {
+function checkinRows(summary: RegistrationSummary, opts: CheckinOpts): CheckinPersonRow[] {
   const codes = checkinCodesFor(summary);
   const startIso = conventionYears.find((cy) => cy.year === summary.year)?.startIso;
   return summary.registrants.map((r, i) => {
@@ -73,14 +75,14 @@ function checkinRows(
       allergies: optionalText(r.l, MAX_ALLERGIES_LENGTH),
       payment_status: opts.paymentStatus,
       stripe_session: optionalText(opts.stripeSession, 255),
+      // Left out entirely otherwise, so free and card rows still insert
+      // before migration 0016 has added the column.
+      ...(opts.zelleRef ? { zelle_ref: text(opts.zelleRef, 20) } : {}),
     };
   });
 }
 
-export async function recordCheckinPeople(
-  summary: RegistrationSummary,
-  opts: { paymentStatus: "free" | "paid"; stripeSession?: string; contactEmail?: string }
-): Promise<void> {
+export async function recordCheckinPeople(summary: RegistrationSummary, opts: CheckinOpts): Promise<void> {
   const ref = typeof summary?.ref === "string" ? summary.ref.slice(0, 100) : "?";
   try {
     // createServiceClient() would fall back to the anon key, which RLS

@@ -1,5 +1,5 @@
 import { requireAdmin } from "@/lib/supabase/require-admin";
-import { checkInPerson, undoCheckIn } from "./actions";
+import { checkInPerson, markZellePaid, undoCheckIn } from "./actions";
 import Link from "next/link";
 import ActionButton from "@/components/admin/ActionButton";
 import {
@@ -19,7 +19,7 @@ import { currentOrNextConvention } from "@/lib/conventions";
 // A plain GET form, so it works on any phone without JavaScript.
 
 const COLUMNS =
-  "id, full_name, code, category, age, church_name, dcc, contact_name, meals, allergies, payment_status, checked_in_at, checked_in_by";
+  "id, full_name, code, category, age, church_name, dcc, contact_name, meals, allergies, payment_status, zelle_ref, checked_in_at, checked_in_by";
 
 type PersonRow = {
   id: string;
@@ -33,6 +33,7 @@ type PersonRow = {
   meals: string | null;
   allergies: string | null;
   payment_status: string;
+  zelle_ref: string | null;
   checked_in_at: string | null;
   checked_in_by: string | null;
 };
@@ -59,6 +60,7 @@ function HiddenSearch({ q, year }: { q: string; year: string }) {
 
 function PersonCard({ person, q, year, codeShared }: { person: PersonRow; q: string; year: string; codeShared: boolean }) {
   const paid = person.payment_status === "paid";
+  const awaitingZelle = person.payment_status === "awaiting_zelle";
   const church = [person.church_name, person.dcc && `DCC: ${person.dcc}`].filter(Boolean).join(" · ");
 
   return (
@@ -86,12 +88,29 @@ function PersonCard({ person, q, year, codeShared }: { person: PersonRow; q: str
         <span>
           <span style={{
             display: "inline-block", borderRadius: 20, fontSize: 12, fontWeight: 700, padding: "2px 10px",
-            background: paid ? GREEN_BG : "rgba(18,20,30,0.07)", color: paid ? GREEN : "var(--ink-soft)",
+            background: paid ? GREEN_BG : awaitingZelle ? AMBER_BG : "rgba(18,20,30,0.07)",
+            color: paid ? GREEN : awaitingZelle ? AMBER : "var(--ink-soft)",
           }}>
-            {paid ? "Paid" : "Free (email unverified)"}
+            {paid ? "Paid" : awaitingZelle ? "Awaiting Zelle payment" : "Free (email unverified)"}
           </span>
         </span>
+        {person.zelle_ref && <span>Zelle reference: <strong>{person.zelle_ref}</strong></span>}
       </div>
+
+      {awaitingZelle && (
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", background: AMBER_BG, borderRadius: 8, padding: "10px 14px", margin: "0 0 14px" }}>
+          <span style={{ fontSize: 15, fontWeight: 700, color: AMBER }}>Payment not received yet</span>
+          <form action={markZellePaid.bind(null, person.id)}>
+            <HiddenSearch q={q} year={year} />
+            <ActionButton style={{
+              background: "white", color: AMBER, border: "1px solid #f0c36d",
+              borderRadius: 6, padding: "10px 18px", minHeight: 44, fontSize: 14, fontWeight: 700,
+            }}>
+              Mark paid
+            </ActionButton>
+          </form>
+        </div>
+      )}
 
       {person.allergies && (
         <p style={{ fontSize: 16, fontWeight: 700, color: "var(--red)", background: "rgba(200,30,30,0.07)", border: "2px solid var(--red)", borderRadius: 8, padding: "10px 14px", margin: "0 0 14px" }}>

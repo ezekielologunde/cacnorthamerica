@@ -131,6 +131,9 @@ export function youthSheetRows(
      *  the first row carries the values and the rest leave them blank, which
      *  keeps a column sum equal to what Stripe charged. */
     feeColumns?: { "Processing Fee": string; "Amount Charged": string };
+    /** A Zelle registration's reference (lib/zelleReference.ts), on every
+     *  row so each person can be matched to the payment. */
+    zelleReference?: string;
     /** Per-person check-in codes in registrants order (lib/checkinCode.ts's
      *  checkinCodesFor; passed in so this file stays free of Node APIs). */
     checkinCodes: readonly string[];
@@ -160,6 +163,8 @@ export function youthSheetRows(
           ? opts.feeColumns
           : { "Processing Fee": "", "Amount Charged": "" }
         : {}),
+      // New columns go before "Check-in Code" so it stays last.
+      ...(opts.zelleReference ? { "Zelle Reference": opts.zelleReference } : {}),
       "Check-in Code": opts.checkinCodes[i] ?? "",
     };
   });

@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect, RedirectType } from "next/navigation";
 import { checkinPageHref, isCheckinId } from "@/lib/checkinSearch";
 
-// Both actions are bound to the person's id and posted from a form that
+// Every action is bound to the person's id and posted from a form that
 // carries the current search (hidden q / year), so the volunteer lands back
 // on the same results, with or without JavaScript.
 
@@ -22,6 +22,25 @@ export async function checkInPerson(id: string, formData?: FormData) {
   if (error) {
     console.error(`[check-in] checkInPerson failed for id ${id}`);
     throw new Error("Could not check this person in. Please try again.");
+  }
+  revalidatePath("/admin/check-in");
+  redirect(checkinPageHref(formData?.get("q"), formData?.get("year")), RedirectType.replace);
+}
+
+// Staff confirm a Zelle payment arrived (name, amount and the ZEL-
+// reference in the memo). Only where still awaiting Zelle: it never touches a
+// free or card-paid row, and a double tap changes nothing.
+export async function markZellePaid(id: string, formData?: FormData) {
+  const { supabase } = await requireAdmin();
+  if (!isCheckinId(id)) throw new Error("Could not mark this payment as received. Please try again.");
+  const { error } = await supabase
+    .from("checkin_people")
+    .update({ payment_status: "paid" })
+    .eq("id", id)
+    .eq("payment_status", "awaiting_zelle");
+  if (error) {
+    console.error(`[check-in] markZellePaid failed for id ${id}`);
+    throw new Error("Could not mark this payment as received. Please try again.");
   }
   revalidatePath("/admin/check-in");
   redirect(checkinPageHref(formData?.get("q"), formData?.get("year")), RedirectType.replace);
