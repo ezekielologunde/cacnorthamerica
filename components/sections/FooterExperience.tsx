@@ -139,6 +139,7 @@ export function FooterExperience() {
     ['/privacy', t('privacy')],
     ['/terms', t('terms')],
     ['/refunds', t('refunds')],
+    ['/accessibility', t('accessibility')],
     ['/sitemap', t('sitemap')],
   ];
 
