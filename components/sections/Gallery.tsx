@@ -13,6 +13,7 @@ import { archiveGalleryPhotos } from "@/lib/archiveGalleryPhotos";
 // gallery and self-hosted here. Shown as a fallback until the admin console
 // (Cloudinary-backed /api/gallery) has real uploads of its own.
 const STATIC_PHOTOS: Photo[] = [
+  { id: "cac-village-gate", src: "/photos/gallery/cac-village-gate.jpg", alt: "The entrance gate and welcome sign at C.A.C Village (Christ Apostolic Church), in the snow" },
   { id: "convention-2025-01", src: "/images/convention-2025-01.jpg", alt: "Ministers seated together at the 2025 CACNA Latunde Region General Convention" },
   { id: "convention-2025-02", src: "/images/convention-2025-02.jpg", alt: "Bible Institute graduates in cap and gown at the 2025 CACNA Convention" },
   { id: "convention-2025-03", src: "/images/convention-2025-03.jpg", alt: "Two ministers in academic regalia at the 2025 CACNA Convention" },
