@@ -6,8 +6,8 @@
 //   node scripts/check-zelle-registration.mjs
 //
 // Drives the real POST handler with a fake Stripe client, a fake fetch for
-// the Sheets webhook and a fake Supabase service client; nothing leaves the
-// process. Exits 1 if any check fails.
+// the Sheets webhook and Resend (request bodies captured) and a fake
+// Supabase service client; nothing leaves the process. Exits 1 if any check fails.
 import { registerHooks } from "node:module";
 import { pathToFileURL } from "node:url";
 import { existsSync, readFileSync } from "node:fs";
@@ -49,10 +49,11 @@ globalThis.__fakeSupabase = {
   from: (table) => ({ upsert: (rows) => { stored.push({ table, rows }); return { abortSignal: async () => ({ error: null }) }; } }),
 };
 const rows = [];
+const emails = [];
 globalThis.fetch = async (url, init = {}) => {
   url = String(url);
   if (url === SHEETS_URL) { rows.push(JSON.parse(init.body)); return Response.json({ ok: true }); }
-  if (url.startsWith("https://api.resend.com/")) return Response.json({ id: "email_1" });
+  if (url.startsWith("https://api.resend.com/")) { emails.push(JSON.parse(init.body)); return Response.json({ id: "email_1" }); }
   throw new Error(`unexpected fetch ${url}`);
 };
 
@@ -81,7 +82,7 @@ async function post(body) {
   const res = await POST(new Request("http://localhost/api/register", { method: "POST", headers, body: JSON.stringify(body) }));
   return { status: res.status, body: await res.json() };
 }
-const reset = () => { created.length = 0; rows.length = 0; stored.length = 0; };
+const reset = () => { created.length = 0; rows.length = 0; stored.length = 0; emails.length = 0; };
 
 const adultPerson = (i, extra = {}) => ({ firstName: "Adult", lastName: `Person${i}`, category: "adult", meals: ["tue_lunch"], ...extra });
 const adultBody = (extra = {}) => ({
@@ -136,6 +137,9 @@ check("adult Zelle token: pay zelle, its reference, emailed, no allergies, no fe
 check("adult Zelle check-in rows are awaiting_zelle with the reference",
   stored.length === 1 && stored[0].table === "checkin_people" && stored[0].rows.length === 2 &&
   stored[0].rows.every((r) => r.payment_status === "awaiting_zelle" && r.zelle_ref === azOpened?.zelleRef && r.stripe_session === null));
+check("adult Zelle sends exactly one email, to the contact, with the ZEL- reference and Awaiting payment",
+  emails.length === 1 && emails[0].to === "zelle-adult@example.com" && typeof emails[0].html === "string" &&
+  emails[0].html.includes(zelleReferenceFor(azOpened?.ref ?? "")) && emails[0].html.includes("Awaiting payment"));
 const azConf = await resolveRegistrationConfirmation({ year: 2027, token: azToken, retrieveSession: noSession });
 check("adult Zelle token opens via registrationConfirmation as awaiting_zelle, not paid",
   azConf?.payment === "awaiting_zelle" && azConf.zelleRef === azOpened?.zelleRef && azConf.isPaid === false && azConf.isFree === false &&
@@ -181,10 +185,14 @@ check("$0 youth token still opens as free", freeConf?.payment === "free" && free
 
 // ---------- Zelle email cap (own key) ----------
 reset();
-const capped = [];
-for (let i = 0; i < 4; i++) capped.push(openRegistrationToken(tokenOf(await post(youth([kid(22)], { paymentMethod: "zelle", contactEmail: "zelle-cap@example.com" })))));
+const cappedRes = [];
+for (let i = 0; i < 4; i++) cappedRes.push(await post(youth([kid(22)], { paymentMethod: "zelle", contactEmail: "zelle-cap@example.com" })));
+const capped = cappedRes.map((res) => openRegistrationToken(tokenOf(res)));
 check("Zelle: first 3 per address per day seal emailed, the 4th does not",
   capped.slice(0, 3).every((t) => t?.emailed === true) && capped[3]?.emailed === undefined && capped[3]?.pay === "zelle");
+check("Zelle: 4 registrations from one address send exactly 3 emails, and all 4 still get a confirmation URL",
+  emails.length === 3 && emails.every((e) => e.to === "zelle-cap@example.com") &&
+  cappedRes.every((res) => res.status === 200 && res.body.checkoutUrl?.startsWith(confirmationPrefix)));
 
 // ---------- Admin action and page (source) ----------
 const tsCode = (s) => s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
