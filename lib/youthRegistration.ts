@@ -189,7 +189,11 @@ export type YouthRegistrationInput = {
   registrants: YouthRegistrantInput[];
 };
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+/** One plain address, tested after trimming. Whitespace, angle brackets,
+ *  commas and semicolons are refused anywhere in it: "<a@x.com>" or
+ *  "a,b@x.com" is not one address we can cap or send to. Both registration
+ *  tracks use this. */
+export const EMAIL_RE = /^[^\s@<>,;]+@[^\s@<>,;]+\.[^\s@<>,;]+$/;
 
 function requiredString(value: unknown, label: string, max: number): string | { error: string } {
   if (typeof value !== "string" || value.trim() === "") return { error: `${label} is required` };

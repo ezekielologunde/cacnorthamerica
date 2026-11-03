@@ -12,6 +12,7 @@ import { registerHooks } from "node:module";
 import { pathToFileURL } from "node:url";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
+import vm from "node:vm";
 
 const root = path.resolve(import.meta.dirname, "..");
 const FAKE_STRIPE_MODULE = "data:text/javascript,export const getStripeClient = () => globalThis.__fakeStripe;";
@@ -193,6 +194,64 @@ check("Zelle: first 3 per address per day seal emailed, the 4th does not",
 check("Zelle: 4 registrations from one address send exactly 3 emails, and all 4 still get a confirmation URL",
   emails.length === 3 && emails.every((e) => e.to === "zelle-cap@example.com") &&
   cappedRes.every((res) => res.status === 200 && res.body.checkoutUrl?.startsWith(confirmationPrefix)));
+
+// ---------- Padded or cased addresses share one cap and are used trimmed ----------
+reset();
+const paddedRes = [];
+for (const contactEmail of ["v@x.com", " v@x.com", "V@X.COM ", "v@x.com\t"]) {
+  paddedRes.push(await post(adultBody({ paymentMethod: "zelle", contactEmail, contactName: " A Adult\t", churchName: " CAC Example ", contactPhone: " 4435550100 " })));
+}
+await settle();
+const paddedTokens = paddedRes.map((res) => openRegistrationToken(tokenOf(res)));
+check("adult Zelle: \"v@x.com\", \" v@x.com\", \"V@X.COM \", \"v@x.com\\t\" share one cap: 3 emails in total, the 4th not emailed",
+  paddedRes.every((res) => res.status === 200 && res.body.checkoutUrl?.startsWith(confirmationPrefix)) &&
+  emails.length === 3 && paddedTokens.slice(0, 3).every((t) => t?.emailed === true) && paddedTokens[3]?.emailed === undefined);
+check("adult Zelle: emails, sheet rows, check-in rows and tokens carry the trimmed address, name, church and phone",
+  emails.every((e) => e.to.toLowerCase() === "v@x.com") &&
+  rows.length === 4 && rows.every((r) => r["Contact Email"].toLowerCase() === "v@x.com" && r["Contact Name"] === "A Adult" &&
+    r["Church Name"] === "CAC Example" && r["Contact Phone"] === "4435550100") &&
+  stored.length === 4 && stored.every((s) => s.rows.every((r) => r.contact_email.toLowerCase() === "v@x.com" && r.contact_name === "A Adult")) &&
+  paddedTokens.every((t) => t?.contactEmail.toLowerCase() === "v@x.com" && t.contactName === "A Adult"));
+reset();
+await post(adultBody({ contactEmail: "  card-pad@example.com\t" }));
+check("adult card: Stripe customer_email is the trimmed address", created.length === 1 && created[0].customer_email === "card-pad@example.com");
+reset();
+const badEmails = ["<v@x.com>", "a@x.com,b@x.com", "a,b@x.com", "a;b@x.com", "v @x.com", "v@x.com>"];
+const badRes = [];
+for (const contactEmail of badEmails) badRes.push(await post(adultBody({ paymentMethod: "zelle", contactEmail })));
+check("adult: \"<v@x.com>\", \"a@x.com,b@x.com\" and addresses with , ; > or inner whitespace are 400s; nothing logged, stored or sent",
+  badRes.every((res) => res.status === 400 && res.body.error === "Please enter a valid email address") &&
+  rows.length === 0 && stored.length === 0 && emails.length === 0 && created.length === 0);
+const badYouth = [];
+for (const contactEmail of ["<v@x.com>", "a,b@x.com"]) badYouth.push(await post(youth([kid(22)], { paymentMethod: "zelle", contactEmail })));
+check("youth: \"<v@x.com>\" and \"a,b@x.com\" are 400s too", badYouth.every((res) => res.status === 400) && rows.length === 0 && emails.length === 0);
+
+// ---------- Apps Script (docs copy): new columns go before a trailing Check-in Code ----------
+// Runs the repo's sheets-webhook.gs appendRow against an in-memory sheet.
+const gs = {};
+vm.runInNewContext(readFileSync(path.join(root, "docs/google-apps-script/sheets-webhook.gs"), "utf8"), gs);
+function fakeSheet(grid) {
+  return {
+    grid,
+    getLastColumn: () => Math.max(0, ...grid.map((r) => r.length)),
+    getRange: (row, col, nr = 1, nc = 1) => ({
+      getValues: () => grid.slice(row - 1, row - 1 + nr).map((r) => Array.from({ length: nc }, (_, j) => r[col - 1 + j] ?? "")),
+      setValues: (vals) => vals.forEach((v, i) => v.forEach((x, j) => { grid[row - 1 + i][col - 1 + j] = x; })),
+    }),
+    insertColumnsBefore: (col, n) => grid.forEach((r) => { if (r.length >= col) r.splice(col - 1, 0, ...Array(n).fill("")); }),
+    appendRow: (r) => { grid.push(r); },
+  };
+}
+const existing = fakeSheet([["Timestamp", "Status", "Check-in Code"], ["t0", "paid", "AB12"]]);
+gs.appendRow(existing, { Status: "awaiting", "Zelle Reference": "ZEL-1", "Check-in Code": "CD34", Extra: "=HYPERLINK(1)" });
+check("sheets-webhook.gs: on a tab ending in Check-in Code, new headers go just before it and old rows shift with it",
+  JSON.stringify(existing.grid[0]) === JSON.stringify(["Timestamp", "Status", "Zelle Reference", "Extra", "Check-in Code"]) &&
+  JSON.stringify(existing.grid[1]) === JSON.stringify(["t0", "paid", "", "", "AB12"]) &&
+  JSON.stringify(existing.grid[2].slice(1)) === JSON.stringify(["awaiting", "ZEL-1", "'=HYPERLINK(1)", "CD34"]));
+const plain = fakeSheet([["Timestamp", "Name"]]);
+gs.appendRow(plain, { Name: "x", "=Odd": "y" });
+check("sheets-webhook.gs: on any other tab new headers are appended at the end, formula guard kept",
+  JSON.stringify(plain.grid[0]) === JSON.stringify(["Timestamp", "Name", "'=Odd"]) && JSON.stringify(plain.grid[1].slice(1)) === JSON.stringify(["x", "y"]));
 
 // ---------- Admin action and page (source) ----------
 const tsCode = (s) => s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");

@@ -12,7 +12,7 @@ import { zelleReferenceFor } from "@/lib/zelleReference";
 import { sendRegistrationConfirmationEmail } from "@/lib/registrationEmail";
 import { FORM_HEADER, HONEYPOT_FIELD, looksLikeSpam } from "@/lib/spam";
 import { processingFeeLineItem, processingFeeMetadata } from "@/lib/processingFee";
-import { adultSheetExtras, categoryForAge, encodeMeals, parseMealsAndAllergies, parseYouthRegistration, youthSheetName, youthSheetRows } from "@/lib/youthRegistration";
+import { adultSheetExtras, categoryForAge, EMAIL_RE, encodeMeals, parseMealsAndAllergies, parseYouthRegistration, youthSheetName, youthSheetRows } from "@/lib/youthRegistration";
 
 type RegisterRequestBody = {
   registrationType: "individual" | "group";
@@ -40,7 +40,9 @@ const MAX_FIELD_LENGTH = 120;
 /** Free Youth & Child confirmation emails per recipient address per day. */
 const YOUTH_CONFIRM_MAX = 3;
 const DAY_MS = 24 * 60 * 60 * 1000;
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+/** A per-address confirmation cap key: one allowance per address however it
+ *  was padded or cased. */
+const confirmCapKey = (prefix: string, email: string) => `${prefix}:${email.trim().toLowerCase()}`;
 const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
 /** Sheet Status for a Zelle registration until staff mark it paid. */
 const ZELLE_STATUS = "awaiting Zelle (unverified email)";
@@ -67,7 +69,7 @@ async function confirmByZelle(
 ): Promise<Response> {
   const emailed =
     !!process.env.RESEND_API_KEY &&
-    rateLimit(`zelle-confirm:${summary.contactEmail.toLowerCase()}`, YOUTH_CONFIRM_MAX, DAY_MS);
+    rateLimit(confirmCapKey("zelle-confirm", summary.contactEmail), YOUTH_CONFIRM_MAX, DAY_MS);
   let zelleRef: string;
   let token: string;
   try {
@@ -206,7 +208,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: validationError }, { status: 400 });
   }
 
-  const body = rawBody as RegisterRequestBody;
+  // The contact fields are trimmed once here, as the youth track's parser
+  // does, so every writer below (cap key, sheet, check-in rows, Stripe,
+  // email) sees the address the validator checked.
+  const raw = rawBody as RegisterRequestBody;
+  const body: RegisterRequestBody = {
+    ...raw,
+    contactName: raw.contactName.trim(),
+    contactEmail: raw.contactEmail.trim(),
+    churchName: typeof raw.churchName === "string" ? raw.churchName.trim() : null,
+    contactPhone: (raw.contactPhone ?? "").trim(),
+  };
   const dccZone = body.dccZone.trim();
 
   // Individual mode: each person's meals (an explicit choice) and allergy
@@ -496,7 +508,7 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
     // slot), like every other optional integration here.
     const emailed =
       !!process.env.RESEND_API_KEY &&
-      rateLimit(`youth-confirm:${input.contactEmail.toLowerCase()}`, YOUTH_CONFIRM_MAX, DAY_MS);
+      rateLimit(confirmCapKey("youth-confirm", input.contactEmail), YOUTH_CONFIRM_MAX, DAY_MS);
     let token: string;
     try {
       token = sealRegistrationToken({

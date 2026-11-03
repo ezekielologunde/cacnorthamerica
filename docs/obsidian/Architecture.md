@@ -199,7 +199,8 @@ End to end:
    `pay: "zelle"` and `zelleRef` (`ZEL-` plus 8 Crockford characters,
    deterministic per ref, `lib/zelleReference.ts`), plus `emailed` when a
    confirmation email was attempted (per-address cap of 3 a day, key
-   `zelle-confirm:<email>`).
+   `zelle-confirm:<email>` with the address trimmed and lower-cased; an
+   address containing whitespace, `<`, `>`, `,` or `;` is a 400).
 4. **Confirmation page and email.** `lib/registrationConfirmation.ts` opens
    the token as `payment: "awaiting_zelle"`; the page shows
    `ZellePaymentPanel` (amount due = subtotal, the recipient from
@@ -223,5 +224,14 @@ End to end:
 the `payment_status` check, adds `zelle_ref`) **before** deploying this code:
 the check-in page selects `zelle_ref`. Pinned by
 `node scripts/check-zelle-registration.mjs` (route, token, sheet, check-in
-rows, email and cap, admin action) and `node scripts/check-zelle-ui.mjs`
-(forms, confirmation page, panel, email escaping).
+rows, email and cap, admin action, the Apps Script's column placement) and
+`node scripts/check-zelle-ui.mjs` (forms, confirmation page, panel, email
+escaping).
+
+**Sheets webhook:** the repo copy of `docs/google-apps-script/sheets-webhook.gs`
+inserts a column the tab has not seen just before a trailing `Check-in Code`
+column (anywhere else it is added at the far right), so the first Zelle row on
+an existing tab puts `Zelle Reference` before `Check-in Code`. The live script
+does not do this yet. Re-paste this into the live Apps Script project
+(Extensions > Apps Script) and redeploy a new version for it to take effect;
+until then, add the 'Zelle Reference' header by hand before 'Check-in Code'.
