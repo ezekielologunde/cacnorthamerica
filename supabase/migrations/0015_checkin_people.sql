@@ -59,8 +59,6 @@ create table cacna.checkin_people (
 );
 
 create index checkin_people_year_code_idx on cacna.checkin_people (year, code);
--- Prefix search on name (lower(full_name) like 'ada%').
-create index checkin_people_year_name_idx on cacna.checkin_people (year, lower(full_name) text_pattern_ops);
 
 -- ---------- RLS ----------
 

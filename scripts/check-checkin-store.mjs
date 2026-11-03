@@ -55,9 +55,8 @@ check("migration's only policy is an admin-gated select for authenticated (none 
 check("migration revokes everything from anon and grants anon nothing back",
   /revoke all on cacna\.checkin_people from anon, authenticated;/.test(migration) &&
   !/grant[^;]*to[^;]*\banon\b/.test(migration));
-check("migration indexes (year, code) and (year, lower(full_name) text_pattern_ops)",
-  /on cacna\.checkin_people \(year, code\)/.test(migration) &&
-  /on cacna\.checkin_people \(year, lower\(full_name\) text_pattern_ops\)/.test(migration));
+check("migration indexes (year, code) and has no name index (the page searches with ILIKE contains)",
+  /on cacna\.checkin_people \(year, code\)/.test(migration) && !/text_pattern_ops|lower\(full_name\)/.test(migration));
 
 // ---------- lib/checkinStore.ts (source) ----------
 const store = tsCode(read("lib/checkinStore.ts"));
@@ -82,14 +81,31 @@ process.env.REGISTRATION_SIGNING_SECRET = "check-script-only-secret";
 const logs = [];
 console.error = (...args) => logs.push(args.join(" "));
 const calls = [];
-let mode = "ok"; // "ok" | "error" (Supabase answers an error) | "throw" (client construction throws)
+let mode = "ok"; // "ok" | "error" (Supabase answers an error) | "throw" (client construction throws) | "hang" (never answers unless aborted)
 globalThis.__fakeSupabase = () => {
   if (mode === "throw") throw new Error("supabaseUrl is required. Ada Young parent@example.com");
   return {
     from: (table) => ({
-      upsert: async (rows, opts) => {
+      upsert: (rows, opts) => {
         calls.push({ table, rows, opts });
-        return mode === "error" ? { error: { code: "42P01", message: 'relation "cacna.checkin_people" does not exist' } } : { error: null };
+        let signal;
+        const builder = {
+          abortSignal(s) { signal = s; return builder; },
+          then(resolve, reject) {
+            const p = mode === "hang"
+              ? new Promise((_, rej) => {
+                  if (signal?.aborted) rej(signal.reason);
+                  // AbortSignal.timeout timers are unref'd; a real socket keeps the loop alive, so fake one.
+                  const keepAlive = setInterval(() => {}, 1000);
+                  signal?.addEventListener("abort", () => { clearInterval(keepAlive); rej(signal.reason); });
+                })
+              : Promise.resolve(mode === "error"
+                  ? { error: { code: "42P01", message: 'relation "cacna.checkin_people" does not exist: Ada Young parent@example.com' } }
+                  : { error: null });
+            return p.then(resolve, reject);
+          },
+        };
+        return builder;
       },
     }),
   };
@@ -140,8 +156,19 @@ logs.length = 0;
 mode = "error";
 let threw = false;
 try { await recordCheckinPeople(youth, { paymentStatus: "free" }); } catch { threw = true; }
-check("a database error is logged with the ref and swallowed",
-  !threw && logs.length === 1 && logs[0].startsWith("[checkin]") && logs[0].includes("ref-store-youth"));
+check("a database error is logged with the ref and error code only (no message), and swallowed",
+  !threw && logs.length === 1 && logs[0].startsWith("[checkin]") && logs[0].includes("ref-store-youth") &&
+  logs[0].includes("42P01") && !/relation|Ada|@/.test(logs[0]));
+
+logs.length = 0;
+mode = "hang";
+threw = false;
+const t0 = Date.now();
+try { await recordCheckinPeople(youth, { paymentStatus: "free" }); } catch { threw = true; }
+const elapsed = Date.now() - t0;
+const mine = logs.filter((l) => l.startsWith("[checkin]")); // Node may log its own warnings via console.error
+check("a stalled database call is aborted after ~3s: resolves without throwing, logged by ref",
+  !threw && elapsed < 4500 && mine.length === 1 && mine[0].includes("ref-store-youth") && !/Ada|@/.test(mine[0]));
 
 logs.length = 0;
 mode = "throw";

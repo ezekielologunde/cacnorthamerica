@@ -144,7 +144,7 @@ export default async function CheckInPage({
   let rows: PersonRow[] = [];
   let truncated = false;
   let counts: { checkedIn: number; total: number } | null = null;
-  let setupError = false;
+  let loadError: "missing-table" | "other" | null = null;
 
   if (search.q) {
     const lookups = [];
@@ -157,7 +157,7 @@ export default async function CheckInPage({
     const failed = results.find((r) => r.error);
     if (failed?.error) {
       console.error("[check-in] lookup failed:", failed.error.code);
-      setupError = true;
+      loadError = failed.error.code === "42P01" || failed.error.code === "PGRST205" ? "missing-table" : "other";
     } else {
       ({ rows, truncated } = mergeCheckinResults(results.map((r) => (r.data ?? []) as PersonRow[])));
     }
@@ -169,7 +169,7 @@ export default async function CheckInPage({
     const failed = total.error ?? checkedIn.error;
     if (failed) {
       console.error("[check-in] count failed:", failed.code);
-      setupError = true;
+      loadError = failed.code === "42P01" || failed.code === "PGRST205" ? "missing-table" : "other";
     } else {
       counts = { checkedIn: checkedIn.count ?? 0, total: total.count ?? 0 };
     }
@@ -214,9 +214,13 @@ export default async function CheckInPage({
         </button>
       </form>
 
-      {setupError ? (
+      {loadError === "missing-table" ? (
         <div role="alert" style={{ background: AMBER_BG, color: AMBER, border: "1px solid #f0c36d", borderRadius: 10, padding: "16px 20px", fontSize: 15, fontWeight: 600 }}>
           Check-in database isn&apos;t set up yet. Ask the site owner to apply migration 0015.
+        </div>
+      ) : loadError ? (
+        <div role="alert" style={{ background: AMBER_BG, color: AMBER, border: "1px solid #f0c36d", borderRadius: 10, padding: "16px 20px", fontSize: 15, fontWeight: 600 }}>
+          Couldn&apos;t load the check-in list. Check your connection and try again; the Google Sheet has the same list.
         </div>
       ) : !search.q ? (
         <div style={{ background: "white", borderRadius: 12, padding: "32px", textAlign: "center", color: "var(--ink-soft)", boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
@@ -230,6 +234,7 @@ export default async function CheckInPage({
       ) : rows.length === 0 ? (
         <div style={{ background: "white", borderRadius: 12, padding: "32px", textAlign: "center", color: "var(--ink-soft)", boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
           <p style={{ fontSize: 16, margin: 0 }}>No one found for &ldquo;{search.q}&rdquo; in {year}.</p>
+          <p style={{ fontSize: 14, margin: "8px 0 0" }}>Registered recently? Check the Google Sheet, which lists everyone the moment they register.</p>
         </div>
       ) : (
         <>

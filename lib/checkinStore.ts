@@ -11,7 +11,8 @@ import type { RegistrationSummary } from "@/lib/checkoutSummary";
 // Google Sheet stays the record staff already use; this is a lookup copy.
 //
 // Best effort: a missing service-role key, a database error or anything
-// thrown is logged (ref only, never names or emails) and swallowed, so this
+// thrown (including the 3s timeout) is logged (ref and error code only, never
+// names or emails) and swallowed, so this
 // never fails a registration or a Stripe webhook. Idempotent: rows are keyed
 // by (ref, idx) and inserted with on-conflict-do-nothing, so webhook retries
 // and duplicates never add rows or overwrite checked_in_at.
@@ -93,8 +94,12 @@ export async function recordCheckinPeople(
     const db = createServiceClient();
     const { error } = await db
       .from("checkin_people")
-      .upsert(rows, { onConflict: "ref,idx", ignoreDuplicates: true });
-    if (error) console.error(`[checkin] insert failed for ref ${ref}: ${error.code ?? ""} ${error.message ?? ""}`.trim());
+      .upsert(rows, { onConflict: "ref,idx", ignoreDuplicates: true })
+      // A stalled database must not hold up the Stripe webhook / register
+      // route: the abort throws, and the catch below logs it.
+      .abortSignal(AbortSignal.timeout(3000));
+    // The code only: error.message can echo row values (names, emails).
+    if (error) console.error(`[checkin] insert failed for ref ${ref}: ${error.code ?? "unknown"}`);
   } catch (err) {
     console.error(`[checkin] failed for ref ${ref}: ${err instanceof Error ? err.name : "error"}`);
   }
