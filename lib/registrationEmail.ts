@@ -13,8 +13,8 @@ const CATEGORY_LABEL: Record<RegistrantCategory, string> = {
   child: "Child",
 };
 
-function buildHtml(summary: RegistrationSummary, confirmationUrl: string, isPaid: boolean, processingFeeCents: number): string {
-  const statusLabel = summary.isComplimentary ? "Complimentary" : isPaid ? "Paid" : "Pending";
+function buildHtml(summary: RegistrationSummary, confirmationUrl: string, isPaid: boolean, processingFeeCents: number, zelleRef?: string): string {
+  const statusLabel = zelleRef ? "Awaiting payment" : summary.isComplimentary ? "Complimentary" : isPaid ? "Paid" : "Pending";
   const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
   const totalLabel = dollars(summary.totalAmountCents + processingFeeCents);
   const feeRows = processingFeeCents > 0
@@ -42,8 +42,29 @@ function buildHtml(summary: RegistrationSummary, confirmationUrl: string, isPaid
     })
     .join("");
 
+  // Registered by Zelle: what to send, where (paymentOptions' Zelle entry,
+  // never a second copy of the address) and the memo reference, instead of
+  // the generic options. No processing fee on Zelle, so the amount due is
+  // the subtotal.
+  const zelle = paymentOptions.find((o) => o.kind === "zelle");
+  const label = (text: string) => `<p style="margin:0 0 4px;font-size:10.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#5f5e5a">${text}</p>`;
+  const zelleBlock = zelleRef && zelle
+    ? `<div style="padding-top:20px">
+      <h2 style="font-size:14px;font-weight:800;color:#12141E;margin:0 0 12px;text-transform:uppercase;letter-spacing:1.2px">Send your payment by Zelle</h2>
+      <div style="background:#fff;border:1px solid #ECE9E4;border-radius:16px;padding:20px 22px">
+        ${label("Amount due")}
+        <p style="margin:0 0 14px;font-size:22px;font-weight:800;color:#12141E">${dollars(summary.totalAmountCents)}</p>
+        ${label("Send to")}
+        <p style="margin:0 0 14px;font-size:15px;font-weight:700;color:#12141E;word-break:break-all">${escapeHtml(zelle.detail)}</p>
+        ${label("Put this in the Zelle memo")}
+        <div style="display:inline-block;font-family:Consolas,Menlo,'Courier New',monospace;font-size:24px;line-height:1.2;font-weight:700;color:#12141E;letter-spacing:3px;padding:4px 10px;background:#FFF4DC;border:1px solid #F2D9A6;border-radius:8px;word-break:break-all">${escapeHtml(zelleRef)}</div>
+        <p style="margin:12px 0 0;font-size:13.5px;line-height:1.55;color:#5f5e5a">Put this reference in the Zelle memo exactly as shown: we match payments to the reference. Your spot is held and your check-in codes above work now; staff confirm your payment when the Zelle arrives.</p>
+      </div>
+    </div>`
+    : "";
+
   // Nothing to pay on a $0 registration, so no payment options.
-  const paymentBlock = summary.totalAmountCents > 0
+  const paymentBlock = zelleBlock ? zelleBlock : summary.totalAmountCents > 0
     ? `<div style="padding-top:20px">
       <h2 style="font-size:14px;font-weight:800;color:#12141E;margin:0 0 12px;text-transform:uppercase;letter-spacing:1.2px">Payment Options</h2>
       ${paymentOptions.map((o) => emailCard(escapeHtml(o.name), escapeHtml(o.detail))).join("")}
@@ -67,8 +88,10 @@ function buildHtml(summary: RegistrationSummary, confirmationUrl: string, isPaid
     ${paymentBlock}`;
 
   return emailShell({
-    heading: `You're registered for CACNA ${summary.year}!`,
-    subheading: `Hi ${escapeHtml(summary.contactName)}, we've received your registration. Details are below.`,
+    heading: zelleRef ? `Registration received for CACNA ${summary.year}` : `You're registered for CACNA ${summary.year}!`,
+    subheading: zelleRef
+      ? `Hi ${escapeHtml(summary.contactName)}, your spot is held. Now send your payment by Zelle with the reference below.`
+      : `Hi ${escapeHtml(summary.contactName)}, we've received your registration. Details are below.`,
     bodyHtml,
     ctaHref: confirmationUrl,
     ctaLabel: "View Your Confirmation Online →",
@@ -91,7 +114,11 @@ export async function sendRegistrationConfirmationEmail(
    *  sends the same confirmation twice. */
   idempotencyKey?: string,
   /** Processing fee charged on top of summary.totalAmountCents (the subtotal). */
-  processingFeeCents = 0
+  processingFeeCents = 0,
+  /** Set for a Zelle registration (POST /api/register, confirmByZelle):
+   *  status "Awaiting payment", amount due, the Zelle recipient and the memo
+   *  reference. Absent, the email is exactly as before. */
+  zelle?: { zelleRef: string }
 ): Promise<boolean> {
   const key = process.env.RESEND_API_KEY;
   if (!key) return true;
@@ -101,8 +128,8 @@ export async function sendRegistrationConfirmationEmail(
     const { error } = await resend.emails.send({
       ...sender("convention"),
       to: summary.contactEmail,
-      subject: `You're registered for CACNA ${summary.year}!`,
-      html: buildHtml(summary, confirmationUrl, isPaid, processingFeeCents),
+      subject: zelle ? `Registration received for CACNA ${summary.year}: send your Zelle payment` : `You're registered for CACNA ${summary.year}!`,
+      html: buildHtml(summary, confirmationUrl, isPaid, processingFeeCents, zelle?.zelleRef),
     }, idempotencyKey ? { idempotencyKey } : undefined);
     if (error) {
       console.error("[registration email] Resend error:", error);

@@ -86,6 +86,12 @@ async function confirmByZelle(
   // Awaited, never throws, never fails the registration (as on the free paths).
   await recordCheckinPeople(summary, { paymentStatus: "awaiting_zelle", zelleRef });
   const checkoutUrl = `${SITE_URL}/events/cacna-${summary.year}/register/confirmation?t=${token}`;
+  if (emailed) {
+    // Awaited like the free youth path so the function cannot be suspended
+    // mid-send. The helper never throws; a failed send is only logged.
+    const sent = await sendRegistrationConfirmationEmail(summary, checkoutUrl, false, undefined, 0, { zelleRef });
+    if (!sent) console.error(`[register] Zelle confirmation email failed for ref ${summary.ref}`);
+  }
   return NextResponse.json({ checkoutUrl });
 }
 
