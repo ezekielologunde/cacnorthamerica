@@ -5,7 +5,8 @@ import { FORM_HEADER, countLinks } from "@/lib/spam";
 import { GIVING_CAMPAIGNS, zelleRecipientFor } from "@/lib/giving";
 import { emailLimitKey, validateGiftBasics, type GiftBasics } from "@/lib/givingRequest";
 import { giftZelleReference } from "@/lib/zelleReference";
-import { sendZelleGiftEmails } from "@/lib/givingEmail";
+import { sendZelleCommitteeEmail, sendZelleDonorEmail } from "@/lib/givingEmail";
+import { recordPledgeThenNotifyDonor } from "@/lib/zellePledge";
 import { logToSheetChecked } from "@/lib/sheetsWebhook";
 
 const HOUR_MS = 60 * 60 * 1000;
@@ -77,33 +78,28 @@ export async function POST(request: Request) {
   const contactName = body.contactName.trim();
   const amountLabel = `$${(body.amountCents / 100).toFixed(2)}`;
 
-  const [sheetOk, emails] = await Promise.all([
-    logToSheetChecked("Giving Zelle", {
-      "Campaign": campaign.name,
-      "Contact Name": contactName,
-      "Contact Email": contactEmail,
-      "Amount": amountLabel,
-      "Zelle Reference": zelleRef,
-      "Status": "awaiting Zelle (unverified)",
-    }),
-    sendZelleGiftEmails({
-      contactName,
-      contactEmail,
-      campaignTitle: campaign.name,
-      amountLabel,
-      recipient,
-      zelleRef,
-    }),
-  ]);
+  const mail = { contactName, contactEmail, campaignTitle: campaign.name, amountLabel, recipient, zelleRef };
 
-  // Payments can't be reversed and are matched by reference, so the pledge must
-  // be recorded somewhere the committee will see. If neither record landed,
-  // fail before the donor sends money rather than hand out a reference nobody
-  // can match.
-  if (!sheetOk && !emails.committeeSent) {
+  // The donor is emailed the address and reference only after the pledge is
+  // recorded (sheet row or committee email). If neither landed, fail before they
+  // send money: nothing has gone to them, and a retry makes a fresh reference.
+  const outcome = await recordPledgeThenNotifyDonor({
+    recordInSheet: () =>
+      logToSheetChecked("Giving Zelle", {
+        "Campaign": campaign.name,
+        "Contact Name": contactName,
+        "Contact Email": contactEmail,
+        "Amount": amountLabel,
+        "Zelle Reference": zelleRef,
+        "Status": "awaiting Zelle (unverified)",
+      }),
+    emailCommittee: () => sendZelleCommitteeEmail(mail),
+    emailDonor: () => sendZelleDonorEmail(mail),
+  });
+  if (!outcome.recorded) {
     console.error(`[giving zelle] pledge not recorded: ${zelleRef} ${amountLabel} ${campaign.name} ${contactEmail}`);
     return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
   }
 
-  return NextResponse.json({ zelleRef, recipient, amountCents: body.amountCents, emailed: emails.donorSent });
+  return NextResponse.json({ zelleRef, recipient, amountCents: body.amountCents, emailed: outcome.donorSent });
 }

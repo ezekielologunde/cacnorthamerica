@@ -119,38 +119,45 @@ function zelleCommitteeHtml(input: ZelleGiftInput): string {
   });
 }
 
-export type ZelleEmailResult = { donorSent: boolean; committeeSent: boolean };
-
-/** Emails the donor their Zelle instructions and tells the committee to expect
- *  the payment. Never throws. `donorSent` lets the page say whether to copy the
- *  details down now; `committeeSent` is one of the two records of the pledge. */
-export async function sendZelleGiftEmails(input: ZelleGiftInput): Promise<ZelleEmailResult> {
+/** Tells the committee to expect the payment. Never throws; resolves true when
+ *  the email was sent, which makes it one of the two records of the pledge. */
+export async function sendZelleCommitteeEmail(input: ZelleGiftInput): Promise<boolean> {
   const key = process.env.RESEND_API_KEY;
-  if (!key || !input.contactEmail) return { donorSent: false, committeeSent: false };
-
+  if (!key) return false;
   const oneLine = (value: string) => value.replace(/[\r\n]+/g, " ");
   try {
-    const resend = new Resend(key);
-    const [donor, committee] = await Promise.all([
-      resend.emails.send({
-        ...sender("giving"),
-        to: input.contactEmail,
-        subject: "Your Zelle gift details — CACNA",
-        html: zelleDonorHtml(input),
-      }),
-      resend.emails.send({
-        ...sender("giving"),
-        to: SITE.email,
-        replyTo: input.contactEmail,
-        subject: oneLine(`Zelle gift coming: ${input.amountLabel} for ${input.campaignTitle} (${input.zelleRef})`),
-        html: zelleCommitteeHtml(input),
-      }),
-    ]);
-    if (committee.error) console.error("[giving zelle] committee email failed:", committee.error);
-    if (donor.error) console.error("[giving zelle] donor email failed:", donor.error);
-    return { donorSent: !donor.error, committeeSent: !committee.error };
+    const { error } = await new Resend(key).emails.send({
+      ...sender("giving"),
+      to: SITE.email,
+      replyTo: input.contactEmail,
+      subject: oneLine(`Zelle gift coming: ${input.amountLabel} for ${input.campaignTitle} (${input.zelleRef})`),
+      html: zelleCommitteeHtml(input),
+    });
+    if (error) console.error("[giving zelle] committee email failed:", error);
+    return !error;
   } catch (err) {
-    console.error("[giving zelle] email send failed:", err);
-    return { donorSent: false, committeeSent: false };
+    console.error("[giving zelle] committee email send failed:", err);
+    return false;
+  }
+}
+
+/** Emails the donor their Zelle instructions. Never throws; resolves true when
+ *  sent, so the page can say whether to copy the details down now. Call it only
+ *  after the pledge is recorded (see lib/zellePledge.ts). */
+export async function sendZelleDonorEmail(input: ZelleGiftInput): Promise<boolean> {
+  const key = process.env.RESEND_API_KEY;
+  if (!key || !input.contactEmail) return false;
+  try {
+    const { error } = await new Resend(key).emails.send({
+      ...sender("giving"),
+      to: input.contactEmail,
+      subject: "Your Zelle gift details — CACNA",
+      html: zelleDonorHtml(input),
+    });
+    if (error) console.error("[giving zelle] donor email failed:", error);
+    return !error;
+  } catch (err) {
+    console.error("[giving zelle] donor email send failed:", err);
+    return false;
   }
 }
