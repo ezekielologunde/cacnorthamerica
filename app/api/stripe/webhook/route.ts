@@ -10,6 +10,7 @@ import { splitCheckoutAmount, isProcessingFeeLine } from "@/lib/processingFee";
 import { conventionYears } from "@/lib/conventions";
 import { adultSheetExtras, youthSheetName, youthSheetRows } from "@/lib/youthRegistration";
 import { checkinCodesFor, checkinCodeSheetCell } from "@/lib/checkinCode";
+import { recordCheckinPeople } from "@/lib/checkinStore";
 
 // checkout.session.completed also fires for delayed methods (ACH, etc.)
 // before the money has moved; only these statuses mean the checkout is
@@ -217,6 +218,13 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
         // fallback (no ref).
         "Check-in Code": summary ? checkinCodeSheetCell(summary) : "",
       }));
+
+      // Check-in lookup rows (lib/checkinStore.ts), once the sheet has the
+      // registration. Best effort and idempotent: never throws, never changes
+      // sheetOk / emailOk, and a retry inserts nothing new.
+      if (summary && sheetOk) {
+        await recordCheckinPeople(summary, { paymentStatus: "paid", stripeSession: sessionId, contactEmail });
+      }
 
       // Stripe's own customer_details email is more authoritative than
       // whatever the registrant originally typed into the form (matches
