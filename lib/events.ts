@@ -43,6 +43,19 @@ export function isEventPast(ev: ChurchEvent): boolean {
 }
 
 /**
+ * True once a non-recurring event's start time (ET) has passed, so a
+ * "register now" prompt can be dropped while the event is still under way.
+ */
+export function hasEventStarted(ev: ChurchEvent): boolean {
+  if (ev.recurDay || ev.recurMonthly) return false;
+  const s = ev.startLocal;
+  const y = +s.slice(0, 4), mo = +s.slice(4, 6) - 1, d = +s.slice(6, 8);
+  const h = +s.slice(9, 11), mi = +s.slice(11, 13);
+  const offset = mo >= 2 && mo <= 9 ? 4 : 5;
+  return Date.now() > Date.UTC(y, mo, d, h + offset, mi);
+}
+
+/**
  * Single source of truth for ordering one-off events. Splits a list into
  * upcoming (soonest first) and past (most recently concluded first).
  * `startLocal` is a zero-padded YYYYMMDDTHHMMSS string, so a plain string
@@ -119,7 +132,7 @@ export const specialEvents: ChurchEvent[] = [
   {
     id: "holy-land-pilgrimage-2026",
     title: "Holy Land Pilgrimage 2026",
-    desc: "CACNA Latunde Region Pilgrimage to Israel & Egypt, November 2–12, 2026. Package includes round-trip flights from JFK, 8 nights accommodation (7 in Israel + 1 in St. Catherine, Egypt), daily meals, private guide, group coach, and Pilgrimage Certificate. Price $4,549 · $500 deposit to register · $2,000 second payment due Oct 31. Contact: info@cacnapilgrimage.org | @cacnapilgrimage",
+    desc: "CACNA Latunde Region Pilgrimage to Israel & Egypt, November 2–12, 2026. Package includes round-trip flights from JFK, 8 nights accommodation (7 in Israel + 1 in St. Catherine, Egypt), daily meals, private guide, group coach, and Pilgrimage Certificate. Price $4,549 · $500 deposit to register. Contact: info@cacnapilgrimage.org | @cacnapilgrimage",
     dateLabel: "November 2–12, 2026", timeLabel: "Departing JFK", month: "NOV", day: "02",
     startLocal: "20261102T060000", endLocal: "20261112T230000",
     href: "/events/pilgrimage-2026", navLabel: "Holy Land Pilgrimage",
