@@ -106,7 +106,7 @@ function PersonCard({ person, q, year, codeShared }: { person: PersonRow; q: str
               background: "white", color: AMBER, border: "1px solid #f0c36d",
               borderRadius: 6, padding: "10px 18px", minHeight: 44, fontSize: 14, fontWeight: 700,
             }}>
-              Mark paid
+              Mark registration paid
             </ActionButton>
           </form>
         </div>

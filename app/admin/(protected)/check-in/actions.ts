@@ -28,19 +28,34 @@ export async function checkInPerson(id: string, formData?: FormData) {
 }
 
 // Staff confirm a Zelle payment arrived (name, amount and the ZEL-
-// reference in the memo). Only where still awaiting Zelle: it never touches a
-// free or card-paid row, and a double tap changes nothing.
+// reference in the memo). One Zelle transfer covers the whole registration (one
+// amount, one reference shared by every row with the same ref), so this marks
+// every awaiting row of the clicked person's registration paid. Only rows still
+// awaiting Zelle: it never touches a free or card-paid row, and a double tap
+// changes nothing. Check-in itself stays per person.
 export async function markZellePaid(id: string, formData?: FormData) {
   const { supabase } = await requireAdmin();
   if (!isCheckinId(id)) throw new Error("Could not mark this payment as received. Please try again.");
-  const { error } = await supabase
+  const { data: row, error: lookupError } = await supabase
     .from("checkin_people")
-    .update({ payment_status: "paid" })
+    .select("ref")
     .eq("id", id)
-    .eq("payment_status", "awaiting_zelle");
-  if (error) {
+    .eq("payment_status", "awaiting_zelle")
+    .maybeSingle();
+  if (lookupError) {
     console.error(`[check-in] markZellePaid failed for id ${id}`);
     throw new Error("Could not mark this payment as received. Please try again.");
+  }
+  if (row) {
+    const { error } = await supabase
+      .from("checkin_people")
+      .update({ payment_status: "paid" })
+      .eq("ref", row.ref)
+      .eq("payment_status", "awaiting_zelle");
+    if (error) {
+      console.error(`[check-in] markZellePaid failed for id ${id}`);
+      throw new Error("Could not mark this payment as received. Please try again.");
+    }
   }
   revalidatePath("/admin/check-in");
   redirect(checkinPageHref(formData?.get("q"), formData?.get("year")), RedirectType.replace);

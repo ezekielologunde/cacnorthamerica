@@ -201,16 +201,19 @@ const actions = read("app/admin/(protected)/check-in/actions.ts");
 const mark = actions.split("export async function markZellePaid")[1]?.split("export async function")[0] ?? "";
 check("markZellePaid calls await requireAdmin() first, then validates the id",
   /^\(id: string, formData\?: FormData\) \{\s*const \{ supabase \} = await requireAdmin\(\);\s*if \(!isCheckinId\(id\)\) throw new Error\(/.test(mark));
-check("markZellePaid sets paid only where payment_status is awaiting_zelle",
-  /\.update\(\{ payment_status: "paid" \}\)\s*\.eq\("id", id\)\s*\.eq\("payment_status", "awaiting_zelle"\);/.test(mark));
+check("markZellePaid looks up the clicked awaiting_zelle row's ref (maybeSingle), failing closed on error",
+  /\.select\("ref"\)\s*\.eq\("id", id\)\s*\.eq\("payment_status", "awaiting_zelle"\)\s*\.maybeSingle\(\);\s*if \(lookupError\) \{\s*console\.error\(`\[check-in\] markZellePaid failed for id \$\{id\}`\);\s*throw new Error\(/.test(mark));
+check("markZellePaid marks the whole registration paid: update keyed on ref, still only where awaiting_zelle, never on id",
+  /if \(row\) \{\s*const \{ error \} = await supabase\s*\.from\("checkin_people"\)\s*\.update\(\{ payment_status: "paid" \}\)\s*\.eq\("ref", row\.ref\)\s*\.eq\("payment_status", "awaiting_zelle"\);/.test(mark) &&
+  !/\.update\([^)]*\)\s*\.eq\("id"/.test(mark));
 check("markZellePaid logs the id only, revalidates and redirects back like checkInPerson",
   /console\.error\(`\[check-in\] markZellePaid failed for id \$\{id\}`\);/.test(mark) && /revalidatePath\("\/admin\/check-in"\);/.test(mark) &&
   /redirect\(checkinPageHref\(formData\?\.get\("q"\), formData\?\.get\("year"\)\), RedirectType\.replace\);/.test(mark));
 const page = read("app/admin/(protected)/check-in/page.tsx");
 check("check-in page still calls await requireAdmin()", /await requireAdmin\(\)/.test(page));
-check("page shows the Mark paid button, the warning and the badge only for awaiting_zelle",
+check("page shows the Mark registration paid button, the warning and the badge only for awaiting_zelle",
   /const awaitingZelle = person\.payment_status === "awaiting_zelle";/.test(page) &&
-  /\{awaitingZelle && \([\s\S]*Payment not received yet[\s\S]*markZellePaid\.bind\(null, person\.id\)[\s\S]*Mark paid[\s\S]*\)\}/.test(page) &&
+  /\{awaitingZelle && \([\s\S]*Payment not received yet[\s\S]*markZellePaid\.bind\(null, person\.id\)[\s\S]*Mark registration paid[\s\S]*\)\}/.test(page) &&
   /awaitingZelle \? "Awaiting Zelle payment"/.test(page) && /person\.zelle_ref/.test(page) && /zelle_ref/.test(page.match(/const COLUMNS =[^;]*;/)?.[0] ?? ""));
 const migration = readFileSync(path.join(root, "supabase/migrations/0016_checkin_awaiting_zelle.sql"), "utf8").replace(/--.*$/gm, "");
 check("migration 0016 replaces the payment_status check to allow awaiting_zelle and adds zelle_ref",
