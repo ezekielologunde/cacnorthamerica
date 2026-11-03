@@ -84,7 +84,7 @@ const panel = tsCode(panelRaw);
 check("ZellePaymentPanel reads the recipient from paymentOptions' Zelle entry",
   /import \{ paymentOptions \} from "@\/lib\/registrationInfo";/.test(panel) &&
   /const zelle = paymentOptions\.find\(\(o\) => o\.kind === "zelle"\);/.test(panel) &&
-  /\{zelle\.detail\}/.test(panel) && /copy\("zelle", zelle\.copyValue!\)/.test(panel));
+  /\{zelle\.copyValue \?\? zelle\.detail\}/.test(panel) && /copy\("zelle", zelle\.copyValue!\)/.test(panel));
 check("paymentOptions lists Zelle first, with a copyable address",
   paymentOptions[0]?.kind === "zelle" && /@/.test(paymentOptions[0].copyValue ?? "") && paymentOptions[0].detail.includes(paymentOptions[0].copyValue));
 

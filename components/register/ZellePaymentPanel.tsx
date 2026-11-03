@@ -40,7 +40,7 @@ export function ZellePaymentPanel({ amountDueCents, zelleRef }: { amountDueCents
 
       <div style={{ borderTop: "1px solid rgba(245,246,250,.14)", paddingTop: 14 }}>
         <p style={step}>1. Send it by Zelle to</p>
-        <p style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#fff", overflowWrap: "anywhere" }}>{zelle.detail}</p>
+        <p style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#fff", overflowWrap: "anywhere" }}>{zelle.copyValue ?? zelle.detail}</p>
         {zelle.copyValue && (
           <CopyButton dark label={zelle.copyLabel ?? "Copy"} isCopied={copied === "zelle"} onCopy={() => copy("zelle", zelle.copyValue!)} />
         )}

@@ -55,7 +55,7 @@ function buildHtml(summary: RegistrationSummary, confirmationUrl: string, isPaid
         ${label("Amount due")}
         <p style="margin:0 0 14px;font-size:22px;font-weight:800;color:#12141E">${dollars(summary.totalAmountCents)}</p>
         ${label("Send to")}
-        <p style="margin:0 0 14px;font-size:15px;font-weight:700;color:#12141E;word-break:break-all">${escapeHtml(zelle.detail)}</p>
+        <p style="margin:0 0 14px;font-size:15px;font-weight:700;color:#12141E;word-break:break-all">${escapeHtml(zelle.copyValue ?? zelle.detail)}</p>
         ${label("Put this in the Zelle memo")}
         <div style="display:inline-block;font-family:Consolas,Menlo,'Courier New',monospace;font-size:24px;line-height:1.2;font-weight:700;color:#12141E;letter-spacing:3px;padding:4px 10px;background:#FFF4DC;border:1px solid #F2D9A6;border-radius:8px;word-break:break-all">${escapeHtml(zelleRef)}</div>
         <p style="margin:12px 0 0;font-size:13.5px;line-height:1.55;color:#5f5e5a">Put this reference in the Zelle memo exactly as shown: we match payments to the reference. Your spot is held and your check-in codes above work now; staff confirm your payment when the Zelle arrives.</p>
