@@ -1,11 +1,33 @@
 "use client";
 
 import { useState, type CSSProperties, type FormEvent } from "react";
-import type { GivingCampaign } from "@/lib/giving";
+import { zelleRecipientFor, type GivingCampaign } from "@/lib/giving";
 import { FeeBreakdown } from "@/components/checkout/FeeBreakdown";
+import { ZellePaymentPanel } from "@/components/register/ZellePaymentPanel";
+import { FORM_HEADER } from "@/lib/spam";
 import type { PaymentMethod } from "@/lib/processingFee";
 
+/** Zelle is a pledge the donor completes in their own bank app; card and bank
+ *  go through Stripe Checkout. */
+type GiveMethod = PaymentMethod | "zelle";
+
 const PRESET_AMOUNTS = [25, 50, 100, 250];
+
+// Zelle first: it carries no fee for the donor or the church. It is only
+// offered for campaigns that have a Zelle address (lib/giving.ts).
+const METHOD_CHOICES: readonly (readonly [GiveMethod, string, string])[] = [
+  ["zelle", "Zelle (recommended)", "No fee. You send it from your bank app"],
+  ["card", "Card", "Received right away"],
+  ["bank", "Bank account", "Takes about 4 business days to clear"],
+];
+
+type ZelleResult = {
+  zelleRef: string;
+  recipient: string;
+  amountCents: number;
+  emailed: boolean;
+  campaignTitle: string;
+};
 
 const inputStyle: CSSProperties = {
   width: "100%", boxSizing: "border-box",
@@ -20,19 +42,26 @@ const labelStyle: CSSProperties = { display: "block", fontSize: 14, fontWeight: 
  *  per campaign card) -- the donor picks which of the three real campaigns
  *  their gift goes to via a dropdown instead of duplicating this form three
  *  times. Every campaign already has real bank/wire details for donors who
- *  don't want to pay online; this is the additional Stripe path. */
+ *  don't want to pay online; this is the additional online path. */
 export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
   const [campaignSlug, setCampaignSlug] = useState(campaigns[0]?.slug ?? "");
   const [amount, setAmount] = useState<number | null>(PRESET_AMOUNTS[1]);
   const [customAmount, setCustomAmount] = useState("");
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
-  const [method, setMethod] = useState<PaymentMethod>("card");
+  const [method, setMethod] = useState<GiveMethod>("zelle");
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [zelleResult, setZelleResult] = useState<ZelleResult | null>(null);
 
   const effectiveDollars = customAmount.trim() !== "" ? Number(customAmount) : amount;
   const amountCents = effectiveDollars && effectiveDollars > 0 ? Math.round(effectiveDollars * 100) : null;
+
+  // Zelle is the default, but a campaign with no Zelle address (the Centenary
+  // project) quietly falls back to card.
+  const campaign = campaigns.find((c) => c.slug === campaignSlug);
+  const zelleRecipient = campaign ? zelleRecipientFor(campaign) : null;
+  const activeMethod: GiveMethod = method === "zelle" && !zelleRecipient ? "card" : method;
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -43,11 +72,40 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
     }
     setStatus("loading");
     setErrorMessage(null);
+
+    if (activeMethod === "zelle") {
+      try {
+        const response = await fetch("/api/giving/zelle", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", [FORM_HEADER]: "1" },
+          body: JSON.stringify({ contactName, contactEmail, campaignSlug, amountCents }),
+        });
+        const data = await response.json().catch(() => null);
+        if (!response.ok || typeof data?.zelleRef !== "string" || typeof data?.recipient !== "string") {
+          setErrorMessage(typeof data?.error === "string" ? data.error : "Something went wrong. Please try again.");
+          setStatus("error");
+          return;
+        }
+        setZelleResult({
+          zelleRef: data.zelleRef,
+          recipient: data.recipient,
+          amountCents: typeof data.amountCents === "number" ? data.amountCents : amountCents,
+          emailed: data.emailed === true,
+          campaignTitle: campaign?.title ?? "",
+        });
+        setStatus("idle");
+      } catch {
+        setErrorMessage("Something went wrong. Please try again.");
+        setStatus("error");
+      }
+      return;
+    }
+
     try {
       const response = await fetch("/api/giving/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contactName, contactEmail, campaignSlug, amountCents, paymentMethod: method }),
+        body: JSON.stringify({ contactName, contactEmail, campaignSlug, amountCents, paymentMethod: activeMethod }),
       });
       const data = await response.json().catch(() => null);
       if (!response.ok || !data?.checkoutUrl) {
@@ -55,7 +113,7 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
         setStatus("error");
         return;
       }
-      window.location.href = data.checkoutUrl;
+      window.location.assign(data.checkoutUrl);
     } catch {
       setErrorMessage("Something went wrong. Please try again.");
       setStatus("error");
@@ -71,6 +129,36 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
       <div aria-hidden style={{ position: "absolute", top: -100, right: -80, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,rgba(253,200,65,.18),transparent 70%)", pointerEvents: "none" }} />
       <div style={{ position: "relative", zIndex: 2, maxWidth: 480, margin: "0 auto" }}>
 
+        {zelleResult ? (
+          <div>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.4vw,38px)", letterSpacing: "-1px", color: "#fff", margin: "0 0 12px", lineHeight: 1.1 }}>
+              Now send it by Zelle.
+            </h2>
+            <p style={{ fontSize: 15, color: "rgba(255,255,255,.78)", lineHeight: 1.6, margin: "0 0 18px" }}>
+              Your gift to {zelleResult.campaignTitle} is complete once you send the payment from your bank app.
+            </p>
+            <ZellePaymentPanel amountDueCents={zelleResult.amountCents} zelleRef={zelleResult.zelleRef} recipient={zelleResult.recipient} />
+            <p role="status" style={{ fontSize: 13.5, color: "rgba(255,255,255,.78)", lineHeight: 1.6, margin: "16px 0 0" }}>
+              Zelle payments can&rsquo;t be reversed, so check the address before you send.{" "}
+              {zelleResult.emailed
+                ? "We’ve also emailed these details to you."
+                : "We couldn’t email these details, so please copy them now."}
+            </p>
+            <button
+              type="button"
+              onClick={() => setZelleResult(null)}
+              className="press"
+              style={{
+                marginTop: 18, minHeight: 48, padding: "0 22px", borderRadius: 999, cursor: "pointer",
+                background: "transparent", color: "#fff", fontWeight: 700, fontSize: 15,
+                border: "1.5px solid rgba(255,255,255,.3)",
+              }}
+            >
+              Give another gift
+            </button>
+          </div>
+        ) : (
+        <>
         <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.4vw,38px)", letterSpacing: "-1px", color: "#fff", margin: "0 0 20px", lineHeight: 1.1 }}>
           Make a gift online.
         </h2>
@@ -133,11 +221,8 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
           <fieldset style={{ border: "none", padding: 0, margin: "0 0 18px", minWidth: 0 }}>
             <legend style={{ ...labelStyle, padding: 0 }}>How would you like to give?</legend>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,200px),1fr))", gap: 8 }}>
-              {([
-                ["card", "Card", "Received right away"],
-                ["bank", "Bank account", "Takes about 4 business days to clear"],
-              ] as const).map(([value, title, note]) => {
-                const active = method === value;
+              {METHOD_CHOICES.filter(([value]) => value !== "zelle" || zelleRecipient).map(([value, title, note]) => {
+                const active = activeMethod === value;
                 return (
                   <label
                     key={value}
@@ -169,7 +254,13 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
 
           {amountCents ? (
             <div style={{ marginBottom: 18 }}>
-              <FeeBreakdown subtotalCents={amountCents} subtotalLabel="Gift" tone="dark" method={method} />
+              {activeMethod === "zelle" ? (
+                <p style={{ fontSize: 13.5, color: "rgba(255,255,255,.78)", lineHeight: 1.6, margin: 0 }}>
+                  No processing fee: you send exactly ${(amountCents / 100).toFixed(2)}.
+                </p>
+              ) : (
+                <FeeBreakdown subtotalCents={amountCents} subtotalLabel="Gift" tone="dark" method={activeMethod} />
+              )}
             </div>
           ) : null}
 
@@ -188,14 +279,22 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
               cursor: status === "loading" ? "not-allowed" : "pointer",
             }}
           >
-            {status === "loading" ? "Redirecting…" : `Give ${amountCents ? `$${(amountCents / 100).toFixed(2)}` : "Now"} →`}
+            {status === "loading"
+              ? (activeMethod === "zelle" ? "One moment…" : "Redirecting…")
+              : activeMethod === "zelle"
+                ? "Show me how to send it →"
+                : `Give ${amountCents ? `$${(amountCents / 100).toFixed(2)}` : "Now"} →`}
           </button>
           <p style={{ fontSize: 13, color: "rgba(255,255,255,.7)", textAlign: "center", marginTop: 14 }}>
-            {method === "bank"
-              ? "Securely processed by Stripe. Your bank will ask you to confirm the account, and we\u2019ll email you when the gift clears."
-              : "Securely processed by Stripe. You\u2019ll get an email receipt."}
+            {activeMethod === "zelle"
+              ? "We’ll show you where to send it and a reference to put in the memo, and email you the same details."
+              : activeMethod === "bank"
+                ? "Securely processed by Stripe. Your bank will ask you to confirm the account, and we’ll email you when the gift clears."
+                : "Securely processed by Stripe. You’ll get an email receipt."}
           </p>
         </form>
+        </>
+        )}
       </div>
     </div>
   );

@@ -53,3 +53,9 @@ export const GIVING_CAMPAIGNS: GivingCampaign[] = [
     ],
   },
 ];
+
+/** The Zelle address a campaign takes gifts at, or null when it has none (the
+ *  Centenary project is Nigerian bank accounts only). */
+export function zelleRecipientFor(campaign: Pick<GivingCampaign, "accounts">): string | null {
+  return campaign.accounts.find((a) => a.label === "Zelle")?.value ?? null;
+}

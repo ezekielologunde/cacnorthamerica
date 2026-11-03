@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 import { escapeHtml } from "@/lib/html";
-import { emailShell, sender } from "@/lib/email";
+import { emailCard, emailShell, sender } from "@/lib/email";
+import { SITE } from "@/lib/site";
 
 export type GivingConfirmationInput = {
   /** Resend idempotency key (24h window) so a redelivered webhook never
@@ -67,6 +68,90 @@ export async function sendGivingConfirmationEmail(input: GivingConfirmationInput
     return true;
   } catch (err) {
     console.error("[giving email] send failed:", err);
+    return false;
+  }
+}
+
+export type ZelleGiftInput = {
+  contactName: string;
+  contactEmail: string;
+  campaignTitle: string;
+  /** Formatted for display, e.g. "$50.00". */
+  amountLabel: string;
+  recipient: string;
+  zelleRef: string;
+};
+
+function zelleDonorHtml(input: ZelleGiftInput): string {
+  const bodyHtml = [
+    emailCard("Send", `${escapeHtml(input.amountLabel)} by Zelle to <strong>${escapeHtml(input.recipient)}</strong>`),
+    emailCard(
+      "Put this in the Zelle memo",
+      `<strong style="font-family:Consolas,Menlo,monospace;font-size:18px;letter-spacing:2px;color:#12141E">${escapeHtml(input.zelleRef)}</strong><br/>We match each payment to its reference, so add it exactly as shown.`,
+    ),
+    emailCard("Gift to", escapeHtml(input.campaignTitle)),
+    emailCard(
+      "Before you send",
+      "Zelle payments can&rsquo;t be reversed, so check that the address above matches what you type into your bank app. If you would like a receipt for your records, or have any question, reply to this email.",
+    ),
+  ].join("");
+
+  return emailShell({
+    heading: "Your Zelle gift details",
+    subheading: `Hi ${escapeHtml(input.contactName)}, your gift isn&rsquo;t complete until you send the payment from your bank app.`,
+    bodyHtml,
+  });
+}
+
+function zelleCommitteeHtml(input: ZelleGiftInput): string {
+  const bodyHtml = [
+    emailCard("Donor", `${escapeHtml(input.contactName)} · ${escapeHtml(input.contactEmail)}`),
+    emailCard("Campaign", escapeHtml(input.campaignTitle)),
+    emailCard("Amount", escapeHtml(input.amountLabel)),
+    emailCard("Zelle reference", `<strong style="font-family:Consolas,Menlo,monospace">${escapeHtml(input.zelleRef)}</strong>`),
+    emailCard("Status", "Not received yet. Match it to the Zelle deposit by reference, name and amount, and reply to this email to reach the donor."),
+  ].join("");
+
+  return emailShell({
+    heading: "A Zelle gift is on its way",
+    subheading: "Someone asked how to give by Zelle on cacnorthamerica.com.",
+    bodyHtml,
+  });
+}
+
+/** Emails the donor their Zelle instructions and tells the committee to expect
+ *  the payment. Never throws. Resolves true when the donor's email was sent,
+ *  so the page can say whether to copy the details down now. */
+export async function sendZelleGiftEmails(input: ZelleGiftInput): Promise<boolean> {
+  const key = process.env.RESEND_API_KEY;
+  if (!key || !input.contactEmail) return false;
+
+  const oneLine = (value: string) => value.replace(/[\r\n]+/g, " ");
+  try {
+    const resend = new Resend(key);
+    const [donor, committee] = await Promise.all([
+      resend.emails.send({
+        ...sender("giving"),
+        to: input.contactEmail,
+        subject: "Your Zelle gift details — CACNA",
+        html: zelleDonorHtml(input),
+      }),
+      resend.emails.send({
+        ...sender("giving"),
+        to: SITE.email,
+        replyTo: input.contactEmail,
+        subject: oneLine(`Zelle gift coming: ${input.amountLabel} for ${input.campaignTitle} (${input.zelleRef})`),
+        html: zelleCommitteeHtml(input),
+      }),
+    ]);
+    if (committee.error) console.error("[giving zelle] committee email failed:", committee.error);
+    if (donor.error) {
+      console.error("[giving zelle] donor email failed:", donor.error);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error("[giving zelle] email send failed:", err);
     return false;
   }
 }

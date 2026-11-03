@@ -3,46 +3,18 @@ import { getStripeClient } from "@/lib/stripe";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
 import { SITE_URL } from "@/lib/site";
 import { GIVING_CAMPAIGNS } from "@/lib/giving";
+import { validateGiftBasics, type GiftBasics } from "@/lib/givingRequest";
 import { BANK_MAX_CENTS, feeLineItems, feeMetadataFor, type PaymentMethod } from "@/lib/processingFee";
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const MAX_FIELD_LENGTH = 120;
-const MAX_EMAIL_LENGTH = 254;
-const MIN_CENTS = 100; // $1
-const MAX_CENTS = 5_000_000; // $50,000 -- generous ceiling against a typo/abuse, not a real donation cap
-
-type CheckoutRequestBody = {
-  contactName: string;
-  contactEmail: string;
-  campaignSlug: string;
-  amountCents: number;
+type CheckoutRequestBody = GiftBasics & {
   paymentMethod?: PaymentMethod;
 };
 
 function validateRequestBody(body: unknown): string | null {
-  if (!body || typeof body !== "object") {
-    return "Request body must be a JSON object";
-  }
-  const b = body as Partial<CheckoutRequestBody>;
+  const basicsError = validateGiftBasics(body, GIVING_CAMPAIGNS.map((c) => c.slug));
+  if (basicsError) return basicsError;
 
-  if (typeof b.contactName !== "string" || b.contactName.trim() === "") {
-    return "contactName is required";
-  }
-  if (b.contactName.length > MAX_FIELD_LENGTH) {
-    return `contactName must be ${MAX_FIELD_LENGTH} characters or fewer`;
-  }
-  if (typeof b.contactEmail !== "string" || b.contactEmail.trim() === "") {
-    return "contactEmail is required";
-  }
-  if (b.contactEmail.length > MAX_EMAIL_LENGTH || !EMAIL_RE.test(b.contactEmail.trim())) {
-    return "Please enter a valid email address";
-  }
-  if (typeof b.campaignSlug !== "string" || !GIVING_CAMPAIGNS.some((c) => c.slug === b.campaignSlug)) {
-    return "Unknown campaign";
-  }
-  if (typeof b.amountCents !== "number" || !Number.isInteger(b.amountCents) || b.amountCents < MIN_CENTS || b.amountCents > MAX_CENTS) {
-    return `amountCents must be an integer between ${MIN_CENTS} and ${MAX_CENTS}`;
-  }
+  const b = body as CheckoutRequestBody;
   if (b.paymentMethod !== undefined && b.paymentMethod !== "card" && b.paymentMethod !== "bank") {
     return "Unknown payment method";
   }
