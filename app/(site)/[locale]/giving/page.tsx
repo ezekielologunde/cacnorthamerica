@@ -145,7 +145,7 @@ export default async function GivingPage({
           <div className="r2" style={{ gap: 18 }}>
             {[
               { icon: Phone, title: "By phone", desc: "Call the CACNA office.", href: "tel:+13054690346", cta: "Call (305) 469-0346" },
-              { icon: Mail, title: "By email", desc: "Email info@cacnorthamerica.com.", href: "mailto:info@cacnorthamerica.com", cta: "Email us" },
+              { icon: Mail, title: "By email", desc: "Email info@cacna.org.", href: "mailto:info@cacna.org", cta: "Email us" },
             ].map((w, i) => (
               <Reveal key={w.title} delay={i * 80}>
                 <div style={{ background: "var(--paper)", borderRadius: 20, padding: "22px 20px", border: "1px solid var(--line)", boxShadow: "0 8px 22px rgba(18,20,30,.05)", height: "100%" }}>

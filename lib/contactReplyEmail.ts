@@ -4,7 +4,7 @@ import { emailShell, sender } from "@/lib/email";
 // A fixed message that repeats none of the submitted text. The address it
 // goes to is whatever the form was given and has never been verified, so
 // echoing the visitor's name, subject or message would let anyone send their
-// own words to any inbox from info@cacnorthamerica.com.
+// own words to any inbox from info@cacna.org.
 function buildHtml(): string {
   const bodyHtml = `<div style="background:#fff;border:1px solid #ECE9E4;border-radius:16px;padding:24px 26px">
     <p style="margin:0;font-size:14px;color:#5f5e5a;line-height:1.7">If you didn't contact CACNA through our website, you can safely ignore this email.</p>

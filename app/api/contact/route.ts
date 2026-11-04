@@ -10,7 +10,7 @@ import { EMAIL_FROM } from "@/lib/email";
 import { CONTACT_FIELD_LIMITS, CONTACT_FORM_NAMES } from "./fields";
 
 const FROM = EMAIL_FROM;
-const TO   = "info@cacnorthamerica.com";
+const TO   = "info@cacna.org";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DAY_MS = 24 * 60 * 60 * 1000;

@@ -148,7 +148,7 @@ export default function ContactPageClient() {
           </Reveal>
           <Reveal delay={220}>
             <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 10, marginTop: 18 }}>
-              {[{ href: "tel:+13054690346", Icon: Phone, text: "Call" }, { href: "mailto:info@cacnorthamerica.com", Icon: Mail, text: "Email" }].map(({ href, Icon, text }) => (
+              {[{ href: "tel:+13054690346", Icon: Phone, text: "Call" }, { href: "mailto:info@cacna.org", Icon: Mail, text: "Email" }].map(({ href, Icon, text }) => (
                 <a key={text} href={href} style={{ display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 20px", borderRadius: 999, border: "1.5px solid var(--line)", background: "var(--paper)", color: "var(--ink)", fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
                   <Icon size={17} aria-hidden /> {text}
                 </a>
@@ -305,7 +305,7 @@ export default function ContactPageClient() {
             {[
               { icon: MapPin, title: "Address", lines: [{ text: "14051 Stahley Road", href: "https://maps.google.com/?q=14051+Stahley+Road+Blue+Ridge+Summit+PA+17214" }, { text: "Blue Ridge Summit, PA 17214", href: "https://maps.google.com/?q=14051+Stahley+Road+Blue+Ridge+Summit+PA+17214" }] },
               { icon: Phone, title: "Phone", lines: [{ text: "(305) 469-0346", href: "tel:+13054690346" }] },
-              { icon: Mail, title: "Email", lines: [{ text: "info@cacnorthamerica.com", href: "mailto:info@cacnorthamerica.com" }, { text: "cacna@hotmail.com", href: "mailto:cacna@hotmail.com" }] },
+              { icon: Mail, title: "Email", lines: [{ text: "info@cacna.org", href: "mailto:info@cacna.org" }, { text: "cacna@hotmail.com", href: "mailto:cacna@hotmail.com" }] },
               { icon: Clock, title: "Annual Convention", lines: [{ text: "Six days in July", href: undefined }, { text: "CAC Village, PA", href: undefined }] },
             ].map((card) => (
               <Reveal key={card.title}>
