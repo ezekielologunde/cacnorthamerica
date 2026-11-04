@@ -46,6 +46,10 @@ export async function POST(request: Request) {
 
   const method: PaymentMethod = body.paymentMethod === "bank" ? "bank" : "card";
   const stripe = getStripeClient();
+  // Embedded only when the browser can load Stripe.js (publishable key set);
+  // otherwise fall back to the hosted page so giving never breaks.
+  const embedded = Boolean(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+  const returnUrl = `${SITE_URL}/giving/confirmation?session_id={CHECKOUT_SESSION_ID}`;
 
   try {
     const session = await stripe.checkout.sessions.create({
@@ -69,11 +73,15 @@ export async function POST(request: Request) {
       // a separate line after it.
       }, ...feeLineItems(body.amountCents, method)],
       customer_email: body.contactEmail.trim(),
-      success_url: `${SITE_URL}/giving/confirmation?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${SITE_URL}/giving`,
+      ...(embedded
+        ? { ui_mode: "embedded_page" as const, return_url: returnUrl }
+        : { success_url: returnUrl, cancel_url: `${SITE_URL}/giving` }),
       metadata: { kind: "giving", contact_name: body.contactName, campaign_slug: campaign.slug, campaign_title: campaign.title, ...feeMetadataFor(body.amountCents, method) },
     });
 
+    if (embedded && session.client_secret) {
+      return NextResponse.json({ clientSecret: session.client_secret });
+    }
     return NextResponse.json({ checkoutUrl: session.url });
   } catch {
     return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 });
