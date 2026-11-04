@@ -14,7 +14,7 @@
 //  - the gift ends for any reason: the donor and the committee are told.
 // Donor emails never include card or bank details, only the gift.
 
-export type ProblemKind = "failed" | "stopped-first-failure" | "ended" | "disputed";
+export type ProblemKind = "failed" | "stopped-first-failure" | "ended" | "disputed" | "inquiry";
 
 export type ProblemEmail = {
   /** Resend idempotency key (24h window) so Stripe's retries never send twice. */
@@ -36,12 +36,18 @@ export type ProblemEmail = {
 };
 
 export type ProblemDeps = {
-  /** Resolves when the subscription is cancelled, or was already. */
-  cancelSubscription: (subscriptionId: string) => Promise<void>;
+  /** Resolves when the subscription is cancelled, or was already. The reason is
+   *  recorded on the cancellation, so the ended handler can tell the code's own
+   *  cancels from a donor's (and not tell the donor they asked for it). */
+  cancelSubscription: (subscriptionId: string, reason: AutoCancelReason) => Promise<void>;
   sendEmail: (input: ProblemEmail) => Promise<boolean>;
 };
 
 export type ProblemOutcome = "handled" | "skipped" | "failed";
+
+export type AutoCancelReason = "first-charge-failed" | "dispute";
+/** Prefix of the cancellation comment the code writes when it cancels. */
+export const AUTO_CANCEL_PREFIX = "auto:";
 
 type Metadata = Record<string, string | null | undefined>;
 
@@ -50,6 +56,8 @@ export type FailedInvoice = {
   subscriptionId: string;
   billingReason: string | null;
   attemptCount: number;
+  /** The invoice's status now. A late redelivery may find it already paid. */
+  status: string | null;
   /** Unix seconds of the next automatic retry, or null when there is none. */
   nextAttemptAt: number | null;
   amountDueCents: number;
@@ -62,12 +70,16 @@ export type EndedSubscription = {
   /** Stripe's cancellation_details.reason: cancellation_requested,
    *  payment_failed, payment_disputed, or null. */
   reason: string | null;
+  /** cancellation_details.comment: "auto:..." when this code cancelled it. */
+  comment: string | null;
   contactEmail: string;
   metadata: Metadata;
 };
 
 export type DisputedGift = {
   disputeId: string;
+  /** Stripe's dispute status. "warning_*" is a bank's inquiry, not a chargeback. */
+  status: string | null;
   subscriptionId: string;
   amountCents: number;
   contactEmail: string;
@@ -91,8 +103,8 @@ export function dateLabel(unixSeconds: number | null): string {
 }
 
 /** Why a gift ended, in words a donor understands. Unknown reasons say nothing. */
-export function reasonLabel(reason: string | null | undefined): string {
-  if (reason === "cancellation_requested") return "You asked us to stop it.";
+export function reasonLabel(reason: string | null | undefined, audience: "donor" | "committee" = "donor"): string {
+  if (reason === "cancellation_requested") return audience === "donor" ? "You asked us to stop it." : "Stopped at the donor's request.";
   if (reason === "payment_failed") return "The payments kept failing, so Stripe stopped it.";
   if (reason === "payment_disputed") return "A payment was disputed with the bank.";
   return "";
@@ -111,11 +123,14 @@ function base(meta: Metadata, contactEmail: string, amountCents: number) {
 /** A giving subscription's charge failed (invoice.payment_failed). */
 export async function handleGivingPaymentFailed(inv: FailedInvoice, deps: ProblemDeps): Promise<ProblemOutcome> {
   if (!isGiving(inv.metadata, inv.subscriptionId)) return "skipped";
+  // Stripe retries a delivery for days: by then Smart Retries may have paid the
+  // invoice. A healthy gift is neither cancelled nor reported as failed.
+  if (inv.status === "paid") return "skipped";
   const gift = Number(inv.metadata.subtotal_cents);
   const amountCents = Number.isInteger(gift) && gift > 0 ? gift : inv.amountDueCents;
   const first = inv.billingReason === "subscription_create";
   try {
-    if (first) await deps.cancelSubscription(inv.subscriptionId);
+    if (first) await deps.cancelSubscription(inv.subscriptionId, "first-charge-failed");
     const kind: ProblemKind = first ? "stopped-first-failure" : "failed";
     const key = `invoice-failed/${inv.invoiceId}/${inv.attemptCount}`;
     const mail = {
@@ -142,18 +157,20 @@ export async function handleGivingPaymentFailed(inv: FailedInvoice, deps: Proble
 /** A giving subscription ended (customer.subscription.deleted). */
 export async function handleGivingSubscriptionEnded(sub: EndedSubscription, deps: ProblemDeps): Promise<ProblemOutcome> {
   if (!isGiving(sub.metadata, sub.subscriptionId)) return "skipped";
+  // Our own cancels (a failed first charge, a dispute) already told the right
+  // people the right thing; an "ended" email would say the donor asked for it.
+  if (sub.comment?.startsWith(AUTO_CANCEL_PREFIX)) return "skipped";
   const gift = Number(sub.metadata.subtotal_cents);
   const mail = {
     ...base(sub.metadata, sub.contactEmail, Number.isInteger(gift) && gift > 0 ? gift : 0),
     kind: "ended" as const,
     nextAttemptLabel: "",
-    reasonLabel: reasonLabel(sub.reason),
   };
   const key = `subscription-ended/${sub.subscriptionId}`;
   try {
     let ok = true;
-    if (sub.contactEmail) ok = (await deps.sendEmail({ ...mail, audience: "donor", idempotencyKey: `${key}/donor` })) && ok;
-    ok = (await deps.sendEmail({ ...mail, audience: "committee", idempotencyKey: `${key}/committee` })) && ok;
+    if (sub.contactEmail) ok = (await deps.sendEmail({ ...mail, reasonLabel: reasonLabel(sub.reason, "donor"), audience: "donor", idempotencyKey: `${key}/donor` })) && ok;
+    ok = (await deps.sendEmail({ ...mail, reasonLabel: reasonLabel(sub.reason, "committee"), audience: "committee", idempotencyKey: `${key}/committee` })) && ok;
     return ok ? "handled" : "failed";
   } catch (err) {
     console.error("[giving problem] ended gift not handled", { subscriptionId: sub.subscriptionId, error: err instanceof Error ? err.name : "error" });
@@ -163,14 +180,18 @@ export async function handleGivingSubscriptionEnded(sub: EndedSubscription, deps
 
 /** A bank or card dispute on a giving subscription's charge. The gift is
  *  stopped and the committee told; the donor is not emailed automatically,
- *  because a dispute is a conversation for a person to have. */
+ *  because a dispute is a conversation for a person to have. A bank's inquiry
+ *  (status "warning_*") is only a question: the committee is told, and the gift
+ *  carries on. The amount shown is the gift, not the fee-inclusive charge. */
 export async function handleGivingDispute(d: DisputedGift, deps: ProblemDeps): Promise<ProblemOutcome> {
   if (!isGiving(d.metadata, d.subscriptionId)) return "skipped";
+  const inquiry = d.status?.startsWith("warning_") ?? false;
+  const gift = Number(d.metadata.subtotal_cents);
   try {
-    await deps.cancelSubscription(d.subscriptionId);
+    if (!inquiry) await deps.cancelSubscription(d.subscriptionId, "dispute");
     const ok = await deps.sendEmail({
-      ...base(d.metadata, d.contactEmail, d.amountCents),
-      kind: "disputed",
+      ...base(d.metadata, d.contactEmail, Number.isInteger(gift) && gift > 0 ? gift : d.amountCents),
+      kind: inquiry ? "inquiry" : "disputed",
       nextAttemptLabel: "",
       reasonLabel: "",
       audience: "committee",

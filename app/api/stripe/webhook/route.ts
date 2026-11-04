@@ -13,7 +13,7 @@ import { checkinCodesFor, checkinCodeSheetCell } from "@/lib/checkinCode";
 import { recordCheckinPeople } from "@/lib/checkinStore";
 import { recordGivingInvoice, type InvoiceSummary } from "@/lib/givingInvoice";
 import { givingInvoiceStore } from "@/lib/givingInvoiceStore";
-import { handleGivingDispute, handleGivingPaymentFailed, handleGivingSubscriptionEnded, type ProblemDeps, type ProblemOutcome } from "@/lib/givingProblem";
+import { AUTO_CANCEL_PREFIX, handleGivingDispute, handleGivingPaymentFailed, handleGivingSubscriptionEnded, type ProblemDeps, type ProblemOutcome } from "@/lib/givingProblem";
 import { sendGivingProblemEmail } from "@/lib/givingProblemEmail";
 
 // Kept below the invoice claim's two-minute stale limit
@@ -216,11 +216,13 @@ function summarizeInvoice(invoice: StripeInvoice, fallbackId: string): InvoiceSu
 
 function problemDeps(stripe: ReturnType<typeof getStripeClient>): ProblemDeps {
   return {
-    cancelSubscription: async (id) => {
+    cancelSubscription: async (id, reason) => {
       try {
-        await stripe.subscriptions.cancel(id);
+        // Already cancelled counts as done, so a retry after a cancel that
+        // worked does not loop on an error.
+        if ((await stripe.subscriptions.retrieve(id)).status === "canceled") return;
+        await stripe.subscriptions.cancel(id, { cancellation_details: { comment: `${AUTO_CANCEL_PREFIX}${reason}` } });
       } catch (err) {
-        // Already cancelled (or gone): the goal is met.
         if ((err as { code?: string }).code === "resource_missing") return;
         throw err;
       }
@@ -253,6 +255,7 @@ async function handleInvoiceFailed(stripe: ReturnType<typeof getStripeClient>, i
       invoiceId: s.invoiceId,
       subscriptionId: s.subscriptionId,
       billingReason: s.billingReason,
+      status: invoice.status ?? null,
       attemptCount: invoice.attempt_count,
       nextAttemptAt: invoice.next_payment_attempt,
       amountDueCents: invoice.amount_due,
@@ -270,6 +273,7 @@ async function handleSubscriptionEnded(stripe: ReturnType<typeof getStripeClient
     {
       subscriptionId: sub.id,
       reason: sub.cancellation_details?.reason ?? null,
+      comment: sub.cancellation_details?.comment ?? null,
       contactEmail: customer?.email ?? "",
       metadata: sub.metadata ?? {},
     },
@@ -291,7 +295,7 @@ async function handleDispute(stripe: ReturnType<typeof getStripeClient>, dispute
   if (!invoiceId) return "skipped";
   const s = summarizeInvoice(await stripe.invoices.retrieve(invoiceId), invoiceId);
   return handleGivingDispute(
-    { disputeId, subscriptionId: s.subscriptionId, amountCents: dispute.amount, contactEmail: s.contactEmail, metadata: s.metadata },
+    { disputeId, status: dispute.status, subscriptionId: s.subscriptionId, amountCents: dispute.amount, contactEmail: s.contactEmail, metadata: s.metadata },
     problemDeps(stripe),
   );
 }

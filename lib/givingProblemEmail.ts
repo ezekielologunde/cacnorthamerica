@@ -22,6 +22,7 @@ function copy(input: ProblemEmail): { subject: string; heading: string; subheadi
       "stopped-first-failure": "The very first charge failed, so the gift was stopped. The donor was told to give again.",
       "ended": `The gift has ended. ${escapeHtml(input.reasonLabel)}`.trim(),
       "disputed": "The donor disputed a payment with their bank. The gift was stopped. Please reach out to the donor, and respond to the dispute in Stripe within its deadline.",
+      "inquiry": "The donor's bank has asked about a payment (an inquiry, not yet a dispute). The gift carries on. Please reach out to the donor, and respond in Stripe within its deadline.",
     };
     cards.push(emailCard("What happened", status[input.kind]));
     return {
@@ -34,7 +35,7 @@ function copy(input: ProblemEmail): { subject: string; heading: string; subheadi
 
   if (input.kind === "failed") {
     cards.push(emailCard("What happened", "Your payment did not go through. This is usually an expired card or not enough funds."));
-    cards.push(emailCard("What happens next", input.nextAttemptLabel ? `We will try again on <strong>${escapeHtml(input.nextAttemptLabel)}</strong>. Nothing more is needed if the payment method is fine by then.` : "We will not try again, so this gift has stopped. You can start it again on the giving page."));
+    cards.push(emailCard("What happens next", input.nextAttemptLabel ? `We will try again on <strong>${escapeHtml(input.nextAttemptLabel)}</strong>. Nothing more is needed if the payment method is fine by then.` : "We will not try again, so this gift will stop. You can start it again on the giving page."));
   } else if (input.kind === "stopped-first-failure") {
     cards.push(emailCard("What happened", "The first payment for this gift did not go through, so we stopped it and you have not been charged."));
     cards.push(emailCard("To give", "You are welcome to try again with another card or bank account on the giving page."));

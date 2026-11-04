@@ -16,17 +16,18 @@ function check(name, ok) {
 
 function deps(over = {}) {
   const cancelled = [];
+  const reasons = [];
   const emails = [];
   return {
-    cancelled, emails,
-    cancelSubscription: async (id) => { cancelled.push(id); },
+    cancelled, reasons, emails,
+    cancelSubscription: async (id, reason) => { cancelled.push(id); reasons.push(reason); },
     sendEmail: async (m) => { emails.push(m); return true; },
     ...over,
   };
 }
 
 const meta = { kind: "giving", campaign_title: "Tithe", contact_name: "Ada Okafor", frequency: "monthly", subtotal_cents: "10000" };
-const failed = { invoiceId: "in_9", subscriptionId: "sub_9", billingReason: "subscription_cycle", attemptCount: 1, nextAttemptAt: 1795000000, amountDueCents: 10330, contactEmail: "ada@example.com", metadata: meta };
+const failed = { invoiceId: "in_9", subscriptionId: "sub_9", billingReason: "subscription_cycle", status: "open", attemptCount: 1, nextAttemptAt: 1795000000, amountDueCents: 10330, contactEmail: "ada@example.com", metadata: meta };
 const to = (d, who) => d.emails.filter((e) => e.audience === who);
 
 // ---- A renewal fails ----
@@ -56,7 +57,7 @@ const to = (d, who) => d.emails.filter((e) => e.audience === who);
 {
   const d = deps();
   const out = await handleGivingPaymentFailed({ ...failed, billingReason: "subscription_create", nextAttemptAt: 1795000000 }, d);
-  check("a failed FIRST charge cancels the subscription so it is not tried next cycle", out === "handled" && d.cancelled.length === 1 && d.cancelled[0] === "sub_9");
+  check("a failed FIRST charge cancels the subscription so it is not tried next cycle, recording why", out === "handled" && d.cancelled.length === 1 && d.cancelled[0] === "sub_9" && d.reasons[0] === "first-charge-failed");
   check("the donor is told it was stopped and they were not charged; the committee is told too", to(d, "donor")[0].kind === "stopped-first-failure" && to(d, "donor")[0].nextAttemptLabel === "" && to(d, "committee").length === 1);
 }
 {
@@ -80,36 +81,57 @@ const to = (d, who) => d.emails.filter((e) => e.audience === who);
   check("another kind of invoice is skipped and touches nothing", out === "skipped" && d.emails.length === 0 && d.cancelled.length === 0);
 }
 
+// A late redelivery finds the invoice already paid: nothing is cancelled or reported.
+{
+  const d = deps();
+  const out = await handleGivingPaymentFailed({ ...failed, billingReason: "subscription_create", status: "paid" }, d);
+  check("a delivery that finds the invoice already paid is skipped: no cancel, no email", out === "skipped" && d.cancelled.length === 0 && d.emails.length === 0);
+  const v = deps();
+  const out2 = await handleGivingPaymentFailed({ ...failed, billingReason: "subscription_create", status: "void" }, v);
+  check("a first-charge invoice that has since been voided still cancels the gift", out2 === "handled" && v.cancelled.length === 1);
+}
+
 // ---- The gift ends ----
 {
   const d = deps();
-  const out = await handleGivingSubscriptionEnded({ subscriptionId: "sub_9", reason: "cancellation_requested", contactEmail: "ada@example.com", metadata: meta }, d);
-  check("an ended gift tells the donor and the committee, with the reason", out === "handled" && to(d, "donor")[0].reasonLabel === "You asked us to stop it." && to(d, "committee").length === 1);
+  const out = await handleGivingSubscriptionEnded({ subscriptionId: "sub_9", reason: "cancellation_requested", comment: null, contactEmail: "ada@example.com", metadata: meta }, d);
+  check("an ended gift tells the donor and the committee, each in their own words", out === "handled" && to(d, "donor")[0].reasonLabel === "You asked us to stop it." && to(d, "committee")[0].reasonLabel === "Stopped at the donor's request.");
   check("ended emails are keyed by subscription", d.emails.every((e) => e.idempotencyKey.startsWith("subscription-ended/sub_9/")));
   check("an ended gift cancels nothing (it is already over)", d.cancelled.length === 0);
 }
 {
   const d = deps();
-  const out = await handleGivingSubscriptionEnded({ subscriptionId: "sub_1", reason: null, contactEmail: "a@b.co", metadata: { kind: "registration" } }, d);
+  const out = await handleGivingSubscriptionEnded({ subscriptionId: "sub_1", reason: null, comment: null, contactEmail: "a@b.co", metadata: { kind: "registration" } }, d);
   check("an ended non-giving subscription is skipped", out === "skipped" && d.emails.length === 0);
+}
+for (const comment of ["auto:dispute", "auto:first-charge-failed"]) {
+  const d = deps();
+  const out = await handleGivingSubscriptionEnded({ subscriptionId: "sub_9", reason: "cancellation_requested", comment, contactEmail: "ada@example.com", metadata: meta }, d);
+  check(`a gift the code cancelled itself (${comment}) sends no "you asked us to stop it" email`, out === "skipped" && d.emails.length === 0);
 }
 check("reason labels", reasonLabel("payment_failed").length > 0 && reasonLabel("payment_disputed").length > 0 && reasonLabel(null) === "" && reasonLabel("something_new") === "");
 
 // ---- A dispute ----
 {
   const d = deps();
-  const out = await handleGivingDispute({ disputeId: "dp_1", subscriptionId: "sub_9", amountCents: 10081, contactEmail: "ada@example.com", metadata: meta }, d);
-  check("a dispute cancels the gift and tells only the committee", out === "handled" && d.cancelled[0] === "sub_9" && d.emails.length === 1 && d.emails[0].audience === "committee" && d.emails[0].kind === "disputed");
+  const out = await handleGivingDispute({ disputeId: "dp_1", status: "needs_response", subscriptionId: "sub_9", amountCents: 10081, contactEmail: "ada@example.com", metadata: meta }, d);
+  check("a dispute cancels the gift (recording why) and tells only the committee", out === "handled" && d.cancelled[0] === "sub_9" && d.reasons[0] === "dispute" && d.emails.length === 1 && d.emails[0].audience === "committee" && d.emails[0].kind === "disputed");
+  check("the dispute email shows the gift, not the fee-inclusive charge", d.emails[0].amountLabel === "$100.00");
   check("the dispute email is keyed by the dispute", d.emails[0].idempotencyKey === "dispute/dp_1/committee");
+}
+for (const status of ["warning_needs_response", "warning_under_review"]) {
+  const d = deps();
+  const out = await handleGivingDispute({ disputeId: "dp_3", status, subscriptionId: "sub_9", amountCents: 10081, contactEmail: "ada@example.com", metadata: meta }, d);
+  check(`a bank inquiry (${status}) tells the committee but does NOT cancel the gift`, out === "handled" && d.cancelled.length === 0 && d.emails.length === 1 && d.emails[0].kind === "inquiry" && d.emails[0].audience === "committee");
 }
 {
   const d = deps({ cancelSubscription: async () => { throw new Error("nope"); } });
-  const out = await handleGivingDispute({ disputeId: "dp_1", subscriptionId: "sub_9", amountCents: 100, contactEmail: "", metadata: meta }, d);
+  const out = await handleGivingDispute({ disputeId: "dp_1", status: "needs_response", subscriptionId: "sub_9", amountCents: 100, contactEmail: "", metadata: meta }, d);
   check("if a disputed gift cannot be cancelled the delivery fails (Stripe retries) and nothing is emailed", out === "failed" && d.emails.length === 0);
 }
 {
   const d = deps();
-  const out = await handleGivingDispute({ disputeId: "dp_2", subscriptionId: "", amountCents: 100, contactEmail: "", metadata: {} }, d);
+  const out = await handleGivingDispute({ disputeId: "dp_2", status: "needs_response", subscriptionId: "", amountCents: 100, contactEmail: "", metadata: {} }, d);
   check("a dispute that is not a giving subscription is skipped", out === "skipped" && d.cancelled.length === 0 && d.emails.length === 0);
 }
 
