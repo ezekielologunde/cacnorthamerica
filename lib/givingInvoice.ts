@@ -67,8 +67,8 @@ export type InvoiceSplit = {
 };
 
 function wholeCents(value: unknown): number | null {
-  const n = Number(value);
-  return typeof value === "string" && Number.isInteger(n) && n >= 0 ? n : null;
+  // Digits only: Number("") is 0, which would read a blank value as a $0 gift.
+  return typeof value === "string" && /^\d+$/.test(value) ? Number(value) : null;
 }
 
 /** Splits an invoice's amount_paid into gift, fee and setup fee using the

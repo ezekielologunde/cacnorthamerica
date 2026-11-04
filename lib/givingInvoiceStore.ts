@@ -14,7 +14,9 @@ import type { BeginResult, InvoiceStep, InvoiceStore } from "@/lib/givingInvoice
 
 const TIMEOUT_MS = 3000;
 /** A claim older than this with steps undone belonged to a delivery that died
- *  without releasing it, so the next delivery may take it over. */
+ *  without releasing it, so the next delivery may take it over. The webhook's
+ *  maxDuration (app/api/stripe/webhook/route.ts) is shorter, so a live delivery
+ *  is never mistaken for a dead one. */
 const STALE_CLAIM_MS = 2 * 60 * 1000;
 const UNIQUE_VIOLATION = "23505";
 
@@ -69,10 +71,12 @@ export const givingInvoiceStore: InvoiceStore = {
       .update({ claimed_at: new Date().toISOString() })
       .eq("invoice_id", inv.invoiceId)
       .lt("claimed_at", cutoff)
-      .select("invoice_id")
+      .select("sheet_done, email_done")
       .abortSignal(AbortSignal.timeout(TIMEOUT_MS));
     if (taken.error) throw new Error(`take ${taken.error.code ?? "unknown"}`);
-    return taken.data && taken.data.length > 0 ? { state: "resume", done } : { state: "busy", done };
+    // The flags come from the row we just took: the earlier read may predate
+    // steps the previous owner finished before releasing.
+    return taken.data && taken.data.length > 0 ? { state: "resume", done: stepsDone(taken.data[0]) } : { state: "busy", done };
   },
 
   async markDone(invoiceId, step) {

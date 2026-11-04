@@ -14,6 +14,11 @@ import { recordCheckinPeople } from "@/lib/checkinStore";
 import { recordGivingInvoice, type InvoiceSummary } from "@/lib/givingInvoice";
 import { givingInvoiceStore } from "@/lib/givingInvoiceStore";
 
+// Kept below the invoice claim's two-minute stale limit
+// (lib/givingInvoiceStore.ts): a delivery that hangs is cut off before another
+// may take over its claim and record the same invoice twice.
+export const maxDuration = 60;
+
 // checkout.session.completed also fires for delayed methods (ACH, etc.)
 // before the money has moved; only these statuses mean the checkout is
 // actually paid. A delayed payment is recorded later, when
