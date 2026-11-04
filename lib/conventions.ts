@@ -335,7 +335,7 @@ export function getDetailedSchedule(year: number): ScheduleSession[] | null {
 export interface StoreProduct {
   id: string;
   name: string;
-  category: "convention" | "good_women" | "youth" | "christian_education";
+  category: "convention" | "good_women" | "youth" | "merchandise" | "christian_education";
   priceCents: number;
   sizes: string[];
   /** Real product photo only — omit entirely rather than fabricate one. */
@@ -343,6 +343,7 @@ export interface StoreProduct {
 }
 
 export const storeProducts: StoreProduct[] = [
+  { id: "merch-2026-convention-recording-flash-drive", name: "2026 Annual Convention Recording — Flash Drive", category: "merchandise", priceCents: 2000, sizes: [] },
   { id: "ce-2027-unified-bible-study-manual", name: "2027 Unified Bible Study Manual", category: "christian_education", priceCents: 1800, sizes: [], imageSrc: "/photos/store/store-2027-unified-bible-study-manual.jpg" },
   { id: "ce-2027-eko-ile-eko-oluko", name: "2027 Awon Eko Ile Eko Ojo Isimi — Iwe Oluko", category: "christian_education", priceCents: 2000, sizes: [], imageSrc: "/photos/store/store-2027-eko-ile-eko-oluko.jpg" },
   { id: "ce-2027-eko-ile-eko-akeko", name: "2027 Awon Eko Ile Eko Ojo Isimi — Iwe Akeko", category: "christian_education", priceCents: 1800, sizes: [], imageSrc: "/photos/store/store-2027-eko-ile-eko-akeko.jpg" },
