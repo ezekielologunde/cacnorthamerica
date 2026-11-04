@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
 import { zelleRecipientFor, type GivingCampaign } from "@/lib/giving";
 import { FeeBreakdown } from "@/components/checkout/FeeBreakdown";
+import { EmbeddedStripeCheckout } from "@/components/checkout/EmbeddedStripeCheckout";
 import { ZellePaymentPanel } from "@/components/register/ZellePaymentPanel";
 import { FORM_HEADER } from "@/lib/spam";
 import type { PaymentMethod } from "@/lib/processingFee";
@@ -53,6 +54,7 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [zelleResult, setZelleResult] = useState<ZelleResult | null>(null);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
   const resultHeadingRef = useRef<HTMLHeadingElement>(null);
   const formHeadingRef = useRef<HTMLHeadingElement>(null);
   const focusFormAfterReset = useRef(false);
@@ -123,6 +125,11 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
         body: JSON.stringify({ contactName, contactEmail, campaignSlug, amountCents, paymentMethod: activeMethod }),
       });
       const data = await response.json().catch(() => null);
+      if (response.ok && typeof data?.clientSecret === "string") {
+        setClientSecret(data.clientSecret);
+        setStatus("idle");
+        return;
+      }
       if (!response.ok || !data?.checkoutUrl) {
         setErrorMessage(typeof data?.error === "string" ? data.error : "Something went wrong. Please try again.");
         setStatus("error");
@@ -144,7 +151,23 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
       <div aria-hidden style={{ position: "absolute", top: -100, right: -80, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,rgba(253,200,65,.18),transparent 70%)", pointerEvents: "none" }} />
       <div style={{ position: "relative", zIndex: 2, maxWidth: 480, margin: "0 auto" }}>
 
-        {zelleResult ? (
+        {clientSecret ? (
+          <div>
+            <EmbeddedStripeCheckout clientSecret={clientSecret} />
+            <button
+              type="button"
+              onClick={() => setClientSecret(null)}
+              className="press"
+              style={{
+                marginTop: 18, minHeight: 48, padding: "0 22px", borderRadius: 999, cursor: "pointer",
+                background: "transparent", color: "#fff", fontWeight: 700, fontSize: 15,
+                border: "1.5px solid rgba(255,255,255,.4)",
+              }}
+            >
+              ← Change my gift
+            </button>
+          </div>
+        ) : zelleResult ? (
           <div>
             <h2 ref={resultHeadingRef} tabIndex={-1} style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.4vw,38px)", letterSpacing: "-1px", color: "#fff", margin: "0 0 12px", lineHeight: 1.1, outline: "none" }}>
               Now send it by Zelle.
