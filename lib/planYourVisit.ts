@@ -56,6 +56,24 @@ export const packingChecklist = [
   "Comfortable shoes for walking the grounds",
   "A light jacket or sweater for cooler evenings",
   "Cash, in case a nearby stop doesn't take cards",
+  "White clothing and dancing shoes for Thursday's outdoor Praise Night",
+];
+
+// From the announcements made from the pulpit at the 2026 convention. The day
+// pattern and Praise Night details can change from year to year.
+export const conventionDay = [
+  { time: "7:00 am", text: "Prayer walk around the grounds" },
+  { time: "8:00 am", text: "Morning prayer" },
+  { time: "9:00 am", text: "Main program starts on time" },
+  { time: "Thursday night", text: "Praise Night, a prophetic praise night held outdoors on the field. Wear white and bring your dancing shoes. It is the convention's annual Praise Fest, run by the youth and young adults." },
+];
+
+export const onTheGrounds = [
+  "Put your phone on silent, with ring and message sounds off, during sessions.",
+  "Portable restrooms are placed around the grounds in addition to the buildings. Please leave them clean for the next person.",
+  "Eat at the convention center rather than carrying meals back to your hotel, so food smells do not bother other hotel guests.",
+  "Food is served from canopies on the grounds, by region and zone. Food is free for everyone at the convention.",
+  "The grounds sit close to neighbors, so please keep noise down and put trash in the bins.",
 ];
 
 export type NearbyEssential = {

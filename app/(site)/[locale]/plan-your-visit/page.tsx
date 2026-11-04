@@ -6,7 +6,7 @@ import { RevealText } from "@/components/ui/RevealText";
 import { CONVENTION_VENUE } from "@/lib/conventions";
 import {
   hotels, HOTEL_GROUP_CODE, airports, drivingRoute, drivingRouteAltNote,
-  groundTransportNote, budgetLodgingNote, remotenessNote, weather, packingChecklist,
+  groundTransportNote, budgetLodgingNote, remotenessNote, weather, packingChecklist, conventionDay, onTheGrounds,
   nearbyEssentials, remember, rules, rulesAttribution, type NearbyEssential,
 } from "@/lib/planYourVisit";
 import { Navigation } from "lucide-react";
@@ -74,6 +74,7 @@ export default async function PlanYourVisitPage({
             <a className="ap-chip" href="#travel">Travel</a>
             <a className="ap-chip" href="#hotels">Hotels</a>
             <a className="ap-chip" href="#packing">Packing</a>
+            <a className="ap-chip" href="#grounds">On the grounds</a>
             <a className="ap-chip" href="#nearby">Nearby</a>
           </nav>
         </div>
@@ -170,6 +171,32 @@ export default async function PlanYourVisitPage({
               {packingChecklist.map((item) => (
                 <li key={item} style={{ display: "flex", gap: 10, fontSize: 14.5, color: "var(--ink-soft)" }}>
                   <span aria-hidden style={{ color: "var(--red)", fontWeight: 800 }}>✓</span> {item}
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Daily rhythm + on the grounds */}
+      <section id="grounds" style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+        <div className="r2" style={{ maxWidth: 900, margin: "0 auto", gap: 40 }}>
+          <Reveal>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 24, color: "var(--ink)", margin: 0 }}>A convention day</h2>
+            <ul style={{ margin: "16px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 12 }}>
+              {conventionDay.map((item) => (
+                <li key={item.time} style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.65 }}>
+                  <strong style={{ color: "var(--ink)" }}>{item.time}.</strong> {item.text}
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+          <Reveal delay={80}>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 24, color: "var(--ink)", margin: 0 }}>On the grounds</h2>
+            <ul style={{ margin: "16px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
+              {onTheGrounds.map((item) => (
+                <li key={item} style={{ display: "flex", gap: 10, fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.65 }}>
+                  <span aria-hidden style={{ color: "var(--red)", fontWeight: 800 }}>•</span> {item}
                 </li>
               ))}
             </ul>
