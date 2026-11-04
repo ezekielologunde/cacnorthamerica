@@ -70,17 +70,8 @@ export default async function GivingPage({
         </div>
       </section>
 
-      {/* Give online */}
-      <section style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(48px,6vw,72px)" }}>
-        <div style={{ maxWidth: 980, margin: "0 auto" }}>
-          <Reveal>
-            <GivingForm campaigns={GIVING_CAMPAIGNS} />
-          </Reveal>
-        </div>
-      </section>
-
       {/* Scripture */}
-      <section style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(40px,5vw,64px)" }}>
+      <section style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(24px,3vw,36px)" }}>
         <div style={{ maxWidth: 980, margin: "0 auto" }}>
           <Reveal delay={220}>
             <figure style={{ maxWidth: 620, margin: "0 auto", padding: "22px 22px", borderRadius: 22, background: "var(--paper)", border: "1px solid var(--line)", boxShadow: "0 14px 36px rgba(18,20,30,.08)", textAlign: "left" }}>
@@ -90,6 +81,15 @@ export default async function GivingPage({
               <figcaption style={{ marginTop: 12, fontSize: 13, fontWeight: 700, color: "var(--red)" }}>2 Corinthians 9:9</figcaption>
             </figure>
           </Reveal>        </div>
+      </section>
+
+      {/* Give online */}
+      <section style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(48px,6vw,72px)" }}>
+        <div style={{ maxWidth: 980, margin: "0 auto" }}>
+          <Reveal>
+            <GivingForm campaigns={GIVING_CAMPAIGNS} />
+          </Reveal>
+        </div>
       </section>
 
       {/* Photo */}
