@@ -202,7 +202,7 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
             </p>
             <button
               type="button"
-              onClick={() => { focusFormAfterReset.current = true; setZelleResult(null); }}
+              onClick={() => { focusFormAfterReset.current = true; setConfirmedLargeCents(null); setZelleResult(null); }}
               className="press"
               style={{
                 marginTop: 18, minHeight: 48, padding: "0 22px", borderRadius: 999, cursor: "pointer",
@@ -244,7 +244,7 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
                   <button
                     key={preset}
                     type="button"
-                    onClick={() => { setAmount(preset); setCustomAmount(""); }}
+                    onClick={() => { setAmount(preset); setCustomAmount(""); setConfirmedLargeCents(null); }}
                     className="press"
                     style={{
                       minHeight: 48, padding: "0 8px", borderRadius: 12, fontWeight: 800, fontSize: 16, cursor: "pointer",
@@ -267,6 +267,7 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
               onChange={(e) => {
                 const v = e.target.value;
                 setCustomAmount(v);
+                setConfirmedLargeCents(null);
                 // Clearing the field falls back to the default preset instead of leaving no amount.
                 // A half-typed entry like "-" also reads as "", so only an empty field restores it.
                 setAmount(v.trim() === "" && !e.target.validity.badInput ? PRESET_AMOUNTS[1] : null);
