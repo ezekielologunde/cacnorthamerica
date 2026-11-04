@@ -109,7 +109,7 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
   const campaignSlug = campaign?.slug ?? "";
   // A campaign with purposes (offering / thanksgiving) preselects its first, so
   // the donor never has to answer a question just to give.
-  const purposes = campaign?.purposes;
+  const purposes = campaign?.purposes?.length ? campaign.purposes : undefined;
   const purpose = purposes ? (purposes.some((p) => p.value === purposeChoice) ? purposeChoice : purposes[0].value) : undefined;
   const zelleRecipient = campaign ? zelleRecipientFor(campaign) : null;
   const activeMethod: GiveMethod = method === "zelle" && !zelleRecipient ? "card" : method;
