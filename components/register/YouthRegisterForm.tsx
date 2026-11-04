@@ -204,7 +204,8 @@ export function YouthRegisterForm({
 
     setStatus("loading");
     setServerError(null);
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
     const honeypot = formData.get(HONEYPOT_FIELD);
     const turnstileToken = formData.get(TURNSTILE_FIELD);
 
@@ -243,7 +244,7 @@ export function YouthRegisterForm({
       }
       if (!response.ok || !data?.checkoutUrl) {
         setServerError(typeof data?.error === "string" ? data.error : t("errGeneric"));
-        resetTurnstile();
+        resetTurnstile(form);
         setStatus("error");
         return;
       }
@@ -254,7 +255,7 @@ export function YouthRegisterForm({
         router.push(data.checkoutUrl);
       }
     } catch {
-      resetTurnstile();
+      resetTurnstile(form);
       setServerError(t("errGeneric"));
       setStatus("error");
     }

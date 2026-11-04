@@ -98,7 +98,8 @@ export default function ContactPageClient() {
     if (isMembershipSubject && !fields.phone.trim()) return invalid("c-phone", "Please enter your phone number so we can reach you.");
     if (!fields.message.trim()) return invalid("c-message", "Please write a message.");
     setStatus("loading");
-    const turnstileToken = new FormData(e.currentTarget as HTMLFormElement).get(TURNSTILE_FIELD);
+    const form = e.currentTarget as HTMLFormElement;
+    const turnstileToken = new FormData(form).get(TURNSTILE_FIELD);
     try {
       await submitLead(
         {
@@ -117,7 +118,7 @@ export default function ContactPageClient() {
       );
       setStatus("success");
     } catch {
-      resetTurnstile();
+      resetTurnstile(form);
       setStatus("error");
       setErrMsg("Something went wrong. Please try again or email us directly.");
     }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { useFormStatus } from "react-dom";
 import { subscribeAction } from "@/app/newsletter/actions";
 import { HONEYPOT_FIELD } from "@/lib/spam";
@@ -36,10 +36,11 @@ function SubmitButton() {
 
 export function NewsletterForm() {
   const [state, action] = useActionState(subscribeAction, null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   // A failed attempt used up the verification token; ask for a fresh one.
   useEffect(() => {
-    if (state && !state.ok) resetTurnstile();
+    if (state && !state.ok) resetTurnstile(formRef.current);
   }, [state]);
 
   if (state?.ok) {
@@ -65,7 +66,7 @@ export function NewsletterForm() {
   }
 
   return (
-    <form action={action} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+    <form ref={formRef} action={action} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       <input type="text" name={HONEYPOT_FIELD} tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }} />
       <TurnstileField />
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>

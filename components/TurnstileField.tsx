@@ -6,7 +6,7 @@ import { TURNSTILE_FIELD } from "@/lib/spam";
 type TurnstileApi = {
   render(el: HTMLElement, options: Record<string, unknown>): string;
   remove(widgetId: string): void;
-  reset(widgetId?: string): void;
+  reset(widget?: string | HTMLElement): void;
 };
 
 declare global {
@@ -35,9 +35,12 @@ function loadTurnstile(): Promise<TurnstileApi> {
   return loading;
 }
 
-/** Ask for a fresh token after a submission fails: each token works once. */
-export function resetTurnstile(): void {
-  window.turnstile?.reset();
+/** Ask for a fresh token after a submission fails (each token works once).
+ *  Resets only the widget inside `form`: a page can hold several, such as a
+ *  page form plus the footer newsletter. */
+export function resetTurnstile(form: HTMLFormElement | null): void {
+  const box = form?.querySelector<HTMLElement>("[data-turnstile]");
+  if (box) window.turnstile?.reset(box);
 }
 
 /** Cloudflare Turnstile for a form. Renders nothing unless
@@ -78,7 +81,7 @@ export function TurnstileField() {
   return (
     <>
       <input ref={field} type="hidden" name={TURNSTILE_FIELD} defaultValue="" />
-      <div ref={box} />
+      <div ref={box} data-turnstile="" />
     </>
   );
 }

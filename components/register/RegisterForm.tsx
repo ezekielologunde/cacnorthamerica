@@ -138,7 +138,8 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
     }
     setStatus("loading");
     setErrorMessage(null);
-    const formData = new FormData(event.currentTarget as HTMLFormElement);
+    const form = event.currentTarget as HTMLFormElement;
+    const formData = new FormData(form);
     const honeypot = formData.get(HONEYPOT_FIELD);
     const turnstileToken = formData.get(TURNSTILE_FIELD);
 
@@ -177,7 +178,7 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
       }
       if (!response.ok || !data?.checkoutUrl) {
         setErrorMessage(typeof data?.error === "string" ? data.error : "Something went wrong. Please try again.");
-        resetTurnstile();
+        resetTurnstile(form);
         setStatus("error");
         return;
       }
@@ -188,7 +189,7 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
         router.push(data.checkoutUrl);
       }
     } catch {
-      resetTurnstile();
+      resetTurnstile(form);
       setErrorMessage("Something went wrong. Please try again.");
       setStatus("error");
     }
