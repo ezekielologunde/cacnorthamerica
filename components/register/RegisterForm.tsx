@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
+import { EmbeddedCheckoutScreen } from "@/components/checkout/EmbeddedStripeCheckout";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { FORM_HEADER, HONEYPOT_FIELD } from "@/lib/spam";
@@ -61,6 +62,7 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
   const [dccZone, setDccZone] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(DEFAULT_PAYMENT_METHOD);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // After "+ Add", jump straight into the new row's name field
@@ -164,6 +166,11 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
       });
 
       const data = await response.json().catch(() => null);
+      if (response.ok && typeof data?.clientSecret === "string") {
+        setClientSecret(data.clientSecret);
+        setStatus("idle");
+        return;
+      }
       if (!response.ok || !data?.checkoutUrl) {
         setErrorMessage(typeof data?.error === "string" ? data.error : "Something went wrong. Please try again.");
         setStatus("error");
@@ -183,6 +190,10 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
 
   const submitLabel =
     status === "loading" ? t("submitting") : total > 0 ? paidSubmitLabel(paymentMethod) : `${t("submit")} — CACNA ${year}`;
+
+  if (clientSecret) {
+    return <EmbeddedCheckoutScreen clientSecret={clientSecret} onBack={() => setClientSecret(null)} backLabel="← Back to my registration" />;
+  }
 
   return (
     <form onSubmit={handleSubmit}>
