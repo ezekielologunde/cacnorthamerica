@@ -78,7 +78,7 @@ const sections: LegalSection[] = [
           <li><strong>Resend</strong> sends our confirmation and newsletter emails.</li>
           <li><strong>Google Sheets</strong> (through a Google Apps Script) keeps a copy of form submissions and completed payments for the committee&apos;s records.</li>
           <li><strong>Cloudinary</strong> hosts the photos shown on the site.</li>
-          <li><strong>Google Analytics</strong> measures site visits. If we run Google Ads or AdSense, their tags may also load and use cookies.</li>
+          <li><strong>Google Analytics</strong> measures site visits. Blog posts may also show ads from Google AdSense; Google and its partners use cookies to serve and measure those ads.</li>
           <li><strong>Vercel</strong> hosts the site. Our zone finder can use Vercel&apos;s rough, city-level estimate of your location from your IP address; we do not store it. Vercel also gives us page-view and speed statistics that do not use cookies.</li>
         </ul>
       </>
@@ -91,7 +91,10 @@ const sections: LegalSection[] = [
         We keep cookies to a minimum. Google Analytics uses cookies to count visits; you can stop that by blocking cookies in your browser or by installing Google&apos;s{" "}
         <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" style={{ color: "var(--red)", fontWeight: 700 }}>opt-out browser add-on</a>. Videos are embedded through
         YouTube&apos;s privacy-enhanced mode, which does not set tracking cookies until you press play. Our admin
-        area uses a sign-in cookie for staff only. You can block or delete cookies in your browser settings.
+        area uses a sign-in cookie for staff only. Blog posts may show ads from Google AdSense, which use cookies to show and measure ads; you can manage ad personalization in{" "}
+        <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer" style={{ color: "var(--red)", fontWeight: 700 }}>Google&apos;s ad settings</a>{" "}
+        or read{" "}
+        <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener noreferrer" style={{ color: "var(--red)", fontWeight: 700 }}>how Google uses information from sites that use its services</a>. We show no ads outside blog posts. You can block or delete cookies in your browser settings.
       </p>
     ),
   },
