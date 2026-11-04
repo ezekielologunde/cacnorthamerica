@@ -432,6 +432,51 @@ export type Database = {
         }
         Relationships: []
       }
+      giving_invoices: {
+        Row: {
+          amount_paid_cents: number
+          billing_reason: string | null
+          claimed_at: string
+          created_at: string
+          email_done: boolean
+          frequency: string | null
+          invoice_id: string
+          processing_fee_cents: number
+          setup_fee_cents: number
+          sheet_done: boolean
+          subscription_id: string
+          subtotal_cents: number
+        }
+        Insert: {
+          amount_paid_cents: number
+          billing_reason?: string | null
+          claimed_at?: string
+          created_at?: string
+          email_done?: boolean
+          frequency?: string | null
+          invoice_id: string
+          processing_fee_cents?: number
+          setup_fee_cents?: number
+          sheet_done?: boolean
+          subscription_id: string
+          subtotal_cents: number
+        }
+        Update: {
+          amount_paid_cents?: number
+          billing_reason?: string | null
+          claimed_at?: string
+          created_at?: string
+          email_done?: boolean
+          frequency?: string | null
+          invoice_id?: string
+          processing_fee_cents?: number
+          setup_fee_cents?: number
+          sheet_done?: boolean
+          subscription_id?: string
+          subtotal_cents?: number
+        }
+        Relationships: []
+      }
       leaders: {
         Row: {
           bio: string | null

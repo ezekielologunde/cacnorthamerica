@@ -15,12 +15,15 @@ export type GivingConfirmationInput = {
   /** Processing fee and amount actually charged; omitted when no fee. */
   feeLabel?: string;
   chargedLabel?: string;
+  /** "Monthly" or "Every 2 weeks" for a recurring gift; each charge gets this receipt. */
+  frequencyLabel?: string;
 };
 
 function buildHtml(input: GivingConfirmationInput): string {
   const bodyHtml = `<div style="background:#fff;border:1px solid #ECE9E4;border-radius:16px;padding:24px 26px">
     <div style="font-size:11.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#C81E3A;margin-bottom:6px">Campaign</div>
-    <div style="font-size:16px;font-weight:700;color:#12141E;margin-bottom:18px">${escapeHtml(input.campaignTitle)}</div>
+    <div style="font-size:16px;font-weight:700;color:#12141E;margin-bottom:${input.frequencyLabel ? 4 : 18}px">${escapeHtml(input.campaignTitle)}</div>
+    ${input.frequencyLabel ? `<div style="font-size:13.5px;color:#5f5e5a;margin-bottom:18px">${escapeHtml(input.frequencyLabel)} gift</div>` : ""}
     <table style="width:100%;border-collapse:collapse;padding-top:14px;border-top:1px solid #ECE9E4">
       <tr>
         <td style="font-size:11.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#C81E3A">Given</td>
