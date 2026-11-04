@@ -272,10 +272,10 @@ export const MEMBER_CHURCHES: MemberChurch[] = [
   {
     name: "Christ Apostolic Church Kingdom Embassy",
     address: "8733 Frankford Ave, Philadelphia, PA 19136",
-    zoneName: "Philadelphia",
+    zoneName: "Baltimore DCC",
     lat: 40.0486237,
     lng: -75.0127433,
-    source: "Multiple aggregator/directory listings (Yelp, Google Business) naming this address for a Philadelphia-based \"Christ Apostolic Church\" congregation",
+    source: "Multiple aggregator/directory listings (Yelp, Google Business) naming this address for a Philadelphia-based \"Christ Apostolic Church\" congregation; part of the Baltimore DCC per the site owner (2026-11-03)",
   },
   {
     name: "Christ Apostolic Church W.o.s.e.m. (Norfolk)",
