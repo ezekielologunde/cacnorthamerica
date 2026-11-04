@@ -23,3 +23,25 @@ export function EmbeddedStripeCheckout({ clientSecret }: { clientSecret: string 
     </div>
   );
 }
+
+/** Full-width screen shown in place of a form once its server call returns a
+ *  client secret: the embed plus a way back to the form. */
+export function EmbeddedCheckoutScreen({ clientSecret, onBack, backLabel = "← Back" }: { clientSecret: string; onBack: () => void; backLabel?: string }) {
+  return (
+    <div ref={(el) => el?.scrollIntoView({ block: "start", behavior: "smooth" })}>
+      <EmbeddedStripeCheckout clientSecret={clientSecret} />
+      <button
+        type="button"
+        onClick={onBack}
+        className="press"
+        style={{
+          marginTop: 18, minHeight: 48, padding: "0 22px", borderRadius: 999, cursor: "pointer",
+          background: "transparent", color: "var(--ink)", fontWeight: 700, fontSize: 15,
+          border: "1.5px solid var(--line)",
+        }}
+      >
+        {backLabel}
+      </button>
+    </div>
+  );
+}

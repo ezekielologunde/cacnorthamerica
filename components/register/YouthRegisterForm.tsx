@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useId, useMemo, useRef, useState, type CSSProperties, type FormEvent } from "react";
+import { EmbeddedCheckoutScreen } from "@/components/checkout/EmbeddedStripeCheckout";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { FORM_HEADER, HONEYPOT_FIELD } from "@/lib/spam";
@@ -97,6 +98,7 @@ export function YouthRegisterForm({
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(DEFAULT_PAYMENT_METHOD);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [serverError, setServerError] = useState<string | null>(null);
   const serverErrorRef = useRef<HTMLParagraphElement | null>(null);
   const focusKey = useRef<number | null>(null);
@@ -230,6 +232,11 @@ export function YouthRegisterForm({
       });
 
       const data = await response.json().catch(() => null);
+      if (response.ok && typeof data?.clientSecret === "string") {
+        setClientSecret(data.clientSecret);
+        setStatus("idle");
+        return;
+      }
       if (!response.ok || !data?.checkoutUrl) {
         setServerError(typeof data?.error === "string" ? data.error : t("errGeneric"));
         setStatus("error");
@@ -276,6 +283,10 @@ export function YouthRegisterForm({
 
   const submitLabel =
     status === "loading" ? t("submitting") : total > 0 ? paidSubmitLabel(paymentMethod) : `${t("submitFree")} — CACNA ${year}`;
+
+  if (clientSecret) {
+    return <EmbeddedCheckoutScreen clientSecret={clientSecret} onBack={() => setClientSecret(null)} backLabel="← Back to my registration" />;
+  }
 
   return (
     <form onSubmit={handleSubmit} noValidate>

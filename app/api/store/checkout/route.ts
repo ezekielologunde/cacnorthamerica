@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getStripeClient } from "@/lib/stripe";
+import { checkoutModeParams, checkoutResponseBody } from "@/lib/stripeEmbed";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
 import { SITE_URL } from "@/lib/site";
 import { storeProducts } from "@/lib/conventions";
@@ -117,12 +118,11 @@ export async function POST(request: Request) {
       // Every item is a physical product (books, apparel) -- without this the
       // order has no address to ship to. Shipping cost is not charged here yet.
       shipping_address_collection: { allowed_countries: ["US", "CA"] },
-      success_url: `${SITE_URL}/store/confirmation?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${SITE_URL}/store`,
+      ...checkoutModeParams(`${SITE_URL}/store/confirmation?session_id={CHECKOUT_SESSION_ID}`, `${SITE_URL}/store`),
       metadata: { kind: "store_order", contact_name: body.contactName, ...processingFeeMetadata(subtotalCents) },
     });
 
-    return NextResponse.json({ checkoutUrl: session.url });
+    return NextResponse.json(checkoutResponseBody(session));
   } catch {
     return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 });
   }
