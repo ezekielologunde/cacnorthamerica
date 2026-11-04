@@ -1,7 +1,7 @@
 // Server side of Cloudflare Turnstile. Verification is on only when
 // TURNSTILE_SECRET_KEY is set, so forms keep working until the keys exist.
 // The widget (components/TurnstileField.tsx) is on only when the public
-// NEXT_PUBLIC_TURNSTILE_SITE_KEY is set; set the two together.
+// NEXT_PUBLIC_TURNSTILE_WIDGET_ID is set; set the two together.
 
 const VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 

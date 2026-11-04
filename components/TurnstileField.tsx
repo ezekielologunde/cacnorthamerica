@@ -43,12 +43,12 @@ export function resetTurnstile(form: HTMLFormElement | null): void {
 }
 
 /** Cloudflare Turnstile for a form. Renders nothing unless
- *  NEXT_PUBLIC_TURNSTILE_SITE_KEY is set. Cloudflare's script adds and refreshes
+ *  NEXT_PUBLIC_TURNSTILE_WIDGET_ID is set. Cloudflare's script adds and refreshes
  *  a hidden `cf-turnstile-response` input inside the widget, so
  *  FormData(form) carries the token. "interaction-only" keeps it invisible
  *  unless Cloudflare wants a challenge. */
 export function TurnstileField() {
-  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_WIDGET_ID;
   const box = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
