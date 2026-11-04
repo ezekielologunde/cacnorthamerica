@@ -33,6 +33,7 @@ export default async function StorePage({
     { key: "convention", label: t("conventionApparel"), products: storeProducts.filter((p) => p.category === "convention") },
     { key: "good_women", label: t("goodWomenApparel"), products: storeProducts.filter((p) => p.category === "good_women") },
     { key: "youth", label: t("youthApparel"), products: storeProducts.filter((p) => p.category === "youth") },
+    { key: "merchandise", label: t("merchandise"), products: storeProducts.filter((p) => p.category === "merchandise") },
   ];
   const educationProducts = storeProducts.filter((p) => p.category === "christian_education");
   const hasAnyProducts = categories.some((c) => c.products.length > 0);
