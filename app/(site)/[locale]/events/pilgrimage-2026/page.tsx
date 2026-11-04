@@ -89,6 +89,7 @@ export default async function PilgrimagePage({
     url: `${SITE_URL}/events/pilgrimage-2026`,
     location: { "@type": "Place", name: "Israel & Egypt (departing JFK)", address: { "@type": "PostalAddress", addressCountry: "IL" } },
     organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },
+    performer: { "@type": "Church", name: SITE.name, url: SITE_URL },
     offers: { "@type": "Offer", price: "4549", priceCurrency: "USD", availability: "https://schema.org/InStock", url: `${SITE_URL}/events/pilgrimage-2026` },
   };
   return (

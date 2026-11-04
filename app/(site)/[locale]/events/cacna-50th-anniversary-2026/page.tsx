@@ -55,6 +55,7 @@ export default async function Cacna50thAnniversaryPage({
       address: `${SITE.address.street}, ${SITE.address.city}, ${SITE.address.region} ${SITE.address.postalCode}`,
     },
     organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },
+    performer: { "@type": "Church", name: SITE.name, url: SITE_URL },
     url: `${SITE_URL}/events/cacna-50th-anniversary-2026`,
     offers: { "@type": "Offer", url: RSVP_URL, price: "0", priceCurrency: "USD", availability: "https://schema.org/InStock", validFrom: "2026-01-01T00:00:00-05:00" },
   };
