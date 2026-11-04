@@ -7,6 +7,7 @@ import { conventionYears } from "@/lib/conventions";
 // Three places must agree on this value:
 //   1. this default,
 //   2. NEXT_PUBLIC_SITE_URL in the Vercel project (it overrides this default),
+//      which was deleted on 2026-11-03 so this default applies,
 //   3. Supabase Auth -> URL Configuration -> Redirect URLs (password-reset
 //      emails link to SITE_URL; a host missing from that allow-list makes
 //      the link silently go nowhere).
