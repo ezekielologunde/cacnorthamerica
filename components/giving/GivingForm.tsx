@@ -5,7 +5,8 @@ import { zelleRecipientFor, type GivingCampaign } from "@/lib/giving";
 import { FeeBreakdown } from "@/components/checkout/FeeBreakdown";
 import { EmbeddedStripeCheckout } from "@/components/checkout/EmbeddedStripeCheckout";
 import { ZellePaymentPanel } from "@/components/register/ZellePaymentPanel";
-import { FORM_HEADER } from "@/lib/spam";
+import { FORM_HEADER, TURNSTILE_FIELD } from "@/lib/spam";
+import { TurnstileField, resetTurnstile } from "@/components/TurnstileField";
 import type { PaymentMethod } from "@/lib/processingFee";
 
 /** Zelle is a pledge the donor completes in their own bank app; card and bank
@@ -91,14 +92,17 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
     setErrorMessage(null);
 
     if (activeMethod === "zelle") {
+      const form = event.currentTarget as HTMLFormElement;
+      const turnstileToken = new FormData(form).get(TURNSTILE_FIELD);
       try {
         const response = await fetch("/api/giving/zelle", {
           method: "POST",
           headers: { "Content-Type": "application/json", [FORM_HEADER]: "1" },
-          body: JSON.stringify({ contactName, contactEmail, campaignSlug, amountCents }),
+          body: JSON.stringify({ contactName, contactEmail, campaignSlug, amountCents, turnstileToken: typeof turnstileToken === "string" ? turnstileToken : "" }),
         });
         const data = await response.json().catch(() => null);
         if (!response.ok || typeof data?.zelleRef !== "string" || typeof data?.recipient !== "string") {
+          resetTurnstile(form);
           setErrorMessage(typeof data?.error === "string" ? data.error : "Something went wrong. Please try again.");
           setStatus("error");
           return;
@@ -112,6 +116,7 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
         });
         setStatus("idle");
       } catch {
+        resetTurnstile(form);
         setErrorMessage("Something went wrong. Please try again.");
         setStatus("error");
       }
@@ -307,6 +312,7 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
             <p role="alert" style={{ color: "#FF9E9E", fontWeight: 600, fontSize: 14, marginBottom: 14 }}>{errorMessage}</p>
           )}
 
+          <TurnstileField />
           <button
             type="submit"
             disabled={status === "loading"}

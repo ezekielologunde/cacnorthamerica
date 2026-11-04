@@ -8,6 +8,7 @@ import { giftZelleReference } from "@/lib/zelleReference";
 import { sendZelleCommitteeEmail, sendZelleDonorEmail } from "@/lib/givingEmail";
 import { recordPledgeThenNotifyDonor } from "@/lib/zellePledge";
 import { logToSheetChecked } from "@/lib/sheetsWebhook";
+import { TURNSTILE_ERROR, verifyTurnstile } from "@/lib/turnstile";
 
 const HOUR_MS = 60 * 60 * 1000;
 const DAY_MS = 24 * HOUR_MS;
@@ -37,6 +38,11 @@ export async function POST(request: Request) {
     rawBody = await request.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+
+  const turnstileToken = rawBody && typeof rawBody === "object" ? (rawBody as Record<string, unknown>).turnstileToken : undefined;
+  if (!(await verifyTurnstile(turnstileToken, clientIp(request.headers)))) {
+    return NextResponse.json({ error: TURNSTILE_ERROR }, { status: 400 });
   }
 
   const validationError = validateGiftBasics(rawBody, GIVING_CAMPAIGNS.map((c) => c.slug));
