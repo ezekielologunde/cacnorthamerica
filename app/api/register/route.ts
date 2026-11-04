@@ -12,6 +12,7 @@ import { recordCheckinPeople } from "@/lib/checkinStore";
 import { zelleReferenceFor } from "@/lib/zelleReference";
 import { sendRegistrationConfirmationEmail } from "@/lib/registrationEmail";
 import { FORM_HEADER, HONEYPOT_FIELD, looksLikeSpam } from "@/lib/spam";
+import { TURNSTILE_ERROR, verifyTurnstile } from "@/lib/turnstile";
 import { processingFeeLineItem, processingFeeMetadata } from "@/lib/processingFee";
 import { adultSheetExtras, categoryForAge, EMAIL_RE, encodeMeals, parseMealsAndAllergies, parseYouthRegistration, youthSheetName, youthSheetRows } from "@/lib/youthRegistration";
 
@@ -194,6 +195,11 @@ export async function POST(request: Request) {
   const honeypot = rawBody && typeof rawBody === "object" ? (rawBody as Record<string, unknown>)[HONEYPOT_FIELD] : undefined;
   if (typeof honeypot === "string" && honeypot !== "") {
     return NextResponse.json({ success: true });
+  }
+
+  const turnstileToken = rawBody && typeof rawBody === "object" ? (rawBody as Record<string, unknown>).turnstileToken : undefined;
+  if (!(await verifyTurnstile(turnstileToken, clientIp(request.headers)))) {
+    return NextResponse.json({ error: TURNSTILE_ERROR }, { status: 400 });
   }
 
   const track = rawBody && typeof rawBody === "object" ? ((rawBody as Record<string, unknown>).track ?? "adult") : "adult";

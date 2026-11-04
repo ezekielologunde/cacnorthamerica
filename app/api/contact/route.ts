@@ -3,6 +3,7 @@ import { Resend } from "resend";
 import { createServiceClient } from "@/lib/supabase/server";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
 import { FORM_HEADER, HONEYPOT_FIELD, looksLikeSpam } from "@/lib/spam";
+import { TURNSTILE_ERROR, verifyTurnstile } from "@/lib/turnstile";
 import { escapeHtml } from "@/lib/html";
 import { sendContactAutoReply } from "@/lib/contactReplyEmail";
 import { logToSheet } from "@/lib/sheetsWebhook";
@@ -92,6 +93,10 @@ export async function POST(req: Request) {
   // Honeypot: bots fill every input, people never see this one.
   if (body[HONEYPOT_FIELD]) {
     return NextResponse.json({ success: true });
+  }
+
+  if (!(await verifyTurnstile(body.turnstileToken, clientIp(req.headers)))) {
+    return NextResponse.json({ error: TURNSTILE_ERROR }, { status: 400 });
   }
 
   // Only the form's own formNames, so callers can't create new Sheets tabs.

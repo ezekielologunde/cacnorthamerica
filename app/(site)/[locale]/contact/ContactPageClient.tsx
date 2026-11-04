@@ -7,7 +7,8 @@ import { Reveal } from "@/components/ui/Reveal";
 import { IconBadge } from "@/components/ui/IconBadge";
 import { MapPin, Phone, Mail, Clock, CheckCircle2 } from "lucide-react";
 import { submitLead, isValidEmail } from "@/lib/forms";
-import { HONEYPOT_FIELD } from "@/lib/spam";
+import { HONEYPOT_FIELD, TURNSTILE_FIELD } from "@/lib/spam";
+import { TurnstileField, resetTurnstile } from "@/components/TurnstileField";
 import { CONTACT_SUBJECTS as SUBJECTS } from "@/app/api/contact/fields";
 
 const MEMBERSHIP_SUBJECTS = new Set([
@@ -97,6 +98,7 @@ export default function ContactPageClient() {
     if (isMembershipSubject && !fields.phone.trim()) return invalid("c-phone", "Please enter your phone number so we can reach you.");
     if (!fields.message.trim()) return invalid("c-message", "Please write a message.");
     setStatus("loading");
+    const turnstileToken = new FormData(e.currentTarget as HTMLFormElement).get(TURNSTILE_FIELD);
     try {
       await submitLead(
         {
@@ -110,10 +112,12 @@ export default function ContactPageClient() {
           } : {}),
           [HONEYPOT_FIELD]: honeypot,
         },
-        `Contact — ${fields.subject || "General"}`
+        `Contact — ${fields.subject || "General"}`,
+        typeof turnstileToken === "string" ? turnstileToken : "",
       );
       setStatus("success");
     } catch {
+      resetTurnstile();
       setStatus("error");
       setErrMsg("Something went wrong. Please try again or email us directly.");
     }
@@ -174,6 +178,7 @@ export default function ContactPageClient() {
               <form onSubmit={handleSubmit} noValidate>
                 {/* Honeypot: bots fill every input, people never see this one. */}
                 <input type="text" name={HONEYPOT_FIELD} value={honeypot} onChange={(e) => setHoneypot(e.target.value)} tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }} />
+                <TurnstileField />
                 <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(19px,2.5vw,26px)", color: "var(--ink)", margin: "0 0 20px", letterSpacing: "-0.4px" }}>
                   Send us a message
                 </h2>
