@@ -211,7 +211,6 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
         </Link>
       </p>
       <input type="text" name={HONEYPOT_FIELD} tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }} />
-      <TurnstileField />
       {/* Two big, equal tabs. */}
       <div role="tablist" aria-label="Registration type" className="reg-seg">
         {([
@@ -464,6 +463,7 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
             </div>
           )}
         </div>
+        <TurnstileField />
         <button
           type="submit"
           disabled={status === "loading"}

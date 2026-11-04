@@ -179,7 +179,6 @@ export default function ContactPageClient() {
               <form onSubmit={handleSubmit} noValidate>
                 {/* Honeypot: bots fill every input, people never see this one. */}
                 <input type="text" name={HONEYPOT_FIELD} value={honeypot} onChange={(e) => setHoneypot(e.target.value)} tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }} />
-                <TurnstileField />
                 <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(19px,2.5vw,26px)", color: "var(--ink)", margin: "0 0 20px", letterSpacing: "-0.4px" }}>
                   Send us a message
                 </h2>
@@ -280,6 +279,8 @@ export default function ContactPageClient() {
                   <label htmlFor="c-message" style={labelStyle}>Message <span style={{ color: "var(--red)" }}>*</span></label>
                   <textarea id="c-message" aria-invalid={errField === "c-message" || undefined} aria-describedby={errField === "c-message" ? "c-error" : undefined} className="field-input" style={{ ...inputStyle, minHeight: 120, resize: "vertical", lineHeight: 1.6 }} placeholder="How can we help you?" value={fields.message} onChange={update("message")} required />
                 </div>
+
+                <TurnstileField />
 
                 {errMsg && (
                   <p id="c-error" role="alert" style={{ color: "var(--red)", fontSize: 15, fontWeight: 600, margin: "0 0 14px" }}>{errMsg}</p>
