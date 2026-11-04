@@ -18,7 +18,7 @@ export const SITE = {
   shortName: "CACNA",
   url: SITE_URL,
   description:
-    "CACNA unites Christ Apostolic Church member churches across the United States, Canada, and South America under 24 Zones & DCCs, preaching the whole Gospel in a clear and undiluted manner.",
+    "CACNA unites Christ Apostolic Church member churches across the United States, Canada, and South America under 26 Zones & DCCs, preaching the whole Gospel in a clear and undiluted manner.",
   telephone: "+1-305-469-0346",
   email: "info@cacna.org",
   address: {
