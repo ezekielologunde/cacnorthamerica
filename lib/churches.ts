@@ -318,6 +318,40 @@ export const MEMBER_CHURCHES: MemberChurch[] = [
     lng: -75.6574491,
     source: "CanadaHelps CRA-registered charity listing for this exact name and address; CAC affiliation inferred from the name only (page does not mention CAC Nigeria) — confirm with the church",
   },
+  {
+    name: "CAC Bethel Brampton",
+    address: "1495 Sandalwood Pkwy East, Brampton, ON",
+    zoneName: "Zone to confirm (Canada)",
+    lat: 43.7389306,
+    lng: -79.7774191,
+    approxLocation: true,
+    source: "Local assembly page (cacbethel.com/locations) — Bethel Toronto's own site lists this branch; zone not stated, confirm with the church. Coordinates are the street, not the exact building",
+  },
+  {
+    name: "CAC Bethel Windsor",
+    address: "1531 Church Street, Windsor, ON",
+    zoneName: "Zone to confirm (Canada)",
+    lat: 42.3117042,
+    lng: -83.0400631,
+    approxLocation: true,
+    source: "Local assembly page (cacbethel.com/locations) — Bethel Toronto's own site lists this branch; zone not stated, confirm with the church. Coordinates are the street, not the exact building",
+  },
+  {
+    name: "CAC Mount Bethel Toronto",
+    address: "6-100 Penn Drive, Toronto, ON",
+    zoneName: "Zone to confirm (Canada)",
+    lat: 43.7550588,
+    lng: -79.558135,
+    source: "cacmountbethel.com/contact church contact directory; zone not stated, confirm with the church",
+  },
+  {
+    name: "CAC Mount Bethel Montreal West",
+    address: "128 Ronald Dr, Montreal West, QC",
+    zoneName: "Zone to confirm (Canada)",
+    lat: 45.4486573,
+    lng: -73.641614,
+    source: "cacmountbethel.com/contact church contact directory; zone not stated, confirm with the church",
+  },
 ];
 
 /** Great-circle distance in miles between two lat/lng points (haversine). */
