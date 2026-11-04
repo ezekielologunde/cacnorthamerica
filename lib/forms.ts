@@ -16,11 +16,11 @@ export function isValidEmail(email: string): boolean {
  *
  * Returns "sent" (delivered by Resend) or "mailto" (handed to email client).
  */
-export async function submitLead(data: LeadData, formName: string): Promise<"sent" | "mailto"> {
+export async function submitLead(data: LeadData, formName: string, turnstileToken = ""): Promise<"sent" | "mailto"> {
   const res = await fetch("/api/contact", {
     method: "POST",
     headers: { "Content-Type": "application/json", [FORM_HEADER]: "1" },
-    body: JSON.stringify({ ...data, formName }),
+    body: JSON.stringify({ ...data, formName, turnstileToken }),
   });
 
   if (!res.ok) throw new Error(`Submission failed (${res.status})`);

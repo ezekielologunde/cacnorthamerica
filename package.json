@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test": "node --test lib/cacWorldNews.test.mjs"
+    "test": "node --test lib/cacWorldNews.test.mjs lib/turnstile.test.mjs"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^7.0.1",

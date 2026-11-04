@@ -5,7 +5,8 @@ import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from 
 import { EmbeddedCheckoutScreen } from "@/components/checkout/EmbeddedStripeCheckout";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { FORM_HEADER, HONEYPOT_FIELD } from "@/lib/spam";
+import { FORM_HEADER, HONEYPOT_FIELD, TURNSTILE_FIELD } from "@/lib/spam";
+import { TurnstileField, resetTurnstile } from "@/components/TurnstileField";
 import { FeeBreakdown } from "@/components/checkout/FeeBreakdown";
 import { DEFAULT_PAYMENT_METHOD, PaymentMethodChoice, ZelleTotal, paidSubmitLabel, type PaymentMethod } from "@/components/register/PaymentMethodChoice";
 import { MAX_ALLERGIES_LENGTH, MEAL_SLOTS, mealSlotLabel, type MealSlot } from "@/lib/youthRegistration";
@@ -137,7 +138,10 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
     }
     setStatus("loading");
     setErrorMessage(null);
-    const honeypot = new FormData(event.currentTarget as HTMLFormElement).get(HONEYPOT_FIELD);
+    const form = event.currentTarget as HTMLFormElement;
+    const formData = new FormData(form);
+    const honeypot = formData.get(HONEYPOT_FIELD);
+    const turnstileToken = formData.get(TURNSTILE_FIELD);
 
     try {
       const response = await fetch("/api/register", {
@@ -145,6 +149,7 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
         headers: { "Content-Type": "application/json", [FORM_HEADER]: "1" },
         body: JSON.stringify({
           [HONEYPOT_FIELD]: typeof honeypot === "string" ? honeypot : "",
+          turnstileToken: typeof turnstileToken === "string" ? turnstileToken : "",
           track: "adult",
           paymentMethod,
           registrationType: mode,
@@ -173,6 +178,7 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
       }
       if (!response.ok || !data?.checkoutUrl) {
         setErrorMessage(typeof data?.error === "string" ? data.error : "Something went wrong. Please try again.");
+        resetTurnstile(form);
         setStatus("error");
         return;
       }
@@ -183,6 +189,7 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
         router.push(data.checkoutUrl);
       }
     } catch {
+      resetTurnstile(form);
       setErrorMessage("Something went wrong. Please try again.");
       setStatus("error");
     }
@@ -204,6 +211,7 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
         </Link>
       </p>
       <input type="text" name={HONEYPOT_FIELD} tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }} />
+      <TurnstileField />
       {/* Two big, equal tabs. */}
       <div role="tablist" aria-label="Registration type" className="reg-seg">
         {([
