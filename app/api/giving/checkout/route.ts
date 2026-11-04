@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getStripeClient } from "@/lib/stripe";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
 import { SITE_URL } from "@/lib/site";
+import { embeddedCheckoutEnabled } from "@/lib/stripeEmbed";
 import { GIVING_CAMPAIGNS } from "@/lib/giving";
 import { validateGiftBasics, type GiftBasics } from "@/lib/givingRequest";
 import { BANK_MAX_CENTS, feeLineItems, feeMetadataFor, type PaymentMethod } from "@/lib/processingFee";
@@ -46,9 +47,8 @@ export async function POST(request: Request) {
 
   const method: PaymentMethod = body.paymentMethod === "bank" ? "bank" : "card";
   const stripe = getStripeClient();
-  // Embedded only when the browser can load Stripe.js (publishable key set);
-  // otherwise fall back to the hosted page so giving never breaks.
-  const embedded = Boolean(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+  // Hosted page by default; embedded only when opted in (see lib/stripeEmbed.ts).
+  const embedded = embeddedCheckoutEnabled();
   const returnUrl = `${SITE_URL}/giving/confirmation?session_id={CHECKOUT_SESSION_ID}`;
 
   try {

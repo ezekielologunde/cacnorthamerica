@@ -1,9 +1,13 @@
 import type Stripe from "stripe";
 
-/** Embedded Checkout needs Stripe.js in the browser, which needs the
- *  publishable key. Without it every flow keeps the hosted redirect. */
+/** Hosted Checkout (Stripe's own page) is the default. Embedded Checkout is
+ *  opt-in: it needs NEXT_PUBLIC_STRIPE_EMBEDDED=true and the publishable key,
+ *  which Stripe.js needs in the browser. */
 export function embeddedCheckoutEnabled(): boolean {
-  return Boolean(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+  return (
+    process.env.NEXT_PUBLIC_STRIPE_EMBEDDED === "true" &&
+    Boolean(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
+  );
 }
 
 /** The session params that differ between embedded and hosted Checkout. */
