@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { TURNSTILE_FIELD } from "@/lib/spam";
 
 type TurnstileApi = {
   render(el: HTMLElement, options: Record<string, unknown>): string;
@@ -44,30 +43,24 @@ export function resetTurnstile(form: HTMLFormElement | null): void {
 }
 
 /** Cloudflare Turnstile for a form. Renders nothing unless
- *  NEXT_PUBLIC_TURNSTILE_SITE_KEY is set; otherwise it keeps a hidden
- *  `cf-turnstile-response` input current, so FormData(form) carries the token.
- *  "interaction-only" keeps it invisible unless Cloudflare wants a challenge. */
+ *  NEXT_PUBLIC_TURNSTILE_SITE_KEY is set. Cloudflare's script adds and refreshes
+ *  a hidden `cf-turnstile-response` input inside the widget, so
+ *  FormData(form) carries the token. "interaction-only" keeps it invisible
+ *  unless Cloudflare wants a challenge. */
 export function TurnstileField() {
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   const box = useRef<HTMLDivElement>(null);
-  const field = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!siteKey) return;
     let cancelled = false;
     let widgetId: string | undefined;
-    const setToken = (value: string) => {
-      if (field.current) field.current.value = value;
-    };
     loadTurnstile()
       .then((api) => {
         if (cancelled || !box.current) return;
         widgetId = api.render(box.current, {
           sitekey: siteKey,
           appearance: "interaction-only",
-          callback: setToken,
-          "expired-callback": () => setToken(""),
-          "error-callback": () => setToken(""),
         });
       })
       .catch((e) => console.error("[turnstile]", e));
@@ -78,10 +71,5 @@ export function TurnstileField() {
   }, [siteKey]);
 
   if (!siteKey) return null;
-  return (
-    <>
-      <input ref={field} type="hidden" name={TURNSTILE_FIELD} defaultValue="" />
-      <div ref={box} data-turnstile="" />
-    </>
-  );
+  return <div ref={box} data-turnstile="" />;
 }
