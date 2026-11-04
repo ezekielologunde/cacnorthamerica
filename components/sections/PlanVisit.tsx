@@ -32,7 +32,7 @@ export function PlanVisit() {
               {[
                 { icon: MapPin, text: '14051 Stahley Road, Blue Ridge Summit, PA 17214', href: 'https://maps.google.com/?q=14051%20Stahley%20Road%20Blue%20Ridge%20Summit%20PA%2017214' },
                 { icon: Phone, text: '(305) 469-0346', href: 'tel:+13054690346' },
-                { icon: Mail, text: 'info@cacnorthamerica.com', href: 'mailto:info@cacnorthamerica.com' },
+                { icon: Mail, text: 'info@cacna.org', href: 'mailto:info@cacna.org' },
               ].map(item => (
                 <a key={item.text} href={item.href} className="hm-contact-row" style={{ display: 'flex', alignItems: 'center', gap: 14, color: 'inherit', textDecoration: 'none' }} {...(item.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
                   <span style={{ width: 40, height: 40, borderRadius: 11, background: 'rgba(255,255,255,.1)', display: 'grid', placeItems: 'center', flexShrink: 0 }}>

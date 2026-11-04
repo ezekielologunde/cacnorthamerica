@@ -47,7 +47,7 @@ function welcomeHtml(): string {
         You're receiving this because you subscribed at
         <a href="https://cacna.org" style="color:#C81E3A;text-decoration:none">cacna.org</a>.
         Questions? Email us at
-        <a href="mailto:info@cacnorthamerica.com" style="color:#C81E3A;text-decoration:none">info@cacnorthamerica.com</a>.
+        <a href="mailto:info@cacna.org" style="color:#C81E3A;text-decoration:none">info@cacna.org</a>.
       </p>
     </div>
   </div>

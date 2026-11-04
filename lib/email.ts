@@ -8,10 +8,10 @@
 import { SITE_URL } from "@/lib/site";
 
 // Each kind of mail goes out from its own address on the Resend-verified
-// cacnorthamerica.com domain, with replies routed to a matching mailbox
+// cacna.org domain, with replies routed to a matching mailbox
 // (forwarded to the team's Gmail). Resend can send from any address on a
 // verified domain, but the reply-to mailbox must exist or replies bounce.
-const DOMAIN = "cacnorthamerica.com";
+const DOMAIN = "cacna.org";
 
 // The church logo in every designed email's header. A small (176x151, ~13 KB)
 // JPEG hosted on the site (public/email/cac-logo.jpg), not the 181 KB site

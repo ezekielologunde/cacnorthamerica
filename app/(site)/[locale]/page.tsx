@@ -52,7 +52,7 @@ const faqJsonLd = {
     {
       "@type": "Question",
       name: "How do I contact CACNA?",
-      acceptedAnswer: { "@type": "Answer", text: "Call (305) 469-0346, or email info@cacnorthamerica.com. Address: 14051 Stahley Road, Blue Ridge Summit, PA 17214." },
+      acceptedAnswer: { "@type": "Answer", text: "Call (305) 469-0346, or email info@cacna.org. Address: 14051 Stahley Road, Blue Ridge Summit, PA 17214." },
     },
   ],
 };

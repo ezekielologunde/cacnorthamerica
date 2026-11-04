@@ -35,7 +35,7 @@ export async function submitLead(data: LeadData, formName: string): Promise<"sen
         .map(([k, v]) => `${k}: ${v}`)
         .join("\n")
     );
-    window.location.href = `mailto:info@cacnorthamerica.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:info@cacna.org?subject=${subject}&body=${body}`;
     return "mailto";
   }
 
