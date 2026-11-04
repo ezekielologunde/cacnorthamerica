@@ -80,7 +80,7 @@ export function emailShell(opts: {
         : ""
     }
     <div style="padding:16px 32px 28px;border-top:1px solid #ECE9E4;margin-top:16px">
-      <p style="font-size:12px;color:#8a8983;margin:0">${opts.footerNote ?? "Sent via cacnorthamerica.com · Questions? Reply to this email."}</p>
+      <p style="font-size:12px;color:#8a8983;margin:0">${opts.footerNote ?? "Sent via cacna.org · Questions? Reply to this email."}</p>
     </div>
   </div>
 </body>

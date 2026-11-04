@@ -114,7 +114,7 @@ function zelleCommitteeHtml(input: ZelleGiftInput): string {
 
   return emailShell({
     heading: "A Zelle gift is on its way",
-    subheading: "Someone asked how to give by Zelle on cacnorthamerica.com.",
+    subheading: "Someone asked how to give by Zelle on cacna.org.",
     bodyHtml,
   });
 }

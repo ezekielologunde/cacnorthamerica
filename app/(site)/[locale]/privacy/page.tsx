@@ -7,7 +7,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Privacy Policy — Christ Apostolic Church North America (CACNA)",
     description:
-      "What information CACNA collects through cacnorthamerica.com — registration, contact, meal requests, the newsletter, the store and giving — how it is used, and who helps us process it.",
+      "What information CACNA collects through cacna.org — registration, contact, meal requests, the newsletter, the store and giving — how it is used, and who helps us process it.",
     alternates: { canonical: `${SITE_URL}/privacy` },
   };
 }
@@ -20,7 +20,7 @@ const sections: LegalSection[] = [
     heading: "Who we are",
     body: (
       <p style={{ margin: 0 }}>
-        This website, cacnorthamerica.com, is run by {SITE.name} ({SITE.shortName}). When this policy says
+        This website, cacna.org, is run by {SITE.name} ({SITE.shortName}). When this policy says
         &ldquo;we&rdquo; or &ldquo;us&rdquo;, it means CACNA.
       </p>
     ),

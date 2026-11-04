@@ -45,7 +45,7 @@ function welcomeHtml(): string {
       <hr style="border:none;border-top:1px solid rgba(18,20,30,.08);margin:0 0 24px">
       <p style="font-size:12px;color:rgba(18,20,30,.4);line-height:1.7;margin:0">
         You're receiving this because you subscribed at
-        <a href="https://www.cacnorthamerica.com" style="color:#C81E3A;text-decoration:none">cacnorthamerica.com</a>.
+        <a href="https://cacna.org" style="color:#C81E3A;text-decoration:none">cacna.org</a>.
         Questions? Email us at
         <a href="mailto:info@cacnorthamerica.com" style="color:#C81E3A;text-decoration:none">info@cacnorthamerica.com</a>.
       </p>
