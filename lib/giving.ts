@@ -10,8 +10,13 @@ export interface GivingPurpose {
   label: string;
 }
 
+/** How the giving form groups a campaign: a tithe, an offering (thanksgiving is
+ *  a kind of offering, see `purposes`), or a specific project. */
+export type GivingKind = "tithe" | "offering" | "project";
+
 export interface GivingCampaign {
   slug: string;
+  kind: GivingKind;
   eyebrow: string;
   title: string;
   /** Plain name for emails and the Zelle ledger; `title` is sometimes a tagline. */
@@ -26,6 +31,7 @@ export interface GivingCampaign {
 export const GIVING_CAMPAIGNS: GivingCampaign[] = [
   {
     slug: "centenary",
+    kind: "project",
     eyebrow: "Featured Campaign",
     title: "CAC Centenary Building Project",
     name: "CAC Centenary Building Project",
@@ -41,6 +47,7 @@ export const GIVING_CAMPAIGNS: GivingCampaign[] = [
   },
   {
     slug: "village-payoff",
+    kind: "project",
     eyebrow: "CAC Village",
     title: "CAC Village Pay Off",
     name: "CAC Village Pay Off",
@@ -54,6 +61,7 @@ export const GIVING_CAMPAIGNS: GivingCampaign[] = [
   },
   {
     slug: "hope-for-all",
+    kind: "project",
     eyebrow: "Hope For All Initiative",
     title: "Creating a brighter tomorrow.",
     name: "Hope For All Initiative",
@@ -67,19 +75,31 @@ export const GIVING_CAMPAIGNS: GivingCampaign[] = [
   },
   {
     slug: "convention-offering",
-    eyebrow: "Annual Convention",
-    title: "Convention Offering & Thanksgiving",
-    name: "Annual Convention Offering & Thanksgiving",
+    kind: "offering",
+    eyebrow: "Offering",
+    title: "Offering",
+    name: "CACNA Offering",
     description:
-      "Give your offering or thanksgiving toward the cost of the Annual Convention. This is an offering, not a fundraiser: give as you are led.",
-    adBlurb: "Give your convention offering or thanksgiving online, from wherever you are.",
+      "Give as you are led, toward CACNA's ministries and the Annual Convention. This is an offering, not a fundraiser.",
+    adBlurb: "Give your offering or thanksgiving online, from wherever you are.",
     accounts: [
       { label: "Zelle", value: "cacnaconvention@gmail.com" },
     ],
     purposes: [
-      { value: "offering", label: "Offering" },
+      { value: "regular", label: "Regular" },
       { value: "thanksgiving", label: "Thanksgiving" },
     ],
+  },
+  {
+    slug: "tithe",
+    kind: "tithe",
+    eyebrow: "Tithe",
+    title: "Tithe",
+    name: "Tithe",
+    description: "Return the first tenth of your increase to the Lord.",
+    adBlurb: "Return your tithe online, by card or bank, in about a minute.",
+    // No Zelle or bank details yet, so a tithe is given by card or bank through Stripe.
+    accounts: [],
   },
 ];
 

@@ -43,13 +43,17 @@ check("a string amount fails", validateGiftBasics({ ...good, amountCents: "5000"
 const purposes = purposeValuesBySlug();
 const conv = { ...good, campaignSlug: "convention-offering" };
 check("the convention offering takes Zelle", zelleRecipientFor(bySlug["convention-offering"]) === "cacnaconvention@gmail.com");
-check("convention purposes are offering and thanksgiving", JSON.stringify(purposes["convention-offering"]) === JSON.stringify(["offering", "thanksgiving"]));
+check("offering purposes are regular and thanksgiving", JSON.stringify(purposes["convention-offering"]) === JSON.stringify(["regular", "thanksgiving"]));
 check("a gift with no purpose still passes", validateGiftBasics(conv, slugs, purposes) === null);
 check("a known purpose passes", validateGiftBasics({ ...conv, purpose: "thanksgiving" }, slugs, purposes) === null);
 check("an unknown purpose fails", validateGiftBasics({ ...conv, purpose: "tithe" }, slugs, purposes) !== null);
 check("a purpose on a campaign without any fails", validateGiftBasics({ ...good, purpose: "offering" }, slugs, purposes) !== null);
 check("a non-string purpose fails", validateGiftBasics({ ...conv, purpose: 5 }, slugs, purposes) !== null);
-check("the purpose label is appended to the campaign name", withPurpose(bySlug["convention-offering"].name, bySlug["convention-offering"], "thanksgiving") === "Annual Convention Offering & Thanksgiving — Thanksgiving");
+check("the purpose label is appended to the campaign name", withPurpose(bySlug["convention-offering"].name, bySlug["convention-offering"], "thanksgiving") === "CACNA Offering — Thanksgiving");
+check("campaign kinds are tithe, offering and project", GIVING_CAMPAIGNS.map((c) => c.kind).sort().join() === "offering,project,project,project,tithe");
+check("the tithe has no Zelle, so it is given by card or bank", zelleRecipientFor(bySlug["tithe"]) === null && bySlug["tithe"].accounts.length === 0);
+check("a tithe passes validation", validateGiftBasics({ ...good, campaignSlug: "tithe" }, slugs, purposes) === null);
+check("the tithe takes no purpose", validateGiftBasics({ ...good, campaignSlug: "tithe", purpose: "regular" }, slugs, purposes) !== null);
 check("no purpose leaves the name unchanged", withPurpose("X", bySlug["convention-offering"], undefined) === "X");
 
 // Gift references.
