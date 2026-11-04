@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
-import { zelleRecipientFor, type GivingCampaign } from "@/lib/giving";
+import { withPurpose, zelleRecipientFor, type GivingCampaign } from "@/lib/giving";
 import { FeeBreakdown } from "@/components/checkout/FeeBreakdown";
 import { EmbeddedStripeCheckout } from "@/components/checkout/EmbeddedStripeCheckout";
 import { ZellePaymentPanel } from "@/components/register/ZellePaymentPanel";
@@ -50,6 +50,7 @@ const labelStyle: CSSProperties = { display: "block", fontSize: 14, fontWeight: 
  *  don't want to pay online; this is the additional online path. */
 export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
   const [campaignSlug, setCampaignSlug] = useState(campaigns[0]?.slug ?? "");
+  const [purposeChoice, setPurposeChoice] = useState("");
   const [amount, setAmount] = useState<number | null>(PRESET_AMOUNTS[1]);
   const [customAmount, setCustomAmount] = useState("");
   const [contactName, setContactName] = useState("");
@@ -84,6 +85,10 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
   // Zelle is the default, but a campaign with no Zelle address (the Centenary
   // project) quietly falls back to card.
   const campaign = campaigns.find((c) => c.slug === campaignSlug);
+  // A campaign with purposes (offering / thanksgiving) preselects its first, so
+  // the donor never has to answer a question just to give.
+  const purposes = campaign?.purposes;
+  const purpose = purposes ? (purposes.some((p) => p.value === purposeChoice) ? purposeChoice : purposes[0].value) : undefined;
   const zelleRecipient = campaign ? zelleRecipientFor(campaign) : null;
   const activeMethod: GiveMethod = method === "zelle" && !zelleRecipient ? "card" : method;
 
@@ -110,7 +115,7 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
         const response = await fetch("/api/giving/zelle", {
           method: "POST",
           headers: { "Content-Type": "application/json", [FORM_HEADER]: "1" },
-          body: JSON.stringify({ contactName, contactEmail, campaignSlug, amountCents, turnstileToken: typeof turnstileToken === "string" ? turnstileToken : "" }),
+          body: JSON.stringify({ contactName, contactEmail, campaignSlug, purpose, amountCents, turnstileToken: typeof turnstileToken === "string" ? turnstileToken : "" }),
         });
         const data = await response.json().catch(() => null);
         if (!response.ok || typeof data?.zelleRef !== "string" || typeof data?.recipient !== "string") {
@@ -124,7 +129,7 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
           recipient: data.recipient,
           amountCents: typeof data.amountCents === "number" ? data.amountCents : amountCents,
           emailed: data.emailed === true,
-          campaignTitle: campaign?.name ?? "",
+          campaignTitle: campaign ? withPurpose(campaign.name, campaign, purpose) : "",
         });
         setStatus("idle");
       } catch {
@@ -139,7 +144,7 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
       const response = await fetch("/api/giving/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contactName, contactEmail, campaignSlug, amountCents, paymentMethod: activeMethod }),
+        body: JSON.stringify({ contactName, contactEmail, campaignSlug, purpose, amountCents, paymentMethod: activeMethod }),
       });
       const data = await response.json().catch(() => null);
       if (response.ok && typeof data?.clientSecret === "string") {
@@ -233,7 +238,34 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
                 <option key={c.slug} value={c.slug} style={{ color: "#000" }}>{c.title}</option>
               ))}
             </select>
+            {campaign && (
+              <p style={{ fontSize: 13.5, color: "rgba(255,255,255,.72)", lineHeight: 1.55, margin: "8px 2px 0" }}>{campaign.description}</p>
+            )}
           </div>
+
+          {purposes && purpose && (
+            <fieldset style={{ border: "none", padding: 0, margin: "0 0 18px", minWidth: 0 }}>
+              <legend style={{ ...labelStyle, padding: 0 }}>What is this gift?</legend>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,140px),1fr))", gap: 8 }}>
+                {purposes.map((p) => {
+                  const active = purpose === p.value;
+                  return (
+                    <label
+                      key={p.value}
+                      style={{
+                        display: "flex", alignItems: "center", gap: 10, minHeight: 48, padding: "12px 14px", borderRadius: 12, cursor: "pointer", color: "#fff",
+                        border: active ? "1.5px solid var(--gold)" : "1.5px solid rgba(255,255,255,.25)",
+                        background: active ? "rgba(253,200,65,.16)" : "rgba(255,255,255,.06)",
+                      }}
+                    >
+                      <input type="radio" name="give-purpose" value={p.value} checked={active} onChange={() => setPurposeChoice(p.value)} style={{ accentColor: "var(--gold)" }} />
+                      <strong style={{ fontSize: 15 }}>{p.label}</strong>
+                    </label>
+                  );
+                })}
+              </div>
+            </fieldset>
+          )}
 
           <div style={{ marginBottom: 18 }}>
             <span id="give-amount" style={{ ...labelStyle, display: "block" }}>Amount</span>

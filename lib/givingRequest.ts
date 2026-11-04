@@ -24,11 +24,17 @@ export type GiftBasics = {
   contactEmail: string;
   campaignSlug: string;
   amountCents: number;
+  /** Optional: what the gift is for, one of the campaign's purposes. */
+  purpose?: string;
 };
 
 /** An error message for the first problem found, or null when the body has a
  *  valid name, email, known campaign and amount. */
-export function validateGiftBasics(body: unknown, campaignSlugs: readonly string[]): string | null {
+export function validateGiftBasics(
+  body: unknown,
+  campaignSlugs: readonly string[],
+  purposesBySlug: Readonly<Record<string, readonly string[]>> = {},
+): string | null {
   if (!body || typeof body !== "object") {
     return "Request body must be a JSON object";
   }
@@ -48,6 +54,9 @@ export function validateGiftBasics(body: unknown, campaignSlugs: readonly string
   }
   if (typeof b.campaignSlug !== "string" || !campaignSlugs.includes(b.campaignSlug)) {
     return "Unknown campaign";
+  }
+  if (b.purpose !== undefined && (typeof b.purpose !== "string" || !(purposesBySlug[b.campaignSlug] ?? []).includes(b.purpose))) {
+    return "Unknown gift type";
   }
   if (typeof b.amountCents !== "number" || !Number.isInteger(b.amountCents) || b.amountCents < MIN_CENTS || b.amountCents > MAX_CENTS) {
     return `amountCents must be an integer between ${MIN_CENTS} and ${MAX_CENTS}`;

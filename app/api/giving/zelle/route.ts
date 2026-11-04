@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
 import { FORM_HEADER, countLinks } from "@/lib/spam";
-import { GIVING_CAMPAIGNS, zelleRecipientFor } from "@/lib/giving";
+import { GIVING_CAMPAIGNS, purposeValuesBySlug, withPurpose, zelleRecipientFor } from "@/lib/giving";
 import { emailLimitKey, validateGiftBasics, type GiftBasics } from "@/lib/givingRequest";
 import { giftZelleReference } from "@/lib/zelleReference";
 import { sendZelleCommitteeEmail, sendZelleDonorEmail } from "@/lib/givingEmail";
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: TURNSTILE_ERROR }, { status: 400 });
   }
 
-  const validationError = validateGiftBasics(rawBody, GIVING_CAMPAIGNS.map((c) => c.slug));
+  const validationError = validateGiftBasics(rawBody, GIVING_CAMPAIGNS.map((c) => c.slug), purposeValuesBySlug());
   if (validationError) {
     return NextResponse.json({ error: validationError }, { status: 400 });
   }
@@ -83,8 +83,9 @@ export async function POST(request: Request) {
 
   const contactName = body.contactName.trim();
   const amountLabel = `$${(body.amountCents / 100).toFixed(2)}`;
+  const giftTitle = withPurpose(campaign.name, campaign, body.purpose);
 
-  const mail = { contactName, contactEmail, campaignTitle: campaign.name, amountLabel, recipient, zelleRef };
+  const mail = { contactName, contactEmail, campaignTitle: giftTitle, amountLabel, recipient, zelleRef };
 
   // The donor is emailed the address and reference only after the pledge is
   // recorded (sheet row or committee email). If neither landed, fail before they
@@ -92,7 +93,7 @@ export async function POST(request: Request) {
   const outcome = await recordPledgeThenNotifyDonor({
     recordInSheet: () =>
       logToSheetChecked("Giving Zelle", {
-        "Campaign": campaign.name,
+        "Campaign": giftTitle,
         "Contact Name": contactName,
         "Contact Email": contactEmail,
         "Amount": amountLabel,

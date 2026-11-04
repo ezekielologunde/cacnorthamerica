@@ -3,7 +3,7 @@ import { getStripeClient } from "@/lib/stripe";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
 import { SITE_URL } from "@/lib/site";
 import { embeddedCheckoutEnabled } from "@/lib/stripeEmbed";
-import { GIVING_CAMPAIGNS } from "@/lib/giving";
+import { GIVING_CAMPAIGNS, purposeValuesBySlug, withPurpose } from "@/lib/giving";
 import { validateGiftBasics, type GiftBasics } from "@/lib/givingRequest";
 import { BANK_MAX_CENTS, feeLineItems, feeMetadataFor, type PaymentMethod } from "@/lib/processingFee";
 
@@ -12,7 +12,7 @@ type CheckoutRequestBody = GiftBasics & {
 };
 
 function validateRequestBody(body: unknown): string | null {
-  const basicsError = validateGiftBasics(body, GIVING_CAMPAIGNS.map((c) => c.slug));
+  const basicsError = validateGiftBasics(body, GIVING_CAMPAIGNS.map((c) => c.slug), purposeValuesBySlug());
   if (basicsError) return basicsError;
 
   const b = body as CheckoutRequestBody;
@@ -44,6 +44,7 @@ export async function POST(request: Request) {
 
   const body = rawBody as CheckoutRequestBody;
   const campaign = GIVING_CAMPAIGNS.find((c) => c.slug === body.campaignSlug)!;
+  const giftTitle = withPurpose(campaign.title, campaign, body.purpose);
 
   const method: PaymentMethod = body.paymentMethod === "bank" ? "bank" : "card";
   const stripe = getStripeClient();
@@ -66,7 +67,7 @@ export async function POST(request: Request) {
         price_data: {
           currency: "usd",
           unit_amount: body.amountCents,
-          product_data: { name: `Gift — ${campaign.title}` },
+          product_data: { name: `Gift — ${giftTitle}` },
         },
         quantity: 1,
       // The gift line stays exactly the amount the donor chose; the fee is
@@ -76,7 +77,7 @@ export async function POST(request: Request) {
       ...(embedded
         ? { ui_mode: "embedded_page" as const, return_url: returnUrl }
         : { success_url: returnUrl, cancel_url: `${SITE_URL}/giving` }),
-      metadata: { kind: "giving", contact_name: body.contactName, campaign_slug: campaign.slug, campaign_title: campaign.title, ...feeMetadataFor(body.amountCents, method) },
+      metadata: { kind: "giving", contact_name: body.contactName, campaign_slug: campaign.slug, campaign_title: giftTitle, ...feeMetadataFor(body.amountCents, method) },
     });
 
     if (embedded && session.client_secret) {
