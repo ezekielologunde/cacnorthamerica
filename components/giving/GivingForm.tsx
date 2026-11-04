@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
-import { withPurpose, zelleRecipientFor, type GivingCampaign } from "@/lib/giving";
+import { withPurpose, zelleRecipientFor, type GivingCampaign, type GivingKind } from "@/lib/giving";
 import { FeeBreakdown } from "@/components/checkout/FeeBreakdown";
 import { EmbeddedStripeCheckout } from "@/components/checkout/EmbeddedStripeCheckout";
 import { ZellePaymentPanel } from "@/components/register/ZellePaymentPanel";
@@ -26,6 +26,21 @@ const METHOD_CHOICES: readonly (readonly [GiveMethod, string, string])[] = [
   ["bank", "Bank account", "Takes about 4 business days to clear"],
 ];
 
+// The first question. Thanksgiving is a kind of offering, so it is asked after
+// "Offering", not as a fourth choice here.
+const KIND_CHOICES: readonly (readonly [GivingKind, string, string])[] = [
+  ["offering", "Offering", "Including thanksgiving"],
+  ["tithe", "Tithe", "The first tenth of your increase"],
+  ["project", "A project", "Village payoff, Hope For All, Centenary"],
+];
+
+/** A selectable row or tile; the radio inside it carries the state. */
+const choiceStyle = (active: boolean): CSSProperties => ({
+  display: "flex", alignItems: "flex-start", gap: 10, minHeight: 48, padding: "12px 14px", borderRadius: 12, cursor: "pointer", color: "#fff",
+  border: active ? "1.5px solid var(--gold)" : "1.5px solid rgba(255,255,255,.25)",
+  background: active ? "rgba(253,200,65,.16)" : "rgba(255,255,255,.06)",
+});
+
 type ZelleResult = {
   zelleRef: string;
   recipient: string;
@@ -43,13 +58,17 @@ const inputStyle: CSSProperties = {
 };
 const labelStyle: CSSProperties = { display: "block", fontSize: 14, fontWeight: 700, color: "rgba(255,255,255,.82)", marginBottom: 6 };
 
-/** Standalone online-giving form, rendered once on the /giving page (not
- *  per campaign card) -- the donor picks which of the three real campaigns
- *  their gift goes to via a dropdown instead of duplicating this form once
- *  per campaign. Every campaign already has real bank/wire details for donors who
- *  don't want to pay online; this is the additional online path. */
+/** Standalone online-giving form, rendered once on the /giving page. The donor
+ *  first says what they are giving (an offering, a tithe, or a project), then
+ *  narrows it (regular or thanksgiving offering, or which project), so the
+ *  campaign behind the gift is picked in two taps without a dropdown. Every
+ *  campaign with real bank/wire details still lists them further down the page
+ *  for donors who would rather send the gift themselves. */
 export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
-  const [campaignSlug, setCampaignSlug] = useState(campaigns[0]?.slug ?? "");
+  const projects = campaigns.filter((c) => c.kind === "project");
+  const kinds = KIND_CHOICES.filter(([k]) => (k === "project" ? projects.length > 0 : campaigns.some((c) => c.kind === k)));
+  const [kind, setKind] = useState<GivingKind>(kinds[0]?.[0] ?? "offering");
+  const [projectSlug, setProjectSlug] = useState(projects[0]?.slug ?? "");
   const [purposeChoice, setPurposeChoice] = useState("");
   const [amount, setAmount] = useState<number | null>(PRESET_AMOUNTS[1]);
   const [customAmount, setCustomAmount] = useState("");
@@ -84,7 +103,10 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
 
   // Zelle is the default, but a campaign with no Zelle address (the Centenary
   // project) quietly falls back to card.
-  const campaign = campaigns.find((c) => c.slug === campaignSlug);
+  const campaign = kind === "project"
+    ? (projects.find((c) => c.slug === projectSlug) ?? projects[0])
+    : campaigns.find((c) => c.kind === kind);
+  const campaignSlug = campaign?.slug ?? "";
   // A campaign with purposes (offering / thanksgiving) preselects its first, so
   // the donor never has to answer a question just to give.
   const purposes = campaign?.purposes?.length ? campaign.purposes : undefined;
@@ -221,44 +243,40 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
         ) : (
         <>
         <h2 ref={formHeadingRef} tabIndex={-1} style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.4vw,38px)", letterSpacing: "-1px", color: "#fff", margin: "0 0 20px", lineHeight: 1.1, outline: "none" }}>
-          Make a gift online.
+          Give online.
         </h2>
 
         <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: 18 }}>
-            <label htmlFor="give-campaign" style={labelStyle}>Campaign</label>
-            <select
-              id="give-campaign"
-              className="field-input on-dark"
-              style={{ ...inputStyle, appearance: "none" }}
-              value={campaignSlug}
-              aria-describedby="give-campaign-desc"
-              onChange={(e) => setCampaignSlug(e.target.value)}
-            >
-              {campaigns.map((c) => (
-                <option key={c.slug} value={c.slug} style={{ color: "#000" }}>{c.title}</option>
-              ))}
-            </select>
-            {campaign && (
-              <p id="give-campaign-desc" style={{ fontSize: 13.5, color: "rgba(255,255,255,.72)", lineHeight: 1.55, margin: "8px 2px 0" }}>{campaign.description}</p>
-            )}
-          </div>
+          <fieldset style={{ border: "none", padding: 0, margin: "0 0 18px", minWidth: 0 }}>
+            <legend style={{ ...labelStyle, padding: 0 }}>What are you giving?</legend>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,150px),1fr))", gap: 8 }}>
+              {kinds.map(([value, title, note]) => {
+                const active = kind === value;
+                return (
+                  <label key={value} style={choiceStyle(active)}>
+                    <input
+                      type="radio" name="give-kind" value={value} checked={active}
+                      onChange={() => { setKind(value); setConfirmedLargeCents(null); }}
+                      style={{ marginTop: 4, accentColor: "var(--gold)" }}
+                    />
+                    <span>
+                      <strong style={{ display: "block", fontSize: 16 }}>{title}</strong>
+                      <span style={{ fontSize: 13, color: "rgba(255,255,255,.72)" }}>{note}</span>
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          </fieldset>
 
-          {purposes && purpose && (
+          {kind === "offering" && purposes && purpose && (
             <fieldset style={{ border: "none", padding: 0, margin: "0 0 18px", minWidth: 0 }}>
-              <legend style={{ ...labelStyle, padding: 0 }}>What is this gift?</legend>
+              <legend style={{ ...labelStyle, padding: 0 }}>What kind of offering?</legend>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,140px),1fr))", gap: 8 }}>
                 {purposes.map((p) => {
                   const active = purpose === p.value;
                   return (
-                    <label
-                      key={p.value}
-                      style={{
-                        display: "flex", alignItems: "center", gap: 10, minHeight: 48, padding: "12px 14px", borderRadius: 12, cursor: "pointer", color: "#fff",
-                        border: active ? "1.5px solid var(--gold)" : "1.5px solid rgba(255,255,255,.25)",
-                        background: active ? "rgba(253,200,65,.16)" : "rgba(255,255,255,.06)",
-                      }}
-                    >
+                    <label key={p.value} style={{ ...choiceStyle(active), alignItems: "center" }}>
                       <input type="radio" name="give-purpose" value={p.value} checked={active} onChange={() => setPurposeChoice(p.value)} style={{ accentColor: "var(--gold)" }} />
                       <strong style={{ fontSize: 15 }}>{p.label}</strong>
                     </label>
@@ -266,6 +284,33 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
                 })}
               </div>
             </fieldset>
+          )}
+
+          {kind === "project" && projects.length > 0 && (
+            <fieldset style={{ border: "none", padding: 0, margin: "0 0 18px", minWidth: 0 }}>
+              <legend style={{ ...labelStyle, padding: 0 }}>Which project?</legend>
+              <div style={{ display: "grid", gap: 8 }}>
+                {projects.map((p) => {
+                  const active = campaign?.slug === p.slug;
+                  return (
+                    <label key={p.slug} style={choiceStyle(active)}>
+                      <input type="radio" name="give-project" value={p.slug} checked={active} onChange={() => { setProjectSlug(p.slug); setConfirmedLargeCents(null); }} style={{ marginTop: 4, accentColor: "var(--gold)" }} />
+                      <span>
+                        <strong style={{ display: "block", fontSize: 15 }}>{p.name}</strong>
+                        <span style={{ fontSize: 13, color: "rgba(255,255,255,.72)" }}>{p.adBlurb}</span>
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+            </fieldset>
+          )}
+
+          {campaign && (
+            <p aria-live="polite" style={{ fontSize: 13.5, color: "rgba(255,255,255,.72)", lineHeight: 1.55, margin: "-4px 2px 18px" }}>
+              {campaign.description}
+              {kind === "tithe" && <em> &ldquo;Bring ye all the tithes into the storehouse.&rdquo; Malachi 3:10</em>}
+            </p>
           )}
 
           <div style={{ marginBottom: 18 }}>
