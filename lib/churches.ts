@@ -12,7 +12,7 @@
  * enough to sort by proximity, not exact enough to pin on a map.
  *
  * This is a first pass covering the highest-confidence finds from a
- * research sweep across all 24 zones — most zones don't have a verified
+ * research sweep across all 26 zones — most zones don't have a verified
  * entry yet (many "Christ Apostolic Church"-named results collide with
  * unrelated denominations, and several zones had no address found at all,
  * a gap that predates this file — CACNA's own prior site left the same

@@ -27,7 +27,7 @@ const RSVP_URL = "https://forms.gle/FBzNzoXH76SK14Ah9";
 const rsvpFields = ["Your full name", "A contact phone number", "Your church", "Your DCC or Zone", "How many in your group"];
 
 const pillars = [
-  { icon: Users, label: "One Family, Many Homes", desc: "24 Zones & DCCs across the United States, Canada, and South America." },
+  { icon: Users, label: "One Family, Many Homes", desc: "26 Zones & DCCs across the United States, Canada, and South America." },
   { icon: HandHeart, label: "A Season of Thanksgiving", desc: "A day set apart to thank God for five decades of grace and growth." },
 ];
 
