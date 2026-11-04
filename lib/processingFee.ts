@@ -80,6 +80,85 @@ export function feeMetadataFor(subtotalCents: number, method: PaymentMethod = "c
   return { subtotal_cents: String(subtotalCents), processing_fee_cents: String(feeCentsFor(subtotalCents, method)) };
 }
 
+// ---- Recurring gifts (monthly / every 2 weeks) -----------------------------
+// Not wired into any route yet. A subscription charges the same fee on every
+// cycle, so the one-time bank verification cost ($1.50, billed once when the
+// account is first verified) must not ride along in the recurring fee: it gets
+// its own one-time line, which Stripe puts on the first invoice only.
+
+/** Stripe Billing's fee on recurring invoices, as a fraction of volume. Stripe's
+ *  pricing page lists 0.7% for its Billing plans, but whether it applies to this
+ *  account is unconfirmed, so it stays 0 until read from the Dashboard. When
+ *  set, the payer's fee covers it on top of the card or bank percentage. */
+export const STRIPE_BILLING_PERCENT_FEE = 0;
+
+/** Name of the one-time bank verification line on a first recurring invoice. */
+export const BANK_SETUP_FEE_LABEL = "Bank account setup fee";
+
+/** How often a recurring price repeats, in Stripe's own terms. */
+export type RecurringInterval = { interval: "month" | "week"; interval_count: number };
+
+/** The per-cycle card fee: feeCents, plus Stripe Billing's share when it applies. */
+export function recurringCardFeeCents(subtotalCents: number, billingPercent: number = STRIPE_BILLING_PERCENT_FEE): number {
+  if (!Number.isFinite(subtotalCents) || subtotalCents <= 0) return 0;
+  const total = Math.ceil((subtotalCents + STRIPE_FIXED_FEE_CENTS) / (1 - STRIPE_PERCENT_FEE - billingPercent));
+  return total - subtotalCents;
+}
+
+/** The per-cycle bank fee, without the one-time verification cost. Stripe's ACH
+ *  percentage stops at BANK_FEE_CAP_CENTS, so the fee stops growing there too. */
+export function recurringBankFeeCents(subtotalCents: number, billingPercent: number = STRIPE_BILLING_PERCENT_FEE): number {
+  if (!Number.isFinite(subtotalCents) || subtotalCents <= 0) return 0;
+  const pct = BANK_PERCENT_FEE + billingPercent;
+  const uncapped = Math.ceil((pct * subtotalCents) / (1 - pct));
+  const capped = Math.ceil((BANK_FEE_CAP_CENTS + billingPercent * subtotalCents) / (1 - billingPercent));
+  return Math.min(uncapped, capped);
+}
+
+/** The fee on every cycle of a recurring gift under the chosen method. */
+export function recurringFeeCentsFor(subtotalCents: number, method: PaymentMethod = "card"): number {
+  return method === "bank" ? recurringBankFeeCents(subtotalCents) : recurringCardFeeCents(subtotalCents);
+}
+
+/** The one-time fee added to the first invoice only: bank verification,
+ *  grossed up for the percentage Stripe takes on it. Cards have none. */
+export function setupFeeCentsFor(subtotalCents: number, method: PaymentMethod = "card", billingPercent: number = STRIPE_BILLING_PERCENT_FEE): number {
+  if (method !== "bank" || !Number.isFinite(subtotalCents) || subtotalCents <= 0) return 0;
+  return Math.ceil(BANK_VERIFICATION_FEE_CENTS / (1 - BANK_PERCENT_FEE - billingPercent));
+}
+
+/** Fee line items for a subscription Checkout: the recurring fee line, plus a
+ *  one-time setup line for bank gifts. Spread into line_items. */
+export function recurringFeeLineItems(subtotalCents: number, method: PaymentMethod, recurring: RecurringInterval) {
+  const items: Array<{
+    price_data: { currency: string; unit_amount: number; product_data: { name: string }; recurring?: RecurringInterval };
+    quantity: number;
+  }> = [];
+  const fee = recurringFeeCentsFor(subtotalCents, method);
+  if (fee > 0) {
+    items.push({ price_data: { currency: "usd", unit_amount: fee, product_data: { name: PROCESSING_FEE_LABEL }, recurring }, quantity: 1 });
+  }
+  const setup = setupFeeCentsFor(subtotalCents, method);
+  if (setup > 0) {
+    items.push({ price_data: { currency: "usd", unit_amount: setup, product_data: { name: BANK_SETUP_FEE_LABEL } }, quantity: 1 });
+  }
+  return items;
+}
+
+/** Subscription metadata. Stripe does not copy Checkout Session metadata onto
+ *  the subscription or its invoices, so the webhook reads the split from here
+ *  when it splits an invoice's amount into gift, fee and setup fee. */
+export function recurringFeeMetadataFor(subtotalCents: number, method: PaymentMethod, frequency: string): {
+  subtotal_cents: string; processing_fee_cents: string; setup_fee_cents: string; frequency: string;
+} {
+  return {
+    subtotal_cents: String(subtotalCents),
+    processing_fee_cents: String(recurringFeeCentsFor(subtotalCents, method)),
+    setup_fee_cents: String(setupFeeCentsFor(subtotalCents, method)),
+    frequency,
+  };
+}
+
 /** The fee as a Checkout Session line item, added after the real lines. */
 export function processingFeeLineItem(subtotalCents: number) {
   return {
