@@ -45,8 +45,8 @@ const labelStyle: CSSProperties = { display: "block", fontSize: 14, fontWeight: 
 
 /** Standalone online-giving form, rendered once on the /giving page (not
  *  per campaign card) -- the donor picks which of the three real campaigns
- *  their gift goes to via a dropdown instead of duplicating this form three
- *  times. Every campaign already has real bank/wire details for donors who
+ *  their gift goes to via a dropdown instead of duplicating this form once
+ *  per campaign. Every campaign already has real bank/wire details for donors who
  *  don't want to pay online; this is the additional online path. */
 export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
   const [campaignSlug, setCampaignSlug] = useState(campaigns[0]?.slug ?? "");
@@ -87,7 +87,7 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
   const campaign = campaigns.find((c) => c.slug === campaignSlug);
   // A campaign with purposes (offering / thanksgiving) preselects its first, so
   // the donor never has to answer a question just to give.
-  const purposes = campaign?.purposes;
+  const purposes = campaign?.purposes?.length ? campaign.purposes : undefined;
   const purpose = purposes ? (purposes.some((p) => p.value === purposeChoice) ? purposeChoice : purposes[0].value) : undefined;
   const zelleRecipient = campaign ? zelleRecipientFor(campaign) : null;
   const activeMethod: GiveMethod = method === "zelle" && !zelleRecipient ? "card" : method;
@@ -232,6 +232,7 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
               className="field-input on-dark"
               style={{ ...inputStyle, appearance: "none" }}
               value={campaignSlug}
+              aria-describedby="give-campaign-desc"
               onChange={(e) => setCampaignSlug(e.target.value)}
             >
               {campaigns.map((c) => (
@@ -239,7 +240,7 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
               ))}
             </select>
             {campaign && (
-              <p style={{ fontSize: 13.5, color: "rgba(255,255,255,.72)", lineHeight: 1.55, margin: "8px 2px 0" }}>{campaign.description}</p>
+              <p id="give-campaign-desc" style={{ fontSize: 13.5, color: "rgba(255,255,255,.72)", lineHeight: 1.55, margin: "8px 2px 0" }}>{campaign.description}</p>
             )}
           </div>
 
