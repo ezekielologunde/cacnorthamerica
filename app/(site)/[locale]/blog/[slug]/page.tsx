@@ -12,6 +12,7 @@ import { POSTS, getPost, badgeTextColor } from "@/lib/blog";
 import type { BlogPost } from "@/lib/blog";
 import { SITE_URL } from "@/lib/site";
 import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
+import { BlogAd } from "@/components/blog/BlogAd";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { setRequestLocale } from "next-intl/server";
 
@@ -512,6 +513,7 @@ export default async function BlogSlugPage({
                   ))}
                 </div>
               )}
+              <BlogAd />
             </article>
           </Reveal>
 
