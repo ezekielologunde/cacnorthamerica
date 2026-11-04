@@ -45,8 +45,8 @@ export function resetTurnstile(form: HTMLFormElement | null): void {
 /** Cloudflare Turnstile for a form. Renders nothing unless
  *  NEXT_PUBLIC_TURNSTILE_SITE_KEY is set. Cloudflare's script adds and refreshes
  *  a hidden `cf-turnstile-response` input inside the widget, so
- *  FormData(form) carries the token. "interaction-only" keeps it invisible
- *  unless Cloudflare wants a challenge. */
+ *  FormData(form) carries the token. Shown as Cloudflare's visible "Success"
+ *  box so visitors can see the check ran ("interaction-only" hid it entirely). */
 export function TurnstileField() {
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   const box = useRef<HTMLDivElement>(null);
@@ -60,7 +60,7 @@ export function TurnstileField() {
         if (cancelled || !box.current) return;
         widgetId = api.render(box.current, {
           sitekey: siteKey,
-          appearance: "interaction-only",
+          appearance: "always",
         });
       })
       .catch((e) => console.error("[turnstile]", e));
@@ -71,5 +71,5 @@ export function TurnstileField() {
   }, [siteKey]);
 
   if (!siteKey) return null;
-  return <div ref={box} data-turnstile="" />;
+  return <div ref={box} data-turnstile="" style={{ marginBottom: 14 }} />;
 }
