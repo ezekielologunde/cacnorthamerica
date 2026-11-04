@@ -14,7 +14,7 @@ import { SITE_URL } from "@/lib/site";
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Giving — Christ Apostolic Church North America (CACNA)",
-    description: "Give online by card, or use the account details for Zelle, wire, and check — the CAC Centenary Building Project, the CAC Village Pay Off, and the Hope For All Initiative.",
+    description: "Give online by card, or use the account details for Zelle, wire, and check — the Convention Offering & Thanksgiving, the CAC Centenary Building Project, the CAC Village Pay Off, and the Hope For All Initiative.",
     alternates: { canonical: `${SITE_URL}/giving` },
   };
 }
@@ -23,6 +23,7 @@ const SCHEMES = {
   centenary: { gradient: "linear-gradient(135deg,var(--red-deep),var(--gold))", glow: "rgba(253,200,65,.35)", badge: "rgba(255,255,255,.16)" },
   village: { gradient: "linear-gradient(135deg,#1B2A6B,var(--blue))", glow: "rgba(45,66,201,.4)", badge: "rgba(255,255,255,.14)" },
   hope: { gradient: "linear-gradient(140deg,#1C3A2A,#2E6040)", glow: "rgba(46,96,64,.45)", badge: "rgba(255,255,255,.14)" },
+  convention: { gradient: "linear-gradient(135deg,#4A1530,var(--red-deep))", glow: "rgba(200,30,58,.4)", badge: "rgba(255,255,255,.14)" },
 } as const;
 
 function CampaignCard({ campaign, scheme }: { campaign: GivingCampaign; scheme: (typeof SCHEMES)[keyof typeof SCHEMES] }) {
@@ -57,7 +58,7 @@ export default async function GivingPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const [centenary, villagePayoff, hopeForAll] = GIVING_CAMPAIGNS;
+  const [centenary, villagePayoff, hopeForAll, convention] = GIVING_CAMPAIGNS;
 
   return (
     <main id="main-content">
@@ -89,7 +90,7 @@ export default async function GivingPage({
       <section style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(48px,6vw,72px)" }}>
         <div style={{ maxWidth: 980, margin: "0 auto" }}>
           <Reveal>
-            <GivingForm campaigns={[centenary, villagePayoff, hopeForAll]} />
+            <GivingForm campaigns={[convention, centenary, villagePayoff, hopeForAll]} />
           </Reveal>
         </div>
       </section>
@@ -129,6 +130,9 @@ export default async function GivingPage({
           </Reveal>
           <Reveal delay={160}>
             <CampaignCard campaign={hopeForAll} scheme={SCHEMES.hope} />
+          </Reveal>
+          <Reveal delay={240}>
+            <CampaignCard campaign={convention} scheme={SCHEMES.convention} />
           </Reveal>
         </div>
       </section>

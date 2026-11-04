@@ -10,7 +10,7 @@ import { readFileSync } from "node:fs";
 
 process.env.REGISTRATION_SIGNING_SECRET = "check-giving-zelle-secret";
 
-const { GIVING_CAMPAIGNS, zelleRecipientFor } = await import("../lib/giving.ts");
+const { GIVING_CAMPAIGNS, zelleRecipientFor, purposeValuesBySlug, withPurpose } = await import("../lib/giving.ts");
 const { validateGiftBasics, emailLimitKey, MIN_CENTS, MAX_CENTS } = await import("../lib/givingRequest.ts");
 const { giftZelleReference, isWellFormedZelleReference, zelleReferenceFor } = await import("../lib/zelleReference.ts");
 
@@ -38,6 +38,19 @@ check("an amount below the minimum fails", validateGiftBasics({ ...good, amountC
 check("an amount above the maximum fails", validateGiftBasics({ ...good, amountCents: MAX_CENTS + 1 }, slugs) !== null);
 check("a fractional amount fails", validateGiftBasics({ ...good, amountCents: 1000.5 }, slugs) !== null);
 check("a string amount fails", validateGiftBasics({ ...good, amountCents: "5000" }, slugs) !== null);
+
+// Convention offering and its gift purposes.
+const purposes = purposeValuesBySlug();
+const conv = { ...good, campaignSlug: "convention-offering" };
+check("the convention offering takes Zelle", zelleRecipientFor(bySlug["convention-offering"]) === "cacnaconvention@gmail.com");
+check("convention purposes are offering and thanksgiving", JSON.stringify(purposes["convention-offering"]) === JSON.stringify(["offering", "thanksgiving"]));
+check("a gift with no purpose still passes", validateGiftBasics(conv, slugs, purposes) === null);
+check("a known purpose passes", validateGiftBasics({ ...conv, purpose: "thanksgiving" }, slugs, purposes) === null);
+check("an unknown purpose fails", validateGiftBasics({ ...conv, purpose: "tithe" }, slugs, purposes) !== null);
+check("a purpose on a campaign without any fails", validateGiftBasics({ ...good, purpose: "offering" }, slugs, purposes) !== null);
+check("a non-string purpose fails", validateGiftBasics({ ...conv, purpose: 5 }, slugs, purposes) !== null);
+check("the purpose label is appended to the campaign name", withPurpose(bySlug["convention-offering"].name, bySlug["convention-offering"], "thanksgiving") === "Annual Convention Offering & Thanksgiving — Thanksgiving");
+check("no purpose leaves the name unchanged", withPurpose("X", bySlug["convention-offering"], undefined) === "X");
 
 // Gift references.
 const refA = giftZelleReference("11111111-1111-1111-1111-111111111111");

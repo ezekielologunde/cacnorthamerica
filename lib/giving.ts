@@ -3,6 +3,13 @@ export interface GivingAccount {
   value: string;
 }
 
+/** What a gift to a campaign is for (e.g. offering or thanksgiving); the donor
+ *  picks one and it is appended to the campaign name everywhere the gift shows up. */
+export interface GivingPurpose {
+  value: string;
+  label: string;
+}
+
 export interface GivingCampaign {
   slug: string;
   eyebrow: string;
@@ -13,6 +20,7 @@ export interface GivingCampaign {
   /** Short, ad-friendly one-liner — used by the blog sidebar widget. */
   adBlurb: string;
   accounts: GivingAccount[];
+  purposes?: GivingPurpose[];
 }
 
 export const GIVING_CAMPAIGNS: GivingCampaign[] = [
@@ -57,7 +65,37 @@ export const GIVING_CAMPAIGNS: GivingCampaign[] = [
       { label: "Zelle", value: "charityfinancial8@gmail.com" },
     ],
   },
+  {
+    slug: "convention-offering",
+    eyebrow: "Annual Convention",
+    title: "Convention Offering & Thanksgiving",
+    name: "Annual Convention Offering & Thanksgiving",
+    description:
+      "Give your offering or thanksgiving toward the cost of the Annual Convention. This is an offering, not a fundraiser: give as you are led.",
+    adBlurb: "Give your convention offering or thanksgiving online, from wherever you are.",
+    accounts: [
+      { label: "Zelle", value: "cacnaconvention@gmail.com" },
+    ],
+    purposes: [
+      { value: "offering", label: "Offering" },
+      { value: "thanksgiving", label: "Thanksgiving" },
+    ],
+  },
 ];
+
+/** The allowed purpose values for each campaign that has any, for validation. */
+export function purposeValuesBySlug(): Record<string, string[]> {
+  return Object.fromEntries(
+    GIVING_CAMPAIGNS.filter((c) => c.purposes?.length).map((c) => [c.slug, c.purposes!.map((p) => p.value)]),
+  );
+}
+
+/** `base` with the chosen purpose's label appended ("... — Thanksgiving"), or
+ *  `base` unchanged when the campaign has no such purpose. */
+export function withPurpose(base: string, campaign: Pick<GivingCampaign, "purposes">, purpose: string | undefined): string {
+  const label = campaign.purposes?.find((p) => p.value === purpose)?.label;
+  return label ? `${base} — ${label}` : base;
+}
 
 /** The Zelle address a campaign takes gifts at, or null when it has none (the
  *  Centenary project is Nigerian bank accounts only). */
