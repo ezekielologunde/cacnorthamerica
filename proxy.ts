@@ -30,7 +30,8 @@ async function adminAuthGuard(request: NextRequest): Promise<NextResponse> {
   const { data: { user } } = await supabase.auth.getUser();
   const { pathname } = request.nextUrl;
 
-  if (pathname !== "/admin/login" && !user) {
+  // The reset page is for people who cannot sign in, so it stays public.
+  if (pathname !== "/admin/login" && pathname !== "/admin/reset-password" && !user) {
     return NextResponse.redirect(new URL("/admin/login", request.url));
   }
 
