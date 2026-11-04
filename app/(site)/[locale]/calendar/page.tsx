@@ -136,6 +136,7 @@ export default async function CalendarPage({
       url: ev.href ? `${SITE_URL}${ev.href}` : `${SITE_URL}/calendar`,
       location: evPlace(ev.id),
       organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },
+      performer: { "@type": "Church", name: SITE.name, url: SITE_URL },
       offers: evOffers(ev.id),
     })),
   } : null;

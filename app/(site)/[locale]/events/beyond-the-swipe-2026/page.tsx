@@ -51,6 +51,7 @@ export default async function BeyondTheSwipe2026Page({
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
     location: { "@type": "Place", name: "CAC House of Praise", address: { "@type": "PostalAddress", streetAddress: "4909 Edmonston Rd", addressLocality: "Hyattsville", addressRegion: "MD", postalCode: "20781", addressCountry: "US" } },
     organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },
+    performer: { "@type": "Church", name: SITE.name, url: SITE_URL },
     url: `${SITE_URL}/events/beyond-the-swipe-2026`,
   };
 

@@ -51,6 +51,7 @@ export default async function MinistersRetreat2027Page({
     eventAttendanceMode: "https://schema.org/OnlineEventAttendanceMode",
     location: { "@type": "VirtualLocation", url: `${SITE_URL}/events/ministers-retreat-2027` },
     organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },
+    performer: { "@type": "Church", name: SITE.name, url: SITE_URL },
     url: `${SITE_URL}/events/ministers-retreat-2027`,
   };
   return (

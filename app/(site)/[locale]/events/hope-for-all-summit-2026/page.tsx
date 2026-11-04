@@ -65,6 +65,7 @@ export default async function HopeForAllSummit2026Page({
     eventAttendanceMode: "https://schema.org/OnlineEventAttendanceMode",
     location: { "@type": "VirtualLocation", url: JOIN_URL },
     organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },
+    performer: { "@type": "Church", name: SITE.name, url: SITE_URL },
     url: `${SITE_URL}/events/hope-for-all-summit-2026`,
   };
 
