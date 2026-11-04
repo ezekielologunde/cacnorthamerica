@@ -298,7 +298,6 @@ export function YouthRegisterForm({
   return (
     <form onSubmit={handleSubmit} noValidate>
       <input type="text" name={HONEYPOT_FIELD} tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }} />
-      <TurnstileField />
 
       <StepHeading n={1} title={t("stepPeople")} />
 
@@ -518,6 +517,7 @@ export function YouthRegisterForm({
             {paymentMethod === "zelle" ? <ZelleTotal subtotalCents={total} /> : <FeeBreakdown subtotalCents={total} />}
           </div>
         )}
+        <TurnstileField />
         <button
           type="submit"
           disabled={status === "loading"}
