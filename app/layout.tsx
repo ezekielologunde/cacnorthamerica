@@ -61,7 +61,7 @@ export const metadata: Metadata = {
   },
   // Lets AdSense verify ownership of the site. Loads no ads and sets no cookies;
   // actual ad units are added separately, on blog posts only.
-  other: { "google-adsense-account": "ca-pub-7664771242277805" },
+  other: { "google-adsense-account": "ca-pub-1672033318309677" },
 };
 
 export const viewport: Viewport = {
