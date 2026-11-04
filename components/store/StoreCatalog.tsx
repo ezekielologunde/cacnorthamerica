@@ -119,10 +119,11 @@ export function StoreCatalog({ categories }: { categories: { key: string; label:
                     <button
                       type="button"
                       onClick={() => addToCart(product)}
+                      disabled={product.soldOut}
                       className="press"
-                      style={{ flex: 1, background: "var(--ink)", color: "#fff", fontWeight: 700, fontSize: 13.5, padding: "10px 18px", borderRadius: 999, border: "none", cursor: "pointer" }}
+                      style={{ flex: 1, background: product.soldOut ? "var(--line)" : "var(--ink)", color: product.soldOut ? "var(--ink-soft)" : "#fff", fontWeight: 700, fontSize: 13.5, padding: "10px 18px", borderRadius: 999, border: "none", cursor: product.soldOut ? "not-allowed" : "pointer" }}
                     >
-                      {t("addCta")}
+                      {product.soldOut ? t("soldOutCta") : t("addCta")}
                     </button>
                   </div>
                 </div>

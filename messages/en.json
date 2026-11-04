@@ -229,6 +229,7 @@
     "youthApparel": "Youth & Young Adult Apparel",
     "merchandise": "Merchandise",
     "addCta": "Add",
+    "soldOutCta": "Sold out",
     "cartHeading": "Your cart",
     "emptyCart": "Your cart is empty.",
     "emptyCartHint": "Add an item above to get started.",

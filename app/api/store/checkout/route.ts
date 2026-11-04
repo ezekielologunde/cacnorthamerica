@@ -85,6 +85,9 @@ export async function POST(request: Request) {
     if (!product) {
       return NextResponse.json({ error: `Unknown or inactive product: ${item.productId}` }, { status: 400 });
     }
+    if (product.soldOut) {
+      return NextResponse.json({ error: `${product.name} is sold out.` }, { status: 400 });
+    }
     if (product.sizes.length > 0 && (!item.size || !product.sizes.includes(item.size))) {
       return NextResponse.json({ error: `Invalid size for ${product.name}` }, { status: 400 });
     }
