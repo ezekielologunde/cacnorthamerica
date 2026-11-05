@@ -2,13 +2,38 @@
 project: cacnorthamerica
 type: changelog
 status: active
-last_updated: 2026-09-07
+last_updated: 2026-11-05
 tags: [project/cacnorthamerica]
 ---
 
 # Changelog
 
-Related: [[Project]] · [[Decisions]] · [[Features]]
+Related: [[Project]] · [[Decisions]] · [[Features]] · [[Payments]] · [[Security]]
+
+## 2026-09-10 to 2026-11-05 -- summary from `git log origin/master --first-parent`
+
+PR titles are the source; details in the linked notes.
+
+- 2026-09-16 #36 Yoruba locale removed; single-locale English, plain URLs
+- 2026-11-01 #38 canonical host `cacnorthamerica.com`; #44/#46 form spam
+  guards and contact honeypot; #45 purpose email addresses
+- 2026-11-02 #71 disclosed processing-fee line on every Stripe Checkout; #80
+  Youth & Child registration; #82 per-person check-in codes, QR dropped; #83
+  staff check-in page + `checkin_people` (0015); #84 Zelle registration +
+  mark-paid (0016); #85 logo in designed emails
+- 2026-11-03 #95 optional ACH gifts; #97 Zelle giving records the pledge
+  before emailing; #99 canonical host `cacna.org`; #102 contact/mail-from
+  on `@cacna.org`; #103/#105/#106 Stripe embedded checkout, hosted default;
+  #107 admin password reset; #109/#111/#112/#115 Cloudflare Turnstile; #113
+  Apps Script `doGet` for the admin Operations page; #114 large-gift confirm
+- 2026-11-04 #121-#123 AdSense (blog-only, off until env set) and CSP;
+  #116/#119 "26 Zones & DCCs"; #117/#118 flash drive (sold out); #125-#128
+  giving redesign; #129-#133 recurring gifts behind `GIVING_RECURRING_ENABLED`
+  (0018); #135 `/youth`, `/yyam` -> `yyam.cacna.org`
+- 2026-11-05 #136 `/serve` page and volunteer form (0019)
+- 2026-11-05 docs: added [[Database]], [[Backend]], [[Frontend]],
+  [[Security]], [[Payments]], [[Bugs]]; i18n and canonical-host notes marked
+  superseded
 
 ## 2026-09-07 — Canonical host restored to cacna.cacsalvationcenter.org
 

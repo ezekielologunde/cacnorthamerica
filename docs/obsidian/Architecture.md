@@ -2,7 +2,7 @@
 project: cacnorthamerica
 type: architecture
 status: active
-last_updated: 2026-09-05
+last_updated: 2026-11-05
 tags: [project/cacnorthamerica]
 ---
 
@@ -14,7 +14,7 @@ Related: [[Project]] · [[Features]] · [[Decisions]]
 
 ```
 app/
-  (site)/[locale]/   Every public page, bilingual (en/yo) via next-intl --
+  (site)/[locale]/   Every public page; single locale "en", unprefixed URLs --
                       about, ministries, leadership, events, blog, gallery,
                       giving, zones, calendar, bible-institute,
                       christian-education, cacma, good-women,
@@ -32,10 +32,10 @@ components/          admin/ blog/ calendar/ media/ ministries/ navigation/
                      providers/ sections/ ui/ zones/
 contexts/            CartContext.tsx (giving/store cart state)
 i18n/                routing.ts, request.ts -- next-intl config
-messages/            en.json, yo.json -- translation catalogs
+messages/            en.json (yo.json deleted in PR #36)
 lib/                 data-access + integration helpers (see below)
 lib/supabase/        client.ts, server.ts, require-admin.ts
-supabase/migrations/ SQL schema history (0001–0009)
+supabase/migrations/ SQL schema history (0001-0019, no 0014) -- see [[Database]]
 types/database.types.ts  Generated Supabase types
 proxy.ts             Next.js proxy (formerly "middleware") -- branches on
                      pathname: /admin/* gets the pre-existing Supabase auth
@@ -45,6 +45,11 @@ next.config.ts       Wrapped with next-intl's plugin (createNextIntlPlugin)
 ```
 
 ## Internationalization (i18n)
+
+> **Deprecated 2026-09-16 (PR #36).** Yoruba was removed: `i18n/routing.ts`
+> is `locales: ["en"]`, `localePrefix: "as-needed"`, `messages/yo.json` is
+> deleted, `next.config.ts` redirects `/yo/:path*` to `/:path*`. The history
+> below is kept for context only. See [[Decisions]].
 
 Added 2026-09-05 as the first step of merging the sibling Convention site
 into this one (see [[Decisions]]). Mirrors the exact next-intl setup that
@@ -77,7 +82,12 @@ direct link.
 
 ## Data layer (Supabase / Postgres)
 
-Schema evolved through 9 migrations. Current tables (post 0008/0009 drops):
+> **Superseded (0010, 2026-09-06).** CACNA's own Supabase project no longer
+> exists; tables now live in a `cacna` schema on the sibling
+> cac-salvation-center project, and later migrations add `checkin_people`,
+> `giving_invoices`, `serve_signups`. [[Database]] is the current reference.
+
+Historical list (pre-0010; `products`/`orders` are not recreated in 0010):
 
 - `profiles`, `admin_profiles` — user/admin identity
 - `departments`, `leaders`, `tenets` — org structure and leadership bios
@@ -107,7 +117,8 @@ service-role key used server-side for admin writes per the README.
 `proxy.ts` is Next.js middleware: any request under `/admin` other than
 `/admin/login` is redirected to login unless a Supabase session user is
 present. This is the entire access-control model — no separate roles/
-permissions system found in the codebase.
+permissions system found in the codebase. `/admin/reset-password` is also
+public (PR #107). See [[Security]].
 
 ## Content/data access helpers (`lib/`)
 

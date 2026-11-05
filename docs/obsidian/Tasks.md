@@ -2,13 +2,42 @@
 project: cacnorthamerica
 type: tasks
 status: active
-last_updated: 2026-09-07
+last_updated: 2026-11-05
 tags: [project/cacnorthamerica]
 ---
 
 # Tasks / Gaps
 
-Related: [[Project]] · [[Features]] · [[Architecture]] · [[Decisions]]
+Related: [[Project]] · [[Features]] · [[Architecture]] · [[Decisions]] · [[Bugs]]
+
+## Status as of 2026-11-05 (read first)
+
+**Closed / obsolete:**
+- All Yoruba translation follow-ups below (native-speaker review,
+  locale-prefixed internal links) -- obsolete since PR #36 removed `yo`.
+- "Canonical host cutover" to `cacna.cacsalvationcenter.org` -- superseded
+  by `cacna.org` (PR #99).
+- "No automated test suite found" -- partly obsolete: 19
+  `scripts/check-*.mjs` pin scripts and `lib/*.test.mjs` exist; whether CI
+  runs them is **Unverified**.
+- Check-in QR -- dropped (PR #82); the 4-character code is the only method.
+
+**Open (owner / dashboard; state Unverified from the repo):**
+- Apply migrations 0015, 0016, 0018, 0019 "only with the site owner's say-so"
+  (each file's header); 0016 before the Zelle code, 0018 before turning on
+  `GIVING_RECURRING_ENABLED`. Applied state not checkable from the repo.
+- Recurring gifts: test in Stripe test mode, then set
+  `GIVING_RECURRING_ENABLED=true` (off by default).
+- Supabase Auth redirect allow-list must include `https://cacna.org`
+  (`lib/site.ts` comment) or password-reset links fail.
+- Re-paste `docs/google-apps-script/sheets-webhook.gs` into the live Apps
+  Script and redeploy (see [[Architecture]] "Sheets webhook").
+- Four Ontario/Quebec branches: "zone to confirm" (PR #120 title).
+- AdSense blog unit is off until `NEXT_PUBLIC_ADSENSE_ID` /
+  `NEXT_PUBLIC_ADSENSE_BLOG_SLOT` are set (PR #123).
+- Complimentary registration tab: `STAFF_PASSCODE` is no longer referenced
+  in `app/`, `lib/` or `components/`; how that tab is gated now is
+  **Unverified** -- check `app/api/register/route.ts`.
 
 ## Convention-merge follow-up (in progress, 2026-09)
 
