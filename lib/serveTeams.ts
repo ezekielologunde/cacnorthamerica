@@ -1,3 +1,16 @@
+// OWNER SIGN-OFF NEEDED: these teams are not named as volunteer teams in the
+// repo's source text (the printed program in lib/planYourVisit.ts), so the
+// site owner should confirm each one before launch:
+//   - Children's Ministry Helpers (id "children")
+//   - Medical Team (id "medical")
+//   - Prayer Team (id "prayer")
+//   - Media & Tech (id "media")
+//   - Youth Convention Volunteers (id "youth")
+// Related mentions that do exist: lib/planYourVisit.ts lists "medical" among
+// the convention personnel to follow and a "prayer department" that runs the
+// prayer sessions, and the site has a Children's Ministry page; none of these
+// says the team takes volunteers.
+//
 // EDIT HERE: the teams a volunteer can pick on /serve. The page, the sign-up
 // form (components/serve/ServeForm.tsx) and the route (app/api/serve) all read
 // this one list, so adding, renaming or removing a team is a change to this
@@ -17,6 +30,8 @@ export interface ServeTeam {
   blurb: string;
   /** Extra line shown under the blurb on /serve. */
   note?: string;
+  /** Bold label in front of `note`; set it whenever `note` is set. */
+  noteTitle?: string;
 }
 
 export const SERVE_TEAMS = [
@@ -25,8 +40,9 @@ export const SERVE_TEAMS = [
     name: "Ushers",
     blurb: "Welcome people into each session, help them find a seat and keep the hall calm and orderly.",
     // REVIEW: generic description of the usher protocols. The real protocols
-    // come from the ushering team lead; do not add rules here without them.
-    note: "Ushers work to a shared set of protocols for how the team welcomes, seats and serves people, so that all things are done decently and in order (1 Cor. 14:40). The ushering team lead will send you the current protocols after you sign up.",
+    // are not in the repo; do not add rules here without the Convention Committee.
+    noteTitle: "Usher protocols.",
+    note: "Ushers work to a shared set of protocols for how the team welcomes, seats and serves people, so that all things are done decently and in order (1 Cor. 14:40). The Convention Committee will be in touch after you sign up.",
   },
   {
     id: "protocol",
@@ -46,7 +62,7 @@ export const SERVE_TEAMS = [
   {
     id: "choir",
     name: "Choir",
-    blurb: "Lead worship with the convention choir. The music team shares rehearsal details after you sign up.",
+    blurb: "Lead worship with the convention choir.",
   },
   {
     id: "registration",

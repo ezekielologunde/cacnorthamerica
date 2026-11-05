@@ -24,16 +24,13 @@ export function serveNoticeHtml(rows: [string, string][]): string {
  *  from the fixed list in lib/serveTeams.ts. */
 export function serveConfirmationHtml(signup: Pick<ServeSignup, "teams" | "under18">, conventionHref: string): string {
   const teams = serveTeamNames(signup.teams).map(escapeHtml).join(", ");
-  const ushers = signup.teams.includes("ushers")
-    ? `<p style="margin:12px 0 0;font-size:14px;color:#5f5e5a;line-height:1.7">The ushering team lead will send you the current usher protocols.</p>`
-    : "";
   const minor = signup.under18
-    ? `<p style="margin:12px 0 0;font-size:14px;color:#5f5e5a;line-height:1.7">As you are under 18, the team lead may also speak with your parent or guardian.</p>`
+    ? `<p style="margin:12px 0 0;font-size:14px;color:#5f5e5a;line-height:1.7">As you are under 18, the Convention Committee may also speak with your parent or guardian.</p>`
     : "";
   const bodyHtml = `<div style="background:#fff;border:1px solid #ECE9E4;border-radius:16px;padding:24px 26px">
     <p style="margin:0;font-size:14px;color:#12141E;line-height:1.7"><strong>You offered to serve with:</strong> ${teams}</p>
-    <p style="margin:12px 0 0;font-size:14px;color:#5f5e5a;line-height:1.7">A lead from each team will be in touch with what comes next.</p>
-    ${ushers}${minor}
+    <p style="margin:12px 0 0;font-size:14px;color:#5f5e5a;line-height:1.7">The Convention Committee will be in touch with what comes next.</p>
+    ${minor}
     <p style="margin:12px 0 0;font-size:13px;color:#8a8983;line-height:1.7">If you didn't sign up on cacna.org, you can safely ignore this email.</p>
   </div>`;
   return emailShell({
