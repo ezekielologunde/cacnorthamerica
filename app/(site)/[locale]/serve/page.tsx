@@ -1,8 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import {
-  ArrowRight, Baby, ClipboardList, Coffee, DoorOpen, Flame, HandHeart, HeartHandshake,
-  Music, ShieldCheck, Sparkles, Stethoscope, Users, Video, type LucideIcon,
+  ArrowRight, Baby, Church, ClipboardList, Coffee, DoorOpen, Flame, HandHeart, HeartHandshake,
+  Music, ShieldCheck, Share2, Sparkles, Stethoscope, Users, Utensils, Video, type LucideIcon,
 } from "lucide-react";
 import { setRequestLocale } from "next-intl/server";
 import { Nav } from "@/components/navigation/Nav";
@@ -18,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Serve at the Convention — Christ Apostolic Church North America (CACNA)",
     description:
-      "Volunteer at the CACNA Annual Convention: ushers, protocol, care team, hospitality, choir, registration, media and more. Choose your teams and sign up.",
+      "Volunteer at the CACNA Annual Convention: ushers, protocol, care team, hospitality, food and welfare, sanctuary keepers, choir, registration, media, social media and more. Choose your teams and sign up.",
     alternates: { canonical: `${SITE_URL}/serve` },
   };
 }
@@ -29,9 +29,12 @@ const TEAM_ICONS: Record<string, LucideIcon> = {
   protocol: Users,
   care: HeartHandshake,
   hospitality: Coffee,
+  "food-welfare": Utensils,
+  sanctuary: Church,
   choir: Music,
   registration: ClipboardList,
   media: Video,
+  "social-media": Share2,
   children: Baby,
   security: ShieldCheck,
   medical: Stethoscope,

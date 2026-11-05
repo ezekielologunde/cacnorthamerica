@@ -6,6 +6,10 @@
 //   - Prayer Team (id "prayer")
 //   - Media & Tech (id "media")
 //   - Youth Convention Volunteers (id "youth")
+// Added at the owner's request on 2026-11-05 (the owner named them, but the
+// repo's source text still does not describe them, so each lead should confirm
+// the blurb): Food & Welfare (id "food-welfare"), Sanctuary Keepers (id
+// "sanctuary"), Social Media (id "social-media").
 // Related mentions that do exist: lib/planYourVisit.ts lists "medical" among
 // the convention personnel to follow and a "prayer department" that runs the
 // prayer sessions, and the site has a Children's Ministry page; none of these
@@ -60,6 +64,16 @@ export const SERVE_TEAMS = [
     blurb: "Help serve food and refreshments and make every guest feel at home on the grounds.",
   },
   {
+    id: "food-welfare",
+    name: "Food & Welfare",
+    blurb: "Help prepare and serve meals and look after the practical needs of guests, ministers and volunteers.",
+  },
+  {
+    id: "sanctuary",
+    name: "Sanctuary Keepers",
+    blurb: "Keep the sanctuary clean, set up and ready for every session, and tidy it afterwards.",
+  },
+  {
     id: "choir",
     name: "Choir",
     blurb: "Lead worship with the convention choir.",
@@ -73,6 +87,11 @@ export const SERVE_TEAMS = [
     id: "media",
     name: "Media & Tech",
     blurb: "Help with sound, cameras, the livestream, photography and screens.",
+  },
+  {
+    id: "social-media",
+    name: "Social Media",
+    blurb: "Share the convention online with photos, short videos and posts, and help us reply to people who reach out.",
   },
   {
     id: "children",
