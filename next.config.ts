@@ -96,6 +96,12 @@ const nextConfig: NextConfig = {
           permanent: true,
         },
       ]),
+      // Youth & Young Adult Ministry has its own site (yyam.cacna.org). Hash links
+      // such as /youth#register carry over to the matching YYAM home sections.
+      { source: "/youth", destination: "https://yyam.cacna.org/", permanent: true },
+      { source: "/en/youth", destination: "https://yyam.cacna.org/", permanent: true },
+      { source: "/yyam", destination: "https://yyam.cacna.org/", permanent: true },
+      { source: "/yyam/:path*", destination: "https://yyam.cacna.org/:path*", permanent: true },
       { source: "/leadership-meet-our-pastors", destination: "/leadership", permanent: true },
       { source: "/leadership-meet-our-pastors/", destination: "/leadership", permanent: true },
       { source: "/online-connect-to-our-services", destination: "/online", permanent: true },
@@ -163,8 +169,8 @@ const nextConfig: NextConfig = {
           ["/portfolio-item/administration", "/ministries"],
           ["/portfolio-item/2203", "/ministries"],
           ["/portfolio-item/2483", "/ministries"],
-          ["/youth-young-adult", "/youth"],
-          ["/portfolio-item/youth-conference", "/youth"],
+          ["/youth-young-adult", "https://yyam.cacna.org/"],
+          ["/portfolio-item/youth-conference", "https://yyam.cacna.org/programs"],
           ["/portfolio-item/2496", "/christian-education"],
           ["/upcoming-events", "/calendar"],
           ["/live-streaming", "/online"],
