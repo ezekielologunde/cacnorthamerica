@@ -39,21 +39,23 @@ export default async function GivingConfirmationPage({
   if (sessionId) {
     try {
       const stripe = getStripeClient();
-      const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: ["payment_intent"] });
+      const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: ["payment_intent", "subscription"] });
       const paid = isPaidCheckout(session, "giving");
       // Pending only while the debit is genuinely in flight: after a failed
       // debit the session stays complete and unpaid, and must not promise an
       // email that will never come.
       const intent = typeof session.payment_intent === "object" ? session.payment_intent : null;
       // A recurring gift is a subscription session: it has no payment intent of
-      // its own. If its first bank debit fails the gift is cancelled and the donor
-      // emailed (lib/givingProblem.ts), so "processing" is safe to promise here too.
+      // its own. A failed first debit cancels the subscription (lib/givingProblem.ts),
+      // so it counts as processing only while the subscription is still live.
       const subscription = session.mode === "subscription";
+      const sub = typeof session.subscription === "object" ? session.subscription : null;
+      const subLive = !!sub && ["active", "incomplete", "trialing"].includes(sub.status);
       pending = !paid
         && session.metadata?.kind === "giving"
         && session.status === "complete"
         && (session.payment_method_types ?? []).includes("us_bank_account")
-        && (subscription || intent?.status === "processing");
+        && (subscription ? subLive : intent?.status === "processing");
       if (!paid && !pending) throw new Error("not a paid giving session");
       contactEmail = session.customer_details?.email ?? session.customer_email ?? null;
       // "Given" is the gift the donor chose; the fee is shown on its own.

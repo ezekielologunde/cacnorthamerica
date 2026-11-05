@@ -7,7 +7,7 @@ import { EmbeddedStripeCheckout } from "@/components/checkout/EmbeddedStripeChec
 import { ZellePaymentPanel } from "@/components/register/ZellePaymentPanel";
 import { FORM_HEADER, TURNSTILE_FIELD } from "@/lib/spam";
 import { TurnstileField, resetTurnstile } from "@/components/TurnstileField";
-import { recurringFeeCentsFor, type PaymentMethod } from "@/lib/processingFee";
+import { recurringFeeCentsFor, setupFeeCentsFor, type PaymentMethod } from "@/lib/processingFee";
 import type { GiftFrequency, RecurringFrequency } from "@/lib/givingRequest";
 import { cadencePhrase, recurringAllowedForKind } from "@/lib/givingRecurring";
 
@@ -86,7 +86,9 @@ export function GivingForm({ campaigns, recurringOn = false }: { campaigns: Givi
   const [contactEmail, setContactEmail] = useState("");
   const [method, setMethod] = useState<GiveMethod>("zelle");
   const [frequency, setFrequency] = useState<GiftFrequency>("once");
-  const [recurringConsent, setRecurringConsent] = useState(false);
+  // The authorization is for one exact gift: it is remembered with the amount,
+  // method, frequency and campaign it was ticked for, and stops counting when any change.
+  const [consentKey, setConsentKey] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [zelleResult, setZelleResult] = useState<ZelleResult | null>(null);
@@ -131,6 +133,8 @@ export function GivingForm({ campaigns, recurringOn = false }: { campaigns: Givi
   const effectiveFrequency: GiftFrequency = canRepeat ? frequency : "once";
   const repeating = effectiveFrequency !== "once";
   const activeMethod: GiveMethod = method === "zelle" && (!zelleRecipient || repeating) ? "card" : method;
+  const currentKey = `${campaignSlug}|${amountCents ?? 0}|${activeMethod}|${effectiveFrequency}`;
+  const recurringConsent = consentKey === currentKey;
   const eachChargeCents = repeating && amountCents ? amountCents + recurringFeeCentsFor(amountCents, activeMethod === "bank" ? "bank" : "card") : null;
 
   async function handleSubmit(event: FormEvent) {
@@ -395,7 +399,7 @@ export function GivingForm({ campaigns, recurringOn = false }: { campaigns: Givi
                     <label key={value} style={choiceStyle(active)}>
                       <input
                         type="radio" name="give-frequency" value={value} checked={active}
-                        onChange={() => { setFrequency(value); setRecurringConsent(false); setConfirmedLargeCents(null); }}
+                        onChange={() => { setMethod(activeMethod); setFrequency(value); setConfirmedLargeCents(null); }}
                         style={{ marginTop: 4, accentColor: "var(--gold)" }}
                       />
                       <span>
@@ -457,9 +461,9 @@ export function GivingForm({ campaigns, recurringOn = false }: { campaigns: Givi
 
           {repeating && eachChargeCents && (
             <label style={{ display: "flex", gap: 10, alignItems: "flex-start", margin: "0 0 16px", color: "rgba(255,255,255,.85)", fontSize: 13.5, lineHeight: 1.55, cursor: "pointer" }}>
-              <input type="checkbox" checked={recurringConsent} onChange={(e) => setRecurringConsent(e.target.checked)} style={{ marginTop: 3, accentColor: "var(--gold)" }} />
+              <input type="checkbox" checked={recurringConsent} onChange={(e) => setConsentKey(e.target.checked ? currentKey : null)} style={{ marginTop: 3, accentColor: "var(--gold)" }} />
               <span>
-                I authorize CACNA to charge {formatDollars(eachChargeCents)} {cadencePhrase(effectiveFrequency as RecurringFrequency)} to my {activeMethod === "bank" ? "bank account" : "card"} until I cancel.
+                I authorize CACNA to charge {formatDollars(eachChargeCents)} {cadencePhrase(effectiveFrequency as RecurringFrequency)} to my {activeMethod === "bank" ? "bank account" : "card"} until I cancel.{activeMethod === "bank" ? ` The first payment also includes a one-time bank setup fee of ${formatDollars(setupFeeCentsFor(amountCents ?? 0, "bank"))}.` : ""}
                 I can stop it any time at cacna.org/giving/cancel or by writing to info@cacna.org, and I&rsquo;ll get an email receipt for every payment.
               </span>
             </label>

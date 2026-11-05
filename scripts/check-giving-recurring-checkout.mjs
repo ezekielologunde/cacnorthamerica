@@ -106,8 +106,11 @@ const read = (p) => readFileSync(path.join(root, p), "utf8");
   check("the page reads the switch on the server and passes it down", page.includes("recurringEnabled()") && page.includes("recurringOn="));
   const confirm = read("app/(site)/[locale]/giving/confirmation/page.tsx");
   check("the confirmation page handles a subscription session (no payment intent)", confirm.includes('session.mode === "subscription"') && confirm.includes("splitRecurringCheckout"));
+  check("a pending recurring bank gift needs a live subscription (a cancelled first debit is not pending)", confirm.includes("expand: [\"payment_intent\", \"subscription\"]") && confirm.includes("subscription ? subLive") && confirm.includes("[\"active\", \"incomplete\", \"trialing\"]"));
+  check("the authorization is tied to the exact gift (amount, method, frequency, campaign), not a bare flag", form.includes("consentKey === currentKey") && form.includes("setConsentKey(e.target.checked ? currentKey : null)") && !form.includes("setRecurringConsent"));
+  check("the authorization sentence names the bank setup fee", form.includes("one-time bank setup fee"));
   const mail = read("lib/givingEmail.ts");
-  check("a recurring receipt tells the donor how to stop the gift", mail.includes("/giving/cancel"));
+  check("a recurring receipt tells the donor how to stop the gift", mail.includes("/giving/cancel") && mail.includes("This gift repeats") && !mail.includes("This is a "));
 }
 
 if (failures > 0) {
