@@ -1,7 +1,7 @@
 import { Resend } from "resend";
 import { escapeHtml } from "@/lib/html";
 import { emailCard, emailShell, sender } from "@/lib/email";
-import { SITE } from "@/lib/site";
+import { SITE, SITE_URL } from "@/lib/site";
 
 export type GivingConfirmationInput = {
   /** Resend idempotency key (24h window) so a redelivered webhook never
@@ -38,7 +38,7 @@ function buildHtml(input: GivingConfirmationInput): string {
         <td style="padding-top:4px;font-size:13.5px;color:#5f5e5a;text-align:right">${input.chargedLabel ?? input.totalLabel}</td>
       </tr>` : ""}
     </table>
-  </div>`;
+  </div>${input.frequencyLabel ? `<p style="font-size:13px;color:#5f5e5a;line-height:1.6;margin:16px 4px 0">This is a ${escapeHtml(input.frequencyLabel.toLowerCase())} gift. You can stop it any time at <a href="${SITE_URL}/giving/cancel" style="color:#C81E3A">cacna.org/giving/cancel</a>, or reply to this email.</p>` : ""}`;
 
   return emailShell({
     heading: "Thank you for your gift!",

@@ -7,6 +7,8 @@ import { Phone, Mail } from "lucide-react";
 import { CopyAccount } from "@/components/giving/CopyAccount";
 import { GIVING_CAMPAIGNS, type GivingCampaign } from "@/lib/giving";
 import { GivingForm } from "@/components/giving/GivingForm";
+import { recurringEnabled } from "@/lib/givingRecurring";
+import Link from "next/link";
 import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
@@ -87,8 +89,13 @@ export default async function GivingPage({
       <section style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(48px,6vw,72px)" }}>
         <div style={{ maxWidth: 980, margin: "0 auto" }}>
           <Reveal>
-            <GivingForm campaigns={GIVING_CAMPAIGNS} />
+            <GivingForm campaigns={GIVING_CAMPAIGNS} recurringOn={recurringEnabled()} />
           </Reveal>
+          {recurringEnabled() && (
+            <p style={{ textAlign: "center", fontSize: 14, color: "var(--ink-soft)", margin: "18px 0 0" }}>
+              Already give on a schedule? <Link href="/giving/cancel" style={{ color: "var(--red)", fontWeight: 700 }}>Cancel a recurring gift</Link>.
+            </p>
+          )}
         </div>
       </section>
 

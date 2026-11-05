@@ -4,15 +4,35 @@ import { clientIp, rateLimit } from "@/lib/rateLimit";
 import { SITE_URL } from "@/lib/site";
 import { embeddedCheckoutEnabled } from "@/lib/stripeEmbed";
 import { GIVING_CAMPAIGNS, purposeValuesBySlug, withPurpose } from "@/lib/giving";
-import { validateGiftBasics, type GiftBasics } from "@/lib/givingRequest";
+import { emailLimitKey, isRecurring, validateGiftBasics, validateRecurringAmount, type GiftBasics } from "@/lib/givingRequest";
 import { BANK_MAX_CENTS, feeLineItems, feeMetadataFor, type PaymentMethod } from "@/lib/processingFee";
+import { FORM_HEADER } from "@/lib/spam";
+import { TURNSTILE_ERROR, verifyTurnstile } from "@/lib/turnstile";
+import {
+  RECURRING_CONSENT_ERROR,
+  RECURRING_KIND_ERROR,
+  RECURRING_OFF_ERROR,
+  recurringAllowedForKind,
+  recurringCheckoutParams,
+  recurringEnabled,
+} from "@/lib/givingRecurring";
 
 type CheckoutRequestBody = GiftBasics & {
   paymentMethod?: PaymentMethod;
+  /** Recurring only: the donor ticked the authorization box. */
+  recurringConsent?: boolean;
+  turnstileToken?: string;
 };
 
+const HOUR_MS = 60 * 60 * 1000;
+
 function validateRequestBody(body: unknown): string | null {
-  const basicsError = validateGiftBasics(body, GIVING_CAMPAIGNS.map((c) => c.slug), purposeValuesBySlug());
+  // Recurring is off until GIVING_RECURRING_ENABLED is "true"; say so plainly
+  // rather than with the generic "not available for this payment method".
+  const asked = body && typeof body === "object" ? (body as { frequency?: unknown }).frequency : undefined;
+  if (isRecurring(asked) && !recurringEnabled()) return RECURRING_OFF_ERROR;
+
+  const basicsError = validateGiftBasics(body, GIVING_CAMPAIGNS.map((c) => c.slug), purposeValuesBySlug(), { allowRecurring: recurringEnabled() });
   if (basicsError) return basicsError;
 
   const b = body as CheckoutRequestBody;
@@ -21,6 +41,13 @@ function validateRequestBody(body: unknown): string | null {
   }
   if (b.paymentMethod === "bank" && b.amountCents > BANK_MAX_CENTS) {
     return "Bank gifts are limited to $10,000. For a larger gift, please use Zelle or wire, or contact us.";
+  }
+  if (isRecurring(b.frequency)) {
+    const campaign = GIVING_CAMPAIGNS.find((c) => c.slug === b.campaignSlug)!;
+    if (!recurringAllowedForKind(campaign.kind)) return RECURRING_KIND_ERROR;
+    const amountError = validateRecurringAmount(b.amountCents, b.paymentMethod === "bank" ? "bank" : "card", b.frequency);
+    if (amountError) return amountError;
+    if (b.recurringConsent !== true) return RECURRING_CONSENT_ERROR;
   }
   return null;
 }
@@ -52,8 +79,39 @@ export async function POST(request: Request) {
   const embedded = embeddedCheckoutEnabled();
   const returnUrl = `${SITE_URL}/giving/confirmation?session_id={CHECKOUT_SESSION_ID}`;
 
+  // A recurring gift keeps charging with nobody present, so it gets the guards
+  // the one-time path does not have: the site's own form header, Turnstile
+  // (a missing or rejected token is refused), and a per-inbox limit.
+  const recurring = isRecurring(body.frequency) ? body.frequency : null;
+  if (recurring) {
+    if (!request.headers.get(FORM_HEADER)) {
+      return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+    }
+    if (!(await verifyTurnstile(body.turnstileToken, clientIp(request.headers)))) {
+      return NextResponse.json({ error: TURNSTILE_ERROR }, { status: 400 });
+    }
+    if (!rateLimit(`giving-recurring:${emailLimitKey(body.contactEmail)}`, 5, HOUR_MS)) {
+      return NextResponse.json({ error: "Too many attempts for this email. Please try again in an hour." }, { status: 429 });
+    }
+  }
+
   try {
-    const session = await stripe.checkout.sessions.create({
+    const session = await stripe.checkout.sessions.create(
+      recurring
+        ? recurringCheckoutParams({
+            amountCents: body.amountCents,
+            method,
+            frequency: recurring,
+            giftTitle,
+            contactName: body.contactName,
+            contactEmail: body.contactEmail,
+            campaignSlug: campaign.slug,
+            campaignTitle: giftTitle,
+            embedded,
+            returnUrl,
+            cancelUrl: `${SITE_URL}/giving`,
+          })
+        : {
       mode: "payment",
       // Pinned to the chosen method so the fee below always matches what the
       // payer actually uses.
@@ -78,7 +136,8 @@ export async function POST(request: Request) {
         ? { ui_mode: "embedded_page" as const, return_url: returnUrl }
         : { success_url: returnUrl, cancel_url: `${SITE_URL}/giving` }),
       metadata: { kind: "giving", contact_name: body.contactName, campaign_slug: campaign.slug, campaign_title: giftTitle, ...feeMetadataFor(body.amountCents, method) },
-    });
+    },
+    );
 
     if (embedded && session.client_secret) {
       return NextResponse.json({ clientSecret: session.client_secret });
