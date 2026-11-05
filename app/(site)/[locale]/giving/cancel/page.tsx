@@ -10,11 +10,15 @@ import { cancelDeps } from "@/lib/givingCancelStripe";
 
 // The emailed link carries a sealed token in the URL: keep it out of search
 // results and out of the Referer header of anything this page links to.
-export const metadata: Metadata = {
-  title: "Cancel a recurring gift — CACNA",
-  robots: { index: false, follow: false },
-  referrer: "no-referrer",
-};
+export async function generateMetadata({ searchParams }: { searchParams: Promise<{ t?: string }> }): Promise<Metadata> {
+  const { t } = await searchParams;
+  return {
+    title: "Cancel a recurring gift — CACNA",
+    robots: { index: false, follow: false },
+    // Only the tokened page needs it; the plain form loads Turnstile unchanged.
+    ...(t ? { referrer: "no-referrer" as const } : {}),
+  };
+}
 
 const heading = { fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,44px)", color: "#fff", margin: "0 0 14px" } as const;
 const lede = { fontSize: 15.5, color: "rgba(245,246,250,.65)", maxWidth: 520, margin: "0 auto 32px", lineHeight: 1.7 } as const;

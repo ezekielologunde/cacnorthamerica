@@ -58,6 +58,13 @@ export function summarizeGift(subscriptionId: string, customerId: string, metada
   };
 }
 
+/** The address as typed and lowercased, or null when it is not a usable email. */
+export function parseEmail(raw: unknown): { typed: string; lower: string } | null {
+  const typed = typeof raw === "string" ? raw.trim() : "";
+  if (!typed || typed.length > MAX_EMAIL_LENGTH || !EMAIL_PATTERN.test(typed)) return null;
+  return { typed, lower: typed.toLowerCase() };
+}
+
 export type RequestOutcome =
   | "invalid"
   /** A link was emailed. */
@@ -67,9 +74,9 @@ export type RequestOutcome =
   | "failed";
 
 export async function requestCancelLink(rawEmail: unknown, deps: CancelDeps, now: number): Promise<RequestOutcome> {
-  const typed = typeof rawEmail === "string" ? rawEmail.trim() : "";
-  if (!typed || typed.length > MAX_EMAIL_LENGTH || !EMAIL_PATTERN.test(typed)) return "invalid";
-  const lower = typed.toLowerCase();
+  const email = parseEmail(rawEmail);
+  if (!email) return "invalid";
+  const { typed, lower } = email;
   try {
     const customers = await deps.findCustomers(typed === lower ? [typed] : [typed, lower]);
     if (customers.length === 0) return "none";
@@ -112,4 +119,84 @@ export async function cancelWithToken(token: unknown, subscriptionId: unknown, d
     console.error("[giving cancel] cancel failed", { subscriptionId, error: err instanceof Error ? err.name : "error" });
     return "failed";
   }
+}
+
+// ---- Stripe ----
+// The Stripe-backed pieces, written against the small slice of the client they
+// use so the checks can run them against a fake. A donor can have several
+// Stripe customers (Checkout makes a new one for each gift), so every lookup
+// works on the whole set found for the address.
+
+type StripeSubscription = { id: string; status: string; customer: string | { id: string }; metadata?: Metadata | null };
+
+export type StripeLike = {
+  customers: {
+    list: (params: { email: string; limit: number }) => AsyncIterable<{ id: string }>;
+    search: (params: { query: string; limit: number }) => AsyncIterable<{ id: string }>;
+  };
+  subscriptions: {
+    list: (params: { customer: string; limit: number }) => Promise<{ data: StripeSubscription[] }>;
+    retrieve: (id: string) => Promise<StripeSubscription>;
+    cancel: (id: string, params: { cancellation_details: { comment: string } }) => Promise<unknown>;
+  };
+};
+
+/** Stored on the cancellation. Deliberately not the "auto:" prefix the code's
+ *  own cancels use, so the ended-gift handler confirms this one to the donor. */
+export const DONOR_CANCEL_COMMENT = "donor:self-service";
+
+/** Subscription states that take payments or may yet. "incomplete" is a bank
+ *  gift whose first debit is still processing: the donor can change their mind
+ *  the same day. */
+const LIVE = new Set(["active", "past_due", "trialing", "unpaid", "incomplete"]);
+
+/** Safety bound on customers examined for one address. */
+const MAX_LOOKUP_CUSTOMERS = 50;
+
+const customerOf = (sub: StripeSubscription) => (typeof sub.customer === "string" ? sub.customer : sub.customer.id);
+
+export function stripeGiftOps(stripe: StripeLike): Pick<CancelDeps, "findCustomers" | "listGifts" | "cancelGift"> {
+  return {
+    findCustomers: async (emails) => {
+      const found = new Set<string>();
+      // list() is exact-match and case-sensitive but immediately consistent;
+      // search() is case-insensitive but can lag a minute. Together they find a
+      // customer however the address was typed or stored, new or old.
+      for (const email of emails) {
+        for await (const c of stripe.customers.list({ email, limit: 100 })) {
+          found.add(c.id);
+          if (found.size >= MAX_LOOKUP_CUSTOMERS) return [...found];
+        }
+      }
+      const quoted = emails[emails.length - 1].replace(/[\\"]/g, "\\$&");
+      for await (const c of stripe.customers.search({ query: `email:"${quoted}"`, limit: 100 })) {
+        found.add(c.id);
+        if (found.size >= MAX_LOOKUP_CUSTOMERS) break;
+      }
+      return [...found];
+    },
+    listGifts: async (customerIds) => {
+      const pages = await Promise.all(customerIds.map((customer) => stripe.subscriptions.list({ customer, limit: 20 })));
+      const gifts: Gift[] = [];
+      for (const sub of pages.flatMap((p) => p.data)) {
+        if (!LIVE.has(sub.status)) continue;
+        const gift = summarizeGift(sub.id, customerOf(sub), sub.metadata);
+        if (gift) gifts.push(gift);
+      }
+      return gifts;
+    },
+    cancelGift: async (subscriptionId, customerIds) => {
+      try {
+        const sub = await stripe.subscriptions.retrieve(subscriptionId);
+        // Someone else's gift, or not a gift at all: indistinguishable from missing.
+        if (!customerIds.includes(customerOf(sub)) || sub.metadata?.kind !== "giving") return "not_found";
+        if (sub.status === "canceled") return "cancelled";
+        await stripe.subscriptions.cancel(subscriptionId, { cancellation_details: { comment: DONOR_CANCEL_COMMENT } });
+        return "cancelled";
+      } catch (err) {
+        if ((err as { code?: string }).code === "resource_missing") return "not_found";
+        throw err;
+      }
+    },
+  };
 }

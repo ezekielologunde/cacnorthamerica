@@ -10,7 +10,7 @@ import { readFileSync } from "node:fs";
 process.env.REGISTRATION_SIGNING_SECRET = "check-giving-cancel-secret";
 
 const { sealCancelToken, openCancelToken, CANCEL_TOKEN_TTL_MS, MAX_CANCEL_CUSTOMERS } = await import("../lib/cancelToken.ts");
-const { requestCancelLink, viewGifts, cancelWithToken, summarizeGift } = await import("../lib/givingCancel.ts");
+const { requestCancelLink, viewGifts, cancelWithToken, summarizeGift, stripeGiftOps, parseEmail, DONOR_CANCEL_COMMENT } = await import("../lib/givingCancel.ts");
 const { sealRegistrationToken, openRegistrationToken } = await import("../lib/registrationToken.ts");
 
 let failures = 0;
@@ -151,6 +151,64 @@ function world({ customers = ["cus_A1"], gifts = [{ subscriptionId: "sub_1", cus
   check("missing or odd metadata gives empty labels, not a crash or $0.00", odd.amountLabel === "" && odd.frequencyLabel === "" && odd.campaignTitle === "");
 }
 
+// ---- The Stripe ops, run against a fake Stripe ----
+function fakeStripe({ customers = [], subs = {}, listBy = {} } = {}) {
+  const log = { cancel: [], retrieve: [], searches: [] };
+  const iter = (items) => ({ async *[Symbol.asyncIterator]() { for (const i of items) yield i; } });
+  const stripe = {
+    customers: {
+      // Exact, case-sensitive, like Stripe's list(email).
+      list: ({ email }) => iter(customers.filter((c) => c.email === email)),
+      // Case-insensitive, like Stripe's search.
+      search: ({ query }) => { log.searches.push(query); const m = /^email:"(.*)"$/.exec(query); const e = m[1].replace(/\\(.)/g, "$1").toLowerCase(); return iter(customers.filter((c) => c.email.toLowerCase() === e)); },
+    },
+    subscriptions: {
+      list: async ({ customer }) => ({ data: listBy[customer] ?? [] }),
+      retrieve: async (id) => { log.retrieve.push(id); if (!subs[id]) throw Object.assign(new Error("no such"), { code: "resource_missing" }); return subs[id]; },
+      cancel: async (id, params) => { log.cancel.push({ id, params }); if (subs[id]?.boom) throw new Error("stripe down"); },
+    },
+  };
+  return { stripe, log };
+}
+const sub = (id, customer, status = "active", metadata = { kind: "giving", frequency: "monthly", subtotal_cents: "1000", campaign_title: "Tithe" }) => ({ id, customer, status, metadata });
+{
+  const { stripe } = fakeStripe({ customers: [{ id: "cus_1", email: "Ada@Example.com" }, { id: "cus_2", email: "ada@example.com" }, { id: "cus_3", email: "other@example.com" }] });
+  const ops = stripeGiftOps(stripe);
+  const ids = await ops.findCustomers(["ada@example.com"]);
+  check("a customer stored with different casing is found, alongside the exact match, once each", ids.length === 2 && ids.includes("cus_1") && ids.includes("cus_2"));
+  check("a stranger's customer is not returned", !ids.includes("cus_3"));
+  const many = fakeStripe({ customers: Array.from({ length: 80 }, (_, i) => ({ id: `cus_${i}`, email: "ada@example.com" })) });
+  check("the lookup is bounded", (await stripeGiftOps(many.stripe).findCustomers(["ada@example.com"])).length === 50);
+  const q = fakeStripe({ customers: [] });
+  await stripeGiftOps(q.stripe).findCustomers(['a"b\\c@x.co']);
+  check("quotes and backslashes in the address cannot break out of the search query", q.log.searches[0] === 'email:"a\\"b\\\\c@x.co"');
+}
+{
+  const { stripe } = fakeStripe({
+    listBy: {
+      cus_1: [sub("sub_a", "cus_1"), sub("sub_c", "cus_1", "canceled"), sub("sub_s", "cus_1", "active", { kind: "registration" }), sub("sub_i", "cus_1", "incomplete"), sub("sub_x", "cus_1", "incomplete_expired")],
+      cus_2: [sub("sub_p", "cus_2", "past_due")],
+    },
+  });
+  const gifts = await stripeGiftOps(stripe).listGifts(["cus_1", "cus_2"]);
+  check("live recurring gifts are listed with their owner (active, bank-processing, past due)", gifts.map((g) => g.subscriptionId).sort().join() === "sub_a,sub_i,sub_p" && gifts.find((g) => g.subscriptionId === "sub_p").customerId === "cus_2");
+  check("cancelled, expired and non-giving subscriptions are not listed", !gifts.some((g) => ["sub_c", "sub_x", "sub_s"].includes(g.subscriptionId)));
+}
+{
+  const mk = () => fakeStripe({ subs: { sub_mine: sub("sub_mine", "cus_1"), sub_theirs: sub("sub_theirs", "cus_9"), sub_reg: sub("sub_reg", "cus_1", "active", { kind: "registration" }), sub_done: sub("sub_done", "cus_1", "canceled"), sub_boom: { ...sub("sub_boom", "cus_1"), boom: true } } });
+  const a = mk();
+  const ops = stripeGiftOps(a.stripe);
+  check("an owned giving subscription is cancelled with the donor's comment", (await ops.cancelGift("sub_mine", ["cus_1"])) === "cancelled" && a.log.cancel.length === 1 && a.log.cancel[0].params.cancellation_details.comment === DONOR_CANCEL_COMMENT);
+  check("a subscription owned by someone else is not found and never cancelled", (await ops.cancelGift("sub_theirs", ["cus_1"])) === "not_found" && a.log.cancel.length === 1);
+  check("a non-giving subscription of the donor's own customer is not cancelled", (await ops.cancelGift("sub_reg", ["cus_1"])) === "not_found" && a.log.cancel.length === 1);
+  check("an already-cancelled gift is reported cancelled without another cancel call", (await ops.cancelGift("sub_done", ["cus_1"])) === "cancelled" && a.log.cancel.length === 1);
+  check("a subscription that does not exist is not found", (await ops.cancelGift("sub_gone", ["cus_1"])) === "not_found");
+  let threw = false;
+  try { await ops.cancelGift("sub_boom", ["cus_1"]); } catch { threw = true; }
+  check("any other Stripe error propagates (so the route answers 500)", threw);
+}
+check("parseEmail trims, lowercases and refuses junk", parseEmail("  Ada@Example.com ")?.lower === "ada@example.com" && parseEmail("  Ada@Example.com ")?.typed === "Ada@Example.com" && parseEmail("nope") === null && parseEmail(7) === null);
+
 // ---- Shape of the routes and the stripe wiring ----
 const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), "utf8");
 {
@@ -159,14 +217,11 @@ const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), "utf8");
   check("the cancel route accepts POST only (a GET, such as a mail scanner's, cannot cancel)", /export async function POST/.test(confirm) && !/export (async )?function GET/.test(confirm) && !/export (async )?function GET/.test(request));
   check("both routes need the site's form header and are rate limited", [confirm, request].every((s) => s.includes("FORM_HEADER") && s.includes("rateLimit(")));
   check("the link request is Turnstile-checked and limited per inbox", request.includes("verifyTurnstile") && request.includes("emailLimitKey"));
-  check("the request route answers every well-formed request the same way", request.includes('if (outcome === "invalid")') && request.split("return NextResponse.json({ ok: true })").length === 2);
-  const stripe = read("lib/givingCancelStripe.ts");
-  check("a donor's cancel is not tagged as the code's own (so the ended-gift handler confirms it)", stripe.includes('DONOR_CANCEL_COMMENT = "donor:self-service"') && !/DONOR_CANCEL_COMMENT = "auto:/.test(stripe));
-  check("the cancel checks the gift is a giving subscription owned by a token customer", stripe.includes("customerIds.includes(owner)") && stripe.includes('metadata?.kind !== "giving"'));
-  check("the customer lookup pages through all results and also searches case-insensitively", stripe.includes("customers.search(") && !/customers\.list\(\{[^}]*limit: \d\d?\b/.test(stripe) && stripe.includes("for await"));
+  check("the request route answers before any Stripe work (lookup and email run in after())", request.includes("after(async") && /after\(async[\s\S]*requestCancelLink[\s\S]*\}\);\s*return NextResponse\.json\(\{ ok: true \}\)/.test(request) && !request.includes("const outcome"));
+  check("a donor's cancel is not tagged as the code's own (so the ended-gift handler confirms it)", DONOR_CANCEL_COMMENT === "donor:self-service" && !DONOR_CANCEL_COMMENT.startsWith("auto:"));
   const page = read("app/(site)/[locale]/giving/cancel/page.tsx");
   check("opening the page never cancels (no cancel call on the server render)", !page.includes("cancelWithToken") && !page.includes("cancelGift"));
-  check("the page is kept out of search and sends no referrer", page.includes("index: false") && page.includes('referrer: "no-referrer"'));
+  check("the page is kept out of search and sends no referrer when a token is in the URL", page.includes("index: false") && page.includes('referrer: "no-referrer"') && page.includes("t ? {"));
 }
 
 if (failures > 0) {
