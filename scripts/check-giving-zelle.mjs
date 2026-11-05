@@ -97,9 +97,9 @@ const form = read("../components/giving/GivingForm.tsx");
 const order = (needle) => form.indexOf(needle);
 check("the giving form lists Zelle before card and bank", order('["zelle"') !== -1 && order('["zelle"') < order('["card"') && order('["card"') < order('["bank"'));
 check("the giving form defaults to Zelle", form.includes('useState<GiveMethod>("zelle")'));
-check("the giving form falls back to card when a campaign has no Zelle", form.includes('method === "zelle" && !zelleRecipient ? "card" : method'));
+check("the giving form falls back to card when a campaign has no Zelle", form.includes('method === "zelle" && (!zelleRecipient || repeating) ? "card" : method'));
 check("the giving form sends card and bank the fallback-aware method", form.includes("paymentMethod: activeMethod"));
-check("the giving form only lists Zelle for a campaign that has it", form.includes('value !== "zelle" || zelleRecipient'));
+check("the giving form only lists Zelle for a campaign that has it", form.includes('value !== "zelle" || (zelleRecipient && !repeating)'));
 check("the giving form moves focus to the Zelle result", form.includes("resultHeadingRef.current?.focus()"));
 check("the giving form never claims the gift is complete before payment", !form.includes("is complete once"));
 

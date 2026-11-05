@@ -7,7 +7,9 @@ import { EmbeddedStripeCheckout } from "@/components/checkout/EmbeddedStripeChec
 import { ZellePaymentPanel } from "@/components/register/ZellePaymentPanel";
 import { FORM_HEADER, TURNSTILE_FIELD } from "@/lib/spam";
 import { TurnstileField, resetTurnstile } from "@/components/TurnstileField";
-import type { PaymentMethod } from "@/lib/processingFee";
+import { recurringFeeCentsFor, setupFeeCentsFor, type PaymentMethod } from "@/lib/processingFee";
+import type { GiftFrequency, RecurringFrequency } from "@/lib/givingRequest";
+import { cadencePhrase, recurringAllowedForKind } from "@/lib/givingRecurring";
 
 /** Zelle is a pledge the donor completes in their own bank app; card and bank
  *  go through Stripe Checkout. */
@@ -24,6 +26,14 @@ const METHOD_CHOICES: readonly (readonly [GiveMethod, string, string])[] = [
   ["zelle", "Zelle (recommended)", "No fee. You send it from your bank app"],
   ["card", "Card", "Received right away"],
   ["bank", "Bank account", "Takes about 4 business days to clear"],
+];
+
+// How often. Only shown when the server has recurring gifts switched on, and
+// only for the tithe and projects (see lib/givingRecurring.ts).
+const FREQUENCY_CHOICES: readonly (readonly [GiftFrequency, string, string])[] = [
+  ["once", "Just once", "One gift today"],
+  ["monthly", "Every month", "Charged on the same day each month"],
+  ["biweekly", "Every 2 weeks", "Charged every 14 days"],
 ];
 
 // The first question. Thanksgiving is a kind of offering, so it is asked after
@@ -64,7 +74,7 @@ const labelStyle: CSSProperties = { display: "block", fontSize: 14, fontWeight: 
  *  campaign behind the gift is picked in two taps without a dropdown. Every
  *  campaign with real bank/wire details still lists them further down the page
  *  for donors who would rather send the gift themselves. */
-export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
+export function GivingForm({ campaigns, recurringOn = false }: { campaigns: GivingCampaign[]; recurringOn?: boolean }) {
   const projects = campaigns.filter((c) => c.kind === "project");
   const kinds = KIND_CHOICES.filter(([k]) => (k === "project" ? projects.length > 0 : campaigns.some((c) => c.kind === k)));
   const [kind, setKind] = useState<GivingKind>(kinds[0]?.[0] ?? "offering");
@@ -75,6 +85,10 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [method, setMethod] = useState<GiveMethod>("zelle");
+  const [frequency, setFrequency] = useState<GiftFrequency>("once");
+  // The authorization is for one exact gift: it is remembered with the amount,
+  // method, frequency and campaign it was ticked for, and stops counting when any change.
+  const [consentKey, setConsentKey] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [zelleResult, setZelleResult] = useState<ZelleResult | null>(null);
@@ -112,12 +126,26 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
   const purposes = campaign?.purposes?.length ? campaign.purposes : undefined;
   const purpose = purposes ? (purposes.some((p) => p.value === purposeChoice) ? purposeChoice : purposes[0].value) : undefined;
   const zelleRecipient = campaign ? zelleRecipientFor(campaign) : null;
-  const activeMethod: GiveMethod = method === "zelle" && !zelleRecipient ? "card" : method;
+  // Repeating is for the tithe and projects, and only when the server allows it.
+  // A repeating gift cannot be Zelle (the donor sends that by hand each time),
+  // so it falls back to card until they pick bank.
+  const canRepeat = recurringOn && !!campaign && recurringAllowedForKind(campaign.kind);
+  const effectiveFrequency: GiftFrequency = canRepeat ? frequency : "once";
+  const repeating = effectiveFrequency !== "once";
+  const activeMethod: GiveMethod = method === "zelle" && (!zelleRecipient || repeating) ? "card" : method;
+  const currentKey = `${campaignSlug}|${amountCents ?? 0}|${activeMethod}|${effectiveFrequency}`;
+  const recurringConsent = consentKey === currentKey;
+  const eachChargeCents = repeating && amountCents ? amountCents + recurringFeeCentsFor(amountCents, activeMethod === "bank" ? "bank" : "card") : null;
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     if (!amountCents) {
       setErrorMessage("Please choose or enter an amount.");
+      setStatus("error");
+      return;
+    }
+    if (repeating && !recurringConsent) {
+      setErrorMessage("Please tick the box to authorize the recurring gift.");
       setStatus("error");
       return;
     }
@@ -162,11 +190,17 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
       return;
     }
 
+    const checkoutForm = event.currentTarget as HTMLFormElement;
+    const checkoutToken = new FormData(checkoutForm).get(TURNSTILE_FIELD);
     try {
       const response = await fetch("/api/giving/checkout", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contactName, contactEmail, campaignSlug, purpose, amountCents, paymentMethod: activeMethod }),
+        headers: { "Content-Type": "application/json", [FORM_HEADER]: "1" },
+        body: JSON.stringify({
+          contactName, contactEmail, campaignSlug, purpose, amountCents, paymentMethod: activeMethod,
+          // A repeating gift also sends its frequency, the ticked authorization and the Turnstile token.
+          ...(repeating ? { frequency: effectiveFrequency, recurringConsent: true, turnstileToken: typeof checkoutToken === "string" ? checkoutToken : "" } : {}),
+        }),
       });
       const data = await response.json().catch(() => null);
       if (response.ok && typeof data?.clientSecret === "string") {
@@ -175,12 +209,14 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
         return;
       }
       if (!response.ok || !data?.checkoutUrl) {
+        resetTurnstile(checkoutForm);
         setErrorMessage(typeof data?.error === "string" ? data.error : "Something went wrong. Please try again.");
         setStatus("error");
         return;
       }
       window.location.assign(data.checkoutUrl);
     } catch {
+      resetTurnstile(checkoutForm);
       setErrorMessage("Something went wrong. Please try again.");
       setStatus("error");
     }
@@ -353,10 +389,34 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
             />
           </div>
 
+          {canRepeat && (
+            <fieldset style={{ border: "none", padding: 0, margin: "0 0 18px", minWidth: 0 }}>
+              <legend style={{ ...labelStyle, padding: 0 }}>How often?</legend>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,150px),1fr))", gap: 8 }}>
+                {FREQUENCY_CHOICES.map(([value, title, note]) => {
+                  const active = effectiveFrequency === value;
+                  return (
+                    <label key={value} style={choiceStyle(active)}>
+                      <input
+                        type="radio" name="give-frequency" value={value} checked={active}
+                        onChange={() => { setMethod(activeMethod); setFrequency(value); setConfirmedLargeCents(null); }}
+                        style={{ marginTop: 4, accentColor: "var(--gold)" }}
+                      />
+                      <span>
+                        <strong style={{ display: "block", fontSize: 15 }}>{title}</strong>
+                        <span style={{ fontSize: 13, color: "rgba(255,255,255,.72)" }}>{note}</span>
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+            </fieldset>
+          )}
+
           <fieldset style={{ border: "none", padding: 0, margin: "0 0 18px", minWidth: 0 }}>
             <legend style={{ ...labelStyle, padding: 0 }}>How would you like to give?</legend>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,200px),1fr))", gap: 8 }}>
-              {METHOD_CHOICES.filter(([value]) => value !== "zelle" || zelleRecipient).map(([value, title, note]) => {
+              {METHOD_CHOICES.filter(([value]) => value !== "zelle" || (zelleRecipient && !repeating)).map(([value, title, note]) => {
                 const active = activeMethod === value;
                 return (
                   <label
@@ -394,10 +454,20 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
                   No processing fee: you send exactly ${(amountCents / 100).toFixed(2)}.
                 </p>
               ) : (
-                <FeeBreakdown subtotalCents={amountCents} subtotalLabel="Gift" tone="dark" method={activeMethod} />
+                <FeeBreakdown subtotalCents={amountCents} subtotalLabel="Gift" tone="dark" method={activeMethod} frequency={effectiveFrequency} />
               )}
             </div>
           ) : null}
+
+          {repeating && eachChargeCents && (
+            <label style={{ display: "flex", gap: 10, alignItems: "flex-start", margin: "0 0 16px", color: "rgba(255,255,255,.85)", fontSize: 13.5, lineHeight: 1.55, cursor: "pointer" }}>
+              <input type="checkbox" checked={recurringConsent} onChange={(e) => setConsentKey(e.target.checked ? currentKey : null)} style={{ marginTop: 3, accentColor: "var(--gold)" }} />
+              <span>
+                I authorize CACNA to charge {formatDollars(eachChargeCents)} {cadencePhrase(effectiveFrequency as RecurringFrequency)} to my {activeMethod === "bank" ? "bank account" : "card"} until I cancel.{activeMethod === "bank" ? ` The first payment also includes a one-time bank setup fee of ${formatDollars(setupFeeCentsFor(amountCents ?? 0, "bank"))}.` : ""}
+                I can stop it any time at cacna.org/giving/cancel or by writing to info@cacna.org, and I&rsquo;ll get an email receipt for every payment.
+              </span>
+            </label>
+          )}
 
           {status === "error" && errorMessage && (
             <p role="alert" style={{ color: "#FF9E9E", fontWeight: 600, fontSize: 14, marginBottom: 14 }}>{errorMessage}</p>
@@ -419,14 +489,16 @@ export function GivingForm({ campaigns }: { campaigns: GivingCampaign[] }) {
               ? (activeMethod === "zelle" ? "One moment…" : "Redirecting…")
               : activeMethod === "zelle"
                 ? "Show me how to send it →"
-                : `Give ${amountCents ? `$${(amountCents / 100).toFixed(2)}` : "Now"} →`}
+                : `Give ${amountCents ? `$${(amountCents / 100).toFixed(2)}` : "Now"}${repeating ? ` ${cadencePhrase(effectiveFrequency as RecurringFrequency)}` : ""} →`}
           </button>
           <p style={{ fontSize: 13, color: "rgba(255,255,255,.7)", textAlign: "center", marginTop: 14 }}>
             {activeMethod === "zelle"
               ? "We’ll show you where to send it and a reference to put in the memo, and email you the same details."
               : activeMethod === "bank"
                 ? "Securely processed by Stripe. Your bank will ask you to confirm the account, and we’ll email you when the gift clears."
-                : "Securely processed by Stripe. You’ll get an email receipt."}
+                : repeating
+                  ? "Securely processed by Stripe. You’ll get an email receipt for every payment."
+                  : "Securely processed by Stripe. You’ll get an email receipt."}
           </p>
         </form>
         </>
