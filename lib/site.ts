@@ -82,6 +82,7 @@ export const ROUTES: { path: string; priority: number }[] = [
   { path: "/gallery", priority: 0.6 },
   { path: "/archive", priority: 0.5 },
   { path: "/plan-your-visit", priority: 0.6 },
+  { path: "/serve", priority: 0.7 },
   { path: "/sitemap", priority: 0.3 },
   // Sub-ministry pages -- were missing from this list entirely despite
   // being live routes (found during the Phase F branding-cleanup pass,

@@ -235,3 +235,19 @@ an existing tab puts `Zelle Reference` before `Check-in Code`. The live script
 does not do this yet. Re-paste this into the live Apps Script project
 (Extensions > Apps Script) and redeploy a new version for it to take effect;
 until then, add the 'Zelle Reference' header by hand before 'Check-in Code'.
+
+## Serve at the Convention (`/serve`)
+
+`app/(site)/[locale]/serve/` lists the convention volunteer teams and holds the
+sign-up form (`components/serve/ServeForm.tsx`). The team list lives in one
+data file, `lib/serveTeams.ts`; the validator both sides use is
+`lib/serveSignup.ts`. `app/api/serve/route.ts` keeps the contact route's guard
+order (rate limit, form header, honeypot, Turnstile, validation), then saves
+to `cacna.serve_signups`, logs the "Serve — Convention Volunteers" sheet tab,
+sends the committee notice to convention@cacna.org and a fixed confirmation
+to the volunteer (one per address per day). **Apply migration
+`0019_serve_signups.sql` before relying on it**: until then no row is saved
+and no confirmation goes out (the notice and sheet row still do).
+`components/ServeCallout.tsx` promotes `/serve` at the end of every blog post
+and under both convention registration forms (`SERVE_CALLOUT_ENABLED` turns
+it off). Pinned by `node scripts/check-serve.mjs`.

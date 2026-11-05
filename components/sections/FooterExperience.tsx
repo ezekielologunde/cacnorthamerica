@@ -88,6 +88,7 @@ export function FooterExperience() {
         ['/about#convention', t('aboutConvention')],
         [`${nextConvention.href}/schedule`, t('schedule')],
         ['/plan-your-visit', t('planYourVisit')],
+        ['/serve', t('serve')],
       ],
     },
     {

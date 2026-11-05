@@ -7,7 +7,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Privacy Policy — Christ Apostolic Church North America (CACNA)",
     description:
-      "What information CACNA collects through cacna.org — registration, contact, meal requests, the newsletter, the store and giving — how it is used, and who helps us process it.",
+      "What information CACNA collects through cacna.org — registration, contact, meal requests, volunteer sign-ups, the newsletter, the store and giving — how it is used, and who helps us process it.",
     alternates: { canonical: `${SITE_URL}/privacy` },
   };
 }
@@ -34,6 +34,7 @@ const sections: LegalSection[] = [
           <li><strong>Convention registration:</strong> each registrant&apos;s first and last name and category (adult, young adult or child), your church name for group registrations, and the contact person&apos;s name, email and phone number.</li>
           <li><strong>Contact form:</strong> your name, email, subject and message.</li>
           <li><strong>Meal requests:</strong> your name, email, phone, age range, church, youth leader, DCC or zone, the names of any children traveling with you, the meals you need and any allergies you tell us about.</li>
+          <li><strong>Volunteer sign-ups:</strong> your name, email, phone if you give it, the teams you choose, any note about your experience and availability, and whether you are under 18 (and, if so, that a parent or guardian agrees).</li>
           <li><strong>Newsletter:</strong> your email address and, if you give it, your name.</li>
           <li><strong>Store orders:</strong> your name, email, the items you order and your shipping address.</li>
           <li><strong>Giving:</strong> your name, email, the amount and the campaign you give to.</li>
@@ -103,7 +104,8 @@ const sections: LegalSection[] = [
     body: (
       <p style={{ margin: 0 }}>
         Registrations and meal requests can include children. Their details should be entered by a parent or
-        guardian, and we use them only for the convention.
+        guardian, and we use them only for the convention. A volunteer under 18 may sign up to serve themselves,
+        after a parent or guardian has agreed; we use those details only to arrange serving at the convention.
       </p>
     ),
   },
