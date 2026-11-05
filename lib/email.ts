@@ -59,7 +59,7 @@ export function emailShell(opts: {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
-<body style="margin:0;padding:0;background:#ECE9E4;font-family:Arial,Helvetica,sans-serif">
+<body style="margin:0;padding:0;background:#ECE9E4;font-family:'Segoe UI',Helvetica,Verdana,sans-serif">
   <div style="max-width:560px;margin:0 auto;background:#F5F6FA">
     <div style="height:5px;background:linear-gradient(90deg,#7A1128,#C81E3A,#FDC841)"></div>
     <div style="background:#12141E;padding:30px 32px;text-align:center">
