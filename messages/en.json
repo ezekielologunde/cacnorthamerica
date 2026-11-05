@@ -11,6 +11,8 @@
     "calendarEventsDesc": "Special gatherings and annual events",
     "pastConventions": "Past Conventions",
     "pastConventionsDesc": "Themes, dates, and fees since 2019",
+    "serveConvention": "Serve at the Convention",
+    "serveConventionDesc": "Ushers, choir, hospitality and more",
     "whoWeAre": "Who We Are",
     "aboutCacna": "About CACNA",
     "aboutCacnaDesc": "A region of Christ Apostolic Church Worldwide",
@@ -115,7 +117,8 @@
     "followYouth": "Youth & Young Adult",
     "visitHeading": "Visit",
     "directions": "Get directions",
-    "youthRegister": "Youth & Child Registration"
+    "youthRegister": "Youth & Child Registration",
+    "serve": "Serve at the Convention"
   },
   "Register": {
     "heroHeading": "Register for CACNA {year}",

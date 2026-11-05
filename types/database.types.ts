@@ -677,6 +677,45 @@ export type Database = {
         }
         Relationships: []
       }
+      serve_signups: {
+        Row: {
+          convention_year: number | null
+          created_at: string
+          email: string
+          guardian_consent: boolean
+          id: string
+          name: string
+          note: string | null
+          phone: string | null
+          teams: string[]
+          under_18: boolean
+        }
+        Insert: {
+          convention_year?: number | null
+          created_at?: string
+          email: string
+          guardian_consent?: boolean
+          id?: string
+          name: string
+          note?: string | null
+          phone?: string | null
+          teams: string[]
+          under_18?: boolean
+        }
+        Update: {
+          convention_year?: number | null
+          created_at?: string
+          email?: string
+          guardian_consent?: boolean
+          id?: string
+          name?: string
+          note?: string | null
+          phone?: string | null
+          teams?: string[]
+          under_18?: boolean
+        }
+        Relationships: []
+      }
       site_content: {
         Row: {
           content: string

@@ -30,6 +30,7 @@ const PAGES: SearchItem[] = [
   { title: "Blog & News", desc: "CACNA News — stories, devotionals, and news", href: "/blog", tag: "Blog", keywords: "blog news cacna stories articles devotional reflections" },
   { title: "Calendar", desc: "CACNA's annual rhythm and special gatherings", href: "/calendar", tag: "Page", keywords: "events upcoming calendar schedule annual convention ministers retreat sunday school rally" },
   { title: "Giving", desc: "Support CACNA's ministries and missions", href: "/giving", tag: "Page", keywords: "giving tithe offering donate" },
+  { title: "Serve at the Convention", desc: "Volunteer at the Annual Convention: ushers, protocol, care team, hospitality, choir and more", href: "/serve", tag: "Page", keywords: "serve volunteer volunteering usher ushers protocol care team hospitality choir registration media security prayer sign up" },
   { title: "Store", desc: "Apparel, books, and convention merchandise", href: "/store", tag: "Page", keywords: "store shop merchandise apparel shirt t-shirt book buy order" },
   { title: "Plan Your Visit", desc: "Directions, parking, and what to expect at CAC Village", href: "/plan-your-visit", tag: "Page", keywords: "visit directions address map parking hotel lodging blue ridge summit pennsylvania cac village" },
   { title: "Convention Archive", desc: "Photos and recaps from past Annual Conventions", href: "/archive", tag: "Page", keywords: "archive past conventions 2019 2020 2024 recap history" },

@@ -48,6 +48,7 @@ export default async function SitemapPage({
       pages: [
         { label: `Convention ${cy.year}`, href: cy.href },
         { label: "Plan Your Visit", href: "/plan-your-visit" },
+        { label: "Serve at the Convention", href: "/serve" },
         { label: "Past Conventions Archive", href: "/archive" },
         { label: "Calendar & Events", href: "/calendar" },
         { label: "Store", href: "/store" },

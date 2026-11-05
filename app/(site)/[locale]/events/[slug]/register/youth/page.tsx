@@ -4,6 +4,7 @@ import { ArrowLeft, CalendarDays, MapPin, Sparkles } from "lucide-react";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { YouthRegisterForm } from "@/components/register/YouthRegisterForm";
+import { ServeCallout } from "@/components/ServeCallout";
 import { CONVENTION_VENUE, conventionYears, dateRangeLabel, activePricing, type ConventionYear } from "@/lib/conventions";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { SITE_URL } from "@/lib/site";
@@ -94,6 +95,7 @@ export default async function YouthRegisterPage({ params }: { params: Promise<{ 
               <p style={{ fontSize: 15.5, color: "var(--ink-soft)", lineHeight: 1.7, margin: 0 }}>{t("notOpenBody", { year: cy.year })}</p>
             </div>
           )}
+          <ServeCallout style={{ marginTop: 32 }} />
         </div>
       </section>
 

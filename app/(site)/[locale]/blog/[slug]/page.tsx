@@ -13,6 +13,7 @@ import type { BlogPost } from "@/lib/blog";
 import { SITE_URL } from "@/lib/site";
 import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
 import { BlogAd } from "@/components/blog/BlogAd";
+import { ServeCallout } from "@/components/ServeCallout";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { setRequestLocale } from "next-intl/server";
 
@@ -513,6 +514,7 @@ export default async function BlogSlugPage({
                   ))}
                 </div>
               )}
+              <ServeCallout style={{ marginTop: 36 }} />
               <BlogAd />
             </article>
           </Reveal>

@@ -64,6 +64,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
         },
         { href: '/calendar', label: t('calendarEvents'), desc: t('calendarEventsDesc') },
         { href: '/archive', label: t('pastConventions'), desc: t('pastConventionsDesc') },
+        { href: '/serve', label: t('serveConvention'), desc: t('serveConventionDesc') },
       ],
     },
     {
