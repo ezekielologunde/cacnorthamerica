@@ -1,5 +1,5 @@
 import { getStripeClient } from "@/lib/stripe";
-import { MAX_CANCEL_CUSTOMERS, openCancelToken, sealCancelToken } from "@/lib/cancelToken";
+import { openCancelToken, sealCancelToken } from "@/lib/cancelToken";
 import { sendGivingCancelLinkEmail } from "@/lib/givingCancelEmail";
 import { summarizeGift, type CancelDeps, type Gift } from "@/lib/givingCancel";
 
@@ -14,23 +14,36 @@ const LIVE = new Set(["active", "past_due", "trialing", "unpaid"]);
  *  own cancels use, so the ended-gift handler confirms this one to the donor. */
 export const DONOR_CANCEL_COMMENT = "donor:self-service";
 
+/** Safety bound on customers examined for one address. */
+const MAX_LOOKUP_CUSTOMERS = 50;
+
 export function cancelDeps(): CancelDeps {
   const stripe = getStripeClient();
   return {
     findCustomers: async (emails) => {
       const found = new Set<string>();
+      // list() is exact-match and case-sensitive but immediately consistent;
+      // search() is case-insensitive but can lag a minute. Together they find a
+      // customer however the address was typed or stored, new or old.
       for (const email of emails) {
-        const page = await stripe.customers.list({ email, limit: MAX_CANCEL_CUSTOMERS });
-        for (const c of page.data) found.add(c.id);
+        for await (const c of stripe.customers.list({ email, limit: 100 })) {
+          found.add(c.id);
+          if (found.size >= MAX_LOOKUP_CUSTOMERS) return [...found];
+        }
       }
-      return [...found].slice(0, MAX_CANCEL_CUSTOMERS);
+      const quoted = emails[emails.length - 1].replace(/[\\"]/g, "\\$&");
+      for await (const c of stripe.customers.search({ query: `email:"${quoted}"`, limit: 100 })) {
+        found.add(c.id);
+        if (found.size >= MAX_LOOKUP_CUSTOMERS) break;
+      }
+      return [...found];
     },
     listGifts: async (customerIds) => {
       const pages = await Promise.all(customerIds.map((customer) => stripe.subscriptions.list({ customer, limit: 20 })));
       const gifts: Gift[] = [];
       for (const sub of pages.flatMap((p) => p.data)) {
         if (!LIVE.has(sub.status)) continue;
-        const gift = summarizeGift(sub.id, sub.metadata);
+        const gift = summarizeGift(sub.id, typeof sub.customer === "string" ? sub.customer : sub.customer.id, sub.metadata);
         if (gift) gifts.push(gift);
       }
       return gifts;

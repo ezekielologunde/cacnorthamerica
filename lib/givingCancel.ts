@@ -17,6 +17,8 @@
 
 export type Gift = {
   subscriptionId: string;
+  /** The Stripe customer that owns the subscription. */
+  customerId: string;
   campaignTitle: string;
   /** "Monthly" or "Every 2 weeks", or "". */
   frequencyLabel: string;
@@ -25,7 +27,7 @@ export type Gift = {
 };
 
 export type CancelDeps = {
-  /** Stripe customer ids for any of these spellings of the address. */
+  /** Every Stripe customer whose email is this address, however it is cased. */
   findCustomers: (emails: string[]) => Promise<string[]>;
   /** The live recurring gifts of these customers (not one-time gifts). */
   listGifts: (customerIds: string[]) => Promise<Gift[]>;
@@ -44,11 +46,12 @@ type Metadata = Record<string, string | null | undefined>;
 
 /** The gift a Stripe subscription stands for, or null when it is not a giving
  *  subscription (the account also sells registrations and store orders). */
-export function summarizeGift(subscriptionId: string, metadata: Metadata | null | undefined): Gift | null {
+export function summarizeGift(subscriptionId: string, customerId: string, metadata: Metadata | null | undefined): Gift | null {
   if (!metadata || metadata.kind !== "giving") return null;
   const cents = /^\d+$/.test(metadata.subtotal_cents ?? "") ? Number(metadata.subtotal_cents) : 0;
   return {
     subscriptionId,
+    customerId,
     campaignTitle: metadata.campaign_title ?? "",
     frequencyLabel: metadata.frequency === "monthly" ? "Monthly" : metadata.frequency === "biweekly" ? "Every 2 weeks" : "",
     amountLabel: cents > 0 ? `$${(cents / 100).toFixed(2)}` : "",
@@ -72,7 +75,10 @@ export async function requestCancelLink(rawEmail: unknown, deps: CancelDeps, now
     if (customers.length === 0) return "none";
     const gifts = await deps.listGifts(customers);
     if (gifts.length === 0) return "none";
-    const ok = await deps.sendLink({ email: lower, token: deps.sealToken(customers, now), gifts });
+    // The token holds only customers that own a live gift, so a donor with many
+    // gift-less customers (one per past Checkout) can still cancel an old gift.
+    const owners = [...new Set(gifts.map((g) => g.customerId))];
+    const ok = await deps.sendLink({ email: lower, token: deps.sealToken(owners, now), gifts });
     return ok ? "sent" : "failed";
   } catch (err) {
     console.error("[giving cancel] could not issue a link", { error: err instanceof Error ? err.name : "error" });

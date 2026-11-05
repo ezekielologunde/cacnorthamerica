@@ -43,7 +43,7 @@ const NOW = 1_800_000_000_000;
 }
 
 // ---- Fake world ----
-function world({ customers = ["cus_A1"], gifts = [{ subscriptionId: "sub_1", campaignTitle: "Tithe", frequencyLabel: "Monthly", amountLabel: "$100.00" }], owner = { sub_1: "cus_A1" } } = {}) {
+function world({ customers = ["cus_A1"], gifts = [{ subscriptionId: "sub_1", customerId: "cus_A1", campaignTitle: "Tithe", frequencyLabel: "Monthly", amountLabel: "$100.00" }], owner = { sub_1: "cus_A1" } } = {}) {
   const log = { lookups: [], sent: [], cancelled: [], cancelCalls: [] };
   return {
     log,
@@ -76,6 +76,25 @@ function world({ customers = ["cus_A1"], gifts = [{ subscriptionId: "sub_1", cam
   const w2 = world();
   await requestCancelLink("ada@example.com", w2.deps, NOW);
   check("an already-lowercase address is looked up once", w2.log.lookups[0].length === 1);
+}
+{
+  // Twelve customers for one address (Checkout makes one per gift); only the
+  // oldest, last in Stripe's newest-first order, owns a live gift.
+  const many = Array.from({ length: 12 }, (_, i) => `cus_N${i}`);
+  const w = world({ customers: many, gifts: [{ subscriptionId: "sub_old", customerId: "cus_N11", campaignTitle: "Tithe", frequencyLabel: "Monthly", amountLabel: "$50.00" }], owner: { sub_old: "cus_N11" } });
+  const out = await requestCancelLink("ada@example.com", w.deps, NOW);
+  check("an old gift behind many gift-less customers still gets a link", out === "sent");
+  check("the token holds only the customer that owns a gift", JSON.stringify(openCancelToken(w.log.sent[0].token, NOW + 1)) === JSON.stringify(["cus_N11"]));
+  const w2 = world({
+    customers: ["cus_A", "cus_B"],
+    gifts: [
+      { subscriptionId: "sub_a1", customerId: "cus_A", campaignTitle: "Tithe", frequencyLabel: "Monthly", amountLabel: "$10.00" },
+      { subscriptionId: "sub_a2", customerId: "cus_A", campaignTitle: "Tithe", frequencyLabel: "Monthly", amountLabel: "$20.00" },
+    ],
+    owner: { sub_a1: "cus_A", sub_a2: "cus_A" },
+  });
+  await requestCancelLink("ada@example.com", w2.deps, NOW);
+  check("a customer with two gifts appears once, and one without any is left out", JSON.stringify(openCancelToken(w2.log.sent[0].token, NOW + 1)) === JSON.stringify(["cus_A"]));
 }
 {
   const w = world({ customers: [] });
@@ -125,10 +144,10 @@ function world({ customers = ["cus_A1"], gifts = [{ subscriptionId: "sub_1", cam
 
 // ---- Which subscriptions count as gifts ----
 {
-  const g = summarizeGift("sub_9", { kind: "giving", campaign_title: "Tithe", frequency: "biweekly", subtotal_cents: "2500" });
-  check("a giving subscription becomes a gift with readable labels", g.subscriptionId === "sub_9" && g.frequencyLabel === "Every 2 weeks" && g.amountLabel === "$25.00" && g.campaignTitle === "Tithe");
-  check("a registration or store subscription is not a gift", summarizeGift("sub_1", { kind: "registration" }) === null && summarizeGift("sub_1", {}) === null && summarizeGift("sub_1", undefined) === null);
-  const odd = summarizeGift("sub_1", { kind: "giving", subtotal_cents: "", frequency: "yearly" });
+  const g = summarizeGift("sub_9", "cus_9", { kind: "giving", campaign_title: "Tithe", frequency: "biweekly", subtotal_cents: "2500" });
+  check("a giving subscription becomes a gift with readable labels", g.subscriptionId === "sub_9" && g.customerId === "cus_9" && g.frequencyLabel === "Every 2 weeks" && g.amountLabel === "$25.00" && g.campaignTitle === "Tithe");
+  check("a registration or store subscription is not a gift", summarizeGift("sub_1", "cus_1", { kind: "registration" }) === null && summarizeGift("sub_1", "cus_1", {}) === null && summarizeGift("sub_1", "cus_1", undefined) === null);
+  const odd = summarizeGift("sub_1", "cus_1", { kind: "giving", subtotal_cents: "", frequency: "yearly" });
   check("missing or odd metadata gives empty labels, not a crash or $0.00", odd.amountLabel === "" && odd.frequencyLabel === "" && odd.campaignTitle === "");
 }
 
@@ -144,6 +163,7 @@ const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), "utf8");
   const stripe = read("lib/givingCancelStripe.ts");
   check("a donor's cancel is not tagged as the code's own (so the ended-gift handler confirms it)", stripe.includes('DONOR_CANCEL_COMMENT = "donor:self-service"') && !/DONOR_CANCEL_COMMENT = "auto:/.test(stripe));
   check("the cancel checks the gift is a giving subscription owned by a token customer", stripe.includes("customerIds.includes(owner)") && stripe.includes('metadata?.kind !== "giving"'));
+  check("the customer lookup pages through all results and also searches case-insensitively", stripe.includes("customers.search(") && !/customers\.list\(\{[^}]*limit: \d\d?\b/.test(stripe) && stripe.includes("for await"));
   const page = read("app/(site)/[locale]/giving/cancel/page.tsx");
   check("opening the page never cancels (no cancel call on the server render)", !page.includes("cancelWithToken") && !page.includes("cancelGift"));
   check("the page is kept out of search and sends no referrer", page.includes("index: false") && page.includes('referrer: "no-referrer"'));
