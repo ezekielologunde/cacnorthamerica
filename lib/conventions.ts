@@ -42,7 +42,7 @@ export interface ConventionYear {
  *  as soon as it's announced — everything downstream (nav CTA, events page,
  *  announcement bar) picks it up automatically. */
 export const conventionYears: ConventionYear[] = [
-  // 2019/2020/2024 have no dedicated /events/cacna-YYYY detail page (excluded
+  // 2019/2020/2024/2025 have no dedicated /events/cacna-YYYY detail page (excluded
   // from the [slug] "Save the Date" template via its FUTURE_YEARS filter,
   // since that copy is written for upcoming years, not archived ones) --
   // href points at the archive listing instead. No pricingTiers recorded for
@@ -64,6 +64,11 @@ export const conventionYears: ConventionYear[] = [
   {
     year: 2024, startIso: "2024-07-15", endIso: "2024-07-20",
     theme: "Spiritual Power and Gifts for the Body of Christ",
+    href: "/archive",
+  },
+  {
+    year: 2025, startIso: "2025-07-14", endIso: "2025-07-19",
+    theme: "Preparing God’s People for Leadership",
     href: "/archive",
   },
   {
