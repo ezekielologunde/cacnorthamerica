@@ -97,34 +97,64 @@ function StoryRow({ post, archival }: { post: BlogPost; archival?: boolean }) {
 function LeadStory({ post }: { post: BlogPost }) {
   const href = `/blog/${post.slug}`;
   return (
-    <article className="ed-lead">
-      {post.image && (
-        <Link href={href} className="ed-lead-img" tabIndex={-1} aria-hidden>
+    <section className="ed-hero" aria-label="Top story">
+      <div className="ed-hero-bg" aria-hidden>
+        {post.image && (
           <Image
             src={post.image.url}
             alt=""
             fill
             preload
-            sizes="(max-width: 860px) 100vw, 560px"
-            style={{ objectFit: "cover", objectPosition: post.image.orientation === "portrait" ? "center 15%" : "center" }}
+            sizes="100vw"
+            style={{ objectFit: "cover", objectPosition: post.image.orientation === "portrait" ? "center 18%" : "center" }}
           />
-        </Link>
-      )}
-      <div className="ed-lead-text">
-        <p className="ed-kicker">Latest · {post.category}</p>
-        <h2 className="ed-lead-title">
+        )}
+      </div>
+      <div className="ed-wrap ed-hero-inner">
+        <p className="ed-hero-flag">Top story · {post.category}</p>
+        <h2 className="ed-hero-title">
           <Link href={href}>{post.title}</Link>
         </h2>
-        <p className="ed-lead-dek">{post.excerpt}</p>
+        <p className="ed-hero-dek">{post.excerpt}</p>
         <p className="ed-meta">
           <BylineCompact authors={post.authors} />
           <span>{post.date}</span>
           <span>{post.readTime}</span>
         </p>
-        <Link href={href} className="ed-readlink">
-          Read the story <ArrowRight size={15} strokeWidth={2.5} aria-hidden />
+        <Link href={href} className="ed-hero-cta">
+          Read the story <ArrowRight size={18} strokeWidth={3} aria-hidden />
         </Link>
       </div>
+    </section>
+  );
+}
+
+function StoryCard({ post }: { post: BlogPost }) {
+  const href = `/blog/${post.slug}`;
+  return (
+    <article className="ed-card">
+      <Link href={href} className="ed-card-img" tabIndex={-1} aria-hidden>
+        {post.image ? (
+          <Image
+            src={post.image.url}
+            alt=""
+            fill
+            sizes="(max-width: 860px) 100vw, 380px"
+            style={{ objectFit: "cover", objectPosition: post.image.orientation === "portrait" ? "center 15%" : "center" }}
+          />
+        ) : (
+          <span className="ed-card-noimg">{post.category}</span>
+        )}
+      </Link>
+      <p className="ed-kicker">{post.category}</p>
+      <h3 className="ed-card-title">
+        <Link href={href}>{post.title}</Link>
+      </h3>
+      <p className="ed-meta">
+        <BylineCompact authors={post.authors} />
+        <span>{post.date}</span>
+        <span>{post.readTime}</span>
+      </p>
     </article>
   );
 }
@@ -291,7 +321,9 @@ export default async function BlogPage({
   const allArticles = [...rest, ...dynamicPosts];
   const byDateDesc = (a: BlogPost, b: BlogPost) => (a.dateIso < b.dateIso ? 1 : a.dateIso > b.dateIso ? -1 : 0);
   const heraldArticles = allArticles.filter((p) => p.category !== "Devotional").sort(byDateDesc);
-  const conventionCoverage = heraldArticles.filter((p) => p.featured);
+  const featuredAll = heraldArticles.filter((p) => p.featured);
+  const topStories = featuredAll.slice(0, 3);
+  const conventionCoverage = featuredAll.slice(3);
   const archiveArticles = heraldArticles.filter((p) => !p.featured);
   const devotionalArticles = allArticles.filter((p) => p.category === "Devotional").sort(byDateDesc);
   const now = new Date();
@@ -313,7 +345,7 @@ export default async function BlogPage({
 
   return (
     <main id="main-content" className="ed-page">
-      <Nav />
+      <Nav heroDark />
 
       <header className="ed-masthead">
         <div className="ed-wrap">
@@ -330,9 +362,21 @@ export default async function BlogPage({
         </div>
       </header>
 
+      <LeadStory post={featured} />
+
+      {topStories.length > 0 && (
+        <section className="ed-top" aria-label="More top stories">
+          <div className="ed-wrap">
+            <h2 className="ed-top-head">More top stories</h2>
+            <div className="ed-top-grid">
+              {topStories.map((p) => <StoryCard key={p.slug} post={p} />)}
+            </div>
+          </div>
+        </section>
+      )}
+
       <div className="ed-wrap ed-body">
         <div className="ed-main">
-          <LeadStory post={featured} />
 
           {conventionCoverage.length > 0 && (
             <Section id="convention-coverage" title="Convention coverage" note="Addresses, messages and highlights">
