@@ -24,6 +24,7 @@ Related: [[Project]] · [[Decisions]] · [[Features]] · [[Payments]] · [[Secur
 PR titles are the source; details in the linked notes.
 
 - 2026-09-16 #36 Yoruba locale removed; single-locale English, plain URLs
+- 2026-11-06 AdSense limited to blog pages only (`/blog`, `/blog/*`).
 - 2026-11-05 #73 AdSense readiness: env-gated site-wide script, `/ads.txt`,
   robots/sitemap updates, breadcrumb JSON-LD on blog posts, owner checklist in
   `docs/adsense-readiness.md`

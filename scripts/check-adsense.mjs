@@ -22,16 +22,12 @@ check("ads.txt is null for a malformed ID", adsTxtBody("ca-pub-123") === null);
 check("ads.txt is null for a placeholder ID", adsTxtBody("ca-pub-XXXXXXXXXXXXXXXX") === null);
 
 for (const p of [
-  "/admin", "/admin/", "/admin/login", "/admin/events/new",
-  "/events/cacna-2027/register/confirmation", "/events/cacna-2027/register/confirmation/",
-  "/giving/confirmation", "/store/confirmation",
-  "/privacy", "/terms", "/refunds/",
+  "/", "/admin", "/admin/login", "/events/cacna-2027", "/events/cacna-2027/register",
+  "/events/cacna-2027/register/confirmation", "/giving", "/giving/confirmation", "/store",
+  "/store/confirmation", "/privacy", "/terms", "/refunds/", "/blogger", "/blog-archive", "/category/news",
 ]) check(`no ads on ${p}`, isAdFreePath(p));
 
-for (const p of [
-  "/", "/blog", "/blog/some-post", "/events/cacna-2027", "/events/cacna-2027/register",
-  "/giving", "/store", "/administrators-guide", "/privacy-notice-archive",
-]) check(`ads allowed on ${p}`, !isAdFreePath(p));
+for (const p of ["/blog", "/blog/", "/blog/some-post", "/blog/some-post/"]) check(`ads allowed on ${p}`, !isAdFreePath(p));
 
 if (failures) {
   console.error(`\n${failures} check(s) failed`);

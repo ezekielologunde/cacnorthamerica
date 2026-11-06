@@ -87,4 +87,4 @@ Implemented unless marked otherwise. Details in [[Payments]], [[Backend]].
 - Pages: accessibility, faq, history, privacy, refunds, terms (present under
   `app/(site)/[locale]/`)
 - **Partial (off until env set):** blog-only AdSense unit (PR #123)
-- **Partial (off until `NEXT_PUBLIC_ADSENSE_ID` is set):** site-wide AdSense auto-ads script (not on `/admin`, payment confirmation or legal pages; list in `lib/adsense.ts`), public `/ads.txt` built from the same variable (404 while unset), and robots/sitemap tuned for AdSense's crawler. Owner steps in `docs/adsense-readiness.md` (PR #73)
+- **Partial (off until `NEXT_PUBLIC_ADSENSE_ID` is set):** AdSense auto-ads script on **blog pages only** (rule in `lib/adsense.ts`, owner decision 2026-11-06), public `/ads.txt` built from the same variable (404 while unset), and robots/sitemap tuned for AdSense's crawler. Owner steps in `docs/adsense-readiness.md` (PR #73)

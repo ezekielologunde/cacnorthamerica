@@ -17,18 +17,18 @@ export function adsTxtBody(clientId: string | undefined): string | null {
   return `google.com, ${match[1]}, DIRECT, ${GOOGLE_CERT_AUTHORITY_ID}\n`;
 }
 
-// Pages that must never show ads: the admin area, post-payment receipts (they
-// show a registrant's or donor's details), and the legal pages.
-const AD_FREE: RegExp[] = [
-  /^\/admin(?:\/|$)/,
-  /^\/events\/[^/]+\/register\/confirmation$/,
-  /^\/giving\/confirmation$/,
-  /^\/store\/confirmation$/,
-  /^\/(?:privacy|terms|refunds)$/,
-];
+// Ads run on the blog only (owner decision, 2026-11-06): the index and the
+// posts. Everything else, including admin, post-payment receipts, giving,
+// registration, the store and the legal pages, never loads the script.
+const AD_PAGES = /^\/blog(?:\/|$)/;
+
+/** True when the AdSense script may load on this pathname (blog pages only). */
+export function adsAllowedOnPath(pathname: string): boolean {
+  const path = pathname.length > 1 ? pathname.replace(/\/+$/, "") : pathname;
+  return AD_PAGES.test(path);
+}
 
 /** True for a pathname on which the AdSense script must not load. */
 export function isAdFreePath(pathname: string): boolean {
-  const path = pathname.length > 1 ? pathname.replace(/\/+$/, "") : pathname;
-  return AD_FREE.some((re) => re.test(path));
+  return !adsAllowedOnPath(pathname);
 }
