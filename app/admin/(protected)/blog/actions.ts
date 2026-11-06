@@ -3,11 +3,21 @@
 import { requireAdmin } from "@/lib/supabase/require-admin";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { parseAuthors } from "@/lib/blog-authors";
+import type { Json } from "@/types/database.types";
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 function slugify(title: string) {
   return title.toLowerCase().replace(/[^a-z0-9\s-]/g, "").trim().replace(/\s+/g, "-").slice(0, 80);
+}
+
+function readAuthors(formData: FormData): Json {
+  try {
+    return parseAuthors(JSON.parse(String(formData.get("authors") ?? "[]"))) as unknown as Json;
+  } catch {
+    return [];
+  }
 }
 
 function validateSlug(slug: string): string {
@@ -25,10 +35,11 @@ export async function createPost(formData: FormData) {
   const published = formData.get("published") === "true";
   const image_url = (formData.get("image_url") as string) || null;
   const image_alt = (formData.get("image_alt") as string) || null;
+  const authors = readAuthors(formData);
 
   const { data, error } = await supabase
     .from("blog_posts")
-    .insert({ title, slug, excerpt, body, published, image_url, image_alt, published_at: published ? new Date().toISOString() : null })
+    .insert({ title, slug, excerpt, body, published, image_url, image_alt, authors, published_at: published ? new Date().toISOString() : null })
     .select("id")
     .single();
 
@@ -50,6 +61,7 @@ export async function updatePost(id: string, formData: FormData) {
   const published = formData.get("published") === "true";
   const image_url = (formData.get("image_url") as string) || null;
   const image_alt = (formData.get("image_alt") as string) || null;
+  const authors = readAuthors(formData);
 
   const { data: existing } = await supabase.from("blog_posts").select("published, published_at").eq("id", id).single();
   const published_at = published
@@ -58,7 +70,7 @@ export async function updatePost(id: string, formData: FormData) {
 
   const { error } = await supabase
     .from("blog_posts")
-    .update({ title, slug, excerpt, body, published, image_url, image_alt, published_at })
+    .update({ title, slug, excerpt, body, published, image_url, image_alt, authors, published_at })
     .eq("id", id);
 
   if (error) {

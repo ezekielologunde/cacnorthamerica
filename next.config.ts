@@ -26,6 +26,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "res.cloudinary.com" },
       { protocol: "https", hostname: "*.cdninstagram.com" },
       { protocol: "https", hostname: "cacnorthamerica.com" },
+      { protocol: "https", hostname: "cacna.org" },
     ],
   },
 
@@ -36,12 +37,12 @@ const nextConfig: NextConfig = {
   async headers() {
     const csp = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://pagead2.googlesyndication.com https://www.google-analytics.com https://unpkg.com",
+      "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://pagead2.googlesyndication.com https://partner.googleadservices.com https://tpc.googlesyndication.com https://www.google-analytics.com https://unpkg.com https://js.stripe.com https://challenges.cloudflare.com",
       "style-src 'self' 'unsafe-inline' https://unpkg.com",
-      "img-src 'self' data: blob: https://img.youtube.com https://i.ytimg.com https://res.cloudinary.com https://*.cdninstagram.com https://cacnorthamerica.com https://blogger.googleusercontent.com https://*.bp.blogspot.com https://www.googletagmanager.com https://www.google-analytics.com https://pagead2.googlesyndication.com https://unpkg.com https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com",
+      "img-src 'self' data: blob: https://img.youtube.com https://i.ytimg.com https://res.cloudinary.com https://*.cdninstagram.com https://cacnorthamerica.com https://blogger.googleusercontent.com https://*.bp.blogspot.com https://www.googletagmanager.com https://www.google-analytics.com https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.g.doubleclick.net https://unpkg.com https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com",
       "font-src 'self' https://unpkg.com",
-      "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://analytics.google.com https://www.google.com https://vitals.vercel-insights.com https://*.tile.openstreetmap.org",
-      "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://maps.google.com https://www.google.com",
+      "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://analytics.google.com https://www.google.com https://vitals.vercel-insights.com https://*.tile.openstreetmap.org https://api.stripe.com https://checkout.stripe.com https://pagead2.googlesyndication.com https://*.g.doubleclick.net https://*.adtrafficquality.google",
+      "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://maps.google.com https://www.google.com https://js.stripe.com https://hooks.stripe.com https://checkout.stripe.com https://challenges.cloudflare.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://*.safeframe.googlesyndication.com https://*.adtrafficquality.google",
       "object-src 'none'",
       "base-uri 'self'",
     ].join("; ");
@@ -73,7 +74,7 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
-      // One canonical host: cacnorthamerica.com. The *.vercel.app project
+      // One canonical host: cacna.org. The *.vercel.app project
       // domain and the retired cacna.cacsalvationcenter.org subdomain are both
       // indexed by Google, so send every page to the canonical host. API routes
       // are left alone: Stripe webhooks and other server-to-server callers may
@@ -81,20 +82,26 @@ const nextConfig: NextConfig = {
       // Preview deployments use other hostnames (and are noindex on Vercel
       // anyway), so they are unaffected. www is handled by Vercel's domain
       // redirect, not here.
-      ...["cacnorthamerica.vercel.app", "cacna.cacsalvationcenter.org"].flatMap((host) => [
+      ...["cacnorthamerica.vercel.app", "cacna.cacsalvationcenter.org", "cacnorthamerica.com", "www.cacnorthamerica.com"].flatMap((host) => [
         {
           source: "/",
           has: [{ type: "host" as const, value: host }],
-          destination: "https://cacnorthamerica.com/",
+          destination: "https://cacna.org/",
           permanent: true,
         },
         {
           source: "/:path((?!api/|_next/).*)",
           has: [{ type: "host" as const, value: host }],
-          destination: "https://cacnorthamerica.com/:path",
+          destination: "https://cacna.org/:path",
           permanent: true,
         },
       ]),
+      // Youth & Young Adult Ministry has its own site (yyam.cacna.org). Hash links
+      // such as /youth#register carry over to the matching YYAM home sections.
+      { source: "/youth", destination: "https://yyam.cacna.org/", permanent: true },
+      { source: "/en/youth", destination: "https://yyam.cacna.org/", permanent: true },
+      { source: "/yyam", destination: "https://yyam.cacna.org/", permanent: true },
+      { source: "/yyam/:path*", destination: "https://yyam.cacna.org/:path*", permanent: true },
       { source: "/leadership-meet-our-pastors", destination: "/leadership", permanent: true },
       { source: "/leadership-meet-our-pastors/", destination: "/leadership", permanent: true },
       { source: "/online-connect-to-our-services", destination: "/online", permanent: true },
@@ -162,8 +169,8 @@ const nextConfig: NextConfig = {
           ["/portfolio-item/administration", "/ministries"],
           ["/portfolio-item/2203", "/ministries"],
           ["/portfolio-item/2483", "/ministries"],
-          ["/youth-young-adult", "/youth"],
-          ["/portfolio-item/youth-conference", "/youth"],
+          ["/youth-young-adult", "https://yyam.cacna.org/"],
+          ["/portfolio-item/youth-conference", "https://yyam.cacna.org/programs"],
           ["/portfolio-item/2496", "/christian-education"],
           ["/upcoming-events", "/calendar"],
           ["/live-streaming", "/online"],

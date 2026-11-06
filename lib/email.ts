@@ -8,10 +8,10 @@
 import { SITE_URL } from "@/lib/site";
 
 // Each kind of mail goes out from its own address on the Resend-verified
-// cacnorthamerica.com domain, with replies routed to a matching mailbox
+// cacna.org domain, with replies routed to a matching mailbox
 // (forwarded to the team's Gmail). Resend can send from any address on a
 // verified domain, but the reply-to mailbox must exist or replies bounce.
-const DOMAIN = "cacnorthamerica.com";
+const DOMAIN = "cacna.org";
 
 // The church logo in every designed email's header. A small (176x151, ~13 KB)
 // JPEG hosted on the site (public/email/cac-logo.jpg), not the 181 KB site
@@ -59,7 +59,7 @@ export function emailShell(opts: {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
-<body style="margin:0;padding:0;background:#ECE9E4;font-family:Arial,Helvetica,sans-serif">
+<body style="margin:0;padding:0;background:#ECE9E4;font-family:'Segoe UI',Helvetica,Verdana,sans-serif">
   <div style="max-width:560px;margin:0 auto;background:#F5F6FA">
     <div style="height:5px;background:linear-gradient(90deg,#7A1128,#C81E3A,#FDC841)"></div>
     <div style="background:#12141E;padding:30px 32px;text-align:center">
@@ -80,7 +80,7 @@ export function emailShell(opts: {
         : ""
     }
     <div style="padding:16px 32px 28px;border-top:1px solid #ECE9E4;margin-top:16px">
-      <p style="font-size:12px;color:#8a8983;margin:0">${opts.footerNote ?? "Sent via cacnorthamerica.com · Questions? Reply to this email."}</p>
+      <p style="font-size:12px;color:#8a8983;margin:0">${opts.footerNote ?? "Sent via cacna.org · Questions? Reply to this email."}</p>
     </div>
   </div>
 </body>

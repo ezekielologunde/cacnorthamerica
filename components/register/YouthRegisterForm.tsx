@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useId, useMemo, useRef, useState, type CSSProperties, type FormEvent } from "react";
+import { EmbeddedCheckoutScreen } from "@/components/checkout/EmbeddedStripeCheckout";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { FORM_HEADER, HONEYPOT_FIELD } from "@/lib/spam";
+import { FORM_HEADER, HONEYPOT_FIELD, TURNSTILE_FIELD } from "@/lib/spam";
+import { TurnstileField, resetTurnstile } from "@/components/TurnstileField";
 import { FeeBreakdown } from "@/components/checkout/FeeBreakdown";
 import { DEFAULT_PAYMENT_METHOD, PaymentMethodChoice, ZelleTotal, paidSubmitLabel, type PaymentMethod } from "@/components/register/PaymentMethodChoice";
 import {
@@ -97,6 +99,7 @@ export function YouthRegisterForm({
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(DEFAULT_PAYMENT_METHOD);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [serverError, setServerError] = useState<string | null>(null);
   const serverErrorRef = useRef<HTMLParagraphElement | null>(null);
   const focusKey = useRef<number | null>(null);
@@ -201,7 +204,10 @@ export function YouthRegisterForm({
 
     setStatus("loading");
     setServerError(null);
-    const honeypot = new FormData(event.currentTarget).get(HONEYPOT_FIELD);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const honeypot = formData.get(HONEYPOT_FIELD);
+    const turnstileToken = formData.get(TURNSTILE_FIELD);
 
     try {
       const response = await fetch("/api/register", {
@@ -209,6 +215,7 @@ export function YouthRegisterForm({
         headers: { "Content-Type": "application/json", [FORM_HEADER]: "1" },
         body: JSON.stringify({
           [HONEYPOT_FIELD]: typeof honeypot === "string" ? honeypot : "",
+          turnstileToken: typeof turnstileToken === "string" ? turnstileToken : "",
           track: "youth",
           paymentMethod,
           contactName: shared.contactName.trim(),
@@ -230,8 +237,14 @@ export function YouthRegisterForm({
       });
 
       const data = await response.json().catch(() => null);
+      if (response.ok && typeof data?.clientSecret === "string") {
+        setClientSecret(data.clientSecret);
+        setStatus("idle");
+        return;
+      }
       if (!response.ok || !data?.checkoutUrl) {
         setServerError(typeof data?.error === "string" ? data.error : t("errGeneric"));
+        resetTurnstile(form);
         setStatus("error");
         return;
       }
@@ -242,6 +255,7 @@ export function YouthRegisterForm({
         router.push(data.checkoutUrl);
       }
     } catch {
+      resetTurnstile(form);
       setServerError(t("errGeneric"));
       setStatus("error");
     }
@@ -276,6 +290,10 @@ export function YouthRegisterForm({
 
   const submitLabel =
     status === "loading" ? t("submitting") : total > 0 ? paidSubmitLabel(paymentMethod) : `${t("submitFree")} — CACNA ${year}`;
+
+  if (clientSecret) {
+    return <EmbeddedCheckoutScreen clientSecret={clientSecret} onBack={() => setClientSecret(null)} backLabel="← Back to my registration" />;
+  }
 
   return (
     <form onSubmit={handleSubmit} noValidate>
@@ -499,6 +517,7 @@ export function YouthRegisterForm({
             {paymentMethod === "zelle" ? <ZelleTotal subtotalCents={total} /> : <FeeBreakdown subtotalCents={total} />}
           </div>
         )}
+        <TurnstileField />
         <button
           type="submit"
           disabled={status === "loading"}

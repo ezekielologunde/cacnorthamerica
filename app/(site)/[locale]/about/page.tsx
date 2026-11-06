@@ -55,7 +55,7 @@ function HomeCard({ h }: { h: Home }) {
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "About Us — Christ Apostolic Church North America (CACNA)",
-    description: "The story of CACNA — the corporate regional family of Christ Apostolic Church across the United States, Canada, and South America, organized into 24 Zones & DCCs, part of a global movement born in Nigeria in 1918.",
+    description: "The story of CACNA — the corporate regional family of Christ Apostolic Church across the United States, Canada, and South America, organized into 26 Zones & DCCs, part of a global movement born in Nigeria in 1918.",
     alternates: { canonical: `${SITE_URL}/about` },
   };
 }
@@ -144,7 +144,7 @@ export default async function AboutPage({
               The first Christ Apostolic Church in North America started as a house fellowship in <strong style={{ color: "var(--ink)" }}>1976</strong>, planted by the late <strong style={{ color: "var(--ink)" }}>Rev. Goke Oyedeji, Ph.D.</strong>, in Brooklyn, New York.
             </p>
             <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.75, marginBottom: 20 }}>
-              As Christ Apostolic Church member churches took root across the United States, Canada, and South America, CACNA was formed to unite them under one regional body — organized today into 24 Zones &amp; DCCs (District Church Councils), each led by a Zonal Superintendent.
+              As Christ Apostolic Church member churches took root across the United States, Canada, and South America, CACNA was formed to unite them under one regional body — organized today into 26 Zones &amp; DCCs (District Church Councils), each led by a Zonal Superintendent.
             </p>
             <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.75 }}>
               Part of the Christ Apostolic Church — one of Africa&apos;s largest Pentecostal denominations — our mission is raising generations of believers liberated through the light of God&apos;s Word and prayer, across North America and beyond.
@@ -180,7 +180,7 @@ export default async function AboutPage({
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 48 }}>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(36px,5vw,64px)", letterSpacing: "-1.5px", color: "var(--ink)", margin: "14px 0 0", lineHeight: .95 }}>
-              One movement, 24 zones &amp; DCCs.
+              One movement, 26 zones &amp; DCCs.
             </h2>
           </Reveal>
           <div className="r2" style={{ gap: 44, alignItems: "center" }}>
@@ -193,7 +193,7 @@ export default async function AboutPage({
             <Reveal delay={120}>
               <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 24, padding: "30px 28px", boxShadow: "0 14px 32px rgba(18,20,30,.06)" }}>
                 {[
-                  { year: "24", text: "Zones & DCCs (District Church Councils) across the U.S., Canada, and South America." },
+                  { year: "26", text: "Zones & DCCs (District Church Councils) across the U.S., Canada, and South America." },
                   { year: "1", text: "Regional leadership uniting every member church under one mandate." },
                   { year: "July", text: "The whole family gathers each year at the CACNA Annual Convention." },
                 ].map((t, i) => (
@@ -251,6 +251,9 @@ export default async function AboutPage({
               </p>
               <Link href="/history" style={{ display: "inline-flex", alignItems: "center", gap: 8, alignSelf: "flex-start", color: "var(--red)", fontWeight: 700, fontSize: 16, textDecoration: "none" }}>
                 Read the full history →
+              </Link>
+              <Link href="/golden-jubilee" style={{ display: "inline-flex", alignItems: "center", gap: 8, alignSelf: "flex-start", color: "var(--red)", fontWeight: 700, fontSize: 16, textDecoration: "none" }}>
+                Our Golden Jubilee, 50 years in the Americas →
               </Link>
             </div>
           </Reveal>
@@ -397,7 +400,7 @@ export default async function AboutPage({
             <Reveal delay={120} style={{ background: "linear-gradient(155deg, var(--red), var(--red-deep))", color: "var(--cream)", borderRadius: 26, padding: "clamp(32px,4vw,48px) clamp(28px,3.5vw,40px)", display: "flex", flexDirection: "column", justifyContent: "center", boxShadow: "0 18px 36px rgba(200,30,58,.26)" }}>
               <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "rgba(245,246,250,.72)", marginBottom: 16 }}>The Regional Team</div>
               <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,3.6vw,40px)", letterSpacing: "-.8px", margin: "0 0 18px", lineHeight: 1 }}>
-                24 zones &amp; DCCs.<br />One family.<br />One Gospel.
+                26 zones &amp; DCCs.<br />One family.<br />One Gospel.
               </h3>
               <p style={{ fontSize: 15.5, lineHeight: 1.7, opacity: .92, margin: "0 0 26px" }}>
                 Alongside CACNA&apos;s national officers, a Zonal Superintendent shepherds the member churches of each zone.

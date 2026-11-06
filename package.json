@@ -7,9 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test": "node --test lib/cacWorldNews.test.mjs"
+    "test": "node --test lib/cacWorldNews.test.mjs lib/turnstile.test.mjs"
   },
   "dependencies": {
+    "@stripe/react-stripe-js": "^7.0.1",
+    "@stripe/stripe-js": "^10.2.1",
     "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.108.2",
     "@vercel/analytics": "^2.0.1",

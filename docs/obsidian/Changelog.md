@@ -2,13 +2,38 @@
 project: cacnorthamerica
 type: changelog
 status: active
-last_updated: 2026-09-07
+last_updated: 2026-11-05
 tags: [project/cacnorthamerica]
 ---
 
 # Changelog
 
-Related: [[Project]] · [[Decisions]] · [[Features]]
+Related: [[Project]] · [[Decisions]] · [[Features]] · [[Payments]] · [[Security]]
+
+## 2026-09-10 to 2026-11-05 -- summary from `git log origin/master --first-parent`
+
+PR titles are the source; details in the linked notes.
+
+- 2026-09-16 #36 Yoruba locale removed; single-locale English, plain URLs
+- 2026-11-01 #38 canonical host `cacnorthamerica.com`; #44/#46 form spam
+  guards and contact honeypot; #45 purpose email addresses
+- 2026-11-02 #71 disclosed processing-fee line on every Stripe Checkout; #80
+  Youth & Child registration; #82 per-person check-in codes, QR dropped; #83
+  staff check-in page + `checkin_people` (0015); #84 Zelle registration +
+  mark-paid (0016); #85 logo in designed emails
+- 2026-11-03 #95 optional ACH gifts; #97 Zelle giving records the pledge
+  before emailing; #99 canonical host `cacna.org`; #102 contact/mail-from
+  on `@cacna.org`; #103/#105/#106 Stripe embedded checkout, hosted default;
+  #107 admin password reset; #109/#111/#112/#115 Cloudflare Turnstile; #113
+  Apps Script `doGet` for the admin Operations page; #114 large-gift confirm
+- 2026-11-04 #121-#123 AdSense (blog-only, off until env set) and CSP;
+  #116/#119 "26 Zones & DCCs"; #117/#118 flash drive (sold out); #125-#128
+  giving redesign; #129-#133 recurring gifts behind `GIVING_RECURRING_ENABLED`
+  (0018); #135 `/youth`, `/yyam` -> `yyam.cacna.org`
+- 2026-11-05 #136 `/serve` page and volunteer form (0019)
+- 2026-11-05 docs: added [[Database]], [[Backend]], [[Frontend]],
+  [[Security]], [[Payments]], [[Bugs]]; i18n and canonical-host notes marked
+  superseded
 
 ## 2026-09-07 — Canonical host restored to cacna.cacsalvationcenter.org
 
@@ -212,3 +237,5 @@ photo marquee (`6fb8cd8`).
 - Added Bible Study 31 "Offerings from the Tribal Leaders" (Numbers 7), Study 33 "Consequences of Complaints" (Numbers 10–11) and Study 34 "Miriam's Rebellion" (Numbers 12) as Reflection posts in `lib/blog.ts`
 - Added Bible Study 35 "The Twelve Spies" (Numbers 13), Study 36 "Israel's Fear and Rebellion" (Numbers 14) and Study 37 "Offerings' Ordinance in Canaan and Korah's Rebellion" (Numbers 15–16) as Reflection posts in `lib/blog.ts`
 - Added the Business Group Fellowship Quarterly Summit "Investment: Triple Net" (Mon Oct 26, 2026, 8:30 PM ET, Zoom) to `specialEvents`; already past, so it lists under Past events on /calendar; Zoom meeting ID/passcode deliberately not published; end time 10:00 PM is an assumption
+- Added a Golden Jubilee look-back page (`/golden-jubilee`) for the 50th anniversary celebrated Oct 10, 2026 at CAC Village; facts only from the printed programme (no photos, adverts or giving details); listed in the sitemap and search, linked from /history and /about
+- Updated `cacna.leaders` from the Golden Jubilee brochure p12 (migration 0020, applied to the live project 2026-11-05 at the owner's instruction): replaced the superintendents of Bethel DCC (Olowomeye), Western DCC (Adeleke), South Florida DCC (Olukitibi) and Philadelphia Zone (Ademoye) with their old photos and bios cleared; added zones Staten Island, Ontario and Winnipeg; added Agbeja's Chancellor (Bible Institute) role; appended regional roles to seven superintendents; spellings Aroniyi and Zaccheaus. `zone_name` values were not renamed (the brochure says "Vineyard of Comfort" where the table says "Agbala Itura"; lib/churches.ts matches names exactly, so that rename needs a coordinated code change)

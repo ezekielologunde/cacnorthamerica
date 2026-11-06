@@ -7,6 +7,10 @@ export function badgeTextColor(hex: string): string {
   return DARK_BADGE_COLORS.has(hex.toUpperCase()) ? "var(--ink)" : "#fff";
 }
 
+import { POST_AUTHORS, type BlogAuthor } from "@/lib/blog-authors";
+
+export type { BlogAuthor };
+
 export interface BlogPost {
   slug: string;
   title: string;
@@ -27,6 +31,8 @@ export interface BlogPost {
   image?: { url: string; alt: string; orientation?: "landscape" | "portrait" };
   /** Extra real photos shown under the body (archive posts with several pictures). */
   gallery?: { url: string; alt: string }[];
+  /** Who published it (one or more). Empty falls back to "CACNA". */
+  authors?: BlogAuthor[];
   body: string[];
 }
 
@@ -37,6 +43,166 @@ export interface BlogPost {
 // posts genuinely written for CACNA remain; new posts should be added here
 // or via the admin console (/admin/blog) going forward.
 const RAW_POSTS: Omit<BlogPost, "categoryColor" | "accent">[] = [
+  {
+    slug: "tribute-to-late-pastor-abraham-adegoke-oyedeji",
+    title: "A Tribute to Late Pastor (Dr.) Abraham Adegoke Oyedeji",
+    excerpt:
+      "The Oyedeji family and CAC First in the Americas remember the Senior Pastor and DCC Superintendent who planted the seeds of Christ Apostolic Church in the Western Hemisphere.",
+    date: "October 10, 2026",
+    dateIso: "2026-10-10",
+    category: "Ministry Update",
+    readTime: "2 min read",
+    image: { url: "/images/leaders/oyedeji-2026.jpg", alt: "Late Pastor (Dr.) Abraham Adegoke Oyedeji, Senior Pastor and DCC Superintendent, CAC First in the Americas", orientation: "portrait" },
+    body: [
+      "_From the Golden Jubilee brochure: “We celebrate the goodness of God and 50 years of CAC in the Americas.”_",
+      "The brochure remembers Late Pastor (Dr.) Abraham Adegoke Oyedeji, Senior Pastor and DCC Superintendent of CAC First in the Americas, as a man of true spiritual leadership, marked by humility, compassion and devotion to the service of others.",
+      "**A pioneer of the church in the Americas.** The tribute says that through his pioneering work and dedication he was instrumental in planting the seeds of Christ Apostolic Church in the Western Hemisphere. His efforts and foresight established not only congregations but vibrant spiritual homes and lasting communities where faith thrives.",
+      "**A legacy that continues.** The family writes that they are eternally grateful for his legacy, and that his enduring vision and selfless commitment to spreading the Gospel continue to inspire, as a testament to a life lived in service to God and humanity.",
+      "_Signed: The Oyedeji Family and CAC First in the Americas._",
+    ],
+  },
+  {
+    slug: "apostle-timothy-oluwole-obadare-life-and-ministry",
+    title: "Apostle Timothy Oluwole Obadare: A Life of Preaching the Gospel",
+    excerpt:
+      "From the Golden Jubilee brochure: the life and ministry of the late Apostle Dr. T.O. Obadare, who established Christ Apostolic Church in London in 1979 and in the United States in 1981.",
+    date: "October 10, 2026",
+    dateIso: "2026-10-10",
+    category: "Reflection",
+    readTime: "3 min read",
+    image: { url: "/images/leaders/obadare-2026.jpg", alt: "The late Apostle Dr. Timothy Oluwole Obadare" },
+    body: [
+      "_From the Golden Jubilee brochure, the page honouring Apostle T.O. Obadare._",
+      "Born in 1925, the late Apostle Dr. Timothy Oluwole Obadare was a chosen preacher of the Word of God. Many called him a divine microphone of the Lord Jesus Christ and an ambassador of Almighty God. Like Paul, he said that it was a must for him to preach the gospel, and he preached in season and out of season.",
+      "**A passion for souls.** He travelled the world speaking at revival meetings and crusades, and on radio and television at home and abroad, with a visible burden “to reach the world, be instant in season, out of season, rebuke, exhort, with all long suffering and doctrine” (2 Timothy 4:2).",
+      "**Honours.** He received many honorary degrees, including a Doctor of Ministry from St. John’s University, Missouri (1985), and an Honorary Doctor of Divinity from the Trinity College of Ministerial Arts, Aba, Imo State, Nigeria (1990). He was also made a member of the International Affairs Leadership Parliament of the Golden State University of Los Angeles, and was recognised by the International Theological Seminary of Desoto and Honolulu University, Hawaii.",
+      "**Service in the church.** He served Christ Apostolic Church worldwide as a choir leader, prophet, pastor, Assistant General Evangelist, General Evangelist and Apostle. By God’s grace he established Christ Apostolic Church in London in 1979 and in the United States in 1981. He was Executive Director and Founder of the World Soul-Winning Evangelistic Ministry (WOSEM), a ministry established solely for evangelism, and President of the Interdenominational Ministers’ Association of Nigeria.",
+      "**Signs and wonders.** The brochure records that thousands were saved in his crusades, that the blind received sight, barren women conceived and people were healed of many conditions, and gives glory to God for the life of His servant.",
+      "After more than six decades of evangelistic work he lived 88 years and went to be with the Lord in 2013. The brochure closes: “Praise God for such a gift to our generation.”",
+    ],
+  },
+  {
+    slug: "golden-jubilee-message-from-the-president",
+    title: "Golden Jubilee Message from the President of CAC",
+    excerpt:
+      "Pastor Samuel Olusegun Oladele, President of Christ Apostolic Church, celebrates fifty years of God’s faithfulness to the church in America.",
+    date: "October 10, 2026",
+    dateIso: "2026-10-10",
+    category: "Ministry Update",
+    readTime: "3 min read",
+    body: [
+      "_From the opening pages of the Golden Jubilee brochure: “Celebrating 50 years of God’s faithfulness to Christ Apostolic Church in America.”_",
+      "Pastor S.O. Oladele, President of Christ Apostolic Church, began with James 1:17–18 and gave glory to God for His mercy and faithfulness. He said the emergence of the Christ Apostolic Church in America was not by accident but a fulfilment of prophecy.",
+      "**Where the church began.** Christ Apostolic Church is the first Pentecostal church in Nigeria. It began in 1918 as a prayer group known as “The Precious Stone Society”, whose members sought a re-enactment of the experience of believers on the day of Pentecost (Acts 2). The group made contact with the International Faith Tabernacle in Philadelphia. In 1930 the Great Oke Ooye Revival was orchestrated through Apostle Joseph Ayo Babalola, who became the first General Evangelist. The church was incorporated in 1943 as Christ Apostolic Church.",
+      "**What the church is known for.** The church is known as a People of Prayer, of the Word of God and of Worship. Its evangelical mandate includes teaching members so that they can add value to society (Matthew 28:18–20), through in-depth Bible study, Sunday School, 17 theological seminaries and the Joseph Ayo Babalola University (JABU) at Ikeji-Arakeji, Osun State, Nigeria, described as the first entrepreneurial university in Nigeria. The church has more than 1.3 million members in 24 nations, including the United States.",
+      "**Thanks.** He acknowledged the vision and sacrifice of the pioneers in America, Pastor Abraham Adegoke Oyedeji and Prophet Timothy Oluwole Obadare, and many others too numerous to mention; thanked Pastor Joshua Owoeye, whose leadership was a catalyst for the growth and unity of the church in America; and recognised the Regional Superintendent, Pastor T.O.A. Agbeja, and his lieutenants. He thanked all the members who represent the church and the nation well in their places of work, and praised their contributions to the spiritual and socio-economic growth of America.",
+      "**A prayer for the years ahead.** He said the celebration is not only for CAC in the United States but a milestone in the history of CAC Nigeria and Overseas, and prayed for further growth spiritually, numerically and materially, and that the church would continue to be His voice to this generation and hear at the end, “Well done, good and faithful servant.”",
+      "_Signed: Pastor Samuel Olusegun Oladele, President, Christ Apostolic Church._",
+    ],
+  },
+  {
+    slug: "golden-jubilee-welcome-address-regional-superintendent",
+    title: "Golden Jubilee Welcome Address: Regional Superintendent",
+    excerpt:
+      "Pastor T.A.O. Agbeja’s welcome to the CACNA Golden Jubilee at CAC Village on 10 October 2026 — from a mustard-seed beginning to fifty years of God’s faithfulness.",
+    date: "October 10, 2026",
+    dateIso: "2026-10-10",
+    category: "Ministry Update",
+    readTime: "3 min read",
+    body: [
+      "_A summary of the printed welcome address from the Golden Jubilee brochure, delivered at CAC Village on 10 October 2026._",
+      "Pastor T.A.O. Omolayo Agbeja, Ph.D., Regional Superintendent of CAC North America (Latunde Region), opened by giving glory to God for fifty years of the Christ Apostolic Church in America. He compared the small, mustard-seed beginning of the work with what it has become, and drew on Isaiah 40:18, 25 to point to the greatness of God.",
+      "He welcomed the President of CAC Nigeria & Overseas, Pastor S.O. Oladele, and Mrs. Susanna Oladele, Leader of the Ministers’ Wives Fellowship; Prophet (Dr.) S.K. Abiara, retired General Evangelist, and Mama Grace Abiara, present by special invitation; Pastor J.O. Owoeye, Ph.D., retired first Coordinator of CAC North America, whom he called the grandfather of all in America; and Evangelist Agnes Adebomi Agbeja, Leader of the Ministers’ Wives.",
+      "He closed with thanks to the invited guests, the Convention Planning Committee and every worker, and noted that the history of the work is told in a separate leaflet. The 2026 watchword printed with the address is Psalm 119:18: “Open my eyes, that I may see wondrous things from Your law.”",
+    ],
+  },
+  {
+    slug: "golden-jubilee-convention-chairmans-address",
+    title: "Golden Jubilee Chairman’s Address",
+    excerpt:
+      "Fifty years after the apostolic faith was planted in the Americas, the Convention & Conference Committee chairman looks back with thanks and ahead with prayer.",
+    date: "October 10, 2026",
+    dateIso: "2026-10-10",
+    category: "Ministry Update",
+    readTime: "3 min read",
+    body: [
+      "_A summary of the Chairman’s Address printed in the Golden Jubilee brochure._",
+      "Pastor Oluwagbemiga Famojuro, D.Min, Chairman of the Convention & Conference Committee (Latunde Region, USA), addressed the President, the General Superintendent, the General Evangelist and the Regional Superintendent. He gave thanks for fifty years since the apostolic faith was planted in the Americas, framing the jubilee around God’s faithfulness and answered prayer (Psalm 107:1; 1 Samuel 7:12, “Ebenezer”).",
+      "He remembered the late Pastor Dr. Abraham Adegoke Oyedeji, who planted the church in the Americas, and other pioneers who have passed on: Pastors A.A. Adeojo, J.O. Adeyanju, A.S. Shasanmi, Ogunjeminiyi and J.T.F. Brown. He also noted that the church began in Nigeria in 1918.",
+      "The address thanks the committee and everyone who attended, and ends with a prayer for the next fifty years (Psalm 126:3; Deuteronomy 31:8).",
+    ],
+  },
+  {
+    slug: "golden-jubilee-messages-from-latunde-region-departments",
+    title: "Golden Jubilee Messages from Latunde Region Departments",
+    excerpt:
+      "Greetings printed in the Golden Jubilee brochure from the Regional Treasurer, Conventions & Conferences, Evangelism & Empowerment, the Women Leader and the youth ministry.",
+    date: "October 10, 2026",
+    dateIso: "2026-10-10",
+    category: "Ministry Update",
+    readTime: "3 min read",
+    body: [
+      "_Departments and offices of Latunde Region each sent a page of congratulations for the Golden Jubilee. Here is what they said, in short._",
+      "**Office of the Regional Treasurer** (Pastor Timothy Adelani and Evangelist Mrs. Janet Adelani): thanks to God for five decades of provision, with congratulations to the Regional Superintendent, the Executive Council and the CAC Nigeria leadership.",
+      "**Office of Conventions and Conferences** (Pastor Oluwagbemiga Famojuro and Evangelist Mrs. Olajumoke Famojuro): a message celebrating five decades of gatherings, revivals and conventions, with a prayer for a fresh outpouring of the Holy Spirit.",
+      "**Evangelical and Empowerment Department:** rejoicing with CAC Nigeria and Overseas and the Regional Superintendent on the Golden Jubilee, signed by the department head and secretary.",
+      "**Regional Women Leader** (on behalf of the Good Women Association): honours the women of CACNA as pillars of prayer and service. The **Good Women Association** itself sent a separate greeting (Psalm 68:11).",
+      "**Youth and Young Adult Ministry:** congratulations, with a promise that the young people will usher in the next fifty years.",
+      "**Christian Education Department:** a congratulatory message to the Latunde Region on its fiftieth anniversary.",
+    ],
+  },
+  {
+    slug: "cac-in-brazil-joins-latunde-region",
+    title: "CAC in Brazil Joins Latunde Region",
+    excerpt:
+      "From Pastor Oyeleke’s first visit in 2023 to the Regional Superintendent’s revival in November 2024 — how the church in Brazil became part of Latunde Region.",
+    date: "November 18, 2024",
+    dateIso: "2024-11-18",
+    category: "Ministry Update",
+    readTime: "3 min read",
+    body: [
+      "_From the July 2025 Hope for All newsletter, in pieces written by Pastor A.K. Bamidele, Acting Superintendent in Brazil._",
+      "**2023: a first visit.** Pastor S.A. Oyeleke (Rtd.) made a first missionary visit to Brazil from 4 to 23 April 2023 and celebrated Easter at CAC São Paulo on 9 April. He also visited the CAC assembly in Rio de Janeiro, which he had learned of through the secretariat in Nigeria. He returned to São Paulo in September 2023, which began a reformation and realignment of the CAC churches in Brazil.",
+      "**November 2023: “Arise São Paulo!”** A power-packed revival program brought Pastor Ayeni back to Brazil from London after eight years away. In August 2024 four ministers from Nigeria, two pastors and two evangelists, joined the work, through the coordinated efforts of CAC Agbala Idande (Akilings Region), CAC Way to Life Ottawa and CAC 1930 Miracle Explosions, Bronx, New York.",
+      "**January 2024: joining Latunde Region.** The authority of the church wrote to say that Brazil was now an integral part of Latunde Region. The Regional Superintendent, Pastor T.A.O. Agbeja, Ph.D., called to pray with them and promised a visit, which he made in November 2024.",
+      "**12–18 November 2024: regional visit.** Pastor Agbeja and the Regional Secretary, Pastor J.O. Olawale, were welcomed for a revival tagged “And there’s great joy in the city” (Acts 8:8). From 13 to 16 November the team visited Rio de Janeiro, where Pastor Luciano is minister in charge, and held a joint ministers’ meeting. The ministers were urged to work as a team in unity for the rapid growth of the church in Brazil.",
+    ],
+  },
+  {
+    slug: "latunde-region-good-women-prayer-and-pilgrimage",
+    title: "Latunde Region Good Women: Daily Prayer, Marathon Prayers and the 2022 Pilgrimage",
+    excerpt:
+      "How “10 Minutes with My Maker” began in July 2021, the 2022 Marathon Prayers, and the pilgrimage to Israel — from the Good Women Association leader’s report.",
+    date: "May 10, 2022",
+    dateIso: "2022-05-10",
+    category: "Ministry Update",
+    readTime: "3 min read",
+    body: [
+      "_From the Latunde Region Good Women Association leader’s report in the convention booklet._",
+      "**A new executive, July 2021.** On 15 July 2021 five women were appointed as executive members: a Women Leader, a Secretary, a Chaplain, a Financial Secretary and a Treasurer. The leader asked each of them to encourage the DCCs and zones assigned to them and to help the pastors, evangelists and deaconesses with attendance, timely quarterly contributions and daily prayer.",
+      "**“10 Minutes with My Maker.”** The daily prayer meeting began on 23 July 2021, from 8:00 to 8:10 am Eastern. Each of the region’s superintendents leads on a set day each month, and the Regional Superintendent leads on the 1st and 15th.",
+      "**Marathon Prayers, 20–26 February 2022.** The week of prayers was themed “Give unto the Lord Glory and Strength” (Psalm 29:1) and marked ten years of the Good Women Association’s Marathon Prayers. It was anchored by the Chaplain and the Holy Spirit, and hosted on Zoom for the first time.",
+      "**Pilgrimage to Israel, 2–10 May 2022.** The region’s pilgrimage was led by the Regional Superintendent, Pastor T.A.O. Agbeja, Ph.D., and Pastor Hezekiah Ilufoye, Ph.D., and described as a spiritual exercise with sound teaching at every stop. Preparations for a 2023 pilgrimage were already under way, led by the President of CAC Worldwide, Pastor S.O. Oladele.",
+    ],
+  },
+  {
+    slug: "spiritual-power-and-gifts-2024-teaching-outline",
+    title: "Purpose of Spiritual Gifts for the Body of Christ",
+    excerpt:
+      "A teaching outline kept from the 2024 convention theme, “Spiritual Power and Gifts for the Body of Christ” (Acts 1:8): gifts, fruit, and why you need both.",
+    date: "July 17, 2024",
+    dateIso: "2024-07-17",
+    category: "Reflection",
+    readTime: "3 min read",
+    body: [
+      "_A slide outline kept for the record. It follows the 2024 convention theme (Acts 1:8). The speaker is not recorded._",
+      "**The Ministries of God the Holy Spirit.** The Holy Spirit is the third Person of the Trinity, the Lord and Giver of Life (Nicene Creed), co-equal and co-eternal with the Father and the Son.",
+      "**Two manifestations.** Gifts of the Spirit (1 Corinthians 12:7) and fruit of the Spirit (Galatians 5:16–18, 22–26). Paul places 1 Corinthians 13, on love, between chapters 12 and 14, which are about the gifts.",
+      "**The danger of gifts without the fruit.** The fruit of the Spirit is the evidence of being born again. Gifts without the fruit do not save (1 Corinthians 13:1–3; Galatians 5:19–26), and a prophet who shows every gift but no fruit is still lost (Matthew 7:15–20). Gifts can be counterfeited; the fruit cannot (2 Thessalonians 2:8–12; Acts 8:9–24).",
+      "**Acts 1:8 in context.** The promise follows the post-resurrection appearances (Luke 24:3, 45; Mark 16:9–16; Matthew 28:19–20; John 20:21–22; Acts 1:4–5). It is spiritual enabling (John 6:63): the Lord both teaches His followers and equips them to live out what He teaches.",
+      "**What Acts 1:8 with 2:4 means.** Power comes with the fruit and the gifts, a new power to witness (Ephesians 5:17–21). The witness is the gospel, the power of God to salvation (Romans 1:16–17; 1 Corinthians 1:18–25). The Helper teaches all things and brings to remembrance all that Christ said (John 14:26). Spirit-empowered witness means preaching the cross, not telling stories; Paul resolved to know nothing but Jesus Christ and Him crucified (1 Corinthians 2:2).",
+    ],
+  },
   {
     slug: "cacna-2026-what-to-expect",
     title: "CACNA 2026 — what to expect.",
@@ -752,6 +918,7 @@ export const CATEGORY_ACCENT: Record<PostCategory, string> = {
  *  entry picking its own swatch. */
 export const POSTS: BlogPost[] = RAW_POSTS.map((p) => ({
   ...p,
+  authors: p.authors ?? POST_AUTHORS[p.slug],
   categoryColor: CATEGORY_COLOR[p.category],
   accent: CATEGORY_ACCENT[p.category],
 }));

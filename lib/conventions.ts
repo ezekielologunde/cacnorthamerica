@@ -42,7 +42,7 @@ export interface ConventionYear {
  *  as soon as it's announced — everything downstream (nav CTA, events page,
  *  announcement bar) picks it up automatically. */
 export const conventionYears: ConventionYear[] = [
-  // 2019/2020/2024 have no dedicated /events/cacna-YYYY detail page (excluded
+  // 2019/2020/2022/2024/2025 have no dedicated /events/cacna-YYYY detail page (excluded
   // from the [slug] "Save the Date" template via its FUTURE_YEARS filter,
   // since that copy is written for upcoming years, not archived ones) --
   // href points at the archive listing instead. No pricingTiers recorded for
@@ -62,8 +62,19 @@ export const conventionYears: ConventionYear[] = [
     href: "/archive",
   },
   {
+    year: 2022, startIso: "2022-07-11", endIso: "2022-07-16",
+    // From the printed 2022 convention booklet cover (CAC Village, Blue Ridge Summit, PA).
+    theme: "Grow in the Grace and Knowledge of Our Lord Jesus",
+    href: "/archive",
+  },
+  {
     year: 2024, startIso: "2024-07-15", endIso: "2024-07-20",
     theme: "Spiritual Power and Gifts for the Body of Christ",
+    href: "/archive",
+  },
+  {
+    year: 2025, startIso: "2025-07-14", endIso: "2025-07-19",
+    theme: "Preparing God’s People for Leadership",
     href: "/archive",
   },
   {
@@ -335,14 +346,17 @@ export function getDetailedSchedule(year: number): ScheduleSession[] | null {
 export interface StoreProduct {
   id: string;
   name: string;
-  category: "convention" | "good_women" | "youth" | "christian_education";
+  category: "convention" | "good_women" | "youth" | "merchandise" | "christian_education";
   priceCents: number;
   sizes: string[];
   /** Real product photo only — omit entirely rather than fabricate one. */
   imageSrc?: string;
+  /** Still listed, but cannot be added to a cart or bought. */
+  soldOut?: boolean;
 }
 
 export const storeProducts: StoreProduct[] = [
+  { id: "merch-2026-convention-recording-flash-drive", name: "2026 Annual Convention Recording — Flash Drive", category: "merchandise", priceCents: 2000, sizes: [], soldOut: true },
   { id: "ce-2027-unified-bible-study-manual", name: "2027 Unified Bible Study Manual", category: "christian_education", priceCents: 1800, sizes: [], imageSrc: "/photos/store/store-2027-unified-bible-study-manual.jpg" },
   { id: "ce-2027-eko-ile-eko-oluko", name: "2027 Awon Eko Ile Eko Ojo Isimi — Iwe Oluko", category: "christian_education", priceCents: 2000, sizes: [], imageSrc: "/photos/store/store-2027-eko-ile-eko-oluko.jpg" },
   { id: "ce-2027-eko-ile-eko-akeko", name: "2027 Awon Eko Ile Eko Ojo Isimi — Iwe Akeko", category: "christian_education", priceCents: 1800, sizes: [], imageSrc: "/photos/store/store-2027-eko-ile-eko-akeko.jpg" },

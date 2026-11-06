@@ -7,7 +7,8 @@ import { Reveal } from "@/components/ui/Reveal";
 import { IconBadge } from "@/components/ui/IconBadge";
 import { MapPin, Phone, Mail, Clock, CheckCircle2 } from "lucide-react";
 import { submitLead, isValidEmail } from "@/lib/forms";
-import { HONEYPOT_FIELD } from "@/lib/spam";
+import { HONEYPOT_FIELD, TURNSTILE_FIELD } from "@/lib/spam";
+import { TurnstileField, resetTurnstile } from "@/components/TurnstileField";
 import { CONTACT_SUBJECTS as SUBJECTS } from "@/app/api/contact/fields";
 
 const MEMBERSHIP_SUBJECTS = new Set([
@@ -41,16 +42,16 @@ const GROUPS = [
 // Ported from the Convention site's lib/content/contacts.ts during the
 // Phase C content merge (2026-09) -- the three officers who actually field
 // convention-specific questions, distinct from CACNA's own general contact
-// line above. Secretary's name corrected there 2026-07-20 (was misattributed
-// to "Pastor Timothy Famojuro"); carried over already-corrected.
+// line above. Chairman updated 2026-11-05: the Golden Jubilee brochure names
+// Pastor Famojuro as the new Convention Chairman (Pastor Adenodi is the former
+// chairman). The secretary seat is not listed until the new secretary is known.
 const CONVENTION_CONTACTS = [
-  { name: "Pastor David Adenodi, Ph.D.", roleKey: "chairman", org: "C.A.C. Vineyard of Comfort, Lanham, MD", phone: "301-440-7033", email: "cacnaconvention@gmail.com" },
-  { name: "Pastor Oluwagbemiga Famojuro, D.Min.", roleKey: "secretary", org: "C.A.C. FITA, Brooklyn, NY", phone: "917-709-1892", email: "ftimothy54@aol.com" },
+  { name: "Pastor Oluwagbemiga Famojuro, D.Min.", roleKey: "chairman", org: "C.A.C. FITA, Brooklyn, NY", phone: "917-709-1892", email: "cacnaconvention@gmail.com" },
   { name: "Pastor Joseph Olawale", roleKey: "generalInquiries", org: "CAC DFW Metroplex, Irving, TX", phone: "305-469-0346", email: "cacna@hotmail.com" },
 ] as const;
 
 const faqs = [
-  { q: "What is CACNA?", a: "Christ Apostolic Church North America is the regional body uniting CAC member churches across the United States, Canada, and South America, organized into 24 Zones & DCCs (District Church Councils), each led by a Zonal Superintendent." },
+  { q: "What is CACNA?", a: "Christ Apostolic Church North America is the regional body uniting CAC member churches across the United States, Canada, and South America, organized into 26 Zones & DCCs (District Church Councils), each led by a Zonal Superintendent." },
   { q: "Do all CACNA member churches share the same service times?", a: "No — each member church sets its own weekly schedule. Reach out to the Zonal Superintendent nearest you to find service times for a specific church." },
   { q: "Where is the CACNA Annual Convention held?", a: "At CAC Village, 14051 Stahley Road, Blue Ridge Summit, PA 17214 — six days of worship and teaching every July, onsite and online." },
   { q: "Can I join a CACNA member church online?", a: "Many member churches stream their services — check with your nearest zone. The Annual Convention itself streams on YouTube and Zoom." },
@@ -97,6 +98,8 @@ export default function ContactPageClient() {
     if (isMembershipSubject && !fields.phone.trim()) return invalid("c-phone", "Please enter your phone number so we can reach you.");
     if (!fields.message.trim()) return invalid("c-message", "Please write a message.");
     setStatus("loading");
+    const form = e.currentTarget as HTMLFormElement;
+    const turnstileToken = new FormData(form).get(TURNSTILE_FIELD);
     try {
       await submitLead(
         {
@@ -110,10 +113,12 @@ export default function ContactPageClient() {
           } : {}),
           [HONEYPOT_FIELD]: honeypot,
         },
-        `Contact — ${fields.subject || "General"}`
+        `Contact — ${fields.subject || "General"}`,
+        typeof turnstileToken === "string" ? turnstileToken : "",
       );
       setStatus("success");
     } catch {
+      resetTurnstile(form);
       setStatus("error");
       setErrMsg("Something went wrong. Please try again or email us directly.");
     }
@@ -148,7 +153,7 @@ export default function ContactPageClient() {
           </Reveal>
           <Reveal delay={220}>
             <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 10, marginTop: 18 }}>
-              {[{ href: "tel:+13054690346", Icon: Phone, text: "Call" }, { href: "mailto:info@cacnorthamerica.com", Icon: Mail, text: "Email" }].map(({ href, Icon, text }) => (
+              {[{ href: "tel:+13054690346", Icon: Phone, text: "Call" }, { href: "mailto:info@cacna.org", Icon: Mail, text: "Email" }].map(({ href, Icon, text }) => (
                 <a key={text} href={href} style={{ display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 20px", borderRadius: 999, border: "1.5px solid var(--line)", background: "var(--paper)", color: "var(--ink)", fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
                   <Icon size={17} aria-hidden /> {text}
                 </a>
@@ -275,6 +280,8 @@ export default function ContactPageClient() {
                   <textarea id="c-message" aria-invalid={errField === "c-message" || undefined} aria-describedby={errField === "c-message" ? "c-error" : undefined} className="field-input" style={{ ...inputStyle, minHeight: 120, resize: "vertical", lineHeight: 1.6 }} placeholder="How can we help you?" value={fields.message} onChange={update("message")} required />
                 </div>
 
+                <TurnstileField />
+
                 {errMsg && (
                   <p id="c-error" role="alert" style={{ color: "var(--red)", fontSize: 15, fontWeight: 600, margin: "0 0 14px" }}>{errMsg}</p>
                 )}
@@ -305,7 +312,7 @@ export default function ContactPageClient() {
             {[
               { icon: MapPin, title: "Address", lines: [{ text: "14051 Stahley Road", href: "https://maps.google.com/?q=14051+Stahley+Road+Blue+Ridge+Summit+PA+17214" }, { text: "Blue Ridge Summit, PA 17214", href: "https://maps.google.com/?q=14051+Stahley+Road+Blue+Ridge+Summit+PA+17214" }] },
               { icon: Phone, title: "Phone", lines: [{ text: "(305) 469-0346", href: "tel:+13054690346" }] },
-              { icon: Mail, title: "Email", lines: [{ text: "info@cacnorthamerica.com", href: "mailto:info@cacnorthamerica.com" }, { text: "cacna@hotmail.com", href: "mailto:cacna@hotmail.com" }] },
+              { icon: Mail, title: "Email", lines: [{ text: "info@cacna.org", href: "mailto:info@cacna.org" }, { text: "cacna@hotmail.com", href: "mailto:cacna@hotmail.com" }] },
               { icon: Clock, title: "Annual Convention", lines: [{ text: "Six days in July", href: undefined }, { text: "CAC Village, PA", href: undefined }] },
             ].map((card) => (
               <Reveal key={card.title}>
@@ -371,7 +378,7 @@ export default function ContactPageClient() {
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 30, color: "var(--ink)", margin: "0 0 24px" }}>Finding Your Zone</h2>
             <ol style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 20 }}>
               {[
-                { num: "01", title: "Find your nearest zone", body: "CACNA is organized into 24 Zones & DCCs across the U.S., Canada, and South America — see the directory on our homepage." },
+                { num: "01", title: "Find your nearest zone", body: "CACNA is organized into 26 Zones & DCCs across the U.S., Canada, and South America — see the directory on our homepage." },
                 { num: "02", title: "Reach out to the Superintendent", body: "Each zone has a Zonal Superintendent who can connect you with a member church near you." },
                 { num: "03", title: "Visit a member church", body: "Every member church welcomes visitors — reach out ahead to confirm service times." },
                 { num: "04", title: "Stay connected", body: "Fill out the form above with \"Find a Member Church\" as your subject, and join us each July at the Annual Convention." },

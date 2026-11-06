@@ -4,7 +4,10 @@
 //   node scripts/check-processing-fee.mjs
 //
 // Node 24 strips TypeScript types natively. Exits 1 if any check fails.
-const { feeCents, STRIPE_PERCENT_FEE, STRIPE_FIXED_FEE_CENTS, splitCheckoutAmount } = await import("../lib/processingFee.ts");
+const {
+  feeCents, STRIPE_PERCENT_FEE, STRIPE_FIXED_FEE_CENTS, splitCheckoutAmount,
+  bankFeeCents, feeCentsFor, feeLineItems, feeMetadataFor, BANK_PERCENT_FEE, BANK_FEE_CAP_CENTS, BANK_VERIFICATION_FEE_CENTS, BANK_MAX_CENTS,
+} = await import("../lib/processingFee.ts");
 
 let failures = 0;
 function check(name, ok) {
@@ -30,6 +33,43 @@ const legacy = splitCheckoutAmount(5000, {});
 check("a session without fee metadata reads as all subtotal", legacy.subtotalCents === 5000 && legacy.processingFeeCents === 0);
 const bogus = splitCheckoutAmount(5000, { processing_fee_cents: "9999" });
 check("fee metadata larger than the total is ignored", bogus.subtotalCents === 5000 && bogus.processingFeeCents === 0);
+
+// Bank debit. These hold whatever the bank-fee policy is.
+check("card is the default method", feeCentsFor(10000) === feeCents(10000) && feeCentsFor(10000, "card") === feeCents(10000));
+check("no bank fee on a $0 or negative subtotal", bankFeeCents(0) === 0 && bankFeeCents(-500) === 0);
+for (const subtotal of [100, 2500, 10000, 30000, 120000, BANK_MAX_CENTS]) {
+  const fee = bankFeeCents(subtotal);
+  check(`bank fee for ${subtotal} is a non-negative whole number (${fee})`, Number.isInteger(fee) && fee >= 0);
+  // The payer covers Stripe's cost: the church keeps the gift (within a cent), and the payer is not overcharged.
+  const total = subtotal + fee;
+  const stripeCost = Math.min(Math.round(BANK_PERCENT_FEE * total), BANK_FEE_CAP_CENTS) + BANK_VERIFICATION_FEE_CENTS;
+  check(`bank fee for ${subtotal} covers Stripe's cost without overcharging (net ${total - stripeCost})`, total - stripeCost >= subtotal - 1 && total - stripeCost <= subtotal + 2);
+  check(`bank fee for ${subtotal} never exceeds Stripe's capped cost`, fee <= BANK_FEE_CAP_CENTS + BANK_VERIFICATION_FEE_CENTS);
+}
+check("a card fee line item matches feeCents", feeLineItems(10000, "card").length === 1 && feeLineItems(10000, "card")[0].price_data.unit_amount === feeCents(10000));
+check("a zero bank fee adds no line item (Checkout rejects a zero line)", (bankFeeCents(10000) > 0) === (feeLineItems(10000, "bank").length === 1));
+check("fee metadata records the method's fee", feeMetadataFor(10000, "bank").processing_fee_cents === String(bankFeeCents(10000)) && feeMetadataFor(10000, "card").processing_fee_cents === String(feeCents(10000)));
+check("the bank gift ceiling is $10,000", BANK_MAX_CENTS === 1_000_000);
+// Hand-computed against Stripe's published rates, so a changed constant is caught.
+check("bank fee on $100.00 is $2.32", bankFeeCents(10000) === 232);
+check("bank fee on $1,000.00 is the $6.50 maximum", bankFeeCents(100000) === 650);
+check("a $0 bank gift adds no fee line item", feeLineItems(0, "bank").length === 0);
+
+// Each checkout is pinned to the rail its fee was sized for: registration and
+// the store to card (so turning on ACH in the Dashboard can't expose a bank
+// option there), giving to the chosen method.
+import { readFileSync } from "node:fs";
+const src = (p) => readFileSync(new URL(p, import.meta.url), "utf8");
+const count = (text, needle) => text.split(needle).length - 1;
+const CARD_PIN = 'payment_method_types: ["card"]';
+const regSrc = src("../app/api/register/route.ts");
+check("every registration checkout session is pinned to card", count(regSrc, "checkout.sessions.create") > 0 && count(regSrc, "checkout.sessions.create") === count(regSrc, CARD_PIN));
+const storeSrc = src("../app/api/store/checkout/route.ts");
+check("the store checkout session is pinned to card", count(storeSrc, "checkout.sessions.create") > 0 && count(storeSrc, "checkout.sessions.create") === count(storeSrc, CARD_PIN));
+const givingSrc = src("../app/api/giving/checkout/route.ts");
+check("the giving checkout session pins its payment method", givingSrc.includes('payment_method_types: [method === "bank"'));
+check("bank gifts require instant verification", givingSrc.includes('verification_method: "instant"'));
+check("the giving route rejects a bank gift over the ceiling", givingSrc.includes("BANK_MAX_CENTS"));
 
 console.log(failures ? `\n${failures} check(s) FAILED` : "\nAll checks passed");
 process.exit(failures ? 1 : 0);

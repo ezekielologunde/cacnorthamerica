@@ -4,7 +4,8 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { Resend } from "resend";
 import { headers } from "next/headers";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
-import { HONEYPOT_FIELD } from "@/lib/spam";
+import { HONEYPOT_FIELD, TURNSTILE_FIELD } from "@/lib/spam";
+import { TURNSTILE_ERROR, verifyTurnstile } from "@/lib/turnstile";
 import { SITE_URL } from "@/lib/site";
 import { logToSheet } from "@/lib/sheetsWebhook";
 import { sender, emailLogoHtml } from "@/lib/email";
@@ -45,9 +46,9 @@ function welcomeHtml(): string {
       <hr style="border:none;border-top:1px solid rgba(18,20,30,.08);margin:0 0 24px">
       <p style="font-size:12px;color:rgba(18,20,30,.4);line-height:1.7;margin:0">
         You're receiving this because you subscribed at
-        <a href="https://www.cacnorthamerica.com" style="color:#C81E3A;text-decoration:none">cacnorthamerica.com</a>.
+        <a href="https://cacna.org" style="color:#C81E3A;text-decoration:none">cacna.org</a>.
         Questions? Email us at
-        <a href="mailto:info@cacnorthamerica.com" style="color:#C81E3A;text-decoration:none">info@cacnorthamerica.com</a>.
+        <a href="mailto:info@cacna.org" style="color:#C81E3A;text-decoration:none">info@cacna.org</a>.
       </p>
     </div>
   </div>
@@ -59,13 +60,18 @@ export async function subscribeAction(
   _prev: SubscribeState,
   formData: FormData,
 ): Promise<SubscribeState> {
-  if (!rateLimit(clientIp(await headers()), 5, 60_000)) {
+  const ip = clientIp(await headers());
+  if (!rateLimit(ip, 5, 60_000)) {
     return { ok: false, message: "Too many requests. Please try again in a minute." };
   }
 
   // Honeypot: bots fill every input, people never see this one.
   if (formData.get(HONEYPOT_FIELD)) {
     return { ok: true, message: "You're in! Welcome to the family." };
+  }
+
+  if (!(await verifyTurnstile(formData.get(TURNSTILE_FIELD), ip))) {
+    return { ok: false, message: TURNSTILE_ERROR };
   }
 
   const email = (formData.get("email") as string | null)?.trim().toLowerCase() ?? "";

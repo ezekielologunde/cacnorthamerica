@@ -11,6 +11,15 @@ import { conventionYears } from "@/lib/conventions";
 import { adultSheetExtras, youthSheetName, youthSheetRows } from "@/lib/youthRegistration";
 import { checkinCodesFor, checkinCodeSheetCell } from "@/lib/checkinCode";
 import { recordCheckinPeople } from "@/lib/checkinStore";
+import { recordGivingInvoice, type InvoiceSummary } from "@/lib/givingInvoice";
+import { givingInvoiceStore } from "@/lib/givingInvoiceStore";
+import { AUTO_CANCEL_PREFIX, handleGivingDispute, handleGivingPaymentFailed, handleGivingSubscriptionEnded, type ProblemDeps, type ProblemOutcome } from "@/lib/givingProblem";
+import { sendGivingProblemEmail } from "@/lib/givingProblemEmail";
+
+// Kept below the invoice claim's two-minute stale limit
+// (lib/givingInvoiceStore.ts): a delivery that hangs is cut off before another
+// may take over its claim and record the same invoice twice.
+export const maxDuration = 60;
 
 // checkout.session.completed also fires for delayed methods (ACH, etc.)
 // before the money has moved; only these statuses mean the checkout is
@@ -140,7 +149,155 @@ export async function POST(request: Request) {
     }
   }
 
+  // A recurring gift's charges: the first and every renewal arrive as paid
+  // invoices (a subscription's checkout session is skipped in recordCheckout).
+  if (event.type === "invoice.paid") {
+    return recordInvoice(stripe, (event.data.object as { id: string }).id);
+  }
+  // A recurring gift going wrong: a failed charge, a gift that ended, a dispute.
+  if (event.type === "invoice.payment_failed") {
+    return handleProblem(() => handleInvoiceFailed(stripe, (event.data.object as { id: string }).id));
+  }
+  if (event.type === "customer.subscription.deleted") {
+    return handleProblem(() => handleSubscriptionEnded(stripe, (event.data.object as { id: string }).id));
+  }
+  if (event.type === "charge.dispute.created") {
+    return handleProblem(() => handleDispute(stripe, (event.data.object as { id: string }).id));
+  }
+
   return NextResponse.json({ received: true });
+}
+
+/** Records one paid invoice of a giving subscription (sheet row + receipt),
+ *  durably deduplicated by invoice id (lib/givingInvoice.ts). The event is only
+ *  a pointer: the invoice is re-read with the pinned client, because an event's
+ *  body follows the webhook endpoint's API version, not ours. */
+async function recordInvoice(stripe: ReturnType<typeof getStripeClient>, invoiceId: string): Promise<Response> {
+  let invoice;
+  try {
+    invoice = await stripe.invoices.retrieve(invoiceId);
+  } catch (retrieveError) {
+    // 5xx so Stripe retries: a 200 would lose a recurring gift's record.
+    console.error("Failed to retrieve a paid invoice", { invoiceId, retrieveError });
+    return NextResponse.json({ error: "Retrieve failed" }, { status: 500 });
+  }
+
+  const summary = summarizeInvoice(invoice, invoiceId);
+
+  const outcome = await recordGivingInvoice(summary, {
+    store: givingInvoiceStore,
+    logSheet: logToSheetChecked,
+    sendEmail: sendGivingConfirmationEmail,
+  });
+  if (outcome === "failed" || outcome === "busy") {
+    // 5xx so Stripe retries (it backs off for up to ~3 days). Steps already
+    // done are remembered, so a retry repeats only what is missing.
+    console.error("Failed to record a paid invoice", { invoiceId, outcome });
+    return NextResponse.json({ error: "Recording failed" }, { status: 500 });
+  }
+  return NextResponse.json({ received: true, ...(outcome === "duplicate" ? { duplicate: true } : {}) });
+}
+
+type StripeInvoice = Awaited<ReturnType<ReturnType<typeof getStripeClient>["invoices"]["retrieve"]>>;
+
+/** The parts of an invoice the giving code reads, from a re-retrieved invoice
+ *  (see recordInvoice for why the event body is not used). */
+function summarizeInvoice(invoice: StripeInvoice, fallbackId: string): InvoiceSummary {
+  const sub = invoice.parent?.subscription_details;
+  return {
+    invoiceId: invoice.id ?? fallbackId,
+    subscriptionId: typeof sub?.subscription === "string" ? sub.subscription : (sub?.subscription?.id ?? ""),
+    amountPaidCents: invoice.amount_paid,
+    billingReason: invoice.billing_reason ?? null,
+    contactEmail: invoice.customer_email ?? "",
+    metadata: sub?.metadata ?? {},
+  };
+}
+
+function problemDeps(stripe: ReturnType<typeof getStripeClient>): ProblemDeps {
+  return {
+    cancelSubscription: async (id, reason) => {
+      try {
+        // Already cancelled counts as done, so a retry after a cancel that
+        // worked does not loop on an error.
+        if ((await stripe.subscriptions.retrieve(id)).status === "canceled") return;
+        await stripe.subscriptions.cancel(id, { cancellation_details: { comment: `${AUTO_CANCEL_PREFIX}${reason}` } });
+      } catch (err) {
+        if ((err as { code?: string }).code === "resource_missing") return;
+        throw err;
+      }
+    },
+    sendEmail: sendGivingProblemEmail,
+  };
+}
+
+/** Runs one problem handler and turns its outcome into the webhook response:
+ *  500 on failure (Stripe retries; the idempotency keys keep an email that did
+ *  send from sending twice), 200 otherwise, including for events that are not
+ *  about a giving subscription. Anything thrown (a Stripe lookup) is a 500 too. */
+async function handleProblem(run: () => Promise<ProblemOutcome>): Promise<Response> {
+  let outcome: ProblemOutcome;
+  try {
+    outcome = await run();
+  } catch (err) {
+    console.error("Failed to handle a recurring-gift problem event", { error: err instanceof Error ? err.name : "error" });
+    return NextResponse.json({ error: "Handling failed" }, { status: 500 });
+  }
+  if (outcome === "failed") return NextResponse.json({ error: "Handling failed" }, { status: 500 });
+  return NextResponse.json({ received: true });
+}
+
+async function handleInvoiceFailed(stripe: ReturnType<typeof getStripeClient>, invoiceId: string): Promise<ProblemOutcome> {
+  const invoice = await stripe.invoices.retrieve(invoiceId);
+  const s = summarizeInvoice(invoice, invoiceId);
+  return handleGivingPaymentFailed(
+    {
+      invoiceId: s.invoiceId,
+      subscriptionId: s.subscriptionId,
+      billingReason: s.billingReason,
+      status: invoice.status ?? null,
+      attemptCount: invoice.attempt_count,
+      nextAttemptAt: invoice.next_payment_attempt,
+      amountDueCents: invoice.amount_due,
+      contactEmail: s.contactEmail,
+      metadata: s.metadata,
+    },
+    problemDeps(stripe),
+  );
+}
+
+async function handleSubscriptionEnded(stripe: ReturnType<typeof getStripeClient>, subscriptionId: string): Promise<ProblemOutcome> {
+  const sub = await stripe.subscriptions.retrieve(subscriptionId, { expand: ["customer"] });
+  const customer = typeof sub.customer === "string" || sub.customer.deleted ? null : sub.customer;
+  return handleGivingSubscriptionEnded(
+    {
+      subscriptionId: sub.id,
+      reason: sub.cancellation_details?.reason ?? null,
+      comment: sub.cancellation_details?.comment ?? null,
+      contactEmail: customer?.email ?? "",
+      metadata: sub.metadata ?? {},
+    },
+    problemDeps(stripe),
+  );
+}
+
+/** A dispute names the payment, not the subscription: payment intent -> the
+ *  invoice it paid -> that invoice's subscription. A dispute on anything else
+ *  the shared account sells (store, registrations) resolves to no giving
+ *  subscription and is acknowledged untouched. */
+async function handleDispute(stripe: ReturnType<typeof getStripeClient>, disputeId: string): Promise<ProblemOutcome> {
+  const dispute = await stripe.disputes.retrieve(disputeId);
+  const intent = typeof dispute.payment_intent === "string" ? dispute.payment_intent : dispute.payment_intent?.id;
+  if (!intent) return "skipped";
+  const payments = await stripe.invoicePayments.list({ payment: { type: "payment_intent", payment_intent: intent }, limit: 1 });
+  const ref = payments.data[0]?.invoice;
+  const invoiceId = typeof ref === "string" ? ref : ref?.id;
+  if (!invoiceId) return "skipped";
+  const s = summarizeInvoice(await stripe.invoices.retrieve(invoiceId), invoiceId);
+  return handleGivingDispute(
+    { disputeId, status: dispute.status, subscriptionId: s.subscriptionId, amountCents: dispute.amount, contactEmail: s.contactEmail, metadata: s.metadata },
+    problemDeps(stripe),
+  );
 }
 
 async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessionId: string): Promise<Response> {
@@ -152,6 +309,12 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
     // (no row, no email) on a transient Stripe or network error.
     console.error("Failed to retrieve a completed checkout session", { sessionId, retrieveError });
     return NextResponse.json({ error: "Retrieve failed" }, { status: 500 });
+  }
+
+  // A recurring gift is recorded from its invoices (recordInvoice), the first
+  // charge included, so its checkout session must not add a second row.
+  if (full.mode === "subscription") {
+    return NextResponse.json({ received: true });
   }
 
   if (!SETTLED_PAYMENT_STATUSES.has(full.payment_status)) {

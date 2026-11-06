@@ -33,9 +33,11 @@ export default async function StorePage({
     { key: "convention", label: t("conventionApparel"), products: storeProducts.filter((p) => p.category === "convention") },
     { key: "good_women", label: t("goodWomenApparel"), products: storeProducts.filter((p) => p.category === "good_women") },
     { key: "youth", label: t("youthApparel"), products: storeProducts.filter((p) => p.category === "youth") },
+    { key: "merchandise", label: t("merchandise"), products: storeProducts.filter((p) => p.category === "merchandise") },
   ];
   const educationProducts = storeProducts.filter((p) => p.category === "christian_education");
   const hasAnyProducts = categories.some((c) => c.products.length > 0);
+  const hasApparel = categories.some((c) => c.key !== "merchandise" && c.products.length > 0);
 
   return (
     <main id="main-content">
@@ -57,10 +59,11 @@ export default async function StorePage({
       <section style={{ background: "var(--cream)", padding: "clamp(48px,6vw,72px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 1180, margin: "0 auto" }}>
           <ConventionAdWidget />
-          {hasAnyProducts ? (
-            <StoreCatalog categories={categories} />
-          ) : (
-            <ApparelComingSoon />
+          {!hasApparel && <ApparelComingSoon />}
+          {hasAnyProducts && (
+            <div style={{ marginTop: hasApparel ? 0 : 48 }}>
+              <StoreCatalog categories={categories} />
+            </div>
           )}
         </div>
       </section>

@@ -27,7 +27,7 @@ const RSVP_URL = "https://forms.gle/FBzNzoXH76SK14Ah9";
 const rsvpFields = ["Your full name", "A contact phone number", "Your church", "Your DCC or Zone", "How many in your group"];
 
 const pillars = [
-  { icon: Users, label: "One Family, Many Homes", desc: "24 Zones & DCCs across the United States, Canada, and South America." },
+  { icon: Users, label: "One Family, Many Homes", desc: "26 Zones & DCCs across the United States, Canada, and South America." },
   { icon: HandHeart, label: "A Season of Thanksgiving", desc: "A day set apart to thank God for five decades of grace and growth." },
 ];
 
@@ -55,6 +55,7 @@ export default async function Cacna50thAnniversaryPage({
       address: `${SITE.address.street}, ${SITE.address.city}, ${SITE.address.region} ${SITE.address.postalCode}`,
     },
     organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },
+    performer: { "@type": "Church", name: SITE.name, url: SITE_URL },
     url: `${SITE_URL}/events/cacna-50th-anniversary-2026`,
     offers: { "@type": "Offer", url: RSVP_URL, price: "0", priceCurrency: "USD", availability: "https://schema.org/InStock", validFrom: "2026-01-01T00:00:00-05:00" },
   };
@@ -100,6 +101,12 @@ export default async function Cacna50thAnniversaryPage({
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(16px,1.9vw,20px)", color: "rgba(245,246,250,.72)", lineHeight: 1.72, maxWidth: 580, margin: "0 0 8px", textWrap: "pretty" }}>
               Christ Apostolic Church North America celebrates 50 years since its founding in 1976, at CAC Village, Blue Ridge Summit, PA — the same grounds that host the Annual Convention.
+            </p>
+          </Reveal>
+
+          <Reveal delay={200}>
+            <p style={{ fontSize: 15, margin: "12px 0 0" }}>
+              <Link href="/golden-jubilee" style={{ color: "var(--gold)", fontWeight: 700, textDecoration: "none" }}>Read the Golden Jubilee look-back →</Link>
             </p>
           </Reveal>
 

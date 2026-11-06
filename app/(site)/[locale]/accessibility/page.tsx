@@ -8,7 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Accessibility & Feedback — Christ Apostolic Church North America (CACNA)",
     description:
-      "How CACNA works to keep cacnorthamerica.com usable for everyone, how to ask for an accommodation at the Annual Convention or a service, and how to send us feedback.",
+      "How CACNA works to keep cacna.org usable for everyone, how to ask for an accommodation at the Annual Convention or a service, and how to send us feedback.",
     alternates: { canonical: `${SITE_URL}/accessibility` },
   };
 }

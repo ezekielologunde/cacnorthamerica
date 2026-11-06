@@ -9,6 +9,7 @@ import { RegisterForm } from "@/components/register/RegisterForm";
 import { CONVENTION_VENUE, conventionYears, dateRangeLabel, activePricing, type ConventionYear } from "@/lib/conventions";
 import { registrationGuidelines } from "@/lib/registrationInfo";
 import { PaymentOptions } from "@/components/register/PaymentOptions";
+import { ServeCallout } from "@/components/ServeCallout";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { SITE_URL } from "@/lib/site";
 
@@ -233,6 +234,7 @@ export default async function RegisterPage({ params }: { params: Promise<{ local
               </p>
             </div>
           )}
+          <ServeCallout style={{ marginTop: 32 }} />
         </div>
       </section>
 

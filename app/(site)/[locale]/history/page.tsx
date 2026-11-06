@@ -216,7 +216,7 @@ export default async function HistoryPage({
               <strong style={strong}>Mission:</strong> Leading people into the knowledge of God through an in-depth study of the Word of God, prevailing prayers, and spiritual worship.
             </p>
             <p style={pStyle}>
-              CACNA carries that work across the United States, Canada and South America. <Link href="/about" style={{ color: "var(--red)", fontWeight: 700, textDecoration: "none" }}>Read CACNA&apos;s own story →</Link>
+              CACNA carries that work across the United States, Canada and South America. <Link href="/about" style={{ color: "var(--red)", fontWeight: 700, textDecoration: "none" }}>Read CACNA&apos;s own story →</Link>{" "}<Link href="/golden-jubilee" style={{ color: "var(--red)", fontWeight: 700, textDecoration: "none" }}>Our Golden Jubilee →</Link>
             </p>
           </Chapter>
 

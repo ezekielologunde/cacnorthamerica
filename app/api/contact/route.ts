@@ -3,6 +3,7 @@ import { Resend } from "resend";
 import { createServiceClient } from "@/lib/supabase/server";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
 import { FORM_HEADER, HONEYPOT_FIELD, looksLikeSpam } from "@/lib/spam";
+import { TURNSTILE_ERROR, verifyTurnstile } from "@/lib/turnstile";
 import { escapeHtml } from "@/lib/html";
 import { sendContactAutoReply } from "@/lib/contactReplyEmail";
 import { logToSheet } from "@/lib/sheetsWebhook";
@@ -10,7 +11,7 @@ import { EMAIL_FROM } from "@/lib/email";
 import { CONTACT_FIELD_LIMITS, CONTACT_FORM_NAMES } from "./fields";
 
 const FROM = EMAIL_FROM;
-const TO   = "info@cacnorthamerica.com";
+const TO   = "info@cacna.org";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -22,7 +23,7 @@ function buildHtml(rows: [string, string][]): string {
   return `<!DOCTYPE html><html><body style="font-family:sans-serif;max-width:640px;margin:40px auto;background:#f9f8f6;border-radius:12px;overflow:hidden">
 <div style="background:#12141E;padding:24px 32px"><p style="margin:0;font-size:18px;font-weight:700;color:#fff">CACNA</p></div>
 <table style="width:100%;border-collapse:collapse;background:#fff">${trs}</table>
-<p style="padding:16px 32px;font-size:12px;color:#888;margin:0">Sent via cacnorthamerica.com</p>
+<p style="padding:16px 32px;font-size:12px;color:#888;margin:0">Sent via cacna.org</p>
 </body></html>`;
 }
 
@@ -92,6 +93,10 @@ export async function POST(req: Request) {
   // Honeypot: bots fill every input, people never see this one.
   if (body[HONEYPOT_FIELD]) {
     return NextResponse.json({ success: true });
+  }
+
+  if (!(await verifyTurnstile(body.turnstileToken, clientIp(req.headers)))) {
+    return NextResponse.json({ error: TURNSTILE_ERROR }, { status: 400 });
   }
 
   // Only the form's own formNames, so callers can't create new Sheets tabs.

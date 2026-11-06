@@ -22,3 +22,6 @@ export function countLinks(values: Iterable<string>): number {
 export function looksLikeSpam(values: Iterable<string>): boolean {
   return countLinks(values) > MAX_LINKS;
 }
+
+/** Form field Cloudflare Turnstile's widget fills with its token. */
+export const TURNSTILE_FIELD = "cf-turnstile-response";

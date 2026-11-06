@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, type CSSProperties, type FormEvent } from "react";
+import { EmbeddedCheckoutScreen } from "@/components/checkout/EmbeddedStripeCheckout";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import type { StoreProduct } from "@/lib/conventions";
@@ -30,6 +31,7 @@ export function StoreCatalog({ categories }: { categories: { key: string; label:
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [selections, setSelections] = useState<Record<string, string>>({});
 
@@ -66,6 +68,11 @@ export function StoreCatalog({ categories }: { categories: { key: string; label:
         }),
       });
       const data = await response.json().catch(() => null);
+      if (response.ok && typeof data?.clientSecret === "string") {
+        setClientSecret(data.clientSecret);
+        setStatus("idle");
+        return;
+      }
       if (!response.ok || !data?.checkoutUrl) {
         setErrorMessage(typeof data?.error === "string" ? data.error : t("checkoutError"));
         setStatus("error");
@@ -76,6 +83,10 @@ export function StoreCatalog({ categories }: { categories: { key: string; label:
       setErrorMessage(t("checkoutError"));
       setStatus("error");
     }
+  }
+
+  if (clientSecret) {
+    return <EmbeddedCheckoutScreen clientSecret={clientSecret} onBack={() => setClientSecret(null)} backLabel="← Back to my order" />;
   }
 
   return (
@@ -108,10 +119,11 @@ export function StoreCatalog({ categories }: { categories: { key: string; label:
                     <button
                       type="button"
                       onClick={() => addToCart(product)}
+                      disabled={product.soldOut}
                       className="press"
-                      style={{ flex: 1, background: "var(--ink)", color: "#fff", fontWeight: 700, fontSize: 13.5, padding: "10px 18px", borderRadius: 999, border: "none", cursor: "pointer" }}
+                      style={{ flex: 1, background: product.soldOut ? "var(--line)" : "var(--ink)", color: product.soldOut ? "var(--ink-soft)" : "#fff", fontWeight: 700, fontSize: 13.5, padding: "10px 18px", borderRadius: 999, border: "none", cursor: product.soldOut ? "not-allowed" : "pointer" }}
                     >
-                      {t("addCta")}
+                      {product.soldOut ? t("soldOutCta") : t("addCta")}
                     </button>
                   </div>
                 </div>

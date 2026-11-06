@@ -92,6 +92,7 @@ export type Database = {
           id: string
           image_alt: string | null
           image_url: string | null
+          authors: Json
           published: boolean
           published_at: string | null
           slug: string
@@ -105,6 +106,7 @@ export type Database = {
           id?: string
           image_alt?: string | null
           image_url?: string | null
+          authors?: Json
           published?: boolean
           published_at?: string | null
           slug: string
@@ -118,6 +120,7 @@ export type Database = {
           id?: string
           image_alt?: string | null
           image_url?: string | null
+          authors?: Json
           published?: boolean
           published_at?: string | null
           slug?: string
@@ -432,6 +435,51 @@ export type Database = {
         }
         Relationships: []
       }
+      giving_invoices: {
+        Row: {
+          amount_paid_cents: number
+          billing_reason: string | null
+          claimed_at: string
+          created_at: string
+          email_done: boolean
+          frequency: string | null
+          invoice_id: string
+          processing_fee_cents: number
+          setup_fee_cents: number
+          sheet_done: boolean
+          subscription_id: string
+          subtotal_cents: number
+        }
+        Insert: {
+          amount_paid_cents: number
+          billing_reason?: string | null
+          claimed_at?: string
+          created_at?: string
+          email_done?: boolean
+          frequency?: string | null
+          invoice_id: string
+          processing_fee_cents?: number
+          setup_fee_cents?: number
+          sheet_done?: boolean
+          subscription_id: string
+          subtotal_cents: number
+        }
+        Update: {
+          amount_paid_cents?: number
+          billing_reason?: string | null
+          claimed_at?: string
+          created_at?: string
+          email_done?: boolean
+          frequency?: string | null
+          invoice_id?: string
+          processing_fee_cents?: number
+          setup_fee_cents?: number
+          sheet_done?: boolean
+          subscription_id?: string
+          subtotal_cents?: number
+        }
+        Relationships: []
+      }
       leaders: {
         Row: {
           bio: string | null
@@ -629,6 +677,45 @@ export type Database = {
           thumbnail_url?: string | null
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      serve_signups: {
+        Row: {
+          convention_year: number | null
+          created_at: string
+          email: string
+          guardian_consent: boolean
+          id: string
+          name: string
+          note: string | null
+          phone: string | null
+          teams: string[]
+          under_18: boolean
+        }
+        Insert: {
+          convention_year?: number | null
+          created_at?: string
+          email: string
+          guardian_consent?: boolean
+          id?: string
+          name: string
+          note?: string | null
+          phone?: string | null
+          teams: string[]
+          under_18?: boolean
+        }
+        Update: {
+          convention_year?: number | null
+          created_at?: string
+          email?: string
+          guardian_consent?: boolean
+          id?: string
+          name?: string
+          note?: string | null
+          phone?: string | null
+          teams?: string[]
+          under_18?: boolean
         }
         Relationships: []
       }

@@ -75,6 +75,7 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
     url: `${SITE_URL}${ev.href}`,
     location: { "@type": "Place", name: "CAC Village", address: { "@type": "PostalAddress", streetAddress: "14051 Stahley Rd", addressLocality: "Blue Ridge Summit", addressRegion: "PA", postalCode: "17214", addressCountry: "US" } },
     organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },
+    performer: { "@type": "Church", name: SITE.name, url: SITE_URL },
   };
 
   return (

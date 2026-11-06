@@ -2,7 +2,7 @@
 project: cacnorthamerica
 type: features
 status: active
-last_updated: 2026-08-22
+last_updated: 2026-11-05
 tags: [project/cacnorthamerica]
 ---
 
@@ -61,3 +61,29 @@ Related: [[Project]] · [[Architecture]] · [[Changelog]]
   linking out to the dedicated Convention site
 - Instagram block — removed from the homepage during a copy pass
   (commit `886cc94`), though `/api/instagram` (Behold-backed) still exists
+- Yoruba locale -- removed 2026-09-16 (PR #36)
+- In-app `/youth` page -- `/youth` and `/yyam` now redirect to
+  `https://yyam.cacna.org/` (PR #135, `next.config.ts`)
+
+## Added 2026-09 to 2026-11 (verified in git log / code)
+
+Implemented unless marked otherwise. Details in [[Payments]], [[Backend]].
+
+- Convention registration with per-person 4-character check-in codes, adult
+  fields, QR dropped (PR #82); Youth & Child registration (PR #80)
+- Staff check-in lookup `/admin/check-in` (PR #83); pay registration by Zelle
+  with staff "Mark paid" (PR #84)
+- Giving page: Stripe checkout (embedded, PR #103; hosted by default, PR
+  #106), Zelle pledges (`/api/giving/zelle`), optional ACH bank gifts (PR
+  #95), large-gift confirmation (PR #114), Offering/Tithe/projects redesign
+  (PR #127)
+- **Partial (off by default):** recurring gifts, monthly / every 2 weeks,
+  tithe and projects only, behind `GIVING_RECURRING_ENABLED` (PRs #129-#133)
+- Store: 2026 convention flash drive, $20, marked sold out (PRs #117, #118)
+- Cloudflare Turnstile on public forms (PRs #109, #111, #112, #115)
+- `/serve` volunteer sign-up (PR #136)
+- Admin password reset (PR #107); admin `operations` page reading the Apps
+  Script `doGet` (PR #113)
+- Pages: accessibility, faq, history, privacy, refunds, terms (present under
+  `app/(site)/[locale]/`)
+- **Partial (off until env set):** blog-only AdSense unit (PR #123)

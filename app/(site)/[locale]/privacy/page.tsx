@@ -7,7 +7,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Privacy Policy — Christ Apostolic Church North America (CACNA)",
     description:
-      "What information CACNA collects through cacnorthamerica.com — registration, contact, meal requests, the newsletter, the store and giving — how it is used, and who helps us process it.",
+      "What information CACNA collects through cacna.org — registration, contact, meal requests, volunteer sign-ups, the newsletter, the store and giving — how it is used, and who helps us process it.",
     alternates: { canonical: `${SITE_URL}/privacy` },
   };
 }
@@ -20,7 +20,7 @@ const sections: LegalSection[] = [
     heading: "Who we are",
     body: (
       <p style={{ margin: 0 }}>
-        This website, cacnorthamerica.com, is run by {SITE.name} ({SITE.shortName}). When this policy says
+        This website, cacna.org, is run by {SITE.name} ({SITE.shortName}). When this policy says
         &ldquo;we&rdquo; or &ldquo;us&rdquo;, it means CACNA.
       </p>
     ),
@@ -34,6 +34,7 @@ const sections: LegalSection[] = [
           <li><strong>Convention registration:</strong> each registrant&apos;s first and last name and category (adult, young adult or child), your church name for group registrations, and the contact person&apos;s name, email and phone number.</li>
           <li><strong>Contact form:</strong> your name, email, subject and message.</li>
           <li><strong>Meal requests:</strong> your name, email, phone, age range, church, youth leader, DCC or zone, the names of any children traveling with you, the meals you need and any allergies you tell us about.</li>
+          <li><strong>Volunteer sign-ups:</strong> your name, email, phone if you give it, the teams you choose, any note about your experience and availability, and whether you are under 18 (and, if so, that a parent or guardian agrees).</li>
           <li><strong>Newsletter:</strong> your email address and, if you give it, your name.</li>
           <li><strong>Store orders:</strong> your name, email, the items you order and your shipping address.</li>
           <li><strong>Giving:</strong> your name, email, the amount and the campaign you give to.</li>
@@ -48,7 +49,10 @@ const sections: LegalSection[] = [
         Registration fees, store orders and online gifts are paid through Stripe. You enter your card details on
         Stripe&apos;s secure checkout page, not on our site. We never see or store your full card number. Stripe
         shares with us the details we need to confirm the payment, such as your name, email, the amount and, for
-        store orders, your shipping address.
+        store orders, your shipping address. If you give from a bank account, Stripe may ask you to log in to your
+        bank to confirm the account; we never see your bank login or your full account number. If you choose to give
+        by Zelle, we keep the name, email, amount and campaign you enter, along with the reference we show you, so we
+        can match your payment; the payment itself happens in your own bank, and we never see your bank login.
       </p>
     ),
   },
@@ -75,7 +79,7 @@ const sections: LegalSection[] = [
           <li><strong>Resend</strong> sends our confirmation and newsletter emails.</li>
           <li><strong>Google Sheets</strong> (through a Google Apps Script) keeps a copy of form submissions and completed payments for the committee&apos;s records.</li>
           <li><strong>Cloudinary</strong> hosts the photos shown on the site.</li>
-          <li><strong>Google Analytics</strong> measures site visits. If we run Google Ads or AdSense, their tags may also load and use cookies.</li>
+          <li><strong>Google Analytics</strong> measures site visits. Blog posts may also show ads from Google AdSense; Google and its partners use cookies to serve and measure those ads.</li>
           <li><strong>Vercel</strong> hosts the site. Our zone finder can use Vercel&apos;s rough, city-level estimate of your location from your IP address; we do not store it. Vercel also gives us page-view and speed statistics that do not use cookies.</li>
         </ul>
       </>
@@ -88,7 +92,10 @@ const sections: LegalSection[] = [
         We keep cookies to a minimum. Google Analytics uses cookies to count visits; you can stop that by blocking cookies in your browser or by installing Google&apos;s{" "}
         <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" style={{ color: "var(--red)", fontWeight: 700 }}>opt-out browser add-on</a>. Videos are embedded through
         YouTube&apos;s privacy-enhanced mode, which does not set tracking cookies until you press play. Our admin
-        area uses a sign-in cookie for staff only. You can block or delete cookies in your browser settings.
+        area uses a sign-in cookie for staff only. Blog posts may show ads from Google AdSense, which use cookies to show and measure ads; you can manage ad personalization in{" "}
+        <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer" style={{ color: "var(--red)", fontWeight: 700 }}>Google&apos;s ad settings</a>{" "}
+        or read{" "}
+        <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener noreferrer" style={{ color: "var(--red)", fontWeight: 700 }}>how Google uses information from sites that use its services</a>. We show no ads outside blog posts. You can block or delete cookies in your browser settings.
       </p>
     ),
   },
@@ -97,7 +104,8 @@ const sections: LegalSection[] = [
     body: (
       <p style={{ margin: 0 }}>
         Registrations and meal requests can include children. Their details should be entered by a parent or
-        guardian, and we use them only for the convention.
+        guardian, and we use them only for the convention. A volunteer under 18 may sign up to serve themselves,
+        after a parent or guardian has agreed; we use those details only to arrange serving at the convention.
       </p>
     ),
   },

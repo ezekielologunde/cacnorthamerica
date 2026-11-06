@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getStripeClient } from "@/lib/stripe";
+import { checkoutModeParams, checkoutResponseBody } from "@/lib/stripeEmbed";
 import { logToSheet } from "@/lib/sheetsWebhook";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
 import { SITE_URL } from "@/lib/site";
@@ -11,6 +12,7 @@ import { recordCheckinPeople } from "@/lib/checkinStore";
 import { zelleReferenceFor } from "@/lib/zelleReference";
 import { sendRegistrationConfirmationEmail } from "@/lib/registrationEmail";
 import { FORM_HEADER, HONEYPOT_FIELD, looksLikeSpam } from "@/lib/spam";
+import { TURNSTILE_ERROR, verifyTurnstile } from "@/lib/turnstile";
 import { processingFeeLineItem, processingFeeMetadata } from "@/lib/processingFee";
 import { adultSheetExtras, categoryForAge, EMAIL_RE, encodeMeals, parseMealsAndAllergies, parseYouthRegistration, youthSheetName, youthSheetRows } from "@/lib/youthRegistration";
 
@@ -193,6 +195,11 @@ export async function POST(request: Request) {
   const honeypot = rawBody && typeof rawBody === "object" ? (rawBody as Record<string, unknown>)[HONEYPOT_FIELD] : undefined;
   if (typeof honeypot === "string" && honeypot !== "") {
     return NextResponse.json({ success: true });
+  }
+
+  const turnstileToken = rawBody && typeof rawBody === "object" ? (rawBody as Record<string, unknown>).turnstileToken : undefined;
+  if (!(await verifyTurnstile(turnstileToken, clientIp(request.headers)))) {
+    return NextResponse.json({ error: TURNSTILE_ERROR }, { status: 400 });
   }
 
   const track = rawBody && typeof rawBody === "object" ? ((rawBody as Record<string, unknown>).track ?? "adult") : "adult";
@@ -386,6 +393,10 @@ export async function POST(request: Request) {
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
+      // Pinned to card: the processing fee is sized for cards, so a method
+      // with a different cost (bank debit) must not appear here until the fee
+      // follows it.
+      payment_method_types: ["card"],
       line_items: [...payableRegistrants.map((r) => ({
         price_data: {
           currency: "usd",
@@ -397,8 +408,7 @@ export async function POST(request: Request) {
       customer_email: body.contactEmail,
       // Only the opaque session id travels in the URL; the confirmation page
       // reads the registration back from this session's own metadata.
-      success_url: `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${SITE_URL}/events/cacna-${cy.year}/register`,
+      ...checkoutModeParams(`${SITE_URL}/events/cacna-${cy.year}/register/confirmation?session_id={CHECKOUT_SESSION_ID}`, `${SITE_URL}/events/cacna-${cy.year}/register`),
       metadata: {
         kind: "registration",
         convention_year: String(cy.year),
@@ -409,7 +419,7 @@ export async function POST(request: Request) {
       },
     });
 
-    return NextResponse.json({ checkoutUrl: session.url });
+    return NextResponse.json(checkoutResponseBody(session));
   } catch {
     return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 });
   }
@@ -570,6 +580,10 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
+      // Pinned to card: the processing fee is sized for cards, so a method
+      // with a different cost (bank debit) must not appear here until the fee
+      // follows it.
+      payment_method_types: ["card"],
       line_items: [
         ...priced
           .filter((p) => p.priceCents > 0)
@@ -584,8 +598,7 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
         processingFeeLineItem(totalAmountCents),
       ],
       customer_email: input.contactEmail,
-      success_url: `${SITE_URL}/events/cacna-${cy.year}/register/confirmation?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${SITE_URL}/events/cacna-${cy.year}/register/youth`,
+      ...checkoutModeParams(`${SITE_URL}/events/cacna-${cy.year}/register/confirmation?session_id={CHECKOUT_SESSION_ID}`, `${SITE_URL}/events/cacna-${cy.year}/register/youth`),
       metadata: {
         kind: "registration",
         convention_year: String(cy.year),
@@ -595,7 +608,7 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
         ...processingFeeMetadata(totalAmountCents),
       },
     });
-    return NextResponse.json({ checkoutUrl: session.url });
+    return NextResponse.json(checkoutResponseBody(session));
   } catch {
     return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 });
   }

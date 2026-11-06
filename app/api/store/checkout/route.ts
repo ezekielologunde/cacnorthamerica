@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getStripeClient } from "@/lib/stripe";
+import { checkoutModeParams, checkoutResponseBody } from "@/lib/stripeEmbed";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
 import { SITE_URL } from "@/lib/site";
 import { storeProducts } from "@/lib/conventions";
@@ -84,6 +85,9 @@ export async function POST(request: Request) {
     if (!product) {
       return NextResponse.json({ error: `Unknown or inactive product: ${item.productId}` }, { status: 400 });
     }
+    if (product.soldOut) {
+      return NextResponse.json({ error: `${product.name} is sold out.` }, { status: 400 });
+    }
     if (product.sizes.length > 0 && (!item.size || !product.sizes.includes(item.size))) {
       return NextResponse.json({ error: `Invalid size for ${product.name}` }, { status: 400 });
     }
@@ -101,6 +105,10 @@ export async function POST(request: Request) {
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
+      // Pinned to card: the processing fee is sized for cards, so a method
+      // with a different cost (bank debit) must not appear here until the fee
+      // follows it.
+      payment_method_types: ["card"],
       line_items: [...lines.map((l) => ({
         price_data: {
           currency: "usd",
@@ -113,12 +121,11 @@ export async function POST(request: Request) {
       // Every item is a physical product (books, apparel) -- without this the
       // order has no address to ship to. Shipping cost is not charged here yet.
       shipping_address_collection: { allowed_countries: ["US", "CA"] },
-      success_url: `${SITE_URL}/store/confirmation?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${SITE_URL}/store`,
+      ...checkoutModeParams(`${SITE_URL}/store/confirmation?session_id={CHECKOUT_SESSION_ID}`, `${SITE_URL}/store`),
       metadata: { kind: "store_order", contact_name: body.contactName, ...processingFeeMetadata(subtotalCents) },
     });
 
-    return NextResponse.json({ checkoutUrl: session.url });
+    return NextResponse.json(checkoutResponseBody(session));
   } catch {
     return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 });
   }

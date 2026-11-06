@@ -52,3 +52,10 @@ export function zelleReferenceFor(ref: string): string {
 export function isWellFormedZelleReference(value: unknown): value is string {
   return typeof value === "string" && ZELLE_REFERENCE_RE.test(value);
 }
+
+/** The Zelle reference for an online gift. `giftId` is a random id the server
+ *  makes for each submission; the "gift:" prefix keeps these references apart
+ *  from registration ones. */
+export function giftZelleReference(giftId: string): string {
+  return zelleReferenceFor(`gift:${giftId}`);
+}

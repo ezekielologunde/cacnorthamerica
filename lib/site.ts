@@ -1,26 +1,26 @@
 import { googleReviews, REVIEW_AVERAGE, REVIEW_COUNT } from "@/lib/reviews";
 import { conventionYears } from "@/lib/conventions";
 
-// Canonical host: cacnorthamerica.com (decided 2026-11-01, replacing the
-// temporary cacna.cacsalvationcenter.org subdomain). Do not deploy this until
-// cacnorthamerica.com's DNS points at the Vercel project, or canonicals and the
-// sitemap would send Google to the old WordPress site. Three places must agree
-// on this value:
+// Canonical host: cacna.org (decided 2026-11-03; cacnorthamerica.com stays live
+// and redirects here). Do not deploy this until cacna.org's DNS points at the
+// Vercel project, or canonicals and the sitemap would point at a dead host.
+// Three places must agree on this value:
 //   1. this default,
 //   2. NEXT_PUBLIC_SITE_URL in the Vercel project (it overrides this default),
+//      which was deleted on 2026-11-03 so this default applies,
 //   3. Supabase Auth -> URL Configuration -> Redirect URLs (password-reset
 //      emails link to SITE_URL; a host missing from that allow-list makes
 //      the link silently go nowhere).
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cacnorthamerica.com";
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cacna.org";
 
 export const SITE = {
   name: "Christ Apostolic Church North America",
   shortName: "CACNA",
   url: SITE_URL,
   description:
-    "CACNA unites Christ Apostolic Church member churches across the United States, Canada, and South America under 24 Zones & DCCs, preaching the whole Gospel in a clear and undiluted manner.",
+    "CACNA unites Christ Apostolic Church member churches across the United States, Canada, and South America under 26 Zones & DCCs, preaching the whole Gospel in a clear and undiluted manner.",
   telephone: "+1-305-469-0346",
-  email: "info@cacnorthamerica.com",
+  email: "info@cacna.org",
   address: {
     street: "14051 Stahley Road",
     city: "Blue Ridge Summit",
@@ -46,6 +46,7 @@ export const ROUTES: { path: string; priority: number }[] = [
   { path: "/", priority: 1 },
   { path: "/about", priority: 0.8 },
   { path: "/history", priority: 0.5 },
+  { path: "/golden-jubilee", priority: 0.5 },
   { path: "/leadership", priority: 0.7 },
   { path: "/leadership/past", priority: 0.5 },
   { path: "/zones", priority: 0.7 },
@@ -85,6 +86,7 @@ export const ROUTES: { path: string; priority: number }[] = [
   { path: "/gallery", priority: 0.6 },
   { path: "/archive", priority: 0.5 },
   { path: "/plan-your-visit", priority: 0.6 },
+  { path: "/serve", priority: 0.7 },
   { path: "/sitemap", priority: 0.3 },
   // Sub-ministry pages -- were missing from this list entirely despite
   // being live routes (found during the Phase F branding-cleanup pass,
@@ -143,7 +145,7 @@ export function churchJsonLd() {
         sameAs: SITE.sameAs,
         employee: [
           { "@type": "Person", name: "Pastor Dr. T.O. Agbeja", jobTitle: "Regional Superintendent, CACNA" },
-          { "@type": "Person", name: "Pastor David Adenodi, Ph.D.", jobTitle: "Chairman, CACNA Convention" },
+          { "@type": "Person", name: "Pastor Oluwagbemiga Famojuro, D.Min.", jobTitle: "Chairman, CACNA Convention" },
           { "@type": "Person", name: "Pastor Joseph Olawale Latunde", jobTitle: "Regional Secretary, CACNA" },
           { "@type": "Person", name: "Pastor Timothy Adelani", jobTitle: "Regional Treasurer, CACNA" },
           { "@type": "Person", name: "Pastor John Oluwatimilehin, Ph.D.", jobTitle: "Chairman, CAC Village Management Council" },

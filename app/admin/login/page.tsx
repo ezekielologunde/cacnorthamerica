@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { loginAction } from "./actions";
 
@@ -252,6 +253,9 @@ export default function AdminLogin() {
             </motion.button>
           </motion.div>
         </form>
+        <p style={{ textAlign: "center", marginTop: 20, fontSize: 13 }}>
+          <Link href="/admin/reset-password" style={{ color: "var(--ink)", opacity: 0.6 }}>Forgot password?</Link>
+        </p>
       </motion.div>
     </div>
   );

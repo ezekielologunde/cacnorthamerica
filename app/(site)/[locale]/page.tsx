@@ -37,7 +37,7 @@ const faqJsonLd = {
     {
       "@type": "Question",
       name: "What is Christ Apostolic Church North America (CACNA)?",
-      acceptedAnswer: { "@type": "Answer", text: "CACNA is the regional body uniting Christ Apostolic Church member churches across the United States, Canada, and South America, organized under 24 Zones & DCCs (District Church Councils), each led by a Zonal Superintendent." },
+      acceptedAnswer: { "@type": "Answer", text: "CACNA is the regional body uniting Christ Apostolic Church member churches across the United States, Canada, and South America, organized under 26 Zones & DCCs (District Church Councils), each led by a Zonal Superintendent." },
     },
     {
       "@type": "Question",
@@ -52,7 +52,7 @@ const faqJsonLd = {
     {
       "@type": "Question",
       name: "How do I contact CACNA?",
-      acceptedAnswer: { "@type": "Answer", text: "Call (305) 469-0346, or email info@cacnorthamerica.com. Address: 14051 Stahley Road, Blue Ridge Summit, PA 17214." },
+      acceptedAnswer: { "@type": "Answer", text: "Call (305) 469-0346, or email info@cacna.org. Address: 14051 Stahley Road, Blue Ridge Summit, PA 17214." },
     },
   ],
 };

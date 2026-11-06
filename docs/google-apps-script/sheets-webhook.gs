@@ -65,6 +65,37 @@ function doPost(e) {
   }
 }
 
+// Read-back for the admin Operations page (lib/sheetsRead.ts): GET ?secret=...
+// returns every tab except the blank default "Sheet1" as { tabName: row[] },
+// each row an object keyed by that tab's header row. Fails closed: with no
+// WEBHOOK_SECRET configured, or a missing/wrong secret, nothing is returned,
+// because this sheet holds registrants' contact details.
+function doGet(e) {
+  var expectedSecret = PropertiesService.getScriptProperties().getProperty("WEBHOOK_SECRET");
+  var given = e && e.parameter ? e.parameter.secret : "";
+  if (!expectedSecret || given !== expectedSecret) {
+    return jsonResponse({ ok: false, error: "Invalid secret" });
+  }
+
+  var sheets = {};
+  SpreadsheetApp.getActiveSpreadsheet().getSheets().forEach(function (sheet) {
+    var name = sheet.getName();
+    if (name === "Sheet1") return;
+    var values = sheet.getDataRange().getValues();
+    if (values.length < 2) { sheets[name] = []; return; }
+    var headers = values[0];
+    sheets[name] = values.slice(1).map(function (r) {
+      var row = {};
+      headers.forEach(function (h, i) {
+        var v = r[i];
+        row[h] = v instanceof Date ? v.toISOString() : v;
+      });
+      return row;
+    });
+  });
+  return jsonResponse({ ok: true, sheets: sheets });
+}
+
 function getOrCreateSheet(formName) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName(formName);

@@ -7,6 +7,8 @@ import { Phone, Mail } from "lucide-react";
 import { CopyAccount } from "@/components/giving/CopyAccount";
 import { GIVING_CAMPAIGNS, type GivingCampaign } from "@/lib/giving";
 import { GivingForm } from "@/components/giving/GivingForm";
+import { recurringEnabled } from "@/lib/givingRecurring";
+import Link from "next/link";
 import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
@@ -14,34 +16,19 @@ import { SITE_URL } from "@/lib/site";
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Giving — Christ Apostolic Church North America (CACNA)",
-    description: "Give online by card, or use the account details for Zelle, wire, and check — the CAC Centenary Building Project, the CAC Village Pay Off, and the Hope For All Initiative.",
+    description: "Give your tithe or offering online by card, bank or Zelle, or support a project: the CAC Village Pay Off, the Hope For All Initiative, and the CAC Centenary Building Project.",
     alternates: { canonical: `${SITE_URL}/giving` },
   };
 }
 
-const SCHEMES = {
-  centenary: { gradient: "linear-gradient(135deg,var(--red-deep),var(--gold))", glow: "rgba(253,200,65,.35)", badge: "rgba(255,255,255,.16)" },
-  village: { gradient: "linear-gradient(135deg,#1B2A6B,var(--blue))", glow: "rgba(45,66,201,.4)", badge: "rgba(255,255,255,.14)" },
-  hope: { gradient: "linear-gradient(140deg,#1C3A2A,#2E6040)", glow: "rgba(46,96,64,.45)", badge: "rgba(255,255,255,.14)" },
-} as const;
-
-function CampaignCard({ campaign, scheme }: { campaign: GivingCampaign; scheme: (typeof SCHEMES)[keyof typeof SCHEMES] }) {
+/** The account details for one campaign, for donors who would rather send the gift themselves. */
+function AccountGroup({ campaign }: { campaign: GivingCampaign }) {
   return (
-    <div style={{
-      position: "relative", overflow: "hidden",
-      borderRadius: 28, padding: "clamp(22px,5.5vw,64px)",
-      background: scheme.gradient, boxShadow: "0 28px 60px rgba(18,20,30,.22)",
-    }}>
-      <div aria-hidden style={{ position: "absolute", top: -100, right: -80, width: 360, height: 360, borderRadius: "50%", background: `radial-gradient(circle,${scheme.glow},transparent 70%)`, pointerEvents: "none" }} />
-      <div style={{ position: "relative", zIndex: 2, maxWidth: 720 }}>
-        <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,4.2vw,48px)", letterSpacing: "-1px", color: "#fff", margin: "0 0 12px", lineHeight: 1.08, textWrap: "balance" }}>
-          {campaign.title}
-        </h2>
-        <p style={{ fontSize: "clamp(15px,1.6vw,17px)", color: "rgba(255,255,255,.82)", lineHeight: 1.65, margin: "0 0 24px", maxWidth: 620 }}>
-          {campaign.description}
-        </p>
-      </div>
-      <div style={{ position: "relative", zIndex: 2, display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))", gap: 12 }}>
+    <div>
+      <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 19, letterSpacing: "-0.3px", color: "#fff", margin: "0 0 12px" }}>
+        {campaign.name}
+      </h3>
+      <div style={{ display: "grid", gap: 10 }}>
         {campaign.accounts.map((a) => (
           <CopyAccount key={a.label} label={a.label} value={a.value} />
         ))}
@@ -57,7 +44,7 @@ export default async function GivingPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const [centenary, villagePayoff, hopeForAll] = GIVING_CAMPAIGNS;
+  const withAccounts = GIVING_CAMPAIGNS.filter((c) => c.accounts.length > 0);
 
   return (
     <main id="main-content">
@@ -85,17 +72,8 @@ export default async function GivingPage({
         </div>
       </section>
 
-      {/* Give online */}
-      <section style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(48px,6vw,72px)" }}>
-        <div style={{ maxWidth: 980, margin: "0 auto" }}>
-          <Reveal>
-            <GivingForm campaigns={[centenary, villagePayoff, hopeForAll]} />
-          </Reveal>
-        </div>
-      </section>
-
       {/* Scripture */}
-      <section style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(40px,5vw,64px)" }}>
+      <section style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(24px,3vw,36px)" }}>
         <div style={{ maxWidth: 980, margin: "0 auto" }}>
           <Reveal delay={220}>
             <figure style={{ maxWidth: 620, margin: "0 auto", padding: "22px 22px", borderRadius: 22, background: "var(--paper)", border: "1px solid var(--line)", boxShadow: "0 14px 36px rgba(18,20,30,.08)", textAlign: "left" }}>
@@ -105,6 +83,20 @@ export default async function GivingPage({
               <figcaption style={{ marginTop: 12, fontSize: 13, fontWeight: 700, color: "var(--red)" }}>2 Corinthians 9:9</figcaption>
             </figure>
           </Reveal>        </div>
+      </section>
+
+      {/* Give online */}
+      <section style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(48px,6vw,72px)" }}>
+        <div style={{ maxWidth: 980, margin: "0 auto" }}>
+          <Reveal>
+            <GivingForm campaigns={GIVING_CAMPAIGNS} recurringOn={recurringEnabled()} />
+          </Reveal>
+          {recurringEnabled() && (
+            <p style={{ textAlign: "center", fontSize: 14, color: "var(--ink-soft)", margin: "18px 0 0" }}>
+              Already give on a schedule? <Link href="/giving/cancel" style={{ color: "var(--red)", fontWeight: 700 }}>Cancel a recurring gift</Link>.
+            </p>
+          )}
+        </div>
       </section>
 
       {/* Photo */}
@@ -118,17 +110,23 @@ export default async function GivingPage({
         </div>
       </section>
 
-      {/* Campaigns — bigger, distinctly-colored cards */}
+      {/* Account details for sending a gift directly */}
       <section style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(70px,9vw,110px)" }}>
-        <div style={{ maxWidth: 980, margin: "0 auto", display: "flex", flexDirection: "column", gap: 28 }}>
+        <div style={{ maxWidth: 980, margin: "0 auto" }}>
           <Reveal>
-            <CampaignCard campaign={centenary} scheme={SCHEMES.centenary} />
-          </Reveal>
-          <Reveal delay={80}>
-            <CampaignCard campaign={villagePayoff} scheme={SCHEMES.village} />
-          </Reveal>
-          <Reveal delay={160}>
-            <CampaignCard campaign={hopeForAll} scheme={SCHEMES.hope} />
+            <div style={{ borderRadius: 28, padding: "clamp(22px,5.5vw,48px)", background: "linear-gradient(135deg,var(--ink),#1C1E2E)", boxShadow: "0 28px 60px rgba(18,20,30,.22)" }}>
+              <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3.2vw,38px)", letterSpacing: "-1px", color: "#fff", margin: "0 0 10px", lineHeight: 1.1 }}>
+                Prefer to send it yourself?
+              </h2>
+              <p style={{ fontSize: 15, color: "rgba(255,255,255,.78)", lineHeight: 1.6, margin: "0 0 26px", maxWidth: 560 }}>
+                Use these Zelle and bank details, and put your name and what the gift is for in the memo.
+              </p>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))", gap: 28 }}>
+                {withAccounts.map((c) => (
+                  <AccountGroup key={c.slug} campaign={c} />
+                ))}
+              </div>
+            </div>
           </Reveal>
         </div>
       </section>
@@ -145,7 +143,7 @@ export default async function GivingPage({
           <div className="r2" style={{ gap: 18 }}>
             {[
               { icon: Phone, title: "By phone", desc: "Call the CACNA office.", href: "tel:+13054690346", cta: "Call (305) 469-0346" },
-              { icon: Mail, title: "By email", desc: "Email info@cacnorthamerica.com.", href: "mailto:info@cacnorthamerica.com", cta: "Email us" },
+              { icon: Mail, title: "By email", desc: "Email info@cacna.org.", href: "mailto:info@cacna.org", cta: "Email us" },
             ].map((w, i) => (
               <Reveal key={w.title} delay={i * 80}>
                 <div style={{ background: "var(--paper)", borderRadius: 20, padding: "22px 20px", border: "1px solid var(--line)", boxShadow: "0 8px 22px rgba(18,20,30,.05)", height: "100%" }}>

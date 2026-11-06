@@ -30,7 +30,8 @@ async function adminAuthGuard(request: NextRequest): Promise<NextResponse> {
   const { data: { user } } = await supabase.auth.getUser();
   const { pathname } = request.nextUrl;
 
-  if (pathname !== "/admin/login" && !user) {
+  // The reset page is for people who cannot sign in, so it stays public.
+  if (pathname !== "/admin/login" && pathname !== "/admin/reset-password" && !user) {
     return NextResponse.redirect(new URL("/admin/login", request.url));
   }
 
@@ -41,7 +42,7 @@ async function adminAuthGuard(request: NextRequest): Promise<NextResponse> {
 // on convention registration. 307 (not 301) so browsers and Google don't cache
 // the target: it changes every year with the convention.
 const CAC_VILLAGE_HOSTS = new Set(["cacvillage.com", "www.cacvillage.com"]);
-const CONVENTION_REGISTRATION_URL = "https://cacnorthamerica.com/events/cacna-2027/register";
+const CONVENTION_REGISTRATION_URL = "https://cacna.org/events/cacna-2027/register";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;

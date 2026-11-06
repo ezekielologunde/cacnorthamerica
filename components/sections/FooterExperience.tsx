@@ -88,6 +88,7 @@ export function FooterExperience() {
         ['/about#convention', t('aboutConvention')],
         [`${nextConvention.href}/schedule`, t('schedule')],
         ['/plan-your-visit', t('planYourVisit')],
+        ['/serve', t('serve')],
       ],
     },
     {
@@ -264,6 +265,7 @@ export function FooterExperience() {
                 ))}
               </ul>
             </nav>
+            <p style={{ margin: 0 }}>{t('taxStatus')}</p>
             <div className="ft-bottom-row">
               <span>{t('copyright')}</span>
               <BackToTop label={t('backToTop')} />

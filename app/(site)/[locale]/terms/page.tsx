@@ -8,7 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Terms of Service — Christ Apostolic Church North America (CACNA)",
     description:
-      "The terms for using cacnorthamerica.com — convention registration, store orders, online giving, and how we expect everyone to treat each other.",
+      "The terms for using cacna.org — convention registration, store orders, online giving, and how we expect everyone to treat each other.",
     alternates: { canonical: `${SITE_URL}/terms` },
   };
 }
@@ -21,7 +21,7 @@ const sections: LegalSection[] = [
     heading: "Using this site",
     body: (
       <p style={{ margin: 0 }}>
-        cacnorthamerica.com is run by {SITE.name} ({SITE.shortName}). By using the site, registering, ordering
+        cacna.org is run by {SITE.name} ({SITE.shortName}). By using the site, registering, ordering
         or giving, you agree to these terms. Please give accurate information in any form you fill in.
       </p>
     ),
