@@ -38,6 +38,25 @@ export interface BlogPost {
 // or via the admin console (/admin/blog) going forward.
 const RAW_POSTS: Omit<BlogPost, "categoryColor" | "accent">[] = [
   {
+    slug: "golden-jubilee-message-from-the-president",
+    title: "Golden Jubilee Message from the President of CAC",
+    excerpt:
+      "Pastor Samuel Olusegun Oladele, President of Christ Apostolic Church, celebrates fifty years of God’s faithfulness to the church in America.",
+    date: "October 10, 2026",
+    dateIso: "2026-10-10",
+    category: "Ministry Update",
+    readTime: "3 min read",
+    body: [
+      "_From the opening pages of the Golden Jubilee brochure: “Celebrating 50 years of God’s faithfulness to Christ Apostolic Church in America.”_",
+      "Pastor S.O. Oladele, President of Christ Apostolic Church, began with James 1:17–18 and gave glory to God for His mercy and faithfulness. He said the emergence of the Christ Apostolic Church in America was not by accident but a fulfilment of prophecy.",
+      "**Where the church began.** Christ Apostolic Church is the first Pentecostal church in Nigeria. It began in 1918 as a prayer group known as “The Precious Stone Society”, whose members sought a re-enactment of the experience of believers on the day of Pentecost (Acts 2). The group made contact with the International Faith Tabernacle in Philadelphia. In 1930 the Great Oke Ooye Revival was orchestrated through Apostle Joseph Ayo Babalola, who became the first General Evangelist. The church was incorporated in 1943 as Christ Apostolic Church.",
+      "**What the church is known for.** The church is known as a People of Prayer, of the Word of God and of Worship. Its evangelical mandate includes teaching members so that they can add value to society (Matthew 28:18–20), through in-depth Bible study, Sunday School, 17 theological seminaries and the Joseph Ayo Babalola University (JABU) at Ikeji-Arakeji, Osun State, Nigeria, described as the first entrepreneurial university in Nigeria. The church has more than 1.3 million members in 24 nations, including the United States.",
+      "**Thanks.** He acknowledged the vision and sacrifice of the pioneers in America, Pastor Abraham Adegoke Oyedeji and Prophet Timothy Oluwole Obadare, and many others too numerous to mention; thanked Pastor Joshua Owoeye, whose leadership was a catalyst for the growth and unity of the church in America; and recognised the Regional Superintendent, Pastor T.O.A. Agbeja, and his lieutenants. He thanked all the members who represent the church and the nation well in their places of work, and praised their contributions to the spiritual and socio-economic growth of America.",
+      "**A prayer for the years ahead.** He said the celebration is not only for CAC in the United States but a milestone in the history of CAC Nigeria and Overseas, and prayed for further growth spiritually, numerically and materially, and that the church would continue to be His voice to this generation and hear at the end, “Well done, good and faithful servant.”",
+      "_Signed: Pastor Samuel Olusegun Oladele, President, Christ Apostolic Church._",
+    ],
+  },
+  {
     slug: "golden-jubilee-welcome-address-regional-superintendent",
     title: "Golden Jubilee Welcome Address: Regional Superintendent",
     excerpt:
@@ -86,7 +105,6 @@ const RAW_POSTS: Omit<BlogPost, "categoryColor" | "accent">[] = [
       "**Regional Women Leader** (on behalf of the Good Women Association): honours the women of CACNA as pillars of prayer and service. The **Good Women Association** itself sent a separate greeting (Psalm 68:11).",
       "**Youth and Young Adult Ministry:** congratulations, with a promise that the young people will usher in the next fifty years.",
       "**Christian Education Department:** a congratulatory message to the Latunde Region on its fiftieth anniversary.",
-      "_The brochure carries no separate printed message from the President of CAC Nigeria & Overseas; the President is addressed in the Regional Superintendent’s welcome above._",
     ],
   },
   {

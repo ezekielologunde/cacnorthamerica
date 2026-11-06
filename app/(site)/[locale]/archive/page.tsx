@@ -12,6 +12,7 @@ import { SITE_URL } from "@/lib/site";
 import { archivedEvents } from "@/lib/archive-notes";
 
 const archiveLinks = [
+  { slug: "golden-jubilee-message-from-the-president", label: "Golden Jubilee message from the President of CAC" },
   { slug: "golden-jubilee-welcome-address-regional-superintendent", label: "Golden Jubilee welcome address, Regional Superintendent" },
   { slug: "golden-jubilee-convention-chairmans-address", label: "Golden Jubilee Chairman’s Address" },
   { slug: "golden-jubilee-messages-from-latunde-region-departments", label: "Golden Jubilee messages from Latunde Region departments" },
