@@ -2,6 +2,7 @@ import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import Link from "next/link";
+import Image from "next/image";
 import type { ReactNode } from "react";
 import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
@@ -35,26 +36,29 @@ const milestones: { year: string; text: string }[] = [
 ];
 
 /** Names and titles as printed on the programme's honorees page. */
-const pioneers: { name: string; title: string; note?: string }[] = [
+const pioneers: { name: string; title: string; note?: string; photo?: string }[] = [
   {
     name: "Pastor (Professor) Abraham Adegoke Oyedeji, Ph.D.",
     title: "Pioneer of CAC North America",
+    photo: "/images/leaders/oyedeji-2026.jpg",
     note: "Remembered in the Chairman's address as the one who planted the church in the Americas. Senior Pastor and DCC Superintendent, CAC First in the Americas.",
   },
   {
     name: "Apostle (Dr.) Timothy Obadare",
     title: "Retired General Evangelist, Planter of WOSEM",
+    photo: "/images/leaders/obadare-2026.jpg",
     note: "Established Christ Apostolic Church in London in 1979 and in the United States in 1981. Founder of the World Soul-Winning Evangelistic Ministry (WOSEM). 1925–2013.",
   },
   { name: "Pastor Abraham Adetunji Ojo", title: "First Pastor in North America" },
   {
     name: "Pastor Joshua O. Owoeye, Ph.D.",
     title: "Coordinator of CAC North America and Member, CAC General Executive Council",
+    photo: "/images/leaders/owoeye-2026.jpg",
     note: "Honoured in the programme as the first CAC North America Superintendent (Retired).",
   },
   { name: "Evangelist Mary Olukemi Makinde", title: "Pioneer Women Leader" },
   { name: "Late Pastor J. O. Adeyanju, JP", title: "First Chairman, CAC EDCC" },
-  { name: "Prophet (Dr.) Samuel Kayode Abiara", title: "Planter of CAC Vineyard of Comfort (Agbala Itura), Retired General Evangelist" },
+  { name: "Prophet (Dr.) Samuel Kayode Abiara", title: "Planter of CAC Vineyard of Comfort (Agbala Itura), Retired General Evangelist", photo: "/images/leaders/abiara-2026.jpg" },
 ];
 
 const leaders: { name: string; role: string }[] = [
@@ -166,6 +170,9 @@ export default async function GoldenJubileePage({
             <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,220px),1fr))", gap: 16 }}>
               {pioneers.map((p) => (
                 <li key={p.name} style={{ background: "var(--cream)", border: "1px solid var(--line)", borderTop: "3px solid var(--gold)", borderRadius: 14, padding: "18px 18px 20px", display: "flex", flexDirection: "column", gap: 8 }}>
+                  {p.photo && (
+                    <Image src={p.photo} alt={p.name} width={400} height={400} sizes="220px" style={{ width: "100%", height: 200, objectFit: "cover", objectPosition: "center 20%", borderRadius: 10, background: "var(--paper)" }} />
+                  )}
                   <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 17, color: "var(--ink)", margin: 0, lineHeight: 1.3 }}>{p.name}</h3>
                   <p style={{ fontSize: 14.5, fontWeight: 700, color: "var(--red)", margin: 0, lineHeight: 1.45 }}>{p.title}</p>
                   {p.note && <p style={{ fontSize: 14.5, color: "var(--ink-soft)", margin: 0, lineHeight: 1.6 }}>{p.note}</p>}

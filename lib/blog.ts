@@ -38,6 +38,44 @@ export interface BlogPost {
 // or via the admin console (/admin/blog) going forward.
 const RAW_POSTS: Omit<BlogPost, "categoryColor" | "accent">[] = [
   {
+    slug: "tribute-to-late-pastor-abraham-adegoke-oyedeji",
+    title: "A Tribute to Late Pastor (Dr.) Abraham Adegoke Oyedeji",
+    excerpt:
+      "The Oyedeji family and CAC First in the Americas remember the Senior Pastor and DCC Superintendent who planted the seeds of Christ Apostolic Church in the Western Hemisphere.",
+    date: "October 10, 2026",
+    dateIso: "2026-10-10",
+    category: "Ministry Update",
+    readTime: "2 min read",
+    image: { url: "/images/leaders/oyedeji-2026.jpg", alt: "Late Pastor (Dr.) Abraham Adegoke Oyedeji, Senior Pastor and DCC Superintendent, CAC First in the Americas", orientation: "portrait" },
+    body: [
+      "_From the Golden Jubilee brochure: “We celebrate the goodness of God and 50 years of CAC in the Americas.”_",
+      "The brochure remembers Late Pastor (Dr.) Abraham Adegoke Oyedeji, Senior Pastor and DCC Superintendent of CAC First in the Americas, as a man of true spiritual leadership, marked by humility, compassion and devotion to the service of others.",
+      "**A pioneer of the church in the Americas.** The tribute says that through his pioneering work and dedication he was instrumental in planting the seeds of Christ Apostolic Church in the Western Hemisphere. His efforts and foresight established not only congregations but vibrant spiritual homes and lasting communities where faith thrives.",
+      "**A legacy that continues.** The family writes that they are eternally grateful for his legacy, and that his enduring vision and selfless commitment to spreading the Gospel continue to inspire, as a testament to a life lived in service to God and humanity.",
+      "_Signed: The Oyedeji Family and CAC First in the Americas._",
+    ],
+  },
+  {
+    slug: "apostle-timothy-oluwole-obadare-life-and-ministry",
+    title: "Apostle Timothy Oluwole Obadare: A Life of Preaching the Gospel",
+    excerpt:
+      "From the Golden Jubilee brochure: the life and ministry of the late Apostle Dr. T.O. Obadare, who established Christ Apostolic Church in London in 1979 and in the United States in 1981.",
+    date: "October 10, 2026",
+    dateIso: "2026-10-10",
+    category: "Reflection",
+    readTime: "3 min read",
+    image: { url: "/images/leaders/obadare-2026.jpg", alt: "The late Apostle Dr. Timothy Oluwole Obadare" },
+    body: [
+      "_From the Golden Jubilee brochure, the page honouring Apostle T.O. Obadare._",
+      "Born in 1925, the late Apostle Dr. Timothy Oluwole Obadare was a chosen preacher of the Word of God. Many called him a divine microphone of the Lord Jesus Christ and an ambassador of Almighty God. Like Paul, he said that it was a must for him to preach the gospel, and he preached in season and out of season.",
+      "**A passion for souls.** He travelled the world speaking at revival meetings and crusades, and on radio and television at home and abroad, with a visible burden “to reach the world, be instant in season, out of season, rebuke, exhort, with all long suffering and doctrine” (2 Timothy 4:2).",
+      "**Honours.** He received many honorary degrees, including a Doctor of Ministry from St. John’s University, Missouri (1985), and an Honorary Doctor of Divinity from the Trinity College of Ministerial Arts, Aba, Imo State, Nigeria (1990). He was also made a member of the International Affairs Leadership Parliament of the Golden State University of Los Angeles, and was recognised by the International Theological Seminary of Desoto and Honolulu University, Hawaii.",
+      "**Service in the church.** He served Christ Apostolic Church worldwide as a choir leader, prophet, pastor, Assistant General Evangelist, General Evangelist and Apostle. By God’s grace he established Christ Apostolic Church in London in 1979 and in the United States in 1981. He was Executive Director and Founder of the World Soul-Winning Evangelistic Ministry (WOSEM), a ministry established solely for evangelism, and President of the Interdenominational Ministers’ Association of Nigeria.",
+      "**Signs and wonders.** The brochure records that thousands were saved in his crusades, that the blind received sight, barren women conceived and people were healed of many conditions, and gives glory to God for the life of His servant.",
+      "After more than six decades of evangelistic work he lived 88 years and went to be with the Lord in 2013. The brochure closes: “Praise God for such a gift to our generation.”",
+    ],
+  },
+  {
     slug: "golden-jubilee-message-from-the-president",
     title: "Golden Jubilee Message from the President of CAC",
     excerpt:
@@ -105,24 +143,6 @@ const RAW_POSTS: Omit<BlogPost, "categoryColor" | "accent">[] = [
       "**Regional Women Leader** (on behalf of the Good Women Association): honours the women of CACNA as pillars of prayer and service. The **Good Women Association** itself sent a separate greeting (Psalm 68:11).",
       "**Youth and Young Adult Ministry:** congratulations, with a promise that the young people will usher in the next fifty years.",
       "**Christian Education Department:** a congratulatory message to the Latunde Region on its fiftieth anniversary.",
-    ],
-  },
-  {
-    slug: "2026-convention-booklet-highlights",
-    title: "2026 Convention Booklet Highlights",
-    excerpt:
-      "Who spoke, what each department held, and how the week ran at the 2026 CACNA Annual Convention, from the printed booklet.",
-    date: "July 18, 2026",
-    dateIso: "2026-07-18",
-    category: "Event Spotlight",
-    readTime: "3 min read",
-    body: [
-      "_Highlights from the printed 2026 convention booklet (13–18 July 2026, CAC Village)._",
-      "**Committee.** The Convention & Conference Committee was chaired by Pastor David O. Adenodi, Ph.D., with Pastor Oluwagbemiga Famojuro, D.Min, as Secretary.",
-      "**Ministers’ sessions.** Pastor T.A.O. Agbeja spoke on “Transformative Power of the Word”; Pastor Simeon Oladokun, Regional Superintendent of the Anosike Region (CAC Europe), on “The Divine Word as a Guide for Our Daily Living”; Right Rev. Prof. Dapo F. Asaju, Bishop of Ijesha Diocese, on “The Perfect Encourager in Time of Tries, Tribulations and Challenges”; and Pastor S.O. Oladele, President of CAC Nigeria & Overseas, led Ministers’ Session 4.",
-      "**Nights.** Revival Nights were led by Prophet H. Oladeji. Praise Night was on Thursday 16 July, with Impartation Night, the Ordination Service and the Holy Communion and Closing Service on 17–18 July.",
-      "**Welcome address.** The Regional Superintendent welcomed the President, the General Superintendent, the Mission Director and guests from Nigeria and Europe, and thanked every department and zone for their support of the work at CAC Village.",
-      "**Departments.** The Children’s program (15–17 July) was themed “Preparing God’s People for Leadership” (Psalm 12:1), with daily sessions on God’s message to children (Mark 10:14). The Christian Education session, chaired by Pastor Gbenga Famojuro, D.Min, took “The Bible: A Dynamic Force for the Church” (Hebrews 4:12). The Good Women Association met on 15 and 16 July on “Raising Godly children in marriages, while navigating cultural and social challenges”. The Business Group Fellowship met on 16 July with a guest lecture by Dr. Jumoke Ojo, and the Men Association (CACMA) held sessions on 15 and 16 July. The Youth and Young Adult Ministry (16–17 July) took “Did God Really Say…? Knowing God’s Word for Yourself”, with workshops, the annual CACNA picnic, a Praise Night and Bible Jeopardy.",
     ],
   },
   {
