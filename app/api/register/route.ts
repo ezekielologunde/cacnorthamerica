@@ -14,6 +14,7 @@ import { sendRegistrationConfirmationEmail } from "@/lib/registrationEmail";
 import { FORM_HEADER, HONEYPOT_FIELD, looksLikeSpam } from "@/lib/spam";
 import { TURNSTILE_ERROR, verifyTurnstile } from "@/lib/turnstile";
 import { processingFeeLineItem, processingFeeMetadata } from "@/lib/processingFee";
+import { giftLineItems, parseGiftCents } from "@/lib/registrationGift";
 import { adultSheetExtras, categoryForAge, EMAIL_RE, encodeMeals, parseMealsAndAllergies, parseYouthRegistration, youthSheetName, youthSheetRows } from "@/lib/youthRegistration";
 
 type RegisterRequestBody = {
@@ -227,6 +228,9 @@ export async function POST(request: Request) {
     contactPhone: (raw.contactPhone ?? "").trim(),
   };
   const dccZone = body.dccZone.trim();
+  const giftParsed = parseGiftCents((rawBody as Record<string, unknown>).donationCents);
+  if (!giftParsed.ok) return NextResponse.json({ error: giftParsed.error }, { status: 400 });
+  const gift = giftParsed.cents;
 
   // Individual mode: each person's meals (an explicit choice) and allergy
   // notes, under the youth track's rule. Group mode is a names-only list, so
@@ -292,6 +296,11 @@ export async function POST(request: Request) {
   }
 
   const totalAmountCents = pricedRegistrants.reduce((sum, r) => sum + r.priceCents, 0);
+  // A gift rides on a card payment for a paid registration; Zelle and free
+  // registrations have no Stripe session to carry it.
+  if (gift > 0 && (totalAmountCents === 0 || parsePaymentMethod(body) !== "card")) {
+    return NextResponse.json({ error: "A gift can be added when paying by card" }, { status: 400 });
+  }
   const ref = crypto.randomUUID();
 
   const summary: RegistrationSummary = {
@@ -304,6 +313,7 @@ export async function POST(request: Request) {
     contactPhone: body.contactPhone || "",
     registrants: pricedRegistrants.map((r, i) => ({ n: r.fullName, c: r.category, ...extras[i] })),
     totalAmountCents,
+    ...(gift > 0 ? { gift } : {}),
     isComplimentary,
     dcc: dccZone,
   };
@@ -404,7 +414,7 @@ export async function POST(request: Request) {
           product_data: { name: `CACNA ${cy.year} Convention registration — ${r.fullName} (${r.category})` },
         },
         quantity: 1,
-      })), processingFeeLineItem(totalAmountCents)],
+      })), processingFeeLineItem(totalAmountCents), ...giftLineItems(gift)],
       customer_email: body.contactEmail,
       // Only the opaque session id travels in the URL; the confirmation page
       // reads the registration back from this session's own metadata.
@@ -442,6 +452,9 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
     return NextResponse.json({ error: "paymentMethod must be 'zelle' or 'card'" }, { status: 400 });
   }
   const input = parsed.value;
+  const giftParsed = parseGiftCents((rawBody as Record<string, unknown>).donationCents);
+  if (!giftParsed.ok) return NextResponse.json({ error: giftParsed.error }, { status: 400 });
+  const gift = giftParsed.cents;
 
   if (
     looksLikeSpam([
@@ -488,6 +501,9 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
   }
 
   const totalAmountCents = priced.reduce((sum, p) => sum + p.priceCents, 0);
+  if (gift > 0 && (totalAmountCents === 0 || paymentMethod !== "card")) {
+    return NextResponse.json({ error: "A gift can be added when paying by card" }, { status: 400 });
+  }
   const summary: RegistrationSummary = {
     ref: crypto.randomUUID(),
     year: cy.year,
@@ -498,6 +514,7 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
     contactPhone: input.contactPhone,
     registrants: priced.map((p) => p.registrant),
     totalAmountCents,
+    ...(gift > 0 ? { gift } : {}),
     isComplimentary: false,
     youth: { leader: input.youthLeaderName, dcc: input.dccZone, guardian: input.guardianConfirmed },
   };
@@ -596,6 +613,7 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
             quantity: 1,
           })),
         processingFeeLineItem(totalAmountCents),
+        ...giftLineItems(gift),
       ],
       customer_email: input.contactEmail,
       ...checkoutModeParams(`${SITE_URL}/events/cacna-${cy.year}/register/confirmation?session_id={CHECKOUT_SESSION_ID}`, `${SITE_URL}/events/cacna-${cy.year}/register/youth`),

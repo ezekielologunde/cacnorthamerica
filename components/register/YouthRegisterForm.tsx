@@ -8,6 +8,8 @@ import { useTranslations } from "next-intl";
 import { FORM_HEADER, HONEYPOT_FIELD, TURNSTILE_FIELD } from "@/lib/spam";
 import { TurnstileField, resetTurnstile } from "@/components/TurnstileField";
 import { FeeBreakdown } from "@/components/checkout/FeeBreakdown";
+import { GiftChoice } from "@/components/register/GiftChoice";
+import { GIFT_LINE_LABEL } from "@/lib/registrationGift";
 import { DEFAULT_PAYMENT_METHOD, PaymentMethodChoice, ZelleTotal, paidSubmitLabel, type PaymentMethod } from "@/components/register/PaymentMethodChoice";
 import {
   ADULT_AGE,
@@ -97,6 +99,7 @@ export function YouthRegisterForm({
   });
   const [guardianConfirmed, setGuardianConfirmed] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(DEFAULT_PAYMENT_METHOD);
+  const [giftCents, setGiftCents] = useState(0);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [clientSecret, setClientSecret] = useState<string | null>(null);
@@ -129,6 +132,8 @@ export function YouthRegisterForm({
       }, 0),
     [people, youngAdultPriceCents]
   );
+  // A gift rides on a card payment only; the server enforces the same.
+  const gift = total > 0 && paymentMethod === "card" ? giftCents : 0;
 
   function updatePerson(key: number, patch: Partial<PersonRow>) {
     setPeople((current) => current.map((p) => (p.key === key ? { ...p, ...patch } : p)));
@@ -218,6 +223,7 @@ export function YouthRegisterForm({
           turnstileToken: typeof turnstileToken === "string" ? turnstileToken : "",
           track: "youth",
           paymentMethod,
+          donationCents: gift,
           contactName: shared.contactName.trim(),
           contactEmail: shared.contactEmail.trim(),
           contactPhone: shared.contactPhone.trim(),
@@ -493,6 +499,10 @@ export function YouthRegisterForm({
         <PaymentMethodChoice name={fid("payment-method")} value={paymentMethod} onChange={setPaymentMethod} legendStyle={labelStyle} />
       )}
 
+      {total > 0 && (
+        <GiftChoice giftCents={giftCents} onChange={setGiftCents} cardSelected={paymentMethod === "card"} legendStyle={labelStyle} />
+      )}
+
       {status === "error" && serverError && (
         <p ref={serverErrorRef} role="alert" style={{ color: "var(--red)", fontWeight: 700, fontSize: 14.5, margin: "4px 0 12px", padding: "12px 14px", borderRadius: 12, background: "rgba(200,30,58,.08)" }}>
           {serverError}
@@ -514,7 +524,7 @@ export function YouthRegisterForm({
         </div>
         {total > 0 && (
           <div style={{ marginBottom: 10 }}>
-            {paymentMethod === "zelle" ? <ZelleTotal subtotalCents={total} /> : <FeeBreakdown subtotalCents={total} />}
+            {paymentMethod === "zelle" ? <ZelleTotal subtotalCents={total} /> : <FeeBreakdown subtotalCents={total} extraLabel={GIFT_LINE_LABEL} extraCents={gift} />}
           </div>
         )}
         <TurnstileField />

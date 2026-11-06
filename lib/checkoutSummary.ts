@@ -33,6 +33,10 @@ export type RegistrationSummary = {
    *  only, and never a. */
   registrants: { n: string; c: RegistrantCategory; a?: number; m?: number; l?: string }[];
   totalAmountCents: number;
+  /** An optional gift, in cents, charged on top of the registration (card
+   *  payments only; see lib/registrationGift.ts). totalAmountCents stays the
+   *  registration subtotal. */
+  gift?: number;
   isComplimentary: boolean;
   /** Set only on Youth & Child registrations: shared church details and
    *  whether the contact confirmed they are a minor's parent or guardian.

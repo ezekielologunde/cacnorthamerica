@@ -8,6 +8,8 @@ import { useTranslations } from "next-intl";
 import { FORM_HEADER, HONEYPOT_FIELD, TURNSTILE_FIELD } from "@/lib/spam";
 import { TurnstileField, resetTurnstile } from "@/components/TurnstileField";
 import { FeeBreakdown } from "@/components/checkout/FeeBreakdown";
+import { GiftChoice } from "@/components/register/GiftChoice";
+import { GIFT_LINE_LABEL } from "@/lib/registrationGift";
 import { DEFAULT_PAYMENT_METHOD, PaymentMethodChoice, ZelleTotal, paidSubmitLabel, type PaymentMethod } from "@/components/register/PaymentMethodChoice";
 import { MAX_ALLERGIES_LENGTH, MEAL_SLOTS, mealSlotLabel, type MealSlot } from "@/lib/youthRegistration";
 
@@ -62,6 +64,7 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
   const [contactPhone, setContactPhone] = useState("");
   const [dccZone, setDccZone] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(DEFAULT_PAYMENT_METHOD);
+  const [giftCents, setGiftCents] = useState(0);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -86,6 +89,8 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
   // Individual and Group both support registering any number of people; the
   // only difference between them is whether a church name is collected.
   const total = registrants.length * (priceMap.adult ?? 0);
+  // A gift rides on a card payment only; the server enforces the same.
+  const gift = total > 0 && paymentMethod === "card" ? giftCents : 0;
 
   function updateRegistrant(index: number, patch: Partial<RegistrantRow>) {
     setRegistrants((current) => current.map((r, i) => (i === index ? { ...r, ...patch } : r)));
@@ -152,6 +157,7 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
           turnstileToken: typeof turnstileToken === "string" ? turnstileToken : "",
           track: "adult",
           paymentMethod,
+          donationCents: gift,
           registrationType: mode,
           churchName: mode === "group" ? churchName : null,
           contactName,
@@ -436,6 +442,10 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
         <PaymentMethodChoice name="payment-method" value={paymentMethod} onChange={setPaymentMethod} legendStyle={labelStyle} />
       )}
 
+      {total > 0 && (
+        <GiftChoice giftCents={giftCents} onChange={setGiftCents} cardSelected={paymentMethod === "card"} legendStyle={labelStyle} />
+      )}
+
       {status === "error" && errorMessage && (
         <p ref={errorRef} role="alert" style={{ color: "var(--red)", fontWeight: 700, fontSize: 14.5, margin: "4px 0 12px", padding: "12px 14px", borderRadius: 12, background: "rgba(200,30,58,.08)" }}>
           {errorMessage}
@@ -455,7 +465,7 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
           {total > 0 && paymentMethod === "zelle" ? (
             <ZelleTotal subtotalCents={total} />
           ) : total > 0 ? (
-            <FeeBreakdown subtotalCents={total} />
+            <FeeBreakdown subtotalCents={total} extraLabel={GIFT_LINE_LABEL} extraCents={gift} />
           ) : (
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
               <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", color: "var(--ink-soft)" }}>Total</span>

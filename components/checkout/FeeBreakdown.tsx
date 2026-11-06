@@ -15,6 +15,8 @@ export function FeeBreakdown({
   tone = "light",
   method = "card",
   frequency = "once",
+  extraLabel,
+  extraCents = 0,
 }: {
   subtotalCents: number;
   subtotalLabel?: string;
@@ -22,6 +24,9 @@ export function FeeBreakdown({
   method?: PaymentMethod;
   /** A repeating gift shows the fee charged each time, and a bank gift's one-time setup fee. */
   frequency?: GiftFrequency;
+  /** An optional separate line after the fee (a gift added to a registration), counted in the total. */
+  extraLabel?: string;
+  extraCents?: number;
 }) {
   const repeating = isRecurring(frequency);
   const fee = repeating ? recurringFeeCentsFor(subtotalCents, method) : feeCentsFor(subtotalCents, method);
@@ -43,9 +48,15 @@ export function FeeBreakdown({
           <span>{formatPrice(fee)}</span>
         </div>
       )}
+      {extraCents > 0 && extraLabel && (
+        <div style={{ ...row, marginTop: 4 }}>
+          <span>{extraLabel}</span>
+          <span>{formatPrice(extraCents)}</span>
+        </div>
+      )}
       <div style={{ ...row, borderTop: `1px solid ${line}`, marginTop: 8, paddingTop: 8 }}>
         <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase" }}>{repeating ? "Each payment" : "Total"}</span>
-        <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20, color: strong }}>{formatPrice(subtotalCents + fee)}</span>
+        <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20, color: strong }}>{formatPrice(subtotalCents + fee + extraCents)}</span>
       </div>
       {setup > 0 && (
         <p style={{ fontSize: 12.5, color: soft, margin: "6px 0 0" }}>

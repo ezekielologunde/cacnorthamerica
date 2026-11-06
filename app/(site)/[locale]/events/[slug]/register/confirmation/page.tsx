@@ -5,6 +5,7 @@ import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { getStripeClient } from "@/lib/stripe";
 import { resolveRegistrationConfirmation } from "@/lib/registrationConfirmation";
+import { GIFT_LINE_LABEL, giftOf } from "@/lib/registrationGift";
 import { PaymentOptions } from "@/components/register/PaymentOptions";
 import { RegistrantCheckinList } from "@/components/register/RegistrantCheckinList";
 import { ZellePaymentPanel } from "@/components/register/ZellePaymentPanel";
@@ -66,6 +67,8 @@ export default async function RegisterConfirmationPage({
   // Registered by Zelle, payment not confirmed by staff yet: show what to
   // send and the memo reference instead of the generic payment options.
   const awaitingZelle = payment === "awaiting_zelle" && !!zelleRef;
+  const gift = giftOf(summary);
+  const hasBreakdown = processingFeeCents > 0 || gift > 0;
   // Only a free or Zelle token the server sealed with `emailed` says a
   // confirmation email was attempted; the page never claims delivery.
   const emailAttempted = (isFree || awaitingZelle) && summary.emailed === true;
@@ -112,7 +115,7 @@ export default async function RegisterConfirmationPage({
             <p style={{ fontSize: 13.5, color: "rgba(245,246,250,.6)", margin: 0 }}>{summary.contactEmail}</p>
           </div>
           <RegistrantCheckinList summary={summary} startIso={cy.startIso} />
-          {processingFeeCents > 0 && (
+          {hasBreakdown && (
             <div style={{ borderTop: "1px solid rgba(245,246,250,.14)", marginTop: 16, paddingTop: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, color: "rgba(245,246,250,.6)", marginTop: 0 }}>
                 <span>Subtotal</span>
@@ -122,9 +125,15 @@ export default async function RegisterConfirmationPage({
                 <span>Processing fee</span>
                 <span>{dollars(processingFeeCents)}</span>
               </div>
+              {gift > 0 && (
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, color: "rgba(245,246,250,.6)", marginTop: 4 }}>
+                  <span>{GIFT_LINE_LABEL}</span>
+                  <span>{dollars(gift)}</span>
+                </div>
+              )}
             </div>
           )}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, borderTop: processingFeeCents > 0 ? "none" : "1px solid rgba(245,246,250,.14)", marginTop: processingFeeCents > 0 ? 8 : 16, paddingTop: processingFeeCents > 0 ? 0 : 14 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, borderTop: hasBreakdown ? "none" : "1px solid rgba(245,246,250,.14)", marginTop: hasBreakdown ? 8 : 16, paddingTop: hasBreakdown ? 0 : 14 }}>
             {awaitingZelle ? (
               <span style={{ fontSize: 11.5, fontWeight: 800, letterSpacing: "1px", textTransform: "uppercase", color: "#7a4b00", background: "#fff4dc", borderRadius: 999, padding: "5px 10px" }}>
                 Awaiting Zelle payment
@@ -135,7 +144,7 @@ export default async function RegisterConfirmationPage({
               </span>
             )}
             <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "#fff" }}>
-              {dollars(summary.totalAmountCents + processingFeeCents)}
+              {dollars(summary.totalAmountCents + processingFeeCents + gift)}
             </span>
           </div>
         </div>
