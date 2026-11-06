@@ -92,6 +92,7 @@ export type Database = {
           id: string
           image_alt: string | null
           image_url: string | null
+          authors: Json
           published: boolean
           published_at: string | null
           slug: string
@@ -105,6 +106,7 @@ export type Database = {
           id?: string
           image_alt?: string | null
           image_url?: string | null
+          authors?: Json
           published?: boolean
           published_at?: string | null
           slug: string
@@ -118,6 +120,7 @@ export type Database = {
           id?: string
           image_alt?: string | null
           image_url?: string | null
+          authors?: Json
           published?: boolean
           published_at?: string | null
           slug?: string
