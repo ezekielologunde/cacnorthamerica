@@ -183,7 +183,7 @@ export const MEMBER_CHURCHES: MemberChurch[] = [
   {
     name: "CAC House of Praise",
     address: "4909 Edmonston Rd, Hyattsville, MD 20781",
-    zoneName: "Agbala Itura DCC, USA",
+    zoneName: "Vineyard of Comfort DCC, USA",
     lat: 38.9480473,
     lng: -76.9263464,
     source: "cachouseofpraise.org — cacnorthamerica.com's own Pastor David Adenodi profile page names this exact address",
@@ -239,7 +239,7 @@ export const MEMBER_CHURCHES: MemberChurch[] = [
   {
     name: "CAC Vineyard of Comfort — Toronto",
     address: "104 Fenmar Drive, North York, ON M9L 1M5",
-    zoneName: "Agbala Itura Canada",
+    zoneName: "Vineyard of Comfort Canada",
     lat: 43.7593432,
     lng: -79.5480601,
     source: "CAC VOC Toronto's own Facebook (\"Pastor Ademola Oyeniyi is the Zonal Coordinator of CAC Vineyard of Comfort, Canada\") + independent Canadian business directories",

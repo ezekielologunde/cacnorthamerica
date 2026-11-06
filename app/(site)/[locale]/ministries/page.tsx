@@ -53,7 +53,7 @@ const departments: Department[] = [
     team: [
       { name: "Pastor Dr. Timothy A.O. Agbeja", title: "CACNA/Latunde Region Superintendent", photo: "/images/pastor-agbeja-portrait.jpg" },
       { name: "Pastor Dr. Timothy O. Famojuro", title: "Chairman, Christian Education Dept.", photo: "/images/pastor-timothy-famojuro-portrait.jpg" },
-      { name: "Pastor Samuel Tunji Ayeni", title: "Secretary; CAC Agbala Itura Representative", photo: "/images/pastor-ayeni-portrait.jpg" },
+      { name: "Pastor Samuel Tunji Ayeni", title: "Secretary; CAC Vineyard of Comfort Representative", photo: "/images/pastor-ayeni-portrait.jpg" },
       { name: "Pastor Stephen O. Aluko", title: "Director of Sunday School, CAC Worldwide", photo: "/images/pastor-aluko-portrait.jpg" },
       { name: "Pastor Sam. Olu. Falade", title: "Assistant Director, Sunday School, CAC Worldwide", photo: "/images/pastor-falade-portrait.jpg" },
       { name: "Pastor Femi Olaluwoye", title: "EDCC Superintendent", photo: "/images/pastor-olaluwoye-portrait.jpg" },
