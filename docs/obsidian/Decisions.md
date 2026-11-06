@@ -2,13 +2,23 @@
 project: cacnorthamerica
 type: decisions
 status: active
-last_updated: 2026-11-05
+last_updated: 2026-11-06
 tags: [project/cacnorthamerica]
 ---
 
 # Decisions
 
 Related: [[Project]] · [[Architecture]] · [[Features]]
+
+## Convention registration gift: its own line, fee not passed on (2026-11-06)
+
+A card registration can add an optional gift. It is a separate Stripe line item
+and a separate `Giving` row with a giving receipt, so it is receipted as a
+donation and the registration fee is not. The processing fee stays sized on the
+registration only, so the church absorbs Stripe's percentage on the gift and the
+donor's receipt equals what they chose. Zelle and free registrations are not
+offered it (no Stripe session to carry it). Charging the fee on the gift too is
+a small change if the church prefers. See [[Payments]].
 
 ## Merge the Convention site into CACNA, in phases (2026-09)
 

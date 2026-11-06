@@ -76,7 +76,7 @@ export function GiftChoice({
             inputMode="decimal"
             min={GIFT_MIN_CENTS / 100}
             max={GIFT_MAX_CENTS / 100}
-            step="1"
+            step="0.01"
             value={custom}
             onChange={(e) => onCustomChange(e.target.value)}
             aria-label="Other gift amount in dollars"
