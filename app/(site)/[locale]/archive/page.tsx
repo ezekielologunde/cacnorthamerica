@@ -9,7 +9,16 @@ import { RevealText } from "@/components/ui/RevealText";
 import { conventionYears, isConventionPast, dateRangeLabel, type RegistrantCategory } from "@/lib/conventions";
 import { setRequestLocale } from "next-intl/server";
 import { SITE_URL } from "@/lib/site";
-import { archivedEvents, spiritualGiftsTeaching, convention2026Highlights, regionHistory } from "@/lib/archive-notes";
+import { archivedEvents } from "@/lib/archive-notes";
+
+const archiveLinks = [
+  { slug: "golden-jubilee-welcome-address-regional-superintendent", label: "Golden Jubilee welcome address, Regional Superintendent" },
+  { slug: "golden-jubilee-convention-chairmans-address", label: "Golden Jubilee Chairman’s Address" },
+  { slug: "golden-jubilee-messages-from-latunde-region-departments", label: "Golden Jubilee messages from Latunde Region departments" },
+  { slug: "cac-in-brazil-joins-latunde-region", label: "CAC in Brazil joins Latunde Region" },
+  { slug: "latunde-region-good-women-prayer-and-pilgrimage", label: "Good Women: daily prayer, Marathon Prayers and the 2022 pilgrimage" },
+  { slug: "spiritual-power-and-gifts-2024-teaching-outline", label: "Purpose of spiritual gifts: the 2024 teaching outline" },
+];
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -94,12 +103,9 @@ export default async function ArchivePage({
                     <Image src="/photos/archive/cacna-2026-convention-flier.jpg" alt="Flier for the CACNA 2026 Annual Convention, The Bible: God’s Message to Man, 13 to 18 July 2026" width={1127} height={1600} sizes="(max-width: 760px) 100vw, 420px" style={{ width: "100%", maxWidth: 420, height: "auto", borderRadius: 12, marginTop: 16, display: "block" }} />
                   )}
                   {cy.year === 2026 && (
-                    <details style={{ marginTop: 16 }}>
-                      <summary style={{ cursor: "pointer", fontSize: 14, fontWeight: 700, color: "var(--red)" }}>{convention2026Highlights.heading}</summary>
-                      <ul style={{ margin: "10px 0 0", paddingLeft: 20, fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.6 }}>
-                        {convention2026Highlights.items.map((it) => <li key={it}>{it}</li>)}
-                      </ul>
-                    </details>
+                    <Link href="/blog/2026-convention-booklet-highlights" style={{ display: "inline-block", marginTop: 16, marginRight: 18, fontSize: 13.5, fontWeight: 700, color: "var(--red)", textDecoration: "none" }}>
+                      Booklet highlights →
+                    </Link>
                   )}
                   {cy.year === 2026 && (
                     <Link href="/events/cacna-2026/schedule" style={{ display: "inline-block", marginTop: 16, fontSize: 13.5, fontWeight: 700, color: "var(--red)", textDecoration: "none" }}>
@@ -127,35 +133,14 @@ export default async function ArchivePage({
             </div>
           ))}
 
-          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 26, color: "var(--ink)", margin: "32px 0 0" }}>Latunde Region history</h2>
-          {regionHistory.map((h) => (
-            <div key={h.title} style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, padding: "24px 26px" }}>
-              <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20, color: "var(--ink)", margin: 0 }}>{h.title}</h3>
-              <p style={{ fontSize: 14, color: "var(--ink-soft)", margin: "6px 0 0" }}>{h.dateLabel}</p>
-              <ul style={{ margin: "10px 0 0", paddingLeft: 20, fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.6 }}>
-                {h.points.map((pt) => <li key={pt}>{pt}</li>)}
-              </ul>
-            </div>
-          ))}
-
-          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 26, color: "var(--ink)", margin: "32px 0 0" }}>Teaching archive</h2>
+          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 26, color: "var(--ink)", margin: "32px 0 0" }}>More from the archive</h2>
           <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, padding: "24px 26px" }}>
-            <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20, color: "var(--ink)", margin: 0 }}>{spiritualGiftsTeaching.title}</h3>
-            <p style={{ fontSize: 14, color: "var(--ink-soft)", margin: "6px 0 0" }}>{spiritualGiftsTeaching.subtitle}</p>
-            <p style={{ fontSize: 13.5, color: "var(--ink-soft)", margin: "10px 0 0", lineHeight: 1.6 }}>{spiritualGiftsTeaching.note}</p>
-            <details style={{ marginTop: 14 }}>
-              <summary style={{ cursor: "pointer", fontSize: 14, fontWeight: 700, color: "var(--red)" }}>Read the outline</summary>
-              <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 14 }}>
-                {spiritualGiftsTeaching.sections.map((sec) => (
-                  <div key={sec.heading}>
-                    <h4 style={{ fontSize: 15, fontWeight: 700, color: "var(--ink)", margin: 0 }}>{sec.heading}</h4>
-                    <ul style={{ margin: "6px 0 0", paddingLeft: 20, fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.6 }}>
-                      {sec.points.map((pt) => <li key={pt}>{pt}</li>)}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </details>
+            <p style={{ fontSize: 14.5, color: "var(--ink-soft)", margin: 0, lineHeight: 1.6 }}>Looking-back stories, messages and teaching outlines now live on the blog.</p>
+            <ul style={{ margin: "12px 0 0", paddingLeft: 20, fontSize: 14.5, lineHeight: 1.9 }}>
+              {archiveLinks.map((l) => (
+                <li key={l.slug}><Link href={`/blog/${l.slug}`} style={{ color: "var(--red)", fontWeight: 600, textDecoration: "none" }}>{l.label}</Link></li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
