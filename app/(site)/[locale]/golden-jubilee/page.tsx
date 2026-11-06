@@ -61,6 +61,21 @@ const pioneers: { name: string; title: string; note?: string; photo?: string }[]
   { name: "Prophet (Dr.) Samuel Kayode Abiara", title: "Planter of CAC Vineyard of Comfort (Agbala Itura), Retired General Evangelist", photo: "/images/leaders/abiara-2026.jpg" },
 ];
 
+/** Honoured on the day, names as printed in the programme. */
+const mothersOfTheDay = [
+  "Evangelist Mrs. Funmi Efuntoye", "Evangelist (Dr.) Mrs. Funmi Oni", "Evangelist Mrs. Bukola Williams", "Evangelist Mrs. Bolanle Mustapha",
+  "Deaconess Mrs. Wuraola Akindileni", "Evangelist Mrs. Jumoke Famojuro", "Evangelist Mrs. Toyin Ajibolade", "Evangelist Mrs. Abiola Oyetunde",
+];
+const fathersOfTheDay = ["Pastor (Dr.) Teniola", "Elder Rufus Fashakin", "Pastor Bolaji Oladunni", "Dr. Olasunkanmi Oyetunde"];
+
+/** The thanksgiving service, in the order printed. Hymn numbers refer to the CAC hymnal. */
+const orderOfService = [
+  "Praise & Worship", "Opening hymn: Praise Him, Praise Him (Hymn 66)", "Prayer", "Scripture reading", "Recognition of guests",
+  "Joint choir ministration", "Second hymn: O God, Our Help in Ages Past (Hymn 176)", "Joint choir ministration", "Brief exhortation",
+  "Prayer after exhortation", "Awards", "Jubilee celebration thanksgiving", "Vote of thanks",
+  "Closing hymn: I'm Pressing on the Upward Way (Hymn 26)", "Prayer", "Watchword", "Benediction",
+];
+
 const leaders: { name: string; role: string }[] = [
   { name: "Pastor Samuel Olusegun Oladele", role: "President, Christ Apostolic Church" },
   { name: "Pastor E. O. Odejobi", role: "General Superintendent" },
@@ -179,6 +194,16 @@ export default async function GoldenJubileePage({
                 </li>
               ))}
             </ul>
+            <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 19, color: "var(--ink)", margin: "10px 0 0" }}>Mothers and Fathers of the Day</h3>
+            <p style={{ ...pStyle, fontSize: 15.5 }}><strong style={strong}>Mothers:</strong> {mothersOfTheDay.join("; ")}.</p>
+            <p style={{ ...pStyle, fontSize: 15.5 }}><strong style={strong}>Fathers:</strong> {fathersOfTheDay.join("; ")}.</p>
+          </Chapter>
+
+          <Chapter id="service" title="Order of service">
+            <p style={pStyle}>The Golden Jubilee thanksgiving service followed this order.</p>
+            <ol style={{ margin: 0, paddingLeft: 24, display: "grid", gap: 6, fontSize: 16, color: "var(--ink)", lineHeight: 1.5 }}>
+              {orderOfService.map((item, i) => <li key={i}>{item}</li>)}
+            </ol>
           </Chapter>
 
           <Chapter id="leaders" title="Our leaders today">
