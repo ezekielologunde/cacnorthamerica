@@ -31,6 +31,7 @@ CLI (no local CLI link). See [[Decisions]].
 | 0017 | Ilufoye title to Ph.D. |
 | 0018 | `giving_invoices` |
 | 0019 | `serve_signups` |
+| 0020 | `leaders` data update from the Golden Jubilee brochure (data only, no schema change); **applied to the live project 2026-11-05** at the owner's instruction ("follow brochure") as `leaders_golden_jubilee_2026` |
 
 Whether 0015, 0016, 0018, 0019 are applied in production is **Unverified**:
 each header says apply only with the site owner's say-so. See [[Tasks]].
@@ -59,7 +60,7 @@ Later:
 
 - `cacna.is_admin()` -- `security definer`, `search_path = cacna`, true when
   `auth.uid()` is in `admin_profiles`. Used by every admin policy.
-- No other RPCs or triggers found in 0010-0019.
+- No other RPCs or triggers found in 0010-0020.
 
 ## RLS
 
