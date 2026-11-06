@@ -38,6 +38,44 @@ export interface BlogPost {
 // or via the admin console (/admin/blog) going forward.
 const RAW_POSTS: Omit<BlogPost, "categoryColor" | "accent">[] = [
   {
+    slug: "tribute-to-late-pastor-abraham-adegoke-oyedeji",
+    title: "A Tribute to Late Pastor (Dr.) Abraham Adegoke Oyedeji",
+    excerpt:
+      "The Oyedeji family and CAC First in the Americas remember the Senior Pastor and DCC Superintendent who planted the seeds of Christ Apostolic Church in the Western Hemisphere.",
+    date: "October 10, 2026",
+    dateIso: "2026-10-10",
+    category: "Ministry Update",
+    readTime: "2 min read",
+    image: { url: "/images/leaders/oyedeji-2026.jpg", alt: "Late Pastor (Dr.) Abraham Adegoke Oyedeji, Senior Pastor and DCC Superintendent, CAC First in the Americas", orientation: "portrait" },
+    body: [
+      "_From the Golden Jubilee brochure: “We celebrate the goodness of God and 50 years of CAC in the Americas.”_",
+      "The brochure remembers Late Pastor (Dr.) Abraham Adegoke Oyedeji, Senior Pastor and DCC Superintendent of CAC First in the Americas, as a man of true spiritual leadership, marked by humility, compassion and devotion to the service of others.",
+      "**A pioneer of the church in the Americas.** The tribute says that through his pioneering work and dedication he was instrumental in planting the seeds of Christ Apostolic Church in the Western Hemisphere. His efforts and foresight established not only congregations but vibrant spiritual homes and lasting communities where faith thrives.",
+      "**A legacy that continues.** The family writes that they are eternally grateful for his legacy, and that his enduring vision and selfless commitment to spreading the Gospel continue to inspire, as a testament to a life lived in service to God and humanity.",
+      "_Signed: The Oyedeji Family and CAC First in the Americas._",
+    ],
+  },
+  {
+    slug: "apostle-timothy-oluwole-obadare-life-and-ministry",
+    title: "Apostle Timothy Oluwole Obadare: A Life of Preaching the Gospel",
+    excerpt:
+      "From the Golden Jubilee brochure: the life and ministry of the late Apostle Dr. T.O. Obadare, who established Christ Apostolic Church in London in 1979 and in the United States in 1981.",
+    date: "October 10, 2026",
+    dateIso: "2026-10-10",
+    category: "Reflection",
+    readTime: "3 min read",
+    image: { url: "/images/leaders/obadare-2026.jpg", alt: "The late Apostle Dr. Timothy Oluwole Obadare" },
+    body: [
+      "_From the Golden Jubilee brochure, the page honouring Apostle T.O. Obadare._",
+      "Born in 1925, the late Apostle Dr. Timothy Oluwole Obadare was a chosen preacher of the Word of God. Many called him a divine microphone of the Lord Jesus Christ and an ambassador of Almighty God. Like Paul, he said that it was a must for him to preach the gospel, and he preached in season and out of season.",
+      "**A passion for souls.** He travelled the world speaking at revival meetings and crusades, and on radio and television at home and abroad, with a visible burden “to reach the world, be instant in season, out of season, rebuke, exhort, with all long suffering and doctrine” (2 Timothy 4:2).",
+      "**Honours.** He received many honorary degrees, including a Doctor of Ministry from St. John’s University, Missouri (1985), and an Honorary Doctor of Divinity from the Trinity College of Ministerial Arts, Aba, Imo State, Nigeria (1990). He was also made a member of the International Affairs Leadership Parliament of the Golden State University of Los Angeles, and was recognised by the International Theological Seminary of Desoto and Honolulu University, Hawaii.",
+      "**Service in the church.** He served Christ Apostolic Church worldwide as a choir leader, prophet, pastor, Assistant General Evangelist, General Evangelist and Apostle. By God’s grace he established Christ Apostolic Church in London in 1979 and in the United States in 1981. He was Executive Director and Founder of the World Soul-Winning Evangelistic Ministry (WOSEM), a ministry established solely for evangelism, and President of the Interdenominational Ministers’ Association of Nigeria.",
+      "**Signs and wonders.** The brochure records that thousands were saved in his crusades, that the blind received sight, barren women conceived and people were healed of many conditions, and gives glory to God for the life of His servant.",
+      "After more than six decades of evangelistic work he lived 88 years and went to be with the Lord in 2013. The brochure closes: “Praise God for such a gift to our generation.”",
+    ],
+  },
+  {
     slug: "golden-jubilee-message-from-the-president",
     title: "Golden Jubilee Message from the President of CAC",
     excerpt:
