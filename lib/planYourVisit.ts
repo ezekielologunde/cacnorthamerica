@@ -138,4 +138,4 @@ export const rules = [
   "There shall be a series of prayer sessions, particularly every morning, organized by the prayer department throughout this convention that will touch every area of your life, ministry, marriage, career, and business, etc.",
 ];
 
-export const rulesAttribution = "Pastor David Olusegun Adenodi, Ph.D. — Chairman, CACNA Conventions & Conferences";
+export const rulesAttribution = "Pastor David Olusegun Adenodi, Ph.D. — former Chairman, CACNA Conventions & Conferences";

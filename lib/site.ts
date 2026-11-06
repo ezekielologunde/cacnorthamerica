@@ -139,7 +139,7 @@ export function churchJsonLd() {
         sameAs: SITE.sameAs,
         employee: [
           { "@type": "Person", name: "Pastor Dr. T.O. Agbeja", jobTitle: "Regional Superintendent, CACNA" },
-          { "@type": "Person", name: "Pastor David Adenodi, Ph.D.", jobTitle: "Chairman, CACNA Convention" },
+          { "@type": "Person", name: "Pastor Oluwagbemiga Famojuro, D.Min.", jobTitle: "Chairman, CACNA Convention" },
           { "@type": "Person", name: "Pastor Joseph Olawale Latunde", jobTitle: "Regional Secretary, CACNA" },
           { "@type": "Person", name: "Pastor Timothy Adelani", jobTitle: "Regional Treasurer, CACNA" },
           { "@type": "Person", name: "Pastor John Oluwatimilehin, Ph.D.", jobTitle: "Chairman, CAC Village Management Council" },
