@@ -252,6 +252,9 @@ export default async function AboutPage({
               <Link href="/history" style={{ display: "inline-flex", alignItems: "center", gap: 8, alignSelf: "flex-start", color: "var(--red)", fontWeight: 700, fontSize: 16, textDecoration: "none" }}>
                 Read the full history →
               </Link>
+              <Link href="/golden-jubilee" style={{ display: "inline-flex", alignItems: "center", gap: 8, alignSelf: "flex-start", color: "var(--red)", fontWeight: 700, fontSize: 16, textDecoration: "none" }}>
+                Our Golden Jubilee, 50 years in the Americas →
+              </Link>
             </div>
           </Reveal>
         </div>
