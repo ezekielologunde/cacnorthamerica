@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import "@/app/(site)/[locale]/mobile-events-media.css";
 import type { Metadata } from "next";
 import { Nav } from "@/components/navigation/Nav";
@@ -90,6 +91,9 @@ export default async function ArchivePage({
                     </div>
                   )}
                   {cy.year === 2026 && (
+                    <Image src="/photos/archive/cacna-2026-convention-flier.jpg" alt="Flier for the CACNA 2026 Annual Convention, The Bible: God’s Message to Man, 13 to 18 July 2026" width={1127} height={1600} sizes="(max-width: 760px) 100vw, 420px" style={{ width: "100%", maxWidth: 420, height: "auto", borderRadius: 12, marginTop: 16, display: "block" }} />
+                  )}
+                  {cy.year === 2026 && (
                     <Link href="/events/cacna-2026/schedule" style={{ display: "inline-block", marginTop: 16, fontSize: 13.5, fontWeight: 700, color: "var(--red)", textDecoration: "none" }}>
                       View full schedule →
                     </Link>
@@ -109,6 +113,9 @@ export default async function ArchivePage({
               <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20, color: "var(--ink)", margin: 0 }}>{ev.title}</h3>
               <p style={{ fontSize: 14, color: "var(--ink-soft)", margin: "6px 0 0" }}>{ev.dateLabel}</p>
               <p style={{ fontSize: 14.5, color: "var(--ink-soft)", margin: "10px 0 0", lineHeight: 1.6 }}>{ev.detail}</p>
+              {ev.imageSrc && (
+                <Image src={ev.imageSrc} alt={ev.imageAlt ?? ""} width={1280} height={1600} sizes="(max-width: 760px) 100vw, 500px" style={{ width: "100%", maxWidth: 420, height: "auto", borderRadius: 12, marginTop: 16 }} />
+              )}
             </div>
           ))}
 
