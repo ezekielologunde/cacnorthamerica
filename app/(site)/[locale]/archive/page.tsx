@@ -104,11 +104,6 @@ export default async function ArchivePage({
                     <Image src="/photos/archive/cacna-2026-convention-flier.jpg" alt="Flier for the CACNA 2026 Annual Convention, The Bible: God’s Message to Man, 13 to 18 July 2026" width={1127} height={1600} sizes="(max-width: 760px) 100vw, 420px" style={{ width: "100%", maxWidth: 420, height: "auto", borderRadius: 12, marginTop: 16, display: "block" }} />
                   )}
                   {cy.year === 2026 && (
-                    <Link href="/blog/2026-convention-booklet-highlights" style={{ display: "inline-block", marginTop: 16, marginRight: 18, fontSize: 13.5, fontWeight: 700, color: "var(--red)", textDecoration: "none" }}>
-                      Booklet highlights →
-                    </Link>
-                  )}
-                  {cy.year === 2026 && (
                     <Link href="/events/cacna-2026/schedule" style={{ display: "inline-block", marginTop: 16, fontSize: 13.5, fontWeight: 700, color: "var(--red)", textDecoration: "none" }}>
                       View full schedule →
                     </Link>

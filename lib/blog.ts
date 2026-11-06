@@ -146,24 +146,6 @@ const RAW_POSTS: Omit<BlogPost, "categoryColor" | "accent">[] = [
     ],
   },
   {
-    slug: "2026-convention-booklet-highlights",
-    title: "2026 Convention Booklet Highlights",
-    excerpt:
-      "Who spoke, what each department held, and how the week ran at the 2026 CACNA Annual Convention, from the printed booklet.",
-    date: "July 18, 2026",
-    dateIso: "2026-07-18",
-    category: "Event Spotlight",
-    readTime: "3 min read",
-    body: [
-      "_Highlights from the printed 2026 convention booklet (13–18 July 2026, CAC Village)._",
-      "**Committee.** The Convention & Conference Committee was chaired by Pastor David O. Adenodi, Ph.D., with Pastor Oluwagbemiga Famojuro, D.Min, as Secretary.",
-      "**Ministers’ sessions.** Pastor T.A.O. Agbeja spoke on “Transformative Power of the Word”; Pastor Simeon Oladokun, Regional Superintendent of the Anosike Region (CAC Europe), on “The Divine Word as a Guide for Our Daily Living”; Right Rev. Prof. Dapo F. Asaju, Bishop of Ijesha Diocese, on “The Perfect Encourager in Time of Tries, Tribulations and Challenges”; and Pastor S.O. Oladele, President of CAC Nigeria & Overseas, led Ministers’ Session 4.",
-      "**Nights.** Revival Nights were led by Prophet H. Oladeji. Praise Night was on Thursday 16 July, with Impartation Night, the Ordination Service and the Holy Communion and Closing Service on 17–18 July.",
-      "**Welcome address.** The Regional Superintendent welcomed the President, the General Superintendent, the Mission Director and guests from Nigeria and Europe, and thanked every department and zone for their support of the work at CAC Village.",
-      "**Departments.** The Children’s program (15–17 July) was themed “Preparing God’s People for Leadership” (Psalm 12:1), with daily sessions on God’s message to children (Mark 10:14). The Christian Education session, chaired by Pastor Gbenga Famojuro, D.Min, took “The Bible: A Dynamic Force for the Church” (Hebrews 4:12). The Good Women Association met on 15 and 16 July on “Raising Godly children in marriages, while navigating cultural and social challenges”. The Business Group Fellowship met on 16 July with a guest lecture by Dr. Jumoke Ojo, and the Men Association (CACMA) held sessions on 15 and 16 July. The Youth and Young Adult Ministry (16–17 July) took “Did God Really Say…? Knowing God’s Word for Yourself”, with workshops, the annual CACNA picnic, a Praise Night and Bible Jeopardy.",
-    ],
-  },
-  {
     slug: "cac-in-brazil-joins-latunde-region",
     title: "CAC in Brazil Joins Latunde Region",
     excerpt:
