@@ -42,7 +42,7 @@ export interface ConventionYear {
  *  as soon as it's announced — everything downstream (nav CTA, events page,
  *  announcement bar) picks it up automatically. */
 export const conventionYears: ConventionYear[] = [
-  // 2019/2020/2024/2025 have no dedicated /events/cacna-YYYY detail page (excluded
+  // 2019/2020/2022/2024/2025 have no dedicated /events/cacna-YYYY detail page (excluded
   // from the [slug] "Save the Date" template via its FUTURE_YEARS filter,
   // since that copy is written for upcoming years, not archived ones) --
   // href points at the archive listing instead. No pricingTiers recorded for
@@ -59,6 +59,12 @@ export const conventionYears: ConventionYear[] = [
     // wasn't at CAC Village (confirmed against Convention's own
     // lib/content/convention.ts during the Phase B data reconciliation).
     venue: "Virtual (Zoom Video Conference) — held online due to the COVID-19 pandemic",
+    href: "/archive",
+  },
+  {
+    year: 2022, startIso: "2022-07-11", endIso: "2022-07-16",
+    // From the printed 2022 convention booklet cover (CAC Village, Blue Ridge Summit, PA).
+    theme: "Grow in the Grace and Knowledge of Our Lord Jesus",
     href: "/archive",
   },
   {
