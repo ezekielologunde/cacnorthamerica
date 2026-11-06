@@ -484,3 +484,13 @@ textarea.reg-input { padding: 12px 14px; }
 .ed-row-thumb { flex-basis: 220px; border-radius: 8px; }
 .ed-row-text { max-width: 64ch; }
 @media (max-width: 640px) { .ed-row-thumb { flex-basis: 110px; } .ed-hero { min-height: 520px; } }
+
+/* ── Registration quick help ── */
+.quick-help-item { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; }
+.quick-help-item summary { cursor: pointer; list-style: none; padding: 14px 18px; min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-weight: 700; font-size: 16px; color: var(--ink); }
+.quick-help-item summary::-webkit-details-marker { display: none; }
+.quick-help-item summary::after { content: "+"; font-size: 22px; font-weight: 600; color: var(--red); line-height: 1; }
+.quick-help-item[open] summary::after { content: "2"; }
+.quick-help-item p { margin: 0; padding: 0 18px 16px; font-size: 15px; line-height: 1.65; color: var(--ink-soft); }
+.quick-help-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--paper); color: var(--ink); font-weight: 700; font-size: 15px; text-decoration: none; }
+.quick-help-link:hover { border-color: var(--red); color: var(--red); }

@@ -127,9 +127,13 @@ function validateRequestBody(body: unknown): string | null {
   if (b.contactPhone != null && typeof b.contactPhone !== "string") {
     return "contactPhone must be a string";
   }
-  // Same label and rule as the youth track's DCC / Zone.
+  // One "DCC / Zone / Church" field: people who do not know their DCC or zone
+  // enter their church name there.
   if (typeof b.dccZone !== "string" || b.dccZone.trim() === "") {
-    return "DCC / Zone is required";
+    return "DCC / Zone / Church is required";
+  }
+  if (typeof b.contactPhone !== "string" || (b.contactPhone.match(/\d/g) ?? []).length < 7) {
+    return "Please enter a phone number we can reach you on";
   }
   for (const value of [b.contactName, b.contactEmail, b.churchName ?? "", b.contactPhone ?? "", b.dccZone]) {
     if (value.length > MAX_FIELD_LENGTH) {

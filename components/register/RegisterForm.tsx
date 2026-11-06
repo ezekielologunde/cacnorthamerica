@@ -411,7 +411,7 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
         />
       </label>
       <label style={{ display: "block", marginBottom: 14 }}>
-        <span style={labelStyle}>{ty("dccZone")} <span style={{ color: "var(--red)" }}>*</span></span>
+        <span style={labelStyle}>{t("dccZoneChurch")} <span style={{ color: "var(--red)" }}>*</span></span>
         <input
           className="field-input reg-input"
           name="dcc-zone"
@@ -421,10 +421,14 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
           autoComplete="off"
           autoCapitalize="words"
           enterKeyHint="next"
+          aria-describedby="dcc-zone-hint"
         />
+        <span id="dcc-zone-hint" style={{ display: "block", marginTop: 6, fontSize: 13.5, color: "var(--ink-soft)", lineHeight: 1.45 }}>
+          {t("dccZoneChurchHint")}
+        </span>
       </label>
       <label style={{ display: "block", marginBottom: 14 }}>
-        <span style={labelStyle}>{t("contactPhone")}</span>
+        <span style={labelStyle}>{t("contactPhone")} <span style={{ color: "var(--red)" }}>*</span></span>
         <input
           className="field-input reg-input"
           name="tel"
@@ -432,10 +436,11 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
           inputMode="tel"
           value={contactPhone}
           onChange={(e) => setContactPhone(e.target.value)}
+          required
           autoComplete="tel"
           enterKeyHint="done"
         />
-        <span style={hintStyle}>Only used if we need to reach you about your registration.</span>
+        <span style={hintStyle}>Only used to reach you about your registration or payment.</span>
       </label>
 
       {total > 0 && (
