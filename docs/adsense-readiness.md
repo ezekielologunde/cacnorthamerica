@@ -43,14 +43,14 @@ Google's decision; nothing here guarantees it.
    AdSense tags "may also load and use cookies"; add the opt-out wording before
    you apply.
 
-## Still blocking ads after approval
+## Content-Security-Policy
 
-The Content-Security-Policy in `next.config.ts` allows the AdSense script
-(`pagead2.googlesyndication.com`) but not the origins ads are served from:
-`frame-src` and `connect-src` do not list Google's ad domains (for example
-`googleads.g.doubleclick.net` and `tpc.googlesyndication.com`). Until the
-policy is widened, the browser blocks the ad frames even with an approved
-account.
+The policy in `next.config.ts` already allows what ads need: the AdSense script
+(`pagead2.googlesyndication.com`), Google's ad origins in `frame-src`
+(`googleads.g.doubleclick.net`, `tpc.googlesyndication.com`) and
+`https://*.g.doubleclick.net` in `connect-src`. Nothing to widen before you
+apply. If Google later serves ads from a new origin and ad frames show blocked
+in the browser console, add that origin there.
 
 ## Content quality
 
