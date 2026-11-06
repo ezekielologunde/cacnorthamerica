@@ -30,10 +30,10 @@ const SETTLED_PAYMENT_STATUSES = new Set(["paid", "no_payment_required"]);
 
 // Best-effort dedupe of Stripe redeliveries, keyed by session id. There is
 // no database for these records, so this only catches repeats that reach the
-// same warm instance. Emails are also deduped across instances by Resend
-// idempotency keys (24h window). A duplicate sheet row is still possible when
-// a redelivery lands on a different instance; its "Stripe Session" column
-// identifies it.
+// same warm instance. Sheet rows are deduped durably by the receiver using
+// a key per session and recording step. These sets are only a warm-instance optimization.
+// Emails use Resend idempotency keys (24h window); an email repeated after
+// that window can still be sent again. This is not an exactly-once email ledger.
 //
 // handledSessions: fully recorded (sheet row + email); added only on success.
 // inFlightSessions: claimed synchronously, before the first await, so an
@@ -326,6 +326,8 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
   const metadata = full.metadata ?? undefined;
   const kind = metadata?.kind;
   const idempotencyKey = `checkout-session/${sessionId}`;
+  const logCheckoutSheet = (formName: string, fields: Record<string, string>, step = "sheet") =>
+    logToSheetChecked(formName, fields, `${idempotencyKey}/${step}`);
   // Both steps run on every attempt (each skipped if an earlier attempt on
   // this instance already did it); the session counts as handled only when
   // both succeeded.
@@ -363,10 +365,10 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
         const startIso = conventionYears.find((cy) => cy.year === summary.year)?.startIso;
         const rows = youthSheetRows(summary, { stripeSession: sessionId, status: "paid", startIso, contactEmail, feeColumns: regFeeColumns, checkinCodes: checkinCodesFor(summary) });
         for (const [i, row] of rows.entries()) {
-          sheetOk = await runStep(sessionId, `sheet-${i}`, () => logToSheetChecked(youthSheetName(summary.year), row));
+          sheetOk = await runStep(sessionId, `sheet-${i}`, () => logCheckoutSheet(youthSheetName(summary.year), row, `sheet-${i}`));
           if (!sheetOk) break;
         }
-      } else sheetOk = await runStep(sessionId, "sheet", () => logToSheetChecked(`Registration — CACNA ${summary?.year ?? metadata?.convention_year ?? ""}`, {
+      } else sheetOk = await runStep(sessionId, "sheet", () => logCheckoutSheet(`Registration — CACNA ${summary?.year ?? metadata?.convention_year ?? ""}`, {
         "Registration Type": summary?.registrationType ?? "",
         "Church Name": summary?.churchName ?? "",
         "Contact Name": summary?.contactName ?? "",
@@ -416,7 +418,7 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
       if (summary && gift > 0) {
         const giftEmailTo = contactEmail || summary.contactEmail;
         const campaignTitle = `CACNA ${summary.year} Convention gift`;
-        const giftSheetOk = await runStep(sessionId, "gift-sheet", () => logToSheetChecked("Giving", {
+        const giftSheetOk = await runStep(sessionId, "gift-sheet", () => logCheckoutSheet("Giving", {
           "Campaign": campaignTitle,
           "Contact Name": summary.contactName,
           "Contact Email": giftEmailTo,
@@ -424,7 +426,7 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
           "Processing Fee": dollars(0),
           "Amount Charged": dollars(gift),
           "Stripe Session": sessionId,
-        }));
+        }, "gift-sheet"));
         sheetOk = sheetOk && giftSheetOk;
         if (giftEmailTo) {
           const giftEmailOk = await runStep(sessionId, "gift-email", () => sendGivingConfirmationEmail({
@@ -447,7 +449,7 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
         ? [ship.name, ship.address.line1, ship.address.line2, `${ship.address.city ?? ""}, ${ship.address.state ?? ""} ${ship.address.postal_code ?? ""}`.trim(), ship.address.country].filter(Boolean).join(", ")
         : "";
 
-      sheetOk = await runStep(sessionId, "sheet", () => logToSheetChecked("Store Order", {
+      sheetOk = await runStep(sessionId, "sheet", () => logCheckoutSheet("Store Order", {
         "Contact Name": metadata?.contact_name ?? "",
         "Contact Email": contactEmail,
         "Ship To": shippingAddress,
@@ -469,7 +471,7 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
     } else if (kind === "giving") {
       const campaignTitle = metadata?.campaign_title ?? "";
 
-      sheetOk = await runStep(sessionId, "sheet", () => logToSheetChecked("Giving", {
+      sheetOk = await runStep(sessionId, "sheet", () => logCheckoutSheet("Giving", {
         "Campaign": campaignTitle,
         "Contact Name": metadata?.contact_name ?? "",
         "Contact Email": contactEmail,

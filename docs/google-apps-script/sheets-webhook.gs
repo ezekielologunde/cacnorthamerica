@@ -14,7 +14,7 @@
  * for the full walkthrough):
  *   1. Create a Google Sheet, open Extensions -> Apps Script.
  *   2. Replace the boilerplate with this file's contents.
- *   3. (Optional but recommended) Project Settings -> Script Properties ->
+ *   3. Required: Project Settings -> Script Properties ->
  *      add WEBHOOK_SECRET with a random value. Set the same value as
  *      SHEETS_WEBHOOK_SECRET in Vercel's environment variables.
  *   4. Deploy -> New deployment -> Web app -> Execute as "Me", access
@@ -39,30 +39,63 @@
  */
 
 function doPost(e) {
-  var lock = LockService.getScriptLock();
-  lock.tryLock(10000);
-
+  var lock;
+  var acquired = false;
   try {
     var data = JSON.parse(e.postData.contents);
-
     var expectedSecret = PropertiesService.getScriptProperties().getProperty("WEBHOOK_SECRET");
-    if (expectedSecret && data.secret !== expectedSecret) {
+    if (!expectedSecret || data.secret !== expectedSecret) {
       return jsonResponse({ ok: false, error: "Invalid secret" });
     }
     delete data.secret;
 
+    var key = data.idempotencyKey;
+    if (key !== undefined && (typeof key !== "string" || !/^[A-Za-z0-9_:/.-]{1,200}$/.test(key))) {
+      return jsonResponse({ ok: false, error: "Invalid idempotency key" });
+    }
+    delete data.idempotencyKey;
+    delete data["Idempotency Key"];
     var formName = String(data.formName || "Unknown").slice(0, 90);
     delete data.formName;
 
-    var sheet = getOrCreateSheet(formName);
-    appendRow(sheet, data);
+    lock = LockService.getScriptLock();
+    acquired = lock.tryLock(10000);
+    if (!acquired) return jsonResponse({ ok: false, error: "Busy; retry later" });
 
-    return jsonResponse({ ok: true });
+    var sheet = getOrCreateSheet(formName);
+    // The marker is stored in the row itself, not in a second properties
+    // write: a crash after append but before acknowledgement is safe to retry.
+    // The lock covers lookup, schema changes, append and flush.
+    if (key && hasIdempotencyKey(sheet, key)) {
+      return jsonResponse({ ok: true, duplicate: true, idempotencyKey: key });
+    }
+    if (key) {
+      // Keep the human-facing check-in code as the final column.
+      var checkin = data["Check-in Code"];
+      delete data["Check-in Code"];
+      data["Idempotency Key"] = key;
+      if (checkin !== undefined) data["Check-in Code"] = checkin;
+    }
+    appendRow(sheet, data);
+    SpreadsheetApp.flush();
+    return jsonResponse(key ? { ok: true, idempotencyKey: key } : { ok: true });
   } catch (err) {
     return jsonResponse({ ok: false, error: String(err) });
   } finally {
-    lock.releaseLock();
+    if (acquired) lock.releaseLock();
   }
+}
+
+function hasIdempotencyKey(sheet, key) {
+  var columns = sheet.getLastColumn();
+  var rows = sheet.getLastRow();
+  if (!columns || rows < 2) return false;
+  var headers = sheet.getRange(1, 1, 1, columns).getValues()[0];
+  var column = headers.indexOf("Idempotency Key") + 1;
+  if (!column) return false;
+  return sheet.getRange(2, column, rows - 1, 1).getValues().some(function (row) {
+    return row[0] === key;
+  });
 }
 
 // Read-back for the admin Operations page (lib/sheetsRead.ts): GET ?secret=...

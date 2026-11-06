@@ -2,7 +2,7 @@
 project: cacnorthamerica
 type: architecture
 status: active
-last_updated: 2026-11-05
+last_updated: 2026-11-06
 tags: [project/cacnorthamerica]
 ---
 
@@ -242,8 +242,9 @@ escaping).
 **Sheets webhook:** the repo copy of `docs/google-apps-script/sheets-webhook.gs`
 inserts a column the tab has not seen just before a trailing `Check-in Code`
 column (anywhere else it is added at the far right), so the first Zelle row on
-an existing tab puts `Zelle Reference` before `Check-in Code`. The live script
-does not do this yet. Re-paste this into the live Apps Script project
+an existing tab puts `Zelle Reference` before `Check-in Code`. Live deployment of the repo copy is unverified. Paid-row idempotency keys now
+also depend on installing the updated receiver, which checks lock acquisition
+and requires the shared secret. See [[Payments]] for rollout order. Re-paste this into the live Apps Script project
 (Extensions > Apps Script) and redeploy a new version for it to take effect;
 until then, add the 'Zelle Reference' header by hand before 'Check-in Code'.
 

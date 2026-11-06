@@ -6,7 +6,9 @@ import type { BeginResult, InvoiceStep, InvoiceStore } from "@/lib/givingInvoice
 // cacna.giving_invoices (supabase/migrations/0018_giving_invoices.sql). The row
 // is the claim on the invoice (its primary key allows one delivery to insert
 // it) and remembers which steps, sheet row and receipt email, already
-// succeeded, so a redelivery on any serverless instance repeats nothing.
+// succeeded, so a redelivery on another instance skips confirmed steps.
+// Sheets also dedupes its row key if append succeeded before markDone.
+// Email sent before a failed mark relies on Resend's 24-hour dedupe window.
 //
 // Unlike lib/checkinStore.ts this is NOT best effort: the webhook needs to
 // know. Any database error throws, the caller answers 500, and Stripe retries

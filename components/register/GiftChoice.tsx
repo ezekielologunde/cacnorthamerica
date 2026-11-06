@@ -58,7 +58,7 @@ export function GiftChoice({
     <fieldset style={{ border: "none", padding: 0, margin: "24px 0 0", minWidth: 0 }}>
       <legend style={{ ...legendStyle, padding: 0, marginBottom: 4, fontSize: 15 }}>Add a gift to the convention (optional)</legend>
       <p style={{ fontSize: 13.5, color: "var(--ink-soft)", margin: "0 0 10px", lineHeight: 1.5 }}>
-        Your gift is separate from your registration and tax-deductible. It supports the convention and the work of CACNA.
+        Your gift is separate from your registration and supports the convention and the work of CACNA. It may be tax-deductible to the extent permitted by law. Please consult your tax adviser.
       </p>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
         <button type="button" aria-pressed={giftCents === 0 && custom === ""} style={chip(giftCents === 0 && custom === "")} onClick={() => { setCustom(""); onChange(0); }}>

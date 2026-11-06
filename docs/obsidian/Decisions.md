@@ -10,6 +10,20 @@ tags: [project/cacnorthamerica]
 
 Related: [[Project]] · [[Architecture]] · [[Features]]
 
+## Payment row retries are deduplicated at the receiver (2026-11-06)
+
+A database flag written after a Google Sheets append cannot by itself make that
+append exactly once. Each paid checkout step and recurring invoice now sends a
+stable idempotency key. The Apps Script checks it under an acquired script lock
+and stores it in the same appended row, before releasing the lock. The checked
+sender requires the receiver to echo the key and fails closed without its URL
+or secret. This is a source change, not a live receiver/configuration change.
+See [[Payments]] for deployment order and remaining email limitations.
+
+The optional gift copy now says it may be tax-deductible to the extent permitted
+by law. It does not determine tax eligibility, issue legal advice, or change
+which invoice billing reasons count as gifts; those remain owner/adviser decisions.
+
 ## Convention registration gift: its own line, fee not passed on (2026-11-06)
 
 A card registration can add an optional gift. It is a separate Stripe line item

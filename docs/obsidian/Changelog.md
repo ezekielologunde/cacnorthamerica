@@ -2,13 +2,24 @@
 project: cacnorthamerica
 type: changelog
 status: active
-last_updated: 2026-11-05
+last_updated: 2026-11-06
 tags: [project/cacnorthamerica]
 ---
 
 # Changelog
 
 Related: [[Project]] · [[Decisions]] · [[Features]] · [[Payments]] · [[Security]]
+
+## 2026-11-06 -- local payment retry fixes and regression gate
+
+- Added receiver-persisted payment row keys, checked lock acquisition, required
+  POST secret, key acknowledgements and bounded sender requests.
+- Closed the Sheets append-before-invoice-mark retry gap at the receiver.
+- Qualified registration gift tax wording without asserting eligibility.
+- Added offline receiver/crash/cold-retry tests, adult/youth gift integration
+  checks and recurring checkout route checks; wired payment checks into `npm test`.
+- Source only: no push, deployment, migrations, real payment or live settings
+  changes. See [[Payments]] and [[Tasks]] for remaining owner verification.
 
 ## 2026-11-06 -- registration contact fields and Quick help
 

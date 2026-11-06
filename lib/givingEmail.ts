@@ -4,8 +4,8 @@ import { emailCard, emailShell, sender } from "@/lib/email";
 import { SITE, SITE_URL } from "@/lib/site";
 
 export type GivingConfirmationInput = {
-  /** Resend idempotency key (24h window) so a redelivered webhook never
-   *  sends the same confirmation twice. */
+  /** Resend idempotency key: repeated sends within its 24h window are
+   *  deduplicated. This is not a permanent exactly-once guarantee. */
   idempotencyKey?: string;
   contactName: string;
   contactEmail: string;

@@ -10,6 +10,7 @@ import { registerHooks } from "node:module";
 import { pathToFileURL } from "node:url";
 import { existsSync } from "node:fs";
 import path from "node:path";
+import { receiverWorld } from "./helpers/sheets-receiver.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
 const FAKE_STRIPE_MODULE = "data:text/javascript,export const getStripeClient = () => globalThis.__fakeStripe;";
@@ -37,7 +38,7 @@ process.env.STRIPE_WEBHOOK_SECRET = "whsec_check_script_only";
 process.env.SHEETS_WEBHOOK = SHEETS_URL;
 process.env.RESEND_API_KEY = "re_check_script_only";
 process.env.REGISTRATION_SIGNING_SECRET = "check-script-only-secret";
-delete process.env.SHEETS_WEBHOOK_SECRET;
+process.env.SHEETS_WEBHOOK_SECRET = "check-script-only-secret";
 console.error = () => {}; // the handler logs every simulated failure
 
 // Fake Stripe: signature check just parses the body; retrieve is slow enough
@@ -70,6 +71,9 @@ const failNext = { sheet: 0, email: 0 };
 const sheetReplies = [];
 const youthRows = [];
 const allRows = []; // every accepted row, in full
+const sheetReceiver = receiverWorld();
+sheetReceiver.state.secret = process.env.SHEETS_WEBHOOK_SECRET;
+let loseSheetReply = false;
 const emailBodies = []; // every sent email's Resend payload
 let failRowNamed = null; // fail the sheet write of the row with this Name, once
 globalThis.fetch = async (url, init = {}) => {
@@ -79,10 +83,13 @@ globalThis.fetch = async (url, init = {}) => {
     if (sheetReplies.length) return new Response(sheetReplies.shift(), { status: 200 });
     const row = JSON.parse(init.body);
     if (failRowNamed && row.Name === failRowNamed) { failRowNamed = null; throw new TypeError("fetch failed"); }
+    const reply = sheetReceiver.newReceiver()(row);
+    if (!reply.ok || reply.duplicate) return Response.json(reply);
     if (row.Name) youthRows.push(row);
     allRows.push(row);
     rows.push(row["Stripe Session"]);
-    return Response.json({ ok: true });
+    if (loseSheetReply) { loseSheetReply = false; throw new TypeError("Lost response after append"); }
+    return Response.json(reply);
   }
   if (url.startsWith("https://api.resend.com/")) {
     if (failNext.email > 0) {
@@ -241,7 +248,7 @@ check("youth: the first row carries the registration's Processing Fee and Amount
 // in Registrants order, and the paid confirmation email shows each code in
 // its person's own cell.
 const { checkinCodesFor } = await import("../lib/checkinCode.ts");
-const lastColumn = (row) => Object.keys(row ?? {}).filter((k) => k !== "formName" && k !== "secret").at(-1);
+const lastColumn = (row) => Object.keys(row ?? {}).filter((k) => k !== "formName" && k !== "secret" && k !== "idempotencyKey").at(-1);
 // The person's (escaped) name row, then directly a row of its own holding
 // their large "Check-in code" block.
 const codeBesideName = (html, name, code) =>
@@ -286,7 +293,7 @@ sessions.cs_test_adult_ind = {
 };
 const indRes = await deliver("cs_test_adult_ind");
 const indRow = allRows.find((r) => r["Stripe Session"] === "cs_test_adult_ind");
-const indCols = Object.keys(indRow ?? {}).filter((k) => k !== "formName" && k !== "secret");
+const indCols = Object.keys(indRow ?? {}).filter((k) => k !== "formName" && k !== "secret" && k !== "idempotencyKey");
 check("adult individual (paid): DCC / Zone, Meals and Allergies cells, with Check-in Code still last",
   indRes.status === 200 && indRow?.["DCC / Zone"] === "Zone 3" &&
   indRow.Meals === "Ind One: Tuesday Lunch — 7/13, Friday Dinner — 7/16; Ind Two: None" && indRow.Allergies === "Ind One: Gluten" &&
@@ -302,6 +309,35 @@ await deliver("cs_test_adult_grp");
 const grpRow = allRows.find((r) => r["Stripe Session"] === "cs_test_adult_grp");
 check("adult group (paid): zone filled, Meals and Allergies blank",
   grpRow?.["DCC / Zone"] === "Zone 9" && grpRow.Meals === "" && grpRow.Allergies === "" && lastColumn(grpRow) === "Check-in Code");
+
+// Adult/youth gifts get separate rows and receipt keys, including cold retries.
+for (const [track, source] of [["adult", adultSummary], ["youth", youthSummary]]) {
+  const id = `cs_test_${track}_gift`;
+  const gift = 2500;
+  const summary = { ...source, ref: `ref-${track}-gift`, gift };
+  const fee = 330;
+  sessions[id] = {
+    payment_status: "unpaid", amount_total: summary.totalAmountCents + fee + gift,
+    metadata: { kind: "registration", convention_year: "2027", ...chunkForMetadata("d", encodeSummary(summary)), subtotal_cents: String(summary.totalAmountCents + gift), processing_fee_cents: String(fee) },
+  };
+  await deliver(id);
+  check(`${track} pending gift records no rows or emails`, count(rows, id) === 0 && !emails.some((key) => key?.includes(id)));
+  sessions[id].payment_status = "paid";
+  loseSheetReply = true;
+  check(`${track} uncertain append returns 500`, (await deliver(id, "checkout.session.async_payment_succeeded")).status === 500);
+  const cold = await import(`../app/api/stripe/webhook/route.ts?gift=${track}`);
+  const replay = await cold.POST(new Request("http://localhost/api/stripe/webhook", { method: "POST", headers: { "stripe-signature": "fake" }, body: JSON.stringify({ type: "checkout.session.completed", data: { object: { id } } }) }));
+  const paymentRows = allRows.filter((row) => row["Stripe Session"] === id);
+  const giftRow = paymentRows.find((row) => row.formName === "Giving");
+  const registrationRows = paymentRows.filter((row) => row.formName !== "Giving");
+  check(`${track} cold retry keeps exactly one gift row and one row per registration step`, replay.status === 200 && giftRow?.Total === "$25.00" && paymentRows.length === (track === "adult" ? 2 : source.registrants.length + 1));
+  check(`${track} gift row has no fee, with distinct stable keys`, giftRow?.["Processing Fee"] === "$0.00" && giftRow?.["Amount Charged"] === "$25.00" && giftRow?.idempotencyKey === `checkout-session/${id}/gift-sheet` && new Set(paymentRows.map((row) => row.idempotencyKey)).size === paymentRows.length);
+  check(`${track} registration amount excludes the gift`, registrationRows[0]?.["Amount Charged"] === `$${((summary.totalAmountCents + fee) / 100).toFixed(2)}`);
+  check(`${track} registration and gift receipts use different keys`, emails.includes(`checkout-session/${id}`) && emails.includes(`checkout-session/${id}/gift`));
+}
+// Subscription checkout must not duplicate its invoice record.
+sessions.cs_test_subscription = { ...giving(), mode: "subscription" };
+check("subscription checkout is left to invoice.paid", (await deliver("cs_test_subscription")).status === 200 && count(rows, "cs_test_subscription") === 0 && count(emails, "cs_test_subscription") === 0);
 
 process.stdout.write(failures ? `\n${failures} check(s) FAILED\n` : "\nAll checks passed\n");
 process.exit(failures ? 1 : 0);

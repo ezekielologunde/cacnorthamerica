@@ -10,6 +10,59 @@ tags: [project/cacnorthamerica]
 
 Related: [[Backend]] · [[Database]] · [[Security]] · [[Decisions]]
 
+## Retry hardening and verification (2026-11-06, local source)
+
+- Paid checkout rows use `checkout-session/<session>/<step>` keys. Youth rows
+  each have a distinct index; registration and optional-gift rows are separate.
+  Recurring rows use `invoice/<invoice>/sheet`. The receiver stores an
+  `Idempotency Key` cell alongside the row while holding a checked script lock.
+  A retry on a cold instance or after append-before-database-mark finds that
+  row instead of appending again. Keep that column and its rows intact.
+- Missing/wrong receiver secrets and lock contention reject writes. The checked
+  sender rejects missing URL/secret, non-JSON replies, and missing/mismatched key
+  acknowledgements, with a 10-second request timeout. Stripe receives 500 when
+  recording fails and can retry. Ordinary unkeyed forms retain append semantics.
+- Checkout step memory is still process-local. Receipt emails use Resend's
+  24-hour idempotency window, not a permanent exactly-once ledger. A cold retry
+  after that window, or an invoice email sent before its DB mark fails, can
+  still duplicate a receipt. No payment is recharged by these recorders.
+- `npm test` now includes receiver tests and `npm run test:payments` (Node 24).
+  The payment gate uses pure helpers or mocked Stripe, Sheets, Turnstile,
+  Supabase stores and email. It covers adult/youth gifts, pending versus settled
+  payment, cold retries, invoice crash recovery, recurring checkout consent,
+  card/ACH cadence, setup fees, caps, cancellation and problem handlers.
+  These are local regressions, not Stripe sandbox or production evidence.
+
+### Local verification result (2026-11-06)
+
+- `npm test`: passed all 22 Node tests and the 12-script offline payment gate
+  (519 PASS lines, including the aggregate recurring-route check).
+- `tsc --noEmit --incremental false`: passed. Focused ESLint on changed
+  source/test files: passed. `git diff --check`: passed.
+- Full-repository ESLint: failed with 9 errors and 6 warnings in unchanged
+  UI files (including admin error navigation, AdminShell, HomepageAnnouncements,
+  SearchModal and SiteOverlays). These are outside this payment patch.
+- `npm run build`: compilation and TypeScript passed; prerender failed because
+  this isolated worktree has no Supabase URL/API key. No live `.env.local` was
+  copied. This is not a successful complete production build.
+- No browser flow, Stripe sandbox end-to-end run, or live deployment was performed.
+
+### Owner deployment checklist (not performed)
+
+1. Verify all existing callers share the receiver secret. Install and redeploy
+   the updated Apps Script first, with `WEBHOOK_SECRET` matching the server's
+   `SHEETS_WEBHOOK_SECRET`. Test against an isolated spreadsheet, not donor data.
+2. Only then publish the app changes. An old receiver will not acknowledge the
+   keys, so deploying the app first causes retries and may append duplicate rows
+   in that old receiver. Historical rows without keys are not backfilled or
+   deduplicated automatically; reconcile outstanding historical retries first.
+3. Run Stripe test-mode card/ACH registration-gift and recurring first/renewal,
+   failure, replay and cancellation flows with isolated Sheets/email targets.
+   Verify migration 0018 and webhook subscriptions before enabling recurring.
+   No flags, dashboard settings, migrations or external deployments were changed.
+4. Confirm tax treatment and the handling of proration/manual invoices with the
+   owner/adviser. The existing billing-reason policy is unchanged.
+
 Stripe (`STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`,
 `STRIPE_WEBHOOK_SECRET`) plus Zelle. **Stripe live-mode settings, account,
 payout and webhook endpoint configuration are dashboard-only: Unverified.**

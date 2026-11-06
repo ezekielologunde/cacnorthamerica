@@ -162,6 +162,26 @@ check("frequency labels", frequencyLabel("monthly") === "Monthly" && frequencyLa
   check("a store invoice and a proration are skipped without touching the store", skipped === "skipped" && proration === "skipped" && store.rows.size === 0 && d.sheet.length === 0);
 }
 
+// A row accepted by Sheets before the database mark fails is safe across a cold retry.
+{
+  const { receiverWorld } = await import("./helpers/sheets-receiver.mjs");
+  const world = receiverWorld();
+  const store = fakeStore();
+  const originalMark = store.markDone;
+  let failMark = true;
+  store.markDone = async (id, step) => {
+    if (step === "sheet" && failMark) { failMark = false; throw new Error("injected mark failure"); }
+    return originalMark(id, step);
+  };
+  const d = deps(store, { logSheet: async (formName, fields, idempotencyKey) => {
+    if (!idempotencyKey) throw new Error("Missing invoice row key");
+    return world.newReceiver()({ formName, ...fields, idempotencyKey, secret: "test-secret" }).ok;
+  } });
+  const failed = await recordGivingInvoice(first, d);
+  const resumed = await recordGivingInvoice(first, d);
+  check("append-then-mark failure resumes without another sheet row", failed === "failed" && resumed === "recorded" && world.state.sheets.get("Giving").rows.length === 2 && d.emails.length === 1);
+}
+
 if (failures > 0) {
   console.log(`\n${failures} check(s) failed.`);
   process.exit(1);

@@ -5,8 +5,8 @@
  *  app's existing convention of every optional integration degrading
  *  gracefully rather than failing the request.
  *
- *  SHEETS_WEBHOOK_SECRET is optional too -- when set, it's sent alongside
- *  every payload and the Apps Script checks it before writing a row. The
+ *  SHEETS_WEBHOOK_SECRET must match the Apps Script WEBHOOK_SECRET before
+ *  writing any row. The receiver fails closed when the secret is missing. The
  *  Web App URL itself has no other access control (Apps Script web apps
  *  can't require Google auth and still accept unauthenticated POSTs from a
  *  server), so this is what stops someone who finds the URL from writing
@@ -34,18 +34,21 @@ export function logToSheet(formName: string, fields: Record<string, string>): vo
 
 /** Awaited variant of logToSheet for a caller that must know whether the row
  *  landed (the Stripe webhook returns 500 so Stripe retries). Resolves true
- *  when the webhook accepted the row, or when SHEETS_WEBHOOK isn't configured
- *  (nothing to write); false on a network error, a non-2xx response, or a
+ *  when the webhook accepted the row; false when the URL or secret is missing,
+ *  on a network error, a non-2xx response, or a
  *  body other than {ok: true}. The Apps Script
  *  (docs/google-apps-script/sheets-webhook.gs) answers HTTP 200 with
  *  {ok: false, error} on a bad secret or a script error, so the status alone
  *  doesn't mean the row landed. Never throws. */
-export async function logToSheetChecked(formName: string, fields: Record<string, string>): Promise<boolean> {
+export async function logToSheetChecked(formName: string, fields: Record<string, string>, idempotencyKey?: string): Promise<boolean> {
   const hook = process.env.SHEETS_WEBHOOK;
-  if (!hook) return true;
+  if (!hook || !process.env.SHEETS_WEBHOOK_SECRET) {
+    console.error(`[${formName}] Sheets webhook URL or secret is not configured`);
+    return false;
+  }
 
   try {
-    const res = await fetch(hook, sheetRequest(formName, fields));
+    const res = await fetch(hook, sheetRequest(formName, fields, idempotencyKey));
     if (!res.ok) {
       console.error(`[${formName}] Sheets webhook returned ${res.status}`);
       return false;
@@ -61,6 +64,12 @@ export async function logToSheetChecked(formName: string, fields: Record<string,
       console.error(`[${formName}] Sheets webhook rejected the row:`, (reply as { error?: unknown } | null)?.error);
       return false;
     }
+    // An old receiver answers {ok:true} without enforcing dedupe. Do not
+    // acknowledge a paid row until the receiver confirms the persisted key.
+    if (idempotencyKey && (reply as { idempotencyKey?: unknown }).idempotencyKey !== idempotencyKey) {
+      console.error(`[${formName}] Sheets webhook did not confirm the idempotency key`);
+      return false;
+    }
     return true;
   } catch (e) {
     console.error(`[${formName}] Sheets webhook failed:`, e);
@@ -68,15 +77,19 @@ export async function logToSheetChecked(formName: string, fields: Record<string,
   }
 }
 
-function sheetRequest(formName: string, fields: Record<string, string>): RequestInit {
+function sheetRequest(formName: string, fields: Record<string, string>, idempotencyKey?: string): RequestInit {
   const safeFields: Record<string, string> = {};
-  for (const [k, v] of Object.entries(fields)) safeFields[sheetSafe(k)] = sheetSafe(String(v));
+  for (const [k, v] of Object.entries(fields)) {
+    if (["secret", "formName", "idempotencyKey", "Idempotency Key"].includes(k)) continue;
+    safeFields[sheetSafe(k)] = sheetSafe(String(v));
+  }
 
-  // formName and secret go last so no field can override them.
+  // Transport fields go last and cannot be supplied through form fields.
   const secret = process.env.SHEETS_WEBHOOK_SECRET;
   return {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ ...safeFields, formName, ...(secret ? { secret } : {}) }),
+    body: JSON.stringify({ ...safeFields, formName, ...(secret ? { secret } : {}), ...(idempotencyKey ? { idempotencyKey } : {}) }),
+    signal: AbortSignal.timeout(10_000),
   };
 }

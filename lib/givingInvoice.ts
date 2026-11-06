@@ -130,7 +130,7 @@ export type InvoiceEmail = {
 
 export type InvoiceDeps = {
   store: InvoiceStore;
-  logSheet: (formName: string, fields: Record<string, string>) => Promise<boolean>;
+  logSheet: (formName: string, fields: Record<string, string>, idempotencyKey: string) => Promise<boolean>;
   sendEmail: (input: InvoiceEmail) => Promise<boolean>;
 };
 
@@ -182,7 +182,8 @@ export async function recordGivingInvoice(inv: InvoiceSummary, deps: InvoiceDeps
         "Payment": inv.billingReason === "subscription_create" ? "First" : "Renewal",
         "Stripe Invoice": inv.invoiceId,
         "Stripe Subscription": inv.subscriptionId,
-      });
+      }, `invoice/${inv.invoiceId}/sheet`);
+      // The receiver deduplicates the key even if this mark fails after append.
       if (wrote) await deps.store.markDone(inv.invoiceId, "sheet");
       else ok = false;
     }

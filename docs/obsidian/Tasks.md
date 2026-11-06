@@ -2,13 +2,23 @@
 project: cacnorthamerica
 type: tasks
 status: active
-last_updated: 2026-11-05
+last_updated: 2026-11-06
 tags: [project/cacnorthamerica]
 ---
 
 # Tasks / Gaps
 
 Related: [[Project]] · [[Features]] · [[Architecture]] · [[Decisions]] · [[Bugs]]
+
+## Payment release gates (2026-11-06)
+
+Local source hardening and offline regression coverage are prepared in the
+payment-fixes branch. Before release, follow [[Payments]]: receiver-first
+installation with a matching secret, isolated Stripe sandbox end-to-end tests,
+verification of migration 0018 and event subscriptions, and owner/adviser tax
+and invoice-policy review. Live deployment/configuration and sandbox results
+remain **Unverified**. Permanent receipt-email deduplication remains an open
+architecture decision; current Resend keys cover 24 hours.
 
 ## Status as of 2026-11-05 (read first)
 

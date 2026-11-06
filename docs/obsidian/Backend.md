@@ -2,7 +2,7 @@
 project: cacnorthamerica
 type: backend
 status: active
-last_updated: 2026-11-05
+last_updated: 2026-11-06
 tags: [project/cacnorthamerica]
 ---
 
@@ -47,7 +47,9 @@ webhooks pointed at old hosts still arrive (`next.config.ts`).
 `SHEETS_WEBHOOK_SECRET`); `lib/sheetsRead.ts` reads back. The script source is
 `docs/google-apps-script/sheets-webhook.gs`; PR #113 documents a `doGet` the
 admin Operations page reads. Live deployment state is **Unverified** (see
-[[Tasks]]).
+[[Tasks]]). Paid row writes use a stable key checked and persisted by the receiver
+under its script lock. Both a configured secret and a matching key acknowledgement
+are required by the checked sender; see [[Payments]] for receiver-first rollout.
 
 ## Email (Resend)
 

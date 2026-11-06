@@ -383,5 +383,28 @@ check("paid youth email shows Subtotal, Processing fee and the charged total, an
   feeHtml.includes("$103.30") && feeHtml.includes("Young Adult (20–29)") && feeHtml.includes("Tuesday Lunch — 7/13"));
 check("free youth email has no processing fee row", !freeHtml?.includes("Processing fee"));
 
+// Registration gifts: real POST validation and Stripe params, with all I/O faked.
+const { GIFT_LINE_LABEL } = await import("../lib/registrationGift.ts");
+const { feeCents } = await import("../lib/processingFee.ts");
+for (const [track, body] of [["adult", adultBody([adultPerson(1)])], ["youth", youth([kid(22), kid(8)])]]) {
+  created.length = 0;
+  const result = await post({ ...body, donationCents: 2500, paymentMethod: "card" });
+  const params = created[0];
+  const summary = params && decodeSummary(unchunkFromMetadata(params.metadata, "d"));
+  const giftLines = params?.line_items.filter((li) => li.price_data.product_data.name === GIFT_LINE_LABEL) ?? [];
+  check(`${track} gift creates one separate $25 line and stays in the registration metadata`, result.status === 200 && giftLines.length === 1 && giftLines[0].price_data.unit_amount === 2500 && summary?.gift === 2500);
+  check(`${track} gift does not increase the registration processing fee`, Number(params?.metadata.processing_fee_cents) === feeCents(summary.totalAmountCents) && Number(params?.metadata.subtotal_cents) === summary.totalAmountCents && params.line_items.reduce((sum, li) => sum + li.price_data.unit_amount * li.quantity, 0) === summary.totalAmountCents + feeCents(summary.totalAmountCents) + 2500);
+  for (const donationCents of [-1, 99, 500001, 1.25, "2500"]) {
+    created.length = 0;
+    check(`${track} rejects malformed gift ${donationCents} before checkout`, (await post({ ...body, donationCents })).status === 400 && created.length === 0);
+  }
+  created.length = 0;
+  check(`${track} rejects a gift on Zelle before checkout`, (await post({ ...body, donationCents: 2500, paymentMethod: "zelle" })).status === 400 && created.length === 0);
+  const noGift = await post({ ...body, donationCents: 0 });
+  check(`${track} no-gift checkout has no gift line`, noGift.status === 200 && !created[0]?.line_items.some((li) => li.price_data.product_data.name === GIFT_LINE_LABEL));
+}
+created.length = 0;
+check("free child registration cannot silently discard a requested gift", (await post(youth([kid(8)], { donationCents: 2500 }))).status === 400 && created.length === 0);
+
 console.log(failures ? `\n${failures} check(s) FAILED` : "\nAll checks passed");
 process.exit(failures ? 1 : 0);

@@ -2,13 +2,22 @@
 project: cacnorthamerica
 type: bugs
 status: active
-last_updated: 2026-11-05
+last_updated: 2026-11-06
 tags: [project/cacnorthamerica]
 ---
 
 # Bugs / Known Issues
 
 Related: [[Tasks]] · [[Security]] · [[Database]]
+
+## Payment retry limitations (2026-11-06)
+
+The local source now deduplicates paid rows at the Apps Script receiver and
+rejects missing secrets or failed locks. The fix requires that receiver version
+and matching configuration; live state remains **Unverified**. Old rows without
+keys are not backfilled. Checkout email dedupe is still limited to Resend's
+24-hour window; an invoice email sent before a failed database mark has the same
+window. See [[Payments]] for rollout and test boundaries.
 
 Only issues found in code comments, migration headers or PR titles.
 

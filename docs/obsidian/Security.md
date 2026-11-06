@@ -2,13 +2,22 @@
 project: cacnorthamerica
 type: security
 status: active
-last_updated: 2026-11-05
+last_updated: 2026-11-06
 tags: [project/cacnorthamerica]
 ---
 
 # Security
 
 Related: [[Database]] · [[Backend]] · [[Payments]] · [[Bugs]] · [[Decisions]]
+
+## Sheets receiver hardening (2026-11-06, source only)
+
+POST now requires a configured matching `WEBHOOK_SECRET`, like GET. A failed
+script-lock acquisition causes a retryable rejection before any sheet mutation.
+Paid-row keys are validated, cannot be overridden through form fields, and are
+persisted under the same lock as the row. Existing formula escaping remains.
+No live secret, sharing permission or deployment was changed. See [[Payments]]
+for the mandatory receiver-first rollout and remaining email-dedupe limits.
 
 ## Auth and authorization
 
