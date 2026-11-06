@@ -81,3 +81,16 @@ export const spiritualGiftsTeaching = {
     },
   ] satisfies TeachingSection[],
 };
+
+/** 2026 convention record, from the printed convention booklet. Speeches are
+ *  summarised; financial figures quoted in them are not republished. */
+export const convention2026Highlights = {
+  heading: "From the 2026 convention booklet",
+  items: [
+    "Convention & Conference Committee chaired by Pastor David O. Adenodi, Ph.D., with Pastor Oluwagbemiga Famojuro, D.Min, as Secretary.",
+    "Ministers’ sessions: Pastor T.A.O. Agbeja on “Transformative Power of the Word”; Pastor Simeon Oladokun, Regional Superintendent, Anosike Region (CAC Europe), on “Divine Guide for Our Living”; Right Rev. Prof. Dapo F. Asaju, Bishop of Ijesha Diocese, on “The Perfect Encourager in Time of Tries, Tribulations and Challenges”; and Pastor S.O. Oladele, President of CAC Nigeria & Overseas, in Ministers’ Session 4.",
+    "Revival Nights led by Prophet H. Oladeji; Praise Night on Thursday, 16 July; Impartation Night, Ordination Service and the Holy Communion and Closing Service on 17–18 July.",
+    "Welcome address by the Regional Superintendent: a welcome to the President, the General Superintendent, the Mission Director and guests from Nigeria and Europe, and thanks to every department and zone for their support of the work at CAC Village.",
+    "Children’s Convention program: “Preparing God’s People for Leadership” (Psalm 12:1), with daily sessions on God’s message to children (Mark 10:14).",
+  ],
+};

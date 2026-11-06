@@ -9,7 +9,7 @@ import { RevealText } from "@/components/ui/RevealText";
 import { conventionYears, isConventionPast, dateRangeLabel, type RegistrantCategory } from "@/lib/conventions";
 import { setRequestLocale } from "next-intl/server";
 import { SITE_URL } from "@/lib/site";
-import { archivedEvents, spiritualGiftsTeaching } from "@/lib/archive-notes";
+import { archivedEvents, spiritualGiftsTeaching, convention2026Highlights } from "@/lib/archive-notes";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -92,6 +92,14 @@ export default async function ArchivePage({
                   )}
                   {cy.year === 2026 && (
                     <Image src="/photos/archive/cacna-2026-convention-flier.jpg" alt="Flier for the CACNA 2026 Annual Convention, The Bible: God’s Message to Man, 13 to 18 July 2026" width={1127} height={1600} sizes="(max-width: 760px) 100vw, 420px" style={{ width: "100%", maxWidth: 420, height: "auto", borderRadius: 12, marginTop: 16, display: "block" }} />
+                  )}
+                  {cy.year === 2026 && (
+                    <details style={{ marginTop: 16 }}>
+                      <summary style={{ cursor: "pointer", fontSize: 14, fontWeight: 700, color: "var(--red)" }}>{convention2026Highlights.heading}</summary>
+                      <ul style={{ margin: "10px 0 0", paddingLeft: 20, fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.6 }}>
+                        {convention2026Highlights.items.map((it) => <li key={it}>{it}</li>)}
+                      </ul>
+                    </details>
                   )}
                   {cy.year === 2026 && (
                     <Link href="/events/cacna-2026/schedule" style={{ display: "inline-block", marginTop: 16, fontSize: 13.5, fontWeight: 700, color: "var(--red)", textDecoration: "none" }}>
