@@ -104,6 +104,12 @@ export default async function Cacna50thAnniversaryPage({
             </p>
           </Reveal>
 
+          <Reveal delay={200}>
+            <p style={{ fontSize: 15, margin: "12px 0 0" }}>
+              <Link href="/golden-jubilee" style={{ color: "var(--gold)", fontWeight: 700, textDecoration: "none" }}>Read the Golden Jubilee look-back →</Link>
+            </p>
+          </Reveal>
+
           <Reveal delay={240}>
             <div className="mm-actions" style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 36 }}>
               <a href={RSVP_URL} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(253,200,65,.35)" }}>
