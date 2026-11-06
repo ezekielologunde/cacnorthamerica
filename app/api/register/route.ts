@@ -127,9 +127,11 @@ function validateRequestBody(body: unknown): string | null {
   if (b.contactPhone != null && typeof b.contactPhone !== "string") {
     return "contactPhone must be a string";
   }
-  // Same label and rule as the youth track's DCC / Zone.
-  if (typeof b.dccZone !== "string" || b.dccZone.trim() === "") {
-    return "DCC / Zone is required";
+  // People who do not know their DCC or zone give their church name instead,
+  // so one of the two is required (the youth track already asks for the church).
+  if (typeof b.dccZone !== "string") return "dccZone must be a string";
+  if (b.dccZone.trim() === "" && (b.churchName ?? "").trim() === "") {
+    return "Please enter your DCC / Zone, or your church name if you are not sure of your zone";
   }
   for (const value of [b.contactName, b.contactEmail, b.churchName ?? "", b.contactPhone ?? "", b.dccZone]) {
     if (value.length > MAX_FIELD_LENGTH) {

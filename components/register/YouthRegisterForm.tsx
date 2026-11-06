@@ -187,7 +187,6 @@ export function YouthRegisterForm({
     if (shared.contactPhone.trim() !== "" && (shared.contactPhone.match(/\d/g) ?? []).length < 7) found.contactPhone = t("errPhone");
     if (!shared.churchName.trim()) found.churchName = t("errChurch");
     if (!shared.youthLeaderName.trim()) found.youthLeaderName = t("errLeader");
-    if (!shared.dccZone.trim()) found.dccZone = t("errDcc");
     if (anyMinor && !guardianConfirmed) found.guardian = t("errGuardian");
     return found;
   }
@@ -291,7 +290,7 @@ export function YouthRegisterForm({
     { name: "contactPhone", label: t("contactPhone"), type: "tel", inputMode: "tel", autoComplete: "tel", optional: true },
     { name: "churchName", label: t("churchName"), autoComplete: "organization" },
     { name: "youthLeaderName", label: t("youthLeaderName"), autoComplete: "off" },
-    { name: "dccZone", label: t("dccZone"), autoComplete: "off" },
+    { name: "dccZone", label: t("dccZone"), autoComplete: "off", hint: t("dccZoneHint"), optional: true },
   ];
 
   const submitLabel =

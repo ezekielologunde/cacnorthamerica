@@ -276,7 +276,6 @@ export function parseYouthRegistration(
     ["contactEmail", "Email"],
     ["churchName", "Church name"],
     ["youthLeaderName", "Youth leader's name"],
-    ["dccZone", "DCC / Zone"],
   ];
   for (const [key, label] of fields) {
     const v = requiredString(b[key], label, max);
@@ -284,6 +283,11 @@ export function parseYouthRegistration(
     shared[key] = v;
   }
   if (!EMAIL_RE.test(shared.contactEmail)) return { ok: false, error: "Please enter a valid email address" };
+  // DCC / Zone is optional (the church name is already required), for people
+  // who do not know their zone.
+  if (b.dccZone != null && typeof b.dccZone !== "string") return { ok: false, error: "DCC / Zone must be text" };
+  shared.dccZone = ((b.dccZone as string | null | undefined) ?? "").trim();
+  if (shared.dccZone.length > max) return { ok: false, error: `DCC / Zone must be ${max} characters or fewer` };
   // Phone is optional; when given it must be a plausible number.
   const rawPhone = b.contactPhone;
   if (rawPhone != null && typeof rawPhone !== "string") return { ok: false, error: "Phone must be text" };

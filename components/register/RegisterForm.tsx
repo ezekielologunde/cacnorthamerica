@@ -141,6 +141,11 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
       setStatus("error");
       return;
     }
+    if (dccZone.trim() === "" && churchName.trim() === "") {
+      setErrorMessage(t("errDccOrChurch"));
+      setStatus("error");
+      return;
+    }
     setStatus("loading");
     setErrorMessage(null);
     const form = event.currentTarget as HTMLFormElement;
@@ -159,7 +164,7 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
           paymentMethod,
           donationCents: gift,
           registrationType: mode,
-          churchName: mode === "group" ? churchName : null,
+          churchName: churchName.trim() || null,
           contactName,
           contactEmail,
           contactPhone,
@@ -411,18 +416,36 @@ export function RegisterForm({ year, startIso, priceMap }: { year: number; start
         />
       </label>
       <label style={{ display: "block", marginBottom: 14 }}>
-        <span style={labelStyle}>{ty("dccZone")} <span style={{ color: "var(--red)" }}>*</span></span>
+        <span style={labelStyle}>{ty("dccZone")}{mode === "group" ? "" : " *"}</span>
         <input
           className="field-input reg-input"
           name="dcc-zone"
           value={dccZone}
           onChange={(e) => setDccZone(e.target.value)}
-          required
+          required={mode !== "group" && churchName.trim() === ""}
           autoComplete="off"
           autoCapitalize="words"
           enterKeyHint="next"
+          aria-describedby="dcc-zone-hint"
         />
+        <span id="dcc-zone-hint" style={{ display: "block", marginTop: 6, fontSize: 13.5, color: "var(--ink-soft)", lineHeight: 1.45 }}>
+          {t("dccZoneOptionalHint")}
+        </span>
       </label>
+      {mode !== "group" && (
+        <label style={{ display: "block", marginBottom: 14 }}>
+          <span style={labelStyle}>{t("churchNameContact")}</span>
+          <input
+            className="field-input reg-input"
+            name="organization"
+            value={churchName}
+            onChange={(e) => setChurchName(e.target.value)}
+            autoComplete="organization"
+            autoCapitalize="words"
+            enterKeyHint="next"
+          />
+        </label>
+      )}
       <label style={{ display: "block", marginBottom: 14 }}>
         <span style={labelStyle}>{t("contactPhone")}</span>
         <input
