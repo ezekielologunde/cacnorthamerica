@@ -21,13 +21,13 @@ Google's decision; nothing here guarantees it.
 ## What you need to do
 
 1. Sign in at https://adsense.google.com with the Google account that should
-   own the ads and add the site `cacnorthamerica.com`.
+   own the ads and add the site `cacna.org`.
 2. Copy the publisher ID AdSense shows (`ca-pub-` followed by 16 digits).
 3. In Vercel, Project, Settings, Environment Variables, set
    `NEXT_PUBLIC_ADSENSE_ID` to that value for Production, then redeploy. The
    value is read at build time, so `/ads.txt` and the ad script only change
    after a new deploy.
-4. Check that https://cacnorthamerica.com/ads.txt shows the line with your ID,
+4. Check that https://cacna.org/ads.txt shows the line with your ID,
    then ask AdSense to review the site.
 5. In AdSense, Ads, By site, Auto ads, add page exclusions for `/privacy`,
    `/terms` and `/refunds`. The site stops the script on those pages when they
