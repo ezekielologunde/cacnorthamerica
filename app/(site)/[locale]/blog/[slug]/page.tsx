@@ -10,7 +10,7 @@ import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { POSTS, getPost } from "@/lib/blog";
 import type { BlogPost } from "@/lib/blog";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, breadcrumbJsonLd } from "@/lib/site";
 import { BylineCompact, BylineFull } from "@/components/blog/Byline";
 import { parseAuthors } from "@/lib/blog-authors";
 import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
@@ -199,8 +199,15 @@ export default async function BlogSlugPage({
   const shareText = encodeURIComponent(`${post.title} — ${shareUrl}`);
   const whatsappUrl = `https://wa.me/?text=${shareText}`;
 
+  const breadcrumbs = breadcrumbJsonLd([
+    { name: "Home", path: "/" },
+    { name: "Blog", path: "/blog" },
+    { name: post.title, path: `/blog/${post.slug}` },
+  ]);
+
   return (
     <main id="main-content" className="ed-page">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs).replace(/</g, "\\u003c") }} />
       <Nav />
 
       <header className="ed-post-head">

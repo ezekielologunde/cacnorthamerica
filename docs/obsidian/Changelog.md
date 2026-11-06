@@ -24,6 +24,9 @@ Related: [[Project]] · [[Decisions]] · [[Features]] · [[Payments]] · [[Secur
 PR titles are the source; details in the linked notes.
 
 - 2026-09-16 #36 Yoruba locale removed; single-locale English, plain URLs
+- 2026-11-05 #73 AdSense readiness: env-gated site-wide script, `/ads.txt`,
+  robots/sitemap updates, breadcrumb JSON-LD on blog posts, owner checklist in
+  `docs/adsense-readiness.md`
 - 2026-11-01 #38 canonical host `cacnorthamerica.com`; #44/#46 form spam
   guards and contact honeypot; #45 purpose email addresses
 - 2026-11-02 #71 disclosed processing-fee line on every Stripe Checkout; #80

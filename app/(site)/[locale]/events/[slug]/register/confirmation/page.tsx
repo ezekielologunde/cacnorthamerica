@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { CheckCircle2, Clock, XCircle } from "lucide-react";
@@ -17,6 +18,14 @@ function findYear(slug: string): ConventionYear | undefined {
   if (!match) return undefined;
   return conventionYears.find((cy) => cy.year === Number(match[1]));
 }
+
+// A per-person receipt reached from Stripe: never indexed, and no inherited
+// canonical pointing at the home page.
+export const metadata: Metadata = {
+  title: "Registration Confirmation — CACNA",
+  robots: { index: false, follow: false },
+  alternates: { canonical: null },
+};
 
 export default async function RegisterConfirmationPage({
   params,

@@ -39,9 +39,17 @@ export default function robots(): MetadataRoute.Robots {
         // /category/news is the one old category URL we redirect (see
         // next.config.ts); it must stay crawlable or Google never sees the
         // 301. The longer allow path wins over the "/category/" disallow.
-        allow: ["/", "/category/news", ...KEY_PUBLIC_PATHS],
+        // /api/gallery feeds the /gallery page's photo grid client-side, so
+        // it stays crawlable for Google's renderer; the rest of /api/ is
+        // form posts, checkout and webhooks.
+        allow: ["/", "/category/news", "/api/gallery", ...KEY_PUBLIC_PATHS],
         disallow: [
-          "/admin", "/admin/",
+          "/admin",
+          "/api/",
+          "/newsletter",
+          // The post-payment confirmation pages are deliberately NOT disallowed:
+          // they send noindex, and Google can only apply a noindex it is
+          // allowed to fetch.
           // This domain ran WordPress before this Next.js rebuild. These paths
           // are leftovers Google still remembers crawling (theme assets,
           // uploads, category archives) that now 404 correctly — disallowing
