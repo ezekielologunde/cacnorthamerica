@@ -224,7 +224,7 @@ export default async function BlogSlugPage({
               <span>{post.date}</span>
               <span>{post.readTime}</span>
             </p>
-            <a className="ed-share" href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+            <a className="ed-share ed-share-wa" href={whatsappUrl} target="_blank" rel="noopener noreferrer">
               <Share2 size={14} strokeWidth={2.5} aria-hidden /> Share on WhatsApp
             </a>
             {post.href && (
