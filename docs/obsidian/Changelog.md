@@ -10,6 +10,12 @@ tags: [project/cacnorthamerica]
 
 Related: [[Project]] · [[Decisions]] · [[Features]] · [[Payments]] · [[Security]]
 
+## 2026-11-06 -- registration contact fields and Quick help
+
+- Adult form: one required **DCC / Zone / Church** field (people who do not know their zone enter their church). Youth form: DCC / Zone is optional (church name is already required).
+- **Phone is required** on both forms (client and server, at least 7 digits).
+- New **Quick help** panel (`components/register/QuickHelp.tsx`) on both registration pages: how to register, unknown DCC/zone, confirmation email, Zelle and card help, contact links. Support wording only; no refund text.
+
 ## 2026-11-06 -- optional gift on convention registration
 - Card payments on both registration forms can add an optional gift ($1 to $5,000). It is its own Stripe line item, recorded in the session summary (`gift`), logged as a separate `Giving` row and receipted with the giving email. The registration row's Total and Amount Charged exclude it. The processing fee is still sized on the registration only, so the church absorbs Stripe's percentage on the gift. Zelle and free registrations are not offered it. See `lib/registrationGift.ts`.
 
