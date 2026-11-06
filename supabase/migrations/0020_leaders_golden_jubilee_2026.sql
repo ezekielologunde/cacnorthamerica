@@ -16,13 +16,13 @@ begin;
 
 -- 1. Replaced superintendents.
 update cacna.leaders set full_name = 'Pastor Richard B. Olowomeye, Ph.D.', photo_url = null, bio = null, person_key = null, updated_at = now()
-  where id = 'adcdc536-2023-40e6-b327-9db87cca07b0' and zone_name = 'Bethel DCC' and full_name like 'Pastor John Oluwatimilehin%';
+  where zone_name = 'Bethel DCC' and full_name like 'Pastor John Oluwatimilehin%';
 update cacna.leaders set full_name = 'Pastor Johnson Adeleke', title = 'Superintendent', photo_url = null, bio = null, person_key = null, updated_at = now()
-  where id = 'df93dd99-2608-4270-bd77-b004681120ca' and zone_name = 'Western DCC' and full_name like 'Pastor Samuel Olomoniyi%';
+  where zone_name = 'Western DCC' and full_name like 'Pastor Samuel Olomoniyi%';
 update cacna.leaders set full_name = 'Pastor Gabriel Olukitibi', photo_url = null, bio = null, person_key = null, updated_at = now()
-  where id = '841b4908-cba7-44fb-8c3f-552d33fba920' and zone_name = 'South Florida DCC' and full_name = 'Pastor Sola Rotimi';
+  where zone_name = 'South Florida DCC' and full_name = 'Pastor Sola Rotimi';
 update cacna.leaders set full_name = 'Pastor Joseph Ademoye', photo_url = null, bio = null, person_key = null, updated_at = now()
-  where id = 'b0db173b-7112-4467-b9d0-e98e0447900f' and zone_name = 'Philadelphia' and full_name = 'Pastor Chris Ogunleye';
+  where zone_name = 'Philadelphia' and full_name = 'Pastor Chris Ogunleye';
 
 -- 2. New zones.
 insert into cacna.leaders (full_name, title, category, zone_name, sort_order)
@@ -38,20 +38,20 @@ where not exists (select 1 from cacna.leaders l where l.zone_name = v.zone_name 
 insert into cacna.leaders (full_name, title, category, photo_url, sort_order, person_key)
 select full_name, 'Chancellor, CACNA Bible Institute', 'bible_institute', photo_url, 0, person_key
 from cacna.leaders
-where id = 'b7d40147-26c1-4c6e-9771-296ba566d534'
+where category = 'cacna_regional' and person_key = 'timothy-agbeja' and title = 'Regional Superintendent, CACNA'
   and not exists (select 1 from cacna.leaders where category = 'bible_institute' and title = 'Chancellor, CACNA Bible Institute');
 
 -- 4. Regional roles printed on the brochure.
-update cacna.leaders set title = 'Superintendent · Chairman, Public Relations (PRO)', updated_at = now() where id = '3a9cb792-4034-4b8d-888a-877416580862' and title = 'Superintendent';
-update cacna.leaders set title = 'Superintendent · Supervisor, Good Women',           updated_at = now() where id = '163d48e5-3eb6-4d2e-8f3e-e493efc59952' and title = 'Superintendent';
-update cacna.leaders set title = 'Superintendent · Chairman, Christian Education',     updated_at = now() where id = 'ca95f5f9-f641-48d9-bed7-eb8a1bd0c7cd' and title = 'Superintendent';
-update cacna.leaders set title = 'Superintendent · Chairman, Business Group',          updated_at = now() where id = '17b53752-a94e-4198-a452-3e4c798d1df3' and title = 'Superintendent';
-update cacna.leaders set title = 'Superintendent · Chairman, CACMA',                   updated_at = now() where id = '4ae9ff8e-c2cc-4922-a6a9-e9c5883fdc38' and title = 'Superintendent';
-update cacna.leaders set title = 'Superintendent · Chairman, Hope for All',            updated_at = now() where id = '608b76c0-1fbd-41d4-a108-312f53fe9262' and title = 'Superintendent';
-update cacna.leaders set title = 'Superintendent · Empowerment Chairman',              updated_at = now() where id = '351ae852-d96f-483b-868b-b11755b95ab0' and title = 'Superintendent';
+update cacna.leaders set title = 'Superintendent · Chairman, Public Relations (PRO)', updated_at = now() where full_name = 'Pastor Ademola Oyeniyi' and title = 'Superintendent';
+update cacna.leaders set title = 'Superintendent · Supervisor, Good Women', updated_at = now() where person_key = 'hezekiah-ilufoye' and category = 'dcc_superintendent' and title = 'Superintendent';
+update cacna.leaders set title = 'Superintendent · Chairman, Christian Education', updated_at = now() where full_name like 'Pastor Gbenga Famojuro%' and category = 'dcc_superintendent' and title = 'Superintendent';
+update cacna.leaders set title = 'Superintendent · Chairman, Business Group', updated_at = now() where full_name = 'Pastor Gabriel Idowu' and category = 'dcc_superintendent' and title = 'Superintendent';
+update cacna.leaders set title = 'Superintendent · Chairman, CACMA', updated_at = now() where full_name like 'Pastor Amos Dada%' and category = 'zonal_superintendent' and title = 'Superintendent';
+update cacna.leaders set title = 'Superintendent · Chairman, Hope for All', updated_at = now() where full_name like 'Pastor Rufus Adeagbo%' and category = 'dcc_superintendent' and title = 'Superintendent';
+update cacna.leaders set title = 'Superintendent · Empowerment Chairman', updated_at = now() where full_name in ('Pastor Zacheous Oloba','Pastor Zaccheaus Oloba') and category = 'zonal_superintendent' and title = 'Superintendent';
 
 -- 5. Spellings as printed.
-update cacna.leaders set full_name = 'Pastor Samson Kunle Aroniyi', updated_at = now() where id = 'dc0dac58-499b-498e-9989-e06e75a0d5b4' and full_name = 'Pastor Samson Kunle Aroniyo';
-update cacna.leaders set full_name = 'Pastor Zaccheaus Oloba',      updated_at = now() where id = '351ae852-d96f-483b-868b-b11755b95ab0' and full_name = 'Pastor Zacheous Oloba';
+update cacna.leaders set full_name = 'Pastor Samson Kunle Aroniyi', updated_at = now() where category = 'zonal_superintendent' and zone_name = 'Atlanta' and full_name = 'Pastor Samson Kunle Aroniyo';
+update cacna.leaders set full_name = 'Pastor Zaccheaus Oloba',      updated_at = now() where category = 'zonal_superintendent' and zone_name = 'VOC Atlanta' and full_name = 'Pastor Zacheous Oloba';
 
 commit;
