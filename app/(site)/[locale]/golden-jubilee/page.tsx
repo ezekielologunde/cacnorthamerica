@@ -42,7 +42,7 @@ const pioneers: { name: string; title: string; note?: string }[] = [
     note: "Remembered in the Chairman's address as the one who planted the church in the Americas. Senior Pastor and DCC Superintendent, CAC First in the Americas.",
   },
   {
-    name: "Apostle (Dr.) Timothy Oluwale Obadare",
+    name: "Apostle (Dr.) Timothy Obadare",
     title: "Retired General Evangelist, Planter of WOSEM",
     note: "Established Christ Apostolic Church in London in 1979 and in the United States in 1981. Founder of the World Soul-Winning Evangelistic Ministry (WOSEM). 1925–2013.",
   },
