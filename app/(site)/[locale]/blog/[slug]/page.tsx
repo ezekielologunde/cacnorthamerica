@@ -207,7 +207,7 @@ export default async function BlogSlugPage({
 
   return (
     <main id="main-content" className="ed-page">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs).replace(/</g, "\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs).replace(/</g, "\\u003c") }} />
       <Nav />
 
       <header className="ed-post-head">
