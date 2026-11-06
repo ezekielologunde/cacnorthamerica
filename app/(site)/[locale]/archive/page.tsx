@@ -9,7 +9,7 @@ import { RevealText } from "@/components/ui/RevealText";
 import { conventionYears, isConventionPast, dateRangeLabel, type RegistrantCategory } from "@/lib/conventions";
 import { setRequestLocale } from "next-intl/server";
 import { SITE_URL } from "@/lib/site";
-import { archivedEvents, spiritualGiftsTeaching, convention2026Highlights } from "@/lib/archive-notes";
+import { archivedEvents, spiritualGiftsTeaching, convention2026Highlights, regionHistory } from "@/lib/archive-notes";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -124,6 +124,17 @@ export default async function ArchivePage({
               {ev.imageSrc && (
                 <Image src={ev.imageSrc} alt={ev.imageAlt ?? ""} width={1280} height={1600} sizes="(max-width: 760px) 100vw, 500px" style={{ width: "100%", maxWidth: 420, height: "auto", borderRadius: 12, marginTop: 16 }} />
               )}
+            </div>
+          ))}
+
+          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 26, color: "var(--ink)", margin: "32px 0 0" }}>Latunde Region history</h2>
+          {regionHistory.map((h) => (
+            <div key={h.title} style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, padding: "24px 26px" }}>
+              <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20, color: "var(--ink)", margin: 0 }}>{h.title}</h3>
+              <p style={{ fontSize: 14, color: "var(--ink-soft)", margin: "6px 0 0" }}>{h.dateLabel}</p>
+              <ul style={{ margin: "10px 0 0", paddingLeft: 20, fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.6 }}>
+                {h.points.map((pt) => <li key={pt}>{pt}</li>)}
+              </ul>
             </div>
           ))}
 
