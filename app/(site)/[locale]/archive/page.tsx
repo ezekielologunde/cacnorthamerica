@@ -8,6 +8,7 @@ import { RevealText } from "@/components/ui/RevealText";
 import { conventionYears, isConventionPast, dateRangeLabel, type RegistrantCategory } from "@/lib/conventions";
 import { setRequestLocale } from "next-intl/server";
 import { SITE_URL } from "@/lib/site";
+import { archivedEvents, spiritualGiftsTeaching } from "@/lib/archive-notes";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -97,6 +98,39 @@ export default async function ArchivePage({
               </Reveal>
             );
           })}
+        </div>
+      </section>
+
+      <section className="mm-sec" style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(48px,6vw,72px)" }}>
+        <div style={{ maxWidth: 760, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
+          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 26, color: "var(--ink)", margin: "16px 0 0" }}>Other past events</h2>
+          {archivedEvents.map((ev) => (
+            <div key={ev.title} style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, padding: "24px 26px" }}>
+              <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20, color: "var(--ink)", margin: 0 }}>{ev.title}</h3>
+              <p style={{ fontSize: 14, color: "var(--ink-soft)", margin: "6px 0 0" }}>{ev.dateLabel}</p>
+              <p style={{ fontSize: 14.5, color: "var(--ink-soft)", margin: "10px 0 0", lineHeight: 1.6 }}>{ev.detail}</p>
+            </div>
+          ))}
+
+          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 26, color: "var(--ink)", margin: "32px 0 0" }}>Teaching archive</h2>
+          <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, padding: "24px 26px" }}>
+            <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20, color: "var(--ink)", margin: 0 }}>{spiritualGiftsTeaching.title}</h3>
+            <p style={{ fontSize: 14, color: "var(--ink-soft)", margin: "6px 0 0" }}>{spiritualGiftsTeaching.subtitle}</p>
+            <p style={{ fontSize: 13.5, color: "var(--ink-soft)", margin: "10px 0 0", lineHeight: 1.6 }}>{spiritualGiftsTeaching.note}</p>
+            <details style={{ marginTop: 14 }}>
+              <summary style={{ cursor: "pointer", fontSize: 14, fontWeight: 700, color: "var(--red)" }}>Read the outline</summary>
+              <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 14 }}>
+                {spiritualGiftsTeaching.sections.map((sec) => (
+                  <div key={sec.heading}>
+                    <h4 style={{ fontSize: 15, fontWeight: 700, color: "var(--ink)", margin: 0 }}>{sec.heading}</h4>
+                    <ul style={{ margin: "6px 0 0", paddingLeft: 20, fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.6 }}>
+                      {sec.points.map((pt) => <li key={pt}>{pt}</li>)}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </details>
+          </div>
         </div>
       </section>
 
