@@ -10,6 +10,9 @@ tags: [project/cacnorthamerica]
 
 Related: [[Project]] · [[Decisions]] · [[Features]] · [[Payments]] · [[Security]]
 
+## 2026-11-06 -- optional gift on convention registration
+- Card payments on both registration forms can add an optional gift ($1 to $5,000). It is its own Stripe line item, recorded in the session summary (`gift`), logged as a separate `Giving` row and receipted with the giving email. The registration row's Total and Amount Charged exclude it. The processing fee is still sized on the registration only, so the church absorbs Stripe's percentage on the gift. Zelle and free registrations are not offered it. See `lib/registrationGift.ts`.
+
 ## 2026-09-10 to 2026-11-05 -- summary from `git log origin/master --first-parent`
 
 PR titles are the source; details in the linked notes.

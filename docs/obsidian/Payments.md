@@ -2,7 +2,7 @@
 project: cacnorthamerica
 type: payments
 status: active
-last_updated: 2026-11-05
+last_updated: 2026-11-06
 tags: [project/cacnorthamerica]
 ---
 
@@ -21,12 +21,18 @@ payout and webhook endpoint configuration are dashboard-only: Unverified.**
 - Bank (ACH) gifts (PR #95): 0.8% capped at $5, plus $1.50 instant
   verification, grossed up and capped; ACH gifts limited to $10,000.
 - Free registrations have no fee. Zelle has no fee.
+- Registration gift (`lib/registrationGift.ts`): an optional $1 to $5,000 gift on a
+  card registration is its own Stripe line item ("Gift to the CACNA Convention")
+  and is not grossed up. The fee above is sized on the registration only, so the
+  church absorbs Stripe's percentage on the gift. Not offered on Zelle or free
+  registrations. See [[Decisions]].
 
 ## Flows
 
 | Flow | Route | Status |
 |---|---|---|
 | Convention registration, card | `api/register` -> Stripe Checkout | Implemented |
+| Convention registration gift, card | `api/register` (`donationCents`) | Implemented; webhook logs a separate `Giving` row and sends the giving receipt (the registration row excludes it) |
 | Convention registration, Zelle (default) | `api/register` (`confirmByZelle`) | Implemented; staff mark paid on `/admin/check-in` (PR #84) |
 | Store | `api/store/checkout` | Implemented |
 | Giving, one-time card/ACH | `api/giving/checkout` | Implemented |
