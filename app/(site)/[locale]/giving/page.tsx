@@ -126,6 +126,15 @@ export default async function GivingPage({
                   <AccountGroup key={c.slug} campaign={c} />
                 ))}
               </div>
+              <div style={{ marginTop: 32, paddingTop: 26, borderTop: "1px solid rgba(255,255,255,.14)" }}>
+                <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20, color: "#fff", margin: "0 0 8px" }}>Mail-to-Give</h3>
+                <p style={{ fontSize: 15, color: "rgba(255,255,255,.78)", lineHeight: 1.6, margin: "0 0 12px", maxWidth: 560 }}>
+                  You can also mail in your tithes and offerings. Make your check payable to CACNA (Christ Apostolic Church North America), write what the gift is for in the memo, and send it to:
+                </p>
+                <address style={{ fontStyle: "normal", fontSize: 15.5, color: "#fff", lineHeight: 1.7 }}>
+                  CACNA<br />14051 Stahley Road<br />Blue Ridge Summit, PA 17214
+                </address>
+              </div>
             </div>
           </Reveal>
         </div>
