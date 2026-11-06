@@ -54,7 +54,7 @@ const pioneers: { name: string; title: string; note?: string }[] = [
   },
   { name: "Evangelist Mary Olukemi Makinde", title: "Pioneer Women Leader" },
   { name: "Late Pastor J. O. Adeyanju, JP", title: "First Chairman, CAC EDCC" },
-  { name: "Prophet (Dr.) Samuel Kayode Abiara", title: "Planter of CAC Agbala Itura, Retired General Evangelist" },
+  { name: "Prophet (Dr.) Samuel Kayode Abiara", title: "Planter of CAC Vineyard of Comfort (Agbala Itura), Retired General Evangelist" },
 ];
 
 const leaders: { name: string; role: string }[] = [
