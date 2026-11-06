@@ -7,6 +7,8 @@ import { POSTS, type BlogPost, CATEGORY_COLOR, CATEGORY_ACCENT } from "@/lib/blo
 import { specialEvents } from "@/lib/events";
 import { getLatestCacWorldNews, type CacWorldNewsItem } from "@/lib/cacWorldNews";
 import { GIVING_CAMPAIGNS, type GivingCampaign } from "@/lib/giving";
+import { BylineCompact } from "@/components/blog/Byline";
+import { parseAuthors } from "@/lib/blog-authors";
 import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
 import Link from "next/link";
 import { Clock, ArrowRight, Globe2, Landmark } from "lucide-react";
@@ -19,7 +21,7 @@ export const revalidate = 3600;
 type DbBlogRow = {
   id: string; title: string; slug: string; excerpt: string | null;
   body: string; published_at: string | null; created_at: string;
-  image_url: string | null; image_alt: string | null;
+  image_url: string | null; image_alt: string | null; authors: unknown;
 };
 
 function dbPostToBlogPost(p: DbBlogRow): BlogPost {
@@ -36,6 +38,7 @@ function dbPostToBlogPost(p: DbBlogRow): BlogPost {
     accent: CATEGORY_ACCENT["Ministry Update"],
     readTime: `${Math.max(1, Math.round(words / 200))} min read`,
     featured: true,
+    authors: parseAuthors(p.authors),
     image: p.image_url ? { url: p.image_url, alt: p.image_alt ?? p.title } : undefined,
     body: p.body.split(/\n\n+/),
   };
@@ -70,7 +73,11 @@ function StoryRow({ post, archival }: { post: BlogPost; archival?: boolean }) {
           <Link href={href}>{post.title}</Link>
         </h3>
         <p className="ed-row-dek">{post.excerpt}</p>
-        <Meta items={[post.date, post.readTime]} />
+        <p className="ed-meta">
+          <BylineCompact authors={post.authors} />
+          <span>{post.date}</span>
+          <span>{post.readTime}</span>
+        </p>
       </div>
       {post.image && (
         <Link href={href} className="ed-row-thumb" tabIndex={-1} aria-hidden>
@@ -109,7 +116,11 @@ function LeadStory({ post }: { post: BlogPost }) {
           <Link href={href}>{post.title}</Link>
         </h2>
         <p className="ed-lead-dek">{post.excerpt}</p>
-        <Meta items={[post.date, post.readTime]} />
+        <p className="ed-meta">
+          <BylineCompact authors={post.authors} />
+          <span>{post.date}</span>
+          <span>{post.readTime}</span>
+        </p>
         <Link href={href} className="ed-readlink">
           Read the story <ArrowRight size={15} strokeWidth={2.5} aria-hidden />
         </Link>
@@ -270,7 +281,7 @@ export default async function BlogPage({
   );
   const { data: dbRows } = await supabase
     .from("blog_posts")
-    .select("id, title, slug, excerpt, body, published_at, created_at, image_url, image_alt")
+    .select("id, title, slug, excerpt, body, published_at, created_at, image_url, image_alt, authors")
     .eq("published", true)
     .order("published_at", { ascending: false });
 

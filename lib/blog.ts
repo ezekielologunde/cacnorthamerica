@@ -7,6 +7,10 @@ export function badgeTextColor(hex: string): string {
   return DARK_BADGE_COLORS.has(hex.toUpperCase()) ? "var(--ink)" : "#fff";
 }
 
+import { POST_AUTHORS, type BlogAuthor } from "@/lib/blog-authors";
+
+export type { BlogAuthor };
+
 export interface BlogPost {
   slug: string;
   title: string;
@@ -27,6 +31,8 @@ export interface BlogPost {
   image?: { url: string; alt: string; orientation?: "landscape" | "portrait" };
   /** Extra real photos shown under the body (archive posts with several pictures). */
   gallery?: { url: string; alt: string }[];
+  /** Who published it (one or more). Empty falls back to "CACNA". */
+  authors?: BlogAuthor[];
   body: string[];
 }
 
@@ -892,6 +898,7 @@ export const CATEGORY_ACCENT: Record<PostCategory, string> = {
  *  entry picking its own swatch. */
 export const POSTS: BlogPost[] = RAW_POSTS.map((p) => ({
   ...p,
+  authors: p.authors ?? POST_AUTHORS[p.slug],
   categoryColor: CATEGORY_COLOR[p.category],
   accent: CATEGORY_ACCENT[p.category],
 }));

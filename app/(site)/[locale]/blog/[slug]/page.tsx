@@ -11,6 +11,8 @@ import { FooterExperience } from "@/components/sections/FooterExperience";
 import { POSTS, getPost } from "@/lib/blog";
 import type { BlogPost } from "@/lib/blog";
 import { SITE_URL } from "@/lib/site";
+import { BylineCompact, BylineFull } from "@/components/blog/Byline";
+import { parseAuthors } from "@/lib/blog-authors";
 import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
 import { BlogAd } from "@/components/blog/BlogAd";
 import { ServeCallout } from "@/components/ServeCallout";
@@ -30,7 +32,7 @@ function makePublicClient() {
 function dbRowToPost(row: {
   title: string; slug: string; excerpt: string | null; body: string;
   published_at: string | null; created_at: string;
-  image_url?: string | null; image_alt?: string | null;
+  image_url?: string | null; image_alt?: string | null; authors?: unknown;
 }): BlogPost {
   const date = new Date(row.published_at ?? row.created_at);
   const words = row.body.split(/\s+/).length;
@@ -45,6 +47,7 @@ function dbRowToPost(row: {
     accent: "var(--red)",
     readTime: `${Math.max(1, Math.round(words / 200))} min read`,
     image: row.image_url ? { url: row.image_url, alt: row.image_alt ?? row.title } : undefined,
+    authors: parseAuthors(row.authors),
     body: row.body.split(/\n\n+/),
   };
 }
@@ -69,7 +72,7 @@ async function resolvePost(slug: string): Promise<BlogPost | null> {
   try {
     const { data } = await makePublicClient()
       .from("blog_posts")
-      .select("title, slug, excerpt, body, published_at, created_at, image_url, image_alt")
+      .select("title, slug, excerpt, body, published_at, created_at, image_url, image_alt, authors")
       .eq("slug", slug)
       .eq("published", true)
       .single();
@@ -138,6 +141,7 @@ function RelatedRow({ post }: { post: BlogPost }) {
         </h3>
         <p className="ed-row-dek">{post.excerpt}</p>
         <p className="ed-meta">
+          <BylineCompact authors={post.authors} />
           <span>{post.date}</span>
           <span>{post.readTime}</span>
         </p>
@@ -174,7 +178,7 @@ export default async function BlogSlugPage({
   try {
     const { data } = await makePublicClient()
       .from("blog_posts")
-      .select("title, slug, excerpt, body, published_at, created_at, image_url, image_alt")
+      .select("title, slug, excerpt, body, published_at, created_at, image_url, image_alt, authors")
       .eq("published", true)
       .neq("slug", slug)
       .order("published_at", { ascending: false })
@@ -207,6 +211,7 @@ export default async function BlogSlugPage({
           <p className="ed-kicker">{post.category}</p>
           <h1 className="ed-post-title">{post.title}</h1>
           <p className="ed-post-dek">{post.excerpt}</p>
+          <BylineFull authors={post.authors} />
           <div className="ed-post-by">
             <p className="ed-meta" style={{ margin: 0 }}>
               <span>{post.date}</span>
