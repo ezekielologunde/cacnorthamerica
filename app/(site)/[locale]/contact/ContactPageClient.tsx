@@ -42,11 +42,11 @@ const GROUPS = [
 // Ported from the Convention site's lib/content/contacts.ts during the
 // Phase C content merge (2026-09) -- the three officers who actually field
 // convention-specific questions, distinct from CACNA's own general contact
-// line above. Secretary's name corrected there 2026-07-20 (was misattributed
-// to "Pastor Timothy Famojuro"); carried over already-corrected.
+// line above. Chairman updated 2026-11-05: the Golden Jubilee brochure names
+// Pastor Famojuro as the new Convention Chairman (Pastor Adenodi is the former
+// chairman). The secretary seat is not listed until the new secretary is known.
 const CONVENTION_CONTACTS = [
-  { name: "Pastor David Adenodi, Ph.D.", roleKey: "chairman", org: "C.A.C. Vineyard of Comfort, Lanham, MD", phone: "301-440-7033", email: "cacnaconvention@gmail.com" },
-  { name: "Pastor Oluwagbemiga Famojuro, D.Min.", roleKey: "secretary", org: "C.A.C. FITA, Brooklyn, NY", phone: "917-709-1892", email: "ftimothy54@aol.com" },
+  { name: "Pastor Oluwagbemiga Famojuro, D.Min.", roleKey: "chairman", org: "C.A.C. FITA, Brooklyn, NY", phone: "917-709-1892", email: "cacnaconvention@gmail.com" },
   { name: "Pastor Joseph Olawale", roleKey: "generalInquiries", org: "CAC DFW Metroplex, Irving, TX", phone: "305-469-0346", email: "cacna@hotmail.com" },
 ] as const;
 
