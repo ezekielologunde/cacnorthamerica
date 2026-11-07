@@ -2,7 +2,7 @@
 project: cacnorthamerica
 type: security
 status: active
-last_updated: 2026-11-05
+last_updated: 2026-11-07
 tags: [project/cacnorthamerica]
 ---
 
@@ -57,6 +57,36 @@ Cloudinary, map tiles), HSTS with preload, `X-Frame-Options: SAMEORIGIN`,
 (`lib/registrationToken.ts`); `lib/cancelToken.ts` backs recurring-gift
 cancel links. Token formats not re-read for this note.
 
+## Analytics and secret-bearing URLs
+
+Some URLs carry a secret in the query string: the Stripe `session_id` or
+sealed `t` token on the three confirmation pages (event registration, giving,
+store), and the sealed `t` token in the emailed `/giving/cancel` link (it
+lists and cancels a donor's recurring gifts). What keeps them out of
+analytics (`lib/analytics.ts`, `scripts/check-adsense.mjs`):
+
+- `SECRET_URL_PATH` names exactly those routes. The inline gtag script
+  (`gtagInitScript()`) sends a query-free `page_location` to Google Analytics
+  and Google Ads on them.
+- `scrubTelemetryUrl()` is the `beforeSend` of Vercel Analytics and Speed
+  Insights (`components/analytics/VercelTelemetry.tsx`). It also strips the
+  query on `/admin`, where check-in search puts registrant names and codes in
+  `?q=`.
+- The three confirmation pages send `referrer: "no-referrer"` (as
+  `/giving/cancel` does when it has a token), so the URL never travels as a
+  Referer or `page_referrer`.
+- `GoogleTags` is mounted in the `[locale]` layout and `app/not-found.tsx`,
+  not the root layout, so `/admin` never loads Google tags.
+- `adsenseClientId()` (`lib/adsense.ts`) is the single normalizer for the
+  AdSense ID used by `/ads.txt`, the ad script, `BlogAd`, `GoogleTags` and the
+  `google-adsense-account` meta tag.
+- `npm test` runs `scripts/check-adsense.mjs`, which executes the real inline
+  script and asserts each call site uses these helpers.
+
+Required GA4 setting (outside the repo): turn off **Page changes based on
+browser history events** under Enhanced measurement. See [[Features]] for the
+AdSense pieces and [[Changelog]] for when this landed.
+
 ## Known risks
 
 - `script-src` and `style-src` allow `'unsafe-inline'`.
@@ -68,3 +98,5 @@ cancel links. Token formats not re-read for this note.
   swallows errors by design, so a broken DB connection fails silently.
 - Domain-reputation flags on the old WordPress host and Stripe/Vercel
   dashboard settings are outside the repo: **Unverified**.
+- Analytics stripping runs at page load. A client-side jump onto a secret-bearing page would not be re-stripped for GA4's automatic history-change page views; every link to these pages is absolute so they load fresh, and the GA4 setting above closes it. Whether that setting is off in the property: **Unverified**.
+- `gtag('config', {page_location})` persists for the life of the page, so a later soft navigation can be reported under the stripped URL (misreports, does not leak).
