@@ -5,7 +5,7 @@
 //
 // Node 24 strips TypeScript types natively. Exits 1 if any check fails.
 const { adsTxtBody, adsenseClientId, isAdFreePath } = await import("../lib/adsense.ts");
-const { isSecretUrlPath, gtagInitScript } = await import("../lib/analytics.ts");
+const { isSecretUrlPath, gtagInitScript, scrubTelemetryUrl, SECRET_URL_PATH } =await import("../lib/analytics.ts");
 
 let failures = 0;
 function check(name, ok) {
@@ -61,6 +61,25 @@ for (const p of ["/", "/giving", "/store", "/blog/some-post", "/events/cacna-202
   const cfg = configFor(p);
   check(`gtag leaves page_location alone on ${p}`, cfg.length === 2 && cfg.every((c) => c[2].page_location === undefined));
 }
+
+// The pattern is embedded by `.source` only, so a flag would be dropped silently.
+check("secret-path pattern has no flags", SECRET_URL_PATH.flags === "");
+for (const p of ["/blog/confirmation", "/confirmation", "/blog/giving/cancel-policy", "/admin/confirmation-codes"]) {
+  check(`query kept on ${p}`, !isSecretUrlPath(p));
+}
+
+// Vercel Analytics / Speed Insights beforeSend.
+const scrub = (url) => scrubTelemetryUrl({ type: "pageview", url }).url;
+check("telemetry drops ?t= on registration confirmation",
+  scrub("https://cacna.org/events/cacna-2027/register/confirmation?t=abc") === "https://cacna.org/events/cacna-2027/register/confirmation");
+check("telemetry drops session_id and hash on giving confirmation",
+  scrub("https://cacna.org/giving/confirmation?session_id=cs_1#x") === "https://cacna.org/giving/confirmation");
+check("telemetry drops ?t= on giving cancel", scrub("https://cacna.org/giving/cancel?t=tok") === "https://cacna.org/giving/cancel");
+check("telemetry drops ?q= on admin check-in", scrub("https://cacna.org/admin/check-in?q=Jane") === "https://cacna.org/admin/check-in");
+check("telemetry keeps UTM on a normal page",
+  scrub("https://cacna.org/blog/post?utm_source=x") === "https://cacna.org/blog/post?utm_source=x");
+check("telemetry keeps /administer lookalike", scrub("https://cacna.org/administer?a=1") === "https://cacna.org/administer?a=1");
+check("telemetry passes a non-URL through", scrub("not a url") === "not a url");
 
 if (failures) {
   console.error(`\n${failures} check(s) failed`);

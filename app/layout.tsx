@@ -4,9 +4,7 @@ import "./globals.css";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { SITE, SITE_URL, churchJsonLd } from "@/lib/site";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import { GoogleTags } from "@/components/analytics/GoogleTags";
+import { VercelTelemetry } from "@/components/analytics/VercelTelemetry";
 import { SiteOverlays } from "@/components/ui/SiteOverlays";
 import { SkipToContent } from "@/components/ui/SkipToContent";
 import { createServiceClient } from "@/lib/supabase/server";
@@ -105,9 +103,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <SiteOverlays bannerAnn={bannerAnn} />
         <ScrollProgress />
         <SmoothScroll>{children}</SmoothScroll>
-        <Analytics />
-        <SpeedInsights />
-        <GoogleTags />
+        <VercelTelemetry />
       </body>
     </html>
   );
