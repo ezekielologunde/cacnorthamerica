@@ -1,6 +1,6 @@
 import Script from "next/script";
 import { adsenseClientId } from "@/lib/adsense";
-import { CONFIRMATION_PATH } from "@/lib/analytics";
+import { gtagInitScript } from "@/lib/analytics";
 import { AdSenseScript } from "./AdSenseScript";
 
 // Set these in Vercel → Project → Settings → Environment Variables:
@@ -12,10 +12,8 @@ const GA_ID      = process.env.NEXT_PUBLIC_GA_ID ?? "G-8M8BEVEEWM";
 const ADS_ID     = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
 const ADSENSE_ID = adsenseClientId(process.env.NEXT_PUBLIC_ADSENSE_ID);
 
-// Confirmation URLs (event registration, giving, store) carry a Stripe
-// session id or sealed token that opens the receipt, so on any
-// /confirmation page the query string is stripped from page_location before
-// anything is sent to Google.
+// Pages whose query string carries a secret (confirmations, the emailed
+// giving-cancel link) have it stripped from page_location; see lib/analytics.ts.
 export function GoogleTags() {
   const gtagIds = [GA_ID, ADS_ID].filter(Boolean) as string[];
 
@@ -29,9 +27,7 @@ export function GoogleTags() {
             strategy="lazyOnload"
           />
           <Script id="gtag-init" strategy="afterInteractive">
-            {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());var gc=/${CONFIRMATION_PATH.source}/.test(location.pathname)?{page_location:location.origin+location.pathname}:{};${gtagIds
-              .map((id) => `gtag('config','${id}',gc);`)
-              .join("")}`}
+            {gtagInitScript(gtagIds)}
           </Script>
         </>
       )}

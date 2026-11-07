@@ -5,7 +5,7 @@
 //
 // Node 24 strips TypeScript types natively. Exits 1 if any check fails.
 const { adsTxtBody, adsenseClientId, isAdFreePath } = await import("../lib/adsense.ts");
-const { isConfirmationPath, CONFIRMATION_PATH } = await import("../lib/analytics.ts");
+const { isSecretUrlPath, gtagInitScript } = await import("../lib/analytics.ts");
 
 let failures = 0;
 function check(name, ok) {
@@ -37,16 +37,30 @@ check("client ID adds ca- to a bare pub- ID", adsenseClientId("pub-1234567890123
 check("client ID trims a trailing space/newline", adsenseClientId(ID + " \n") === ID);
 check("client ID is null when unset", adsenseClientId(undefined) === null);
 check("client ID is null for a malformed ID", adsenseClientId("ca-pub-12 34") === null);
-check("ads.txt and script agree on a padded value", adsTxtBody(" " + ID + " ")?.includes(adsenseClientId(" " + ID + " ").slice(3)) === true);
+check("ads.txt for a padded value is the canonical line", adsTxtBody(" " + ID + " \n") === LINE);
 
-// Query strings carry a Stripe session id / sealed token on every confirmation page.
+// Run the exact inline script the browser gets, with a stub window/location,
+// and see what page_location each page would send to Google.
+function configFor(pathname) {
+  const dataLayer = [];
+  const location = { pathname, origin: "https://cacna.org" };
+  new Function("window", "location", "dataLayer", gtagInitScript(["G-TEST", "AW-TEST"]))({}, location, dataLayer);
+  return dataLayer.map((a) => [...a]).filter((c) => c[0] === "config");
+}
 for (const p of [
   "/events/cacna-2027/register/confirmation", "/events/cacna-2027/register/confirmation/",
-  "/giving/confirmation", "/store/confirmation",
-]) check(`query stripped on ${p}`, isConfirmationPath(p));
-for (const p of ["/", "/giving", "/store", "/blog/confirmation-bias", "/confirmation/extra"]) check(`query kept on ${p}`, !isConfirmationPath(p));
-// The inline gtag script embeds the same pattern; make sure it survives templating.
-check("inline regex source matches giving confirmation", new RegExp(CONFIRMATION_PATH.source).test("/giving/confirmation"));
+  "/giving/confirmation", "/store/confirmation", "/giving/cancel", "/giving/cancel/",
+]) {
+  check(`query stripped on ${p}`, isSecretUrlPath(p));
+  const cfg = configFor(p);
+  check(`gtag configs both IDs with a query-free page_location on ${p}`,
+    cfg.length === 2 && cfg.every((c) => c[2].page_location === "https://cacna.org" + p));
+}
+for (const p of ["/", "/giving", "/store", "/blog/some-post", "/events/cacna-2027/register"]) {
+  check(`query kept on ${p}`, !isSecretUrlPath(p));
+  const cfg = configFor(p);
+  check(`gtag leaves page_location alone on ${p}`, cfg.length === 2 && cfg.every((c) => c[2].page_location === undefined));
+}
 
 if (failures) {
   console.error(`\n${failures} check(s) failed`);
