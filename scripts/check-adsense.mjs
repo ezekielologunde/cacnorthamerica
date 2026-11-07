@@ -81,6 +81,24 @@ check("telemetry keeps UTM on a normal page",
 check("telemetry keeps /administer lookalike", scrub("https://cacna.org/administer?a=1") === "https://cacna.org/administer?a=1");
 check("telemetry passes a non-URL through", scrub("not a url") === "not a url");
 
+// Wiring: the lib helpers only help if the call sites use them.
+import { readFileSync } from "node:fs";
+const src = (f) => readFileSync(new URL(`../${f}`, import.meta.url), "utf8");
+const has = (f, re) => re.test(src(f));
+check("GoogleTags builds its script with gtagInitScript", has("components/analytics/GoogleTags.tsx", /gtagInitScript\(/) && !has("components/analytics/GoogleTags.tsx", /register\/confirmation/));
+check("GoogleTags normalizes the AdSense ID", has("components/analytics/GoogleTags.tsx", /adsenseClientId\(process\.env\.NEXT_PUBLIC_ADSENSE_ID\)/));
+check("AdSenseScript puts only the normalized ID in the URL", has("components/analytics/AdSenseScript.tsx", /client=\$\{id\}/) && !has("components/analytics/AdSenseScript.tsx", /client=\$\{clientId\}/));
+check("BlogAd normalizes the ID and loads no script of its own", has("components/blog/BlogAd.tsx", /adsenseClientId\(/) && !has("components/blog/BlogAd.tsx", /<Script/));
+check("VercelTelemetry scrubs both Analytics and SpeedInsights",
+  (src("components/analytics/VercelTelemetry.tsx").match(/beforeSend=\{scrubTelemetryUrl\}/g) ?? []).length === 2);
+check("root layout mounts VercelTelemetry but not GoogleTags", has("app/layout.tsx", /<VercelTelemetry \/>/) && !has("app/layout.tsx", /<GoogleTags/));
+check("site layout and 404 page mount GoogleTags", has("app/(site)/[locale]/layout.tsx", /<GoogleTags \/>/) && has("app/not-found.tsx", /<GoogleTags \/>/));
+for (const f of [
+  "app/(site)/[locale]/events/[slug]/register/confirmation/page.tsx",
+  "app/(site)/[locale]/giving/confirmation/page.tsx",
+  "app/(site)/[locale]/store/confirmation/page.tsx",
+]) check(`no Referer from ${f.split("/").slice(-3, -1).join("/")}`, has(f, /referrer: "no-referrer"/));
+
 if (failures) {
   console.error(`\n${failures} check(s) failed`);
   process.exit(1);
