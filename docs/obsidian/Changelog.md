@@ -2,13 +2,20 @@
 project: cacnorthamerica
 type: changelog
 status: active
-last_updated: 2026-11-05
+last_updated: 2026-11-07
 tags: [project/cacnorthamerica]
 ---
 
 # Changelog
 
 Related: [[Project]] · [[Decisions]] · [[Features]] · [[Payments]] · [[Security]]
+
+## 2026-11-07 -- secrets kept out of analytics, one AdSense ID (PR 155)
+
+- Mergestorm review of #73: a padded AdSense ID gave `ads.txt` a valid line but a bad script URL, and only `/register/confirmation` was stripped from GA `page_location`. Both fixed.
+- `adsenseClientId()` is now the single normalizer (`ads.txt`, `AdSenseScript`, `BlogAd`, `GoogleTags`, `google-adsense-account` meta). `BlogAd` no longer loads `adsbygoogle.js` itself.
+- Query stripped from GA `page_location` and from Vercel Analytics / Speed Insights URLs on the three confirmation pages and `/giving/cancel` (and `/admin` for Vercel); confirmation pages send `no-referrer`. Google tags moved out of the root layout so `/admin` never loads them. Details and the GA4 setting to change: [[Security]].
+- `scripts/check-adsense.mjs` now runs in `npm test`.
 
 ## 2026-11-06 -- registration contact fields and Quick help
 

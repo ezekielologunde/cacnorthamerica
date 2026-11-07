@@ -4,9 +4,8 @@ import "./globals.css";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { SITE, SITE_URL, churchJsonLd } from "@/lib/site";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import { GoogleTags } from "@/components/analytics/GoogleTags";
+import { adsenseClientId } from "@/lib/adsense";
+import { VercelTelemetry } from "@/components/analytics/VercelTelemetry";
 import { SiteOverlays } from "@/components/ui/SiteOverlays";
 import { SkipToContent } from "@/components/ui/SkipToContent";
 import { createServiceClient } from "@/lib/supabase/server";
@@ -61,7 +60,7 @@ export const metadata: Metadata = {
   },
   // Lets AdSense verify ownership of the site. Loads no ads and sets no cookies;
   // actual ad units are added separately, on blog posts only.
-  other: { "google-adsense-account": "ca-pub-1672033318309677" },
+  other: { "google-adsense-account": adsenseClientId(process.env.NEXT_PUBLIC_ADSENSE_ID) ?? "ca-pub-1672033318309677" },
 };
 
 export const viewport: Viewport = {
@@ -105,9 +104,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <SiteOverlays bannerAnn={bannerAnn} />
         <ScrollProgress />
         <SmoothScroll>{children}</SmoothScroll>
-        <Analytics />
-        <SpeedInsights />
-        <GoogleTags />
+        <VercelTelemetry />
       </body>
     </html>
   );

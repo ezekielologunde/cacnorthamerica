@@ -1,4 +1,6 @@
 import Script from "next/script";
+import { adsenseClientId } from "@/lib/adsense";
+import { gtagInitScript } from "@/lib/analytics";
 import { AdSenseScript } from "./AdSenseScript";
 
 // Set these in Vercel → Project → Settings → Environment Variables:
@@ -8,11 +10,10 @@ import { AdSenseScript } from "./AdSenseScript";
 
 const GA_ID      = process.env.NEXT_PUBLIC_GA_ID ?? "G-8M8BEVEEWM";
 const ADS_ID     = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
-const ADSENSE_ID = process.env.NEXT_PUBLIC_ADSENSE_ID;
+const ADSENSE_ID = adsenseClientId(process.env.NEXT_PUBLIC_ADSENSE_ID);
 
-// Registration confirmation URLs carry a session id or sealed token that
-// opens the registrant's details, so on those pages the query string is
-// stripped from page_location before anything is sent to Google.
+// Pages whose query string carries a secret (confirmations, the emailed
+// giving-cancel link) have it stripped from page_location; see lib/analytics.ts.
 export function GoogleTags() {
   const gtagIds = [GA_ID, ADS_ID].filter(Boolean) as string[];
 
@@ -26,9 +27,7 @@ export function GoogleTags() {
             strategy="lazyOnload"
           />
           <Script id="gtag-init" strategy="afterInteractive">
-            {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());var gc=/\\/register\\/confirmation\\/?$/.test(location.pathname)?{page_location:location.origin+location.pathname}:{};${gtagIds
-              .map((id) => `gtag('config','${id}',gc);`)
-              .join("")}`}
+            {gtagInitScript(gtagIds)}
           </Script>
         </>
       )}

@@ -10,11 +10,22 @@ const GOOGLE_CERT_AUTHORITY_ID = "f08c47fec0942fa0";
 
 const CLIENT_ID = /^(?:ca-)?(pub-\d{16})$/;
 
+/**
+ * The canonical AdSense client ID ("ca-pub-" + 16 digits) for a raw env value,
+ * or null when it is unset or malformed. Whitespace is trimmed and a bare
+ * "pub-" ID gets its "ca-" prefix. Everything that uses the ID (the ad script
+ * URL and ads.txt) goes through this, so the two can never disagree.
+ */
+export function adsenseClientId(raw: string | undefined): string | null {
+  const match = CLIENT_ID.exec(raw?.trim() ?? "");
+  return match ? `ca-${match[1]}` : null;
+}
+
 /** The ads.txt body for an AdSense client ID, or null when the ID is unset or malformed. */
 export function adsTxtBody(clientId: string | undefined): string | null {
-  const match = CLIENT_ID.exec(clientId?.trim() ?? "");
-  if (!match) return null;
-  return `google.com, ${match[1]}, DIRECT, ${GOOGLE_CERT_AUTHORITY_ID}\n`;
+  const id = adsenseClientId(clientId);
+  if (!id) return null;
+  return `google.com, ${id.slice(3)}, DIRECT, ${GOOGLE_CERT_AUTHORITY_ID}\n`;
 }
 
 // Ads run on the blog only (owner decision, 2026-11-06): the index and the
