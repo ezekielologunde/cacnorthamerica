@@ -4,7 +4,8 @@
 //   node scripts/check-adsense.mjs
 //
 // Node 24 strips TypeScript types natively. Exits 1 if any check fails.
-const { adsTxtBody, isAdFreePath } = await import("../lib/adsense.ts");
+const { adsTxtBody, adsenseClientId, isAdFreePath } = await import("../lib/adsense.ts");
+const { isConfirmationPath, CONFIRMATION_PATH } = await import("../lib/analytics.ts");
 
 let failures = 0;
 function check(name, ok) {
@@ -28,6 +29,24 @@ for (const p of [
 ]) check(`no ads on ${p}`, isAdFreePath(p));
 
 for (const p of ["/blog", "/blog/", "/blog/some-post", "/blog/some-post/"]) check(`ads allowed on ${p}`, !isAdFreePath(p));
+
+// One canonical ID feeds both the ad script URL and ads.txt, so they agree.
+const ID = "ca-pub-1234567890123456";
+check("client ID is canonical as given", adsenseClientId(ID) === ID);
+check("client ID adds ca- to a bare pub- ID", adsenseClientId("pub-1234567890123456") === ID);
+check("client ID trims a trailing space/newline", adsenseClientId(ID + " \n") === ID);
+check("client ID is null when unset", adsenseClientId(undefined) === null);
+check("client ID is null for a malformed ID", adsenseClientId("ca-pub-12 34") === null);
+check("ads.txt and script agree on a padded value", adsTxtBody(" " + ID + " ")?.includes(adsenseClientId(" " + ID + " ").slice(3)) === true);
+
+// Query strings carry a Stripe session id / sealed token on every confirmation page.
+for (const p of [
+  "/events/cacna-2027/register/confirmation", "/events/cacna-2027/register/confirmation/",
+  "/giving/confirmation", "/store/confirmation",
+]) check(`query stripped on ${p}`, isConfirmationPath(p));
+for (const p of ["/", "/giving", "/store", "/blog/confirmation-bias", "/confirmation/extra"]) check(`query kept on ${p}`, !isConfirmationPath(p));
+// The inline gtag script embeds the same pattern; make sure it survives templating.
+check("inline regex source matches giving confirmation", new RegExp(CONFIRMATION_PATH.source).test("/giving/confirmation"));
 
 if (failures) {
   console.error(`\n${failures} check(s) failed`);
