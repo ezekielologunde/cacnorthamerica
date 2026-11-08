@@ -1,14 +1,13 @@
-import { createClient } from "@supabase/supabase-js";
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
-import { POSTS, type BlogPost, CATEGORY_COLOR, CATEGORY_ACCENT } from "@/lib/blog";
+import type { BlogPost } from "@/lib/blog";
+import { getPublishedBlogPosts } from "@/lib/blogPosts";
 import { specialEvents } from "@/lib/events";
 import { getLatestCacWorldNews, type CacWorldNewsItem } from "@/lib/cacWorldNews";
 import { GIVING_CAMPAIGNS, type GivingCampaign } from "@/lib/giving";
 import { BylineCompact } from "@/components/blog/Byline";
-import { parseAuthors } from "@/lib/blog-authors";
 import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
 import Link from "next/link";
 import { Clock, ArrowRight, Globe2, Landmark } from "lucide-react";
@@ -17,32 +16,6 @@ import { SITE_URL } from "@/lib/site";
 import { setRequestLocale } from "next-intl/server";
 
 export const revalidate = 3600;
-
-type DbBlogRow = {
-  id: string; title: string; slug: string; excerpt: string | null;
-  body: string; published_at: string | null; created_at: string;
-  image_url: string | null; image_alt: string | null; authors: unknown;
-};
-
-function dbPostToBlogPost(p: DbBlogRow): BlogPost {
-  const date = new Date(p.published_at ?? p.created_at);
-  const words = p.body.split(/\s+/).length;
-  return {
-    slug: p.slug,
-    title: p.title,
-    excerpt: p.excerpt ?? p.body.slice(0, 160) + "…",
-    date: date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }),
-    dateIso: p.published_at ?? p.created_at,
-    category: "Ministry Update",
-    categoryColor: CATEGORY_COLOR["Ministry Update"],
-    accent: CATEGORY_ACCENT["Ministry Update"],
-    readTime: `${Math.max(1, Math.round(words / 200))} min read`,
-    featured: true,
-    authors: parseAuthors(p.authors),
-    image: p.image_url ? { url: p.image_url, alt: p.image_alt ?? p.title } : undefined,
-    body: p.body.split(/\n\n+/),
-  };
-}
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -302,23 +275,12 @@ export default async function BlogPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  // db.schema: "cacna" -- see lib/supabase/server.ts's comment; without it
-  // this silently hits cac-salvation-center's own project instead.
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { db: { schema: "cacna" } }
-  );
-  const { data: dbRows } = await supabase
-    .from("blog_posts")
-    .select("id, title, slug, excerpt, body, published_at, created_at, image_url, image_alt, authors")
-    .eq("published", true)
-    .order("published_at", { ascending: false });
-
-  const cacWorldNews = await getLatestCacWorldNews(6);
-  const dynamicPosts = (dbRows ?? []).map(dbPostToBlogPost);
-  const [featured, ...rest] = POSTS;
-  const allArticles = [...rest, ...dynamicPosts];
+  // Static POSTS first (POSTS[0] stays the lead story), then the posts
+  // published from /admin/blog -- the same list the home page reads.
+  const [[featured, ...allArticles], cacWorldNews] = await Promise.all([
+    getPublishedBlogPosts(),
+    getLatestCacWorldNews(6),
+  ]);
   const byDateDesc = (a: BlogPost, b: BlogPost) => (a.dateIso < b.dateIso ? 1 : a.dateIso > b.dateIso ? -1 : 0);
   const heraldArticles = allArticles.filter((p) => p.category !== "Devotional").sort(byDateDesc);
   const featuredAll = heraldArticles.filter((p) => p.featured);

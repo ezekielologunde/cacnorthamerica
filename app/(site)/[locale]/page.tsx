@@ -1,5 +1,7 @@
 // Cache the homepage for 60 s — eliminates cold-start DB round-trips that
-// push server response past 1000 ms. Announcements refresh within a minute.
+// push server response past 1000 ms. Admin saves (blog, events, announcements,
+// CAC World) revalidate it straight away via lib/contentRevalidation.ts, and
+// /api/cron/refresh-content re-reads the CAC World feed on a schedule.
 export const revalidate = 60;
 
 import dynamic from "next/dynamic";
@@ -14,6 +16,11 @@ import { ConventionRegister } from "@/components/sections/ConventionRegister";
 import { HistoryTeaser } from "@/components/sections/HistoryTeaser";
 import { FaqTeaser } from "@/components/sections/FaqTeaser";
 import { SocialsRow } from "@/components/sections/SocialsRow";
+import { getPublishedBlogPosts } from "@/lib/blogPosts";
+import { latestBlogPost } from "@/lib/blogMerge";
+import { CONVENTION_RECAP_SLUG } from "@/lib/blog";
+import { getPublishedDbEvents } from "@/lib/dbEvents";
+import { specialEvents } from "@/lib/events";
 
 // Below-fold sections split into separate JS chunks — browser parses them
 // incrementally instead of one blocking task, cutting TBT significantly.
@@ -83,13 +90,20 @@ export default async function Home({
   setRequestLocale(locale);
 
   const service = createServiceClient();
-  const { data: announcements } = await service
-    .from("announcements")
-    .select("id, title, body, cta_text, cta_url, bg_color, text_color")
-    .eq("active", true)
-    .or("expires_at.is.null,expires_at.gt." + new Date().toISOString())
-    .in("placement", ["homepage", "both"])
-    .order("sort_order");
+  const [{ data: announcements }, posts, dbEvents] = await Promise.all([
+    service
+      .from("announcements")
+      .select("id, title, body, cta_text, cta_url, bg_color, text_color")
+      .eq("active", true)
+      .or("expires_at.is.null,expires_at.gt." + new Date().toISOString())
+      .in("placement", ["homepage", "both"])
+      .order("sort_order"),
+    getPublishedBlogPosts(),
+    getPublishedDbEvents(),
+  ]);
+  const events = [...specialEvents, ...dbEvents];
+  const newest = latestBlogPost(posts, [CONVENTION_RECAP_SLUG]);
+  const heroPost = newest && { slug: newest.slug, title: newest.title, excerpt: newest.excerpt, href: newest.href, image: newest.image };
 
   return (
     <main id="main-content">
@@ -99,20 +113,20 @@ export default async function Home({
       />
       <Nav heroDark />
       {announcements && announcements.length > 0 && <HomepageAnnouncements announcements={announcements} />}
-      <Hero />
+      <Hero latestPost={heroPost} />
       {/* Phone-first order: what a visitor most often came for (registering
           for the convention, what is coming up, then watching a service)
           sits right under the hero; the photo strip and the
           superintendent's letter follow. */}
       <ConventionRegister />
-      <UpcomingPrograms />
+      <UpcomingPrograms events={events} />
       <WatchOnline />
       <AnniversaryCelebration />
       <PhotoMarquee />
       <PastorWelcome />
       <Watchword />
       <HistoryTeaser />
-      <LatestNews />
+      <LatestNews posts={posts} />
       <CacWorldNewsStrip limit={3} />
       <OurMinistries />
       <Impact />
