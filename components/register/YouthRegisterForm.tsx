@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useId, useMemo, useRef, useState, type CSSProperties, type FormEvent } from "react";
+import { Check } from "lucide-react";
 import { EmbeddedCheckoutScreen } from "@/components/checkout/EmbeddedStripeCheckout";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -11,6 +12,20 @@ import { FeeBreakdown } from "@/components/checkout/FeeBreakdown";
 import { GiftChoice } from "@/components/register/GiftChoice";
 import { GIFT_LINE_LABEL } from "@/lib/registrationGift";
 import { DEFAULT_PAYMENT_METHOD, PaymentMethodChoice, ZelleTotal, paidSubmitLabel, type PaymentMethod } from "@/components/register/PaymentMethodChoice";
+import {
+  ChildCarePanel,
+  FamilyCareFields,
+  childCarePayload,
+  emptyChildCare,
+  emptyFamilyCare,
+  familyCarePayload,
+  validateChildCare,
+  validateFamilyCare,
+  type ChildCareState,
+  type FamilyCareState,
+  type FieldKit,
+} from "@/components/register/ChildCareFields";
+import { needsChildCare } from "@/lib/childCare";
 import {
   ADULT_AGE,
   AGE_GROUP_LABEL,
@@ -35,9 +50,12 @@ type PersonRow = {
   meals: MealSlot[];
   noMeals: boolean;
   allergies: string;
+  /** Children 12 and under only (lib/childCare.ts); never saved to the draft. */
+  care: ChildCareState;
 };
 
 type SharedField = "contactName" | "contactEmail" | "contactPhone" | "churchName" | "youthLeaderName" | "dccZone";
+const SHARED_FIELDS: SharedField[] = ["contactName", "contactEmail", "contactPhone", "churchName", "youthLeaderName", "dccZone"];
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -59,7 +77,59 @@ function parseAge(raw: string): number {
 }
 
 function emptyPerson(key: number): PersonRow {
-  return { key, firstName: "", lastName: "", age: "", meals: [], noMeals: false, allergies: "" };
+  return { key, firstName: "", lastName: "", age: "", meals: [], noMeals: false, allergies: "", care: emptyChildCare() };
+}
+
+// ---------- Session draft ----------
+// Only what the form asked before care details existed, minus the allergy
+// note: names, ages, meals, contact and church. Nothing medical, no pickup or
+// emergency contact. sessionStorage, so it dies with the tab; cleared once the
+// server accepts the registration.
+
+type DraftPerson = Pick<PersonRow, "firstName" | "lastName" | "age" | "meals" | "noMeals">;
+type Draft = { people: DraftPerson[]; shared: Record<SharedField, string> };
+
+const draftKey = (year: number) => `cacna:youth-register-draft:v1:${year}`;
+const str = (v: unknown, max = 254) => (typeof v === "string" ? v.slice(0, max) : "");
+
+function readDraft(year: number): Draft | null {
+  try {
+    const raw = window.sessionStorage.getItem(draftKey(year));
+    if (!raw) return null;
+    const d = JSON.parse(raw) as { people?: unknown; shared?: unknown };
+    if (!Array.isArray(d.people) || !d.shared || typeof d.shared !== "object") return null;
+    const shared = Object.fromEntries(SHARED_FIELDS.map((k) => [k, str((d.shared as Record<string, unknown>)[k])])) as Record<SharedField, string>;
+    const people = d.people.slice(0, MAX_PEOPLE).map((p) => {
+      const r = (p ?? {}) as Record<string, unknown>;
+      return {
+        firstName: str(r.firstName, 120),
+        lastName: str(r.lastName, 120),
+        age: str(r.age, 2).replace(/\D/g, ""),
+        meals: Array.isArray(r.meals) ? MEAL_SLOTS.filter((m) => (r.meals as unknown[]).includes(m)) : [],
+        noMeals: r.noMeals === true,
+      };
+    });
+    const hasContent = people.some((p) => p.firstName || p.lastName || p.age) || SHARED_FIELDS.some((k) => shared[k]);
+    return hasContent && people.length > 0 ? { people, shared } : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeDraft(year: number, people: PersonRow[], shared: Record<SharedField, string>) {
+  try {
+    const draft: Draft = {
+      people: people.map(({ firstName, lastName, age, meals, noMeals }) => ({ firstName, lastName, age, meals, noMeals })),
+      shared,
+    };
+    window.sessionStorage.setItem(draftKey(year), JSON.stringify(draft));
+  } catch {
+    // Storage full or disabled (private mode): the draft is a convenience only.
+  }
+}
+
+function clearDraft(year: number) {
+  try { window.sessionStorage.removeItem(draftKey(year)); } catch { /* see writeDraft */ }
 }
 
 function StepHeading({ n, title }: { n: number; title: string }) {
@@ -90,6 +160,7 @@ export function YouthRegisterForm({
   youngAdultPriceCents?: number;
 }) {
   const t = useTranslations("YouthRegister");
+  const tc = useTranslations("ChildCare");
   const router = useRouter();
   const uid = useId();
   const nextKey = useRef(1);
@@ -97,6 +168,7 @@ export function YouthRegisterForm({
   const [shared, setShared] = useState<Record<SharedField, string>>({
     contactName: "", contactEmail: "", contactPhone: "", churchName: "", youthLeaderName: "", dccZone: "",
   });
+  const [family, setFamily] = useState<FamilyCareState>(emptyFamilyCare);
   const [guardianConfirmed, setGuardianConfirmed] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(DEFAULT_PAYMENT_METHOD);
   const [giftCents, setGiftCents] = useState(0);
@@ -104,11 +176,28 @@ export function YouthRegisterForm({
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [serverError, setServerError] = useState<string | null>(null);
+  const [draftState, setDraftState] = useState<"pending" | "restored" | "ready">("pending");
   const serverErrorRef = useRef<HTMLParagraphElement | null>(null);
   const focusKey = useRef<number | null>(null);
 
   /** DOM id for a logical field name, unique per form instance. */
   const fid = (name: string) => `${uid}-${name}`;
+  const newKey = () => nextKey.current++;
+
+  // Restore this tab's draft once, after hydration (sessionStorage is
+  // browser-only, so the server render always starts empty).
+  useEffect(() => {
+    const draft = readDraft(year);
+    if (draft) {
+      setPeople(draft.people.map((p) => ({ ...emptyPerson(nextKey.current++), ...p })));
+      setShared(draft.shared);
+    }
+    setDraftState(draft ? "restored" : "ready");
+  }, [year]);
+
+  useEffect(() => {
+    if (draftState !== "pending") writeDraft(year, people, shared);
+  }, [draftState, people, shared, year]);
 
   // After "+ Add", jump straight into the new person's first-name field.
   useEffect(() => {
@@ -124,6 +213,7 @@ export function YouthRegisterForm({
 
   const ages = people.map((p) => parseAge(p.age));
   const anyMinor = ages.some((a) => isValidYouthAge(a) && a < ADULT_AGE);
+  const anyChild = ages.some((a) => needsChildCare(a));
   const total = useMemo(
     () =>
       people.reduce((sum, p) => {
@@ -137,6 +227,10 @@ export function YouthRegisterForm({
 
   function updatePerson(key: number, patch: Partial<PersonRow>) {
     setPeople((current) => current.map((p) => (p.key === key ? { ...p, ...patch } : p)));
+  }
+
+  function updateCare(key: number, patch: Partial<ChildCareState>) {
+    setPeople((current) => current.map((p) => (p.key === key ? { ...p, care: { ...p.care, ...patch } } : p)));
   }
 
   function toggleMeal(key: number, slot: MealSlot) {
@@ -165,14 +259,23 @@ export function YouthRegisterForm({
     setPeople((current) => current.filter((p) => p.key !== key));
   }
 
+  function startOver() {
+    clearDraft(year);
+    setPeople([emptyPerson(nextKey.current++)]);
+    setShared({ contactName: "", contactEmail: "", contactPhone: "", churchName: "", youthLeaderName: "", dccZone: "" });
+    setFamily(emptyFamilyCare());
+    setErrors({});
+    setDraftState("ready");
+  }
+
   function personLabel(index: number) {
     return people.length > 1 ? t("personN", { n: index + 1 }) : t("personSingle");
   }
 
-  /** Mirrors parseYouthRegistration so most mistakes are caught before the
-   *  round trip. Keys are logical field names; the first key in insertion
-   *  order is the first invalid field on the page. */
-  function validate(): Record<string, string> {
+  // Mirror parseYouthRegistration / lib/childCare.ts so most mistakes are
+  // caught before the round trip. Keys are logical field names; the first key
+  // in insertion order is the first invalid field on the page.
+  function validatePeople(): Record<string, string> {
     const found: Record<string, string> = {};
     people.forEach((p) => {
       if (!p.firstName.trim()) found[`p${p.key}-first`] = t("errFirstName");
@@ -180,8 +283,14 @@ export function YouthRegisterForm({
       const age = parseAge(p.age);
       if (!isValidYouthAge(age)) found[`p${p.key}-age`] = age > MAX_YOUTH_AGE ? t("errAgeAdult") : t("errAge");
       if (!p.noMeals && p.meals.length === 0) found[`p${p.key}-meals`] = t("errMeals");
-      if (p.allergies.trim().length > MAX_ALLERGIES_LENGTH) found[`p${p.key}-allergies`] = t("errAllergies", { max: MAX_ALLERGIES_LENGTH });
+      if (needsChildCare(age)) Object.assign(found, validateChildCare(`p${p.key}-care`, p.care, tc));
+      else if (p.allergies.trim().length > MAX_ALLERGIES_LENGTH) found[`p${p.key}-allergies`] = t("errAllergies", { max: MAX_ALLERGIES_LENGTH });
     });
+    return found;
+  }
+
+  function validateContact(): Record<string, string> {
+    const found: Record<string, string> = {};
     if (!shared.contactName.trim()) found.contactName = t("errContactName");
     if (!EMAIL_RE.test(shared.contactEmail.trim())) found.contactEmail = t("errEmail");
     if ((shared.contactPhone.match(/\d/g) ?? []).length < 7) found.contactPhone = t("errPhone");
@@ -191,16 +300,26 @@ export function YouthRegisterForm({
     return found;
   }
 
+  const peopleErrors = validatePeople();
+  const contactErrors = validateContact();
+  const familyErrors = anyChild ? validateFamilyCare(family, tc) : {};
+  const steps = [
+    { title: t("stepPeople"), done: Object.keys(peopleErrors).length === 0 },
+    { title: t("stepContact"), done: Object.keys(contactErrors).length === 0 },
+    ...(anyChild ? [{ title: t("stepCare"), done: Object.keys(familyErrors).length === 0 }] : []),
+  ];
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const found = validate();
+    const found = { ...peopleErrors, ...contactErrors, ...familyErrors };
     setErrors(found);
     const first = Object.keys(found)[0];
     if (first) {
       setStatus("idle");
       setServerError(null);
-      // Meals are a group: send focus to its first checkbox.
-      const el = document.getElementById(fid(first.endsWith("-meals") ? `${first}-0` : first));
+      // A choice group (meals, yes / no, severity) has no element of its own:
+      // send focus to its first option.
+      const el = document.getElementById(fid(first)) ?? document.getElementById(fid(`${first}-0`));
       el?.scrollIntoView({ block: "center", behavior: "smooth" });
       el?.focus({ preventScroll: true });
       return;
@@ -230,19 +349,26 @@ export function YouthRegisterForm({
           youthLeaderName: shared.youthLeaderName.trim(),
           dccZone: shared.dccZone.trim(),
           guardianConfirmed: anyMinor ? guardianConfirmed : false,
-          registrants: people.map((p) => ({
-            firstName: p.firstName.trim(),
-            lastName: p.lastName.trim(),
-            age: parseAge(p.age),
-            meals: MEAL_SLOTS.filter((m) => p.meals.includes(m)),
-            noMeals: p.noMeals,
-            allergies: p.allergies.trim(),
-          })),
+          registrants: people.map((p) => {
+            const child = needsChildCare(parseAge(p.age));
+            return {
+              firstName: p.firstName.trim(),
+              lastName: p.lastName.trim(),
+              age: parseAge(p.age),
+              meals: MEAL_SLOTS.filter((m) => p.meals.includes(m)),
+              noMeals: p.noMeals,
+              // A child's allergies travel in `care`, never as the free-text note.
+              allergies: child ? "" : p.allergies.trim(),
+              ...(child ? { care: childCarePayload(p.care) } : {}),
+            };
+          }),
+          ...(anyChild ? { childCare: familyCarePayload(family) } : {}),
         }),
       });
 
       const data = await response.json().catch(() => null);
       if (response.ok && typeof data?.clientSecret === "string") {
+        clearDraft(year);
         setClientSecret(data.clientSecret);
         setStatus("idle");
         return;
@@ -254,6 +380,7 @@ export function YouthRegisterForm({
         return;
       }
 
+      clearDraft(year);
       if (data.checkoutUrl.startsWith("http")) {
         window.location.href = data.checkoutUrl;
       } else {
@@ -284,6 +411,8 @@ export function YouthRegisterForm({
     if (errors[name]) setErrors((current) => { const next = { ...current }; delete next[name]; return next; });
   }
 
+  const kit: FieldKit = { errors, fid, clearError, a11y, fieldError, labelStyle, hintStyle, required, newKey };
+
   const sharedFields: { name: SharedField; label: string; type?: string; autoComplete: string; inputMode?: "email" | "tel"; hint?: string; optional?: boolean }[] = [
     { name: "contactName", label: t("contactName"), autoComplete: "name" },
     { name: "contactEmail", label: t("contactEmail"), type: "email", inputMode: "email", autoComplete: "email", hint: t("contactEmailHint") },
@@ -304,11 +433,39 @@ export function YouthRegisterForm({
     <form onSubmit={handleSubmit} noValidate>
       <input type="text" name={HONEYPOT_FIELD} tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }} />
 
+      {/* Progress: one pill per step, ticked once that step has nothing missing. */}
+      <nav aria-label={t("progressLabel")}>
+        <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: `repeat(${steps.length}, minmax(0, 1fr))`, gap: 6 }}>
+          {steps.map((s, i) => (
+            <li key={s.title} style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 0 }}>
+              <span aria-hidden style={{ height: 5, borderRadius: 999, background: s.done ? "var(--red)" : "var(--line)", transition: "background .25s" }} />
+              <span style={{ display: "flex", alignItems: "flex-start", gap: 5, fontSize: 12.5, lineHeight: 1.3, fontWeight: 700, color: s.done ? "var(--ink)" : "var(--ink-soft)" }}>
+                {s.done ? <Check size={14} strokeWidth={3} color="var(--red)" aria-hidden style={{ flexShrink: 0, marginTop: 1 }} /> : <span aria-hidden style={{ flexShrink: 0 }}>{i + 1}.</span>}
+                <span>
+                  {s.title}
+                  <span style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap" }}>
+                    {`, ${s.done ? t("progressDone") : t("progressTodo")}`}
+                  </span>
+                </span>
+              </span>
+            </li>
+          ))}
+        </ol>
+      </nav>
+
+      {draftState === "restored" && (
+        <p role="status" style={{ margin: "16px 0 0", padding: "10px 14px", borderRadius: 12, background: "var(--cream)", border: "1px solid var(--line)", fontSize: 13.5, lineHeight: 1.5, color: "var(--ink)" }}>
+          {t("draftRestored")}{" "}
+          <button type="button" className="reg-linkbtn" onClick={startOver} style={{ color: "var(--red)", padding: "0 4px", minHeight: 32 }}>{t("draftClear")}</button>
+        </p>
+      )}
+
       <StepHeading n={1} title={t("stepPeople")} />
 
       {people.map((p, i) => {
         const age = parseAge(p.age);
         const validAge = isValidYouthAge(age);
+        const child = needsChildCare(age);
         const who = p.firstName.trim() || personLabel(i);
         const ageHintId = fid(`p${p.key}-age-hint`);
         const allergiesHintId = fid(`p${p.key}-allergies-hint`);
@@ -422,21 +579,25 @@ export function YouthRegisterForm({
               {fieldError(`p${p.key}-meals`)}
             </fieldset>
 
-            <div style={{ marginTop: 14 }}>
-              <label htmlFor={fid(`p${p.key}-allergies`)} style={labelStyle}>{t("allergies")}</label>
-              <textarea
-                {...a11y(`p${p.key}-allergies`, allergiesHintId)}
-                className="field-input reg-input"
-                style={{ minHeight: 72, resize: "vertical" }}
-                maxLength={MAX_ALLERGIES_LENGTH}
-                value={p.allergies}
-                onChange={(e) => { updatePerson(p.key, { allergies: e.target.value }); clearError(`p${p.key}-allergies`); }}
-              />
-              <span id={allergiesHintId} style={hintStyle}>
-                {t("allergiesHint", { count: p.allergies.length, max: MAX_ALLERGIES_LENGTH })}
-              </span>
-              {fieldError(`p${p.key}-allergies`)}
-            </div>
+            {child ? (
+              <ChildCarePanel prefix={`p${p.key}-care`} who={who} value={p.care} onChange={(patch) => updateCare(p.key, patch)} kit={kit} />
+            ) : validAge ? (
+              <div style={{ marginTop: 14 }}>
+                <label htmlFor={fid(`p${p.key}-allergies`)} style={labelStyle}>{t("allergies")}</label>
+                <textarea
+                  {...a11y(`p${p.key}-allergies`, allergiesHintId)}
+                  className="field-input reg-input"
+                  style={{ minHeight: 72, resize: "vertical" }}
+                  maxLength={MAX_ALLERGIES_LENGTH}
+                  value={p.allergies}
+                  onChange={(e) => { updatePerson(p.key, { allergies: e.target.value }); clearError(`p${p.key}-allergies`); }}
+                />
+                <span id={allergiesHintId} style={hintStyle}>
+                  {t("allergiesHint", { count: p.allergies.length, max: MAX_ALLERGIES_LENGTH })}
+                </span>
+                {fieldError(`p${p.key}-allergies`)}
+              </div>
+            ) : null}
           </div>
         );
       })}
@@ -491,6 +652,14 @@ export function YouthRegisterForm({
           </label>
           {fieldError("guardian")}
         </div>
+      )}
+
+      {anyChild && (
+        <>
+          <StepHeading n={3} title={t("stepCare")} />
+          <p style={{ margin: "-6px 0 14px", fontSize: 13.5, color: "var(--ink-soft)", lineHeight: 1.5 }}>{t("stepCareBody")}</p>
+          <FamilyCareFields value={family} onChange={(patch) => setFamily((f) => ({ ...f, ...patch }))} kit={kit} consentText={t("careConsent")} />
+        </>
       )}
 
       {/* Only when someone is 20+ (the young-adult rate); 19 and under is free. */}

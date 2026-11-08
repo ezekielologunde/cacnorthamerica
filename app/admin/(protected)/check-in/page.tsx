@@ -12,6 +12,8 @@ import {
   sharedCodes,
 } from "@/lib/checkinSearch";
 import { currentOrNextConvention } from "@/lib/conventions";
+import { needsChildCare } from "@/lib/childCare";
+import { AllergyFlag, CHILD_CARE_COLUMNS, ChildCareDetails, careKey, type ChildCareRecord } from "@/components/admin/ChildCareSummary";
 
 // Door check-in: volunteers look a person up by name or 4-character code
 // (lib/checkinSearch.ts) in cacna.checkin_people
@@ -19,10 +21,12 @@ import { currentOrNextConvention } from "@/lib/conventions";
 // A plain GET form, so it works on any phone without JavaScript.
 
 const COLUMNS =
-  "id, full_name, code, category, age, church_name, dcc, contact_name, meals, allergies, payment_status, zelle_ref, checked_in_at, checked_in_by";
+  "id, ref, idx, full_name, code, category, age, church_name, dcc, contact_name, meals, allergies, payment_status, zelle_ref, checked_in_at, checked_in_by";
 
 type PersonRow = {
   id: string;
+  ref: string;
+  idx: number;
   full_name: string;
   code: string;
   category: string;
@@ -58,7 +62,10 @@ function HiddenSearch({ q, year }: { q: string; year: string }) {
   );
 }
 
-function PersonCard({ person, q, year, codeShared }: { person: PersonRow; q: string; year: string; codeShared: boolean }) {
+/** care: the child's care details, null when a child 12 and under has none
+ *  on file (registered before they were asked), "error" when they could not
+ *  be loaded, undefined for anyone older. */
+function PersonCard({ person, q, year, codeShared, care }: { person: PersonRow; q: string; year: string; codeShared: boolean; care?: ChildCareRecord | null | "error" }) {
   const paid = person.payment_status === "paid";
   const awaitingZelle = person.payment_status === "awaiting_zelle";
   const church = [person.church_name, person.dcc && `DCC: ${person.dcc}`].filter(Boolean).join(" · ");
@@ -111,6 +118,21 @@ function PersonCard({ person, q, year, codeShared }: { person: PersonRow; q: str
           </form>
         </div>
       )}
+
+      {care === "error" ? (
+        <p style={{ fontSize: 14, fontWeight: 600, color: AMBER, background: AMBER_BG, borderRadius: 6, padding: "8px 12px", margin: "0 0 14px" }}>
+          Couldn&apos;t load this child&apos;s care details. Check the printed care sheet or ask the parent.
+        </p>
+      ) : care === null ? (
+        <p style={{ fontSize: 14, fontWeight: 600, color: AMBER, background: AMBER_BG, borderRadius: 6, padding: "8px 12px", margin: "0 0 14px" }}>
+          No care details on file. Ask the parent about allergies and who may pick up.
+        </p>
+      ) : care ? (
+        <div style={{ margin: "0 0 14px" }}>
+          <AllergyFlag care={care} />
+          <ChildCareDetails care={care} />
+        </div>
+      ) : null}
 
       {person.allergies && (
         <p style={{ fontSize: 16, fontWeight: 700, color: "var(--red)", background: "rgba(200,30,30,0.07)", border: "2px solid var(--red)", borderRadius: 8, padding: "10px 14px", margin: "0 0 14px" }}>
@@ -196,12 +218,38 @@ export default async function CheckInPage({
 
   const shared = sharedCodes(rows);
 
+  // Children 12 and under: their care details (cacna.child_care_details,
+  // service-role only; requireAdmin() returns the service client).
+  const children = rows.filter((r) => r.age !== null && needsChildCare(r.age));
+  const care = new Map<string, ChildCareRecord>();
+  let careFailed = false;
+  if (children.length > 0) {
+    const { data, error } = await supabase
+      .from("child_care_details")
+      .select(CHILD_CARE_COLUMNS)
+      .eq("year", year)
+      .in("ref", [...new Set(children.map((r) => r.ref))]);
+    if (error) {
+      console.error("[check-in] care lookup failed:", error.code);
+      careFailed = true;
+    } else {
+      for (const c of (data ?? []) as ChildCareRecord[]) care.set(careKey(c.ref, c.idx), c);
+    }
+  }
+  const careFor = (r: PersonRow): ChildCareRecord | null | "error" | undefined =>
+    r.age === null || !needsChildCare(r.age) ? undefined : careFailed ? "error" : care.get(careKey(r.ref, r.idx)) ?? null;
+
   return (
     <div style={{ maxWidth: 720 }}>
       <div style={{ marginBottom: 20 }}>
         <h1 style={{ fontSize: 22, fontWeight: 700, color: "var(--ink)", margin: "0 0 6px" }}>Check-in · {year}</h1>
         <p style={{ fontSize: 14, color: "var(--ink-soft)", margin: 0 }}>
           Codes are not unique. Always confirm the name before checking someone in.
+        </p>
+        <p style={{ fontSize: 14, margin: "8px 0 0" }}>
+          <Link href={yearParam ? `/admin/check-in/children?year=${yearParam}` : "/admin/check-in/children"} style={{ color: "var(--red)", fontWeight: 700, textDecoration: "none", display: "inline-block", padding: "6px 0" }}>
+            Children&apos;s care sheet (allergies, pickup) →
+          </Link>
         </p>
       </div>
 
@@ -267,7 +315,7 @@ export default async function CheckInPage({
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {rows.map((person) => (
-              <PersonCard key={person.id} person={person} q={search.q} year={yearParam} codeShared={shared.has(person.code)} />
+              <PersonCard key={person.id} person={person} q={search.q} year={yearParam} codeShared={shared.has(person.code)} care={careFor(person)} />
             ))}
           </div>
         </>
