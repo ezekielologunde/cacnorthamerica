@@ -1,7 +1,7 @@
 # Social cross-post: upload once in admin, post to Facebook, Instagram, TikTok
 
-Date: 2026-11-08. Status: task 1 (core, fake adapter only) built on `feat/social-crosspost`.
-Task 2 adds the real platform adapters.
+Date: 2026-11-08. Status: task 1 (core, fake adapter) and task 2 (real adapters, see the end)
+built on `feat/social-crosspost`; neither has run against a real platform yet.
 
 ## Goal
 
@@ -231,8 +231,8 @@ silently truncated. A video that breaks one platform's rules skips only that pla
    TikTok audits the app every post is private ("All content posted by unaudited clients will be
    restricted to private viewing mode"), so plan the audit before relying on TikTok. If using
    `PULL_FROM_URL`, verify the `cacna.org` domain or URL prefix in the portal.
-5. Put the tokens in Vercel env vars (task 2 names them), never in code or in the database in
-   clear.
+5. Put the tokens in Vercel env vars (names and lifetimes in `.env.example`), never in code or in
+   the database in clear. Apply migration 0027 and set `SOCIAL_TOKEN_ENCRYPTION_KEY` before TikTok.
 6. Run a dry run from `/admin/social` and check the log; then switch on one platform at a time
    with dry run off.
 
@@ -240,3 +240,51 @@ silently truncated. A video that breaks one platform's rules skips only that pla
 
 Real adapters and the start/check split (task 2), cron sweep, X, YouTube, scheduling, editing or
 deleting a published post, cleanup of orphaned uploads.
+
+## Task 2: real adapters (built, not yet run against a real platform)
+
+`lib/social/adapters/{facebook,instagram,tiktok}.ts`, wired in `lib/social/adapters.ts` from
+server env vars only (names in `.env.example`). A platform with missing or malformed variables has
+no adapter and is logged `skipped / not_configured`. Every request goes through
+`lib/social/http.ts`: per-request timeout (10 s), `redirect: "error"`, and no error text is ever
+passed on. Each adapter re-validates the video first, then maps every failure to a fixed
+identifier; only numeric Graph codes or documented TikTok `error.code` values are read, never
+`message`. Tokens travel only in the `Authorization` header (or the TikTok token request body),
+never in a URL. Tests: `lib/social/adapters.test.mjs`, fake fetch only.
+
+`PublishResult` gained an optional success `notice` (stored in `error_code` beside `posted`), so
+"posted, but private" is visible rather than silent.
+
+| | Facebook Page | Instagram Reels | TikTok |
+|---|---|---|---|
+| Calls | `POST /{page}/videos` `file_url,title,description,published` | `POST /{ig}/media` (REELS) → poll `status_code` → `POST /{ig}/media_publish` | refresh token if needed → `creator_info/query` → `video/init` (PULL_FROM_URL) → poll `status/fetch` |
+| Polling | none (Facebook processes after accepting) | every 4 s, at most 28 s; unfinished → `instagram_processing_timeout`, retryable, nothing published | every 3 s, at most 12 s; unfinished → posted with notice `tiktok_processing[_private]` |
+| Token | long-lived Page token, no expiry date | same Page token (default) | access 2 h, refresh 180 days, refresh token rotates every refresh |
+| When it lapses | `facebook_reconnect_needed`: new `FACEBOOK_PAGE_ACCESS_TOKEN` | `instagram_reconnect_needed` | `tiktok_reconnect_needed`: new `TIKTOK_REFRESH_TOKEN` (restarts the chain); settings page shows the expiry date |
+
+Retryable rules: a definite error response means nothing was posted (retryable). For the request
+that makes the post public (Page `/videos`, `media_publish`, TikTok `init`), a timeout, network
+error, 5xx or Graph code 1/2 is an unknown outcome (not retryable; the admin checks the platform
+first). Graph 506 (duplicate post) is never retryable.
+
+TikTok specifics:
+
+- Rotating refresh token: `TIKTOK_REFRESH_TOKEN` seeds the chain; the current pair is then kept in
+  `cacna.social_credentials` (migration 0027), sealed with AES-256-GCM under
+  `SOCIAL_TOKEN_ENCRYPTION_KEY` (`lib/social/token-crypto.ts`, platform as AAD). A different
+  env token (by fingerprint) restarts the chain. If the rotated pair can't be saved, the post
+  stops (`tiktok_token_save_failed`).
+- Privacy: unaudited (`TIKTOK_APP_AUDITED` not `true`) sends `SELF_ONLY` and marks the target
+  `posted` with notice `tiktok_private_unaudited`. Audited sends `PUBLIC_TO_EVERYONE` (or
+  `FOLLOWER_OF_CREATOR` for a private account) if the creator info offers it.
+- Video source: `TIKTOK_PULL_URL_PREFIX` + `<id>.<ext>`, which `next.config.ts` serves through an
+  external rewrite `/social-video/:file` → `res.cloudinary.com/<cloud>/video/upload/social/:file`
+  (mp4/mov, one path segment; `proxy.ts` skips dotted paths). The prefix must be verified in the
+  TikTok portal.
+- `publish_id` may contain `~`; migration 0027 widens 0026's `platform_post_id` check to match the
+  dispatcher.
+
+Still open: the start/check split (polling across requests, cron sweep) is not built: each
+publish is bounded inside one call, so a worst-case run of all three platforms can approach the
+60 s Hobby limit. The rewrite's behaviour with a 100 MB file on Vercel, Facebook's acceptance of
+`.mov` via `file_url`, and every real request are unverified until credentials exist.
