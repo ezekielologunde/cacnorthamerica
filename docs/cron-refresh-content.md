@@ -5,7 +5,7 @@ The public pages are cached (ISR) so they load fast. They now refresh in three w
 1. **Admin saves refresh at once.** Publishing, editing or deleting a blog post, an event, an
    announcement or a CAC World story (approve, reject, unpublish, "fetch latest") revalidates
    the pages that show it, through `lib/contentRevalidation.ts`.
-2. **A scheduled refresh every 15 minutes.** `vercel.json` runs a Vercel Cron job against
+2. **A scheduled refresh once a day (09:00 UTC; the project is on Vercel Hobby, which rejects anything more frequent -- confirmed by a failed deploy).** `vercel.json` runs a Vercel Cron job against
    `GET /api/cron/refresh-content`. It drops the cached CAC World News feed (tag
    `cac-world-news`) and marks the home, `/blog`, `/blog/[slug]`, `/calendar` and
    `/events/[slug]` pages stale, so new CAC World stories appear without anyone touching
@@ -50,8 +50,7 @@ curl -H "Authorization: Bearer $CRON_SECRET" https://cacna.org/api/cron/refresh-
 
 ### Vercel plan note
 
-Vercel's Hobby plan has limited cron jobs to once a day and fails a deployment whose
-`vercel.json` asks for more (check the current limit on Vercel's Cron Jobs usage and pricing
-page). If the project is on Hobby, either move to Pro or change the
-schedule in `vercel.json` to a daily one (for example `"0 9 * * *"`); admin saves and the
-10-minute feed timer still keep things fresh in between.
+The project is on Vercel Hobby, which allows cron jobs once a day at most and fails any deployment whose
+`vercel.json` asks for more (a `*/15` schedule failed the round-2 PR build). The schedule is therefore daily
+(`0 9 * * *`). Admin saves and the 10-minute feed timer keep pages fresh in between; on Pro, a more frequent
+schedule is possible.

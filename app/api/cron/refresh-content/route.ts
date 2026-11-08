@@ -3,7 +3,7 @@ import { isAuthorizedCronRequest } from "@/lib/cronAuth";
 import { refreshAllPublicContent } from "@/lib/contentRevalidation";
 
 /**
- * Scheduled content refresh (vercel.json runs it every 15 minutes). Drops
+ * Scheduled content refresh (vercel.json runs it once a day). Drops
  * the cached CAC World News feed and marks the home, blog, calendar and
  * event pages stale, so each is rebuilt with current data on its next visit.
  *
