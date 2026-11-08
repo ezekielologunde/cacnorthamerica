@@ -27,6 +27,11 @@ const NAV = [
     icon: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z",
   },
   {
+    href: "/admin/check-in",
+    label: "Check-in",
+    icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z",
+  },
+  {
     href: "/admin/gallery",
     label: "Gallery",
     icon: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z",
@@ -50,6 +55,11 @@ const NAV = [
     href: "/admin/operations",
     label: "Operations",
     icon: "M9 7h6m0 10v-3m-3 3v-6m-3 6v-9m12 9V4a2 2 0 00-2-2H5a2 2 0 00-2 2v16a2 2 0 002 2h14a2 2 0 002-2z",
+  },
+  {
+    href: "/admin/forms",
+    label: "Forms",
+    icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4",
   },
   {
     href: "/admin/admins",

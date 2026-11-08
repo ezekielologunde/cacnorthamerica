@@ -29,7 +29,13 @@
  * are also created automatically from whatever fields a submission sends,
  * and grow if a later submission includes a field the tab hasn't seen
  * before (the Contact form does this: membership inquiries send a few
- * extra fields general inquiries don't).
+ * extra fields general inquiries don't). A new column goes just before a
+ * trailing "Check-in Code" column, so that column stays last; on any other
+ * tab it is added at the far right.
+ *
+ * Re-paste this into the live Apps Script project (Extensions > Apps Script)
+ * and redeploy a new version for it to take effect; until then, add the
+ * 'Zelle Reference' header by hand before 'Check-in Code'.
  */
 
 function doPost(e) {
@@ -59,6 +65,37 @@ function doPost(e) {
   }
 }
 
+// Read-back for the admin Operations page (lib/sheetsRead.ts): GET ?secret=...
+// returns every tab except the blank default "Sheet1" as { tabName: row[] },
+// each row an object keyed by that tab's header row. Fails closed: with no
+// WEBHOOK_SECRET configured, or a missing/wrong secret, nothing is returned,
+// because this sheet holds registrants' contact details.
+function doGet(e) {
+  var expectedSecret = PropertiesService.getScriptProperties().getProperty("WEBHOOK_SECRET");
+  var given = e && e.parameter ? e.parameter.secret : "";
+  if (!expectedSecret || given !== expectedSecret) {
+    return jsonResponse({ ok: false, error: "Invalid secret" });
+  }
+
+  var sheets = {};
+  SpreadsheetApp.getActiveSpreadsheet().getSheets().forEach(function (sheet) {
+    var name = sheet.getName();
+    if (name === "Sheet1") return;
+    var values = sheet.getDataRange().getValues();
+    if (values.length < 2) { sheets[name] = []; return; }
+    var headers = values[0];
+    sheets[name] = values.slice(1).map(function (r) {
+      var row = {};
+      headers.forEach(function (h, i) {
+        var v = r[i];
+        row[h] = v instanceof Date ? v.toISOString() : v;
+      });
+      return row;
+    });
+  });
+  return jsonResponse({ ok: true, sheets: sheets });
+}
+
 function getOrCreateSheet(formName) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName(formName);
@@ -78,15 +115,33 @@ function appendRow(sheet, data) {
     return headers.indexOf(k) === -1;
   });
   if (newKeys.length > 0) {
-    sheet.getRange(1, headers.length + 1, 1, newKeys.length).setValues([newKeys]);
-    headers = headers.concat(newKeys);
+    var last = headers.length;
+    if (headers[last - 1] === "Check-in Code") {
+      // Keep a trailing "Check-in Code" last: new columns go just before it.
+      sheet.insertColumnsBefore(last, newKeys.length);
+      sheet.getRange(1, last, 1, newKeys.length).setValues([newKeys.map(plainText)]);
+      headers = headers.slice(0, last - 1).concat(newKeys, ["Check-in Code"]);
+    } else {
+      sheet.getRange(1, last + 1, 1, newKeys.length).setValues([newKeys.map(plainText)]);
+      headers = headers.concat(newKeys);
+    }
   }
 
   var row = headers.map(function (h) {
     if (h === "Timestamp") return new Date();
-    return data[h] !== undefined ? String(data[h]) : "";
+    return data[h] !== undefined ? plainText(String(data[h])) : "";
   });
   sheet.appendRow(row);
+}
+
+// Sheets runs any cell starting with =, +, - or @ as a formula (tab and CR
+// are used to smuggle them), so a submitted =HYPERLINK(...) or =IMAGE(...)
+// could read the other tabs' registrant details. A leading apostrophe makes
+// Sheets store the value as plain text and is hidden in the cell. The site
+// already does this in lib/sheetsWebhook.ts; this covers anything that
+// reaches the webhook another way.
+function plainText(value) {
+  return /^[=+\-@\t\r]/.test(value) ? "'" + value : value;
 }
 
 function jsonResponse(obj) {

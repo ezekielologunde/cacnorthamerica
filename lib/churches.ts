@@ -12,7 +12,7 @@
  * enough to sort by proximity, not exact enough to pin on a map.
  *
  * This is a first pass covering the highest-confidence finds from a
- * research sweep across all 24 zones — most zones don't have a verified
+ * research sweep across all 26 zones — most zones don't have a verified
  * entry yet (many "Christ Apostolic Church"-named results collide with
  * unrelated denominations, and several zones had no address found at all,
  * a gap that predates this file — CACNA's own prior site left the same
@@ -183,7 +183,7 @@ export const MEMBER_CHURCHES: MemberChurch[] = [
   {
     name: "CAC House of Praise",
     address: "4909 Edmonston Rd, Hyattsville, MD 20781",
-    zoneName: "Agbala Itura DCC, USA",
+    zoneName: "Vineyard of Comfort DCC, USA",
     lat: 38.9480473,
     lng: -76.9263464,
     source: "cachouseofpraise.org — cacnorthamerica.com's own Pastor David Adenodi profile page names this exact address",
@@ -239,7 +239,7 @@ export const MEMBER_CHURCHES: MemberChurch[] = [
   {
     name: "CAC Vineyard of Comfort — Toronto",
     address: "104 Fenmar Drive, North York, ON M9L 1M5",
-    zoneName: "Agbala Itura Canada",
+    zoneName: "Vineyard of Comfort Canada",
     lat: 43.7593432,
     lng: -79.5480601,
     source: "CAC VOC Toronto's own Facebook (\"Pastor Ademola Oyeniyi is the Zonal Coordinator of CAC Vineyard of Comfort, Canada\") + independent Canadian business directories",
@@ -272,10 +272,85 @@ export const MEMBER_CHURCHES: MemberChurch[] = [
   {
     name: "Christ Apostolic Church Kingdom Embassy",
     address: "8733 Frankford Ave, Philadelphia, PA 19136",
-    zoneName: "Philadelphia",
+    zoneName: "Baltimore DCC",
     lat: 40.0486237,
     lng: -75.0127433,
-    source: "Multiple aggregator/directory listings (Yelp, Google Business) naming this address for a Philadelphia-based \"Christ Apostolic Church\" congregation",
+    source: "Multiple aggregator/directory listings (Yelp, Google Business) naming this address for a Philadelphia-based \"Christ Apostolic Church\" congregation; part of the Baltimore DCC per the site owner (2026-11-03)",
+  },
+  {
+    name: "Christ Apostolic Church W.o.s.e.m. (Norfolk)",
+    address: "7919 Buffalo Avenue, Norfolk, VA 23518",
+    zoneName: "Zone to confirm (Norfolk, VA)",
+    lat: 36.9171053,
+    lng: -76.2341968,
+    source: "churcheslist.com listing (address, Sunday worship, cacva2@ contact) plus a second directory (disciplepair.com); WOSEM name matches the Houston church — CAC Nigeria tie not stated on the page, confirm with the church",
+  },
+  {
+    name: "Christ Apostolic Church (Vineyard of Comfort) Edmonton",
+    address: "1 - 5110 97A St NW, Edmonton, AB T6E 5E6",
+    zoneName: "Zone to confirm (Canada)",
+    lat: 53.4889869,
+    lng: -113.4818812,
+    approxLocation: true,
+    source: "CanadaHelps CRA-registered charity listing for this exact name and address; CAC affiliation inferred from the name only (page does not mention CAC Nigeria) — confirm with the church. Coordinates are the street, not the unit",
+  },
+  {
+    name: "Christ Apostolic Church (Vineyard of Comfort) Calgary",
+    address: "37 Copperstone Common SE, Calgary, AB T2Z 5E4",
+    zoneName: "Zone to confirm (Canada)",
+    lat: 50.9149205,
+    lng: -113.9152495,
+    source: "CanadaHelps CRA-registered charity listing for this exact name and address; CAC affiliation inferred from the name only (page does not mention CAC Nigeria) — confirm with the church",
+  },
+  {
+    name: "Christ Apostolic Church - C.A.C. Anim Temple",
+    address: "1880 Ormont Dr, North York, ON M9L 2V4",
+    zoneName: "Zone to confirm (Canada)",
+    lat: 43.76409,
+    lng: -79.5552,
+    source: "CanadaHelps CRA-registered charity listing for this exact name and address; CAC affiliation inferred from the name only (page does not mention CAC Nigeria) — confirm with the church",
+  },
+  {
+    name: "Christ Apostolic Church - Way To Life",
+    address: "325 Montreal Rd, Vanier (Ottawa), ON",
+    zoneName: "Zone to confirm (Canada)",
+    lat: 45.4377939,
+    lng: -75.6574491,
+    source: "CanadaHelps CRA-registered charity listing for this exact name and address; CAC affiliation inferred from the name only (page does not mention CAC Nigeria) — confirm with the church",
+  },
+  {
+    name: "CAC Bethel Brampton",
+    address: "1495 Sandalwood Pkwy East, Brampton, ON",
+    zoneName: "Zone to confirm (Canada)",
+    lat: 43.7389306,
+    lng: -79.7774191,
+    approxLocation: true,
+    source: "Local assembly page (cacbethel.com/locations) — Bethel Toronto's own site lists this branch; zone not stated, confirm with the church. Coordinates are the street, not the exact building",
+  },
+  {
+    name: "CAC Bethel Windsor",
+    address: "1531 Church Street, Windsor, ON",
+    zoneName: "Zone to confirm (Canada)",
+    lat: 42.3117042,
+    lng: -83.0400631,
+    approxLocation: true,
+    source: "Local assembly page (cacbethel.com/locations) — Bethel Toronto's own site lists this branch; zone not stated, confirm with the church. Coordinates are the street, not the exact building",
+  },
+  {
+    name: "CAC Mount Bethel Toronto",
+    address: "6-100 Penn Drive, Toronto, ON",
+    zoneName: "Zone to confirm (Canada)",
+    lat: 43.7550588,
+    lng: -79.558135,
+    source: "cacmountbethel.com/contact church contact directory; zone not stated, confirm with the church",
+  },
+  {
+    name: "CAC Mount Bethel Montreal West",
+    address: "128 Ronald Dr, Montreal West, QC",
+    zoneName: "Zone to confirm (Canada)",
+    lat: 45.4486573,
+    lng: -73.641614,
+    source: "cacmountbethel.com/contact church contact directory; zone not stated, confirm with the church",
   },
 ];
 

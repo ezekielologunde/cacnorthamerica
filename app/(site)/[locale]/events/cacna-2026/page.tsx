@@ -1,4 +1,7 @@
 import { Nav } from "@/components/navigation/Nav";
+import "@/app/(site)/[locale]/mobile-events-media.css";
+import { PastEventBanner } from "@/components/events/PastEventBanner";
+import { MobileStickyCta } from "@/components/events/MobileStickyCta";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
@@ -55,6 +58,7 @@ export default async function CACNA2026Page({
     url: `${SITE_URL}/events/cacna-2026`,
     location: { "@type": "Place", name: "CAC Village", address: { "@type": "PostalAddress", streetAddress: "14051 Stahley Rd", addressLocality: "Blue Ridge Summit", addressRegion: "PA", postalCode: "17214", addressCountry: "US" } },
     organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },
+    performer: { "@type": "Church", name: SITE.name, url: SITE_URL },
     ...(CACNA_REG ? { offers: { "@type": "Offer" as const, url: CACNA_REG, availability: "https://schema.org/InStock" } } : {}),
   };
   return (
@@ -62,15 +66,10 @@ export default async function CACNA2026Page({
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Events", path: "/calendar" }, { name: ev.navLabel ?? ev.title, path: "/events/cacna-2026" }])).replace(/</g, "\\u003c") }} />
       <Nav heroDark />
-      {isPast && (
-        <div role="status" style={{ background: '#2c2825', padding: '13px clamp(20px,5vw,64px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px 20px', fontSize: 14, fontWeight: 600, color: 'rgba(245,246,250,.7)' }}>
-          <span>This event has passed — page kept as an archive.</span>
-          <Link href="/calendar" style={{ color: 'var(--gold)', fontWeight: 700, fontSize: 13, textDecoration: 'none', whiteSpace: 'nowrap' }}>See upcoming events →</Link>
-        </div>
-      )}
+      {isPast && <PastEventBanner />}
 
       {/* Hero */}
-      <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) clamp(80px,10vw,120px)", position: "relative", overflow: "hidden" }}>
+      <section className="mm-hero" style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) clamp(80px,10vw,120px)", position: "relative", overflow: "hidden" }}>
         <style>{`
           .cacna2026-hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: clamp(32px,5vw,60px); align-items: center; }
           @media (max-width: 900px) { .cacna2026-hero-grid { grid-template-columns: 1fr; } }
@@ -118,13 +117,13 @@ export default async function CACNA2026Page({
 
           <Reveal delay={200}>
             <p style={{ fontSize: "clamp(16px,2vw,20px)", color: "rgba(245,246,250,.72)", lineHeight: 1.7, maxWidth: 620, margin: "0 0 44px", textWrap: "pretty" }}>
-              Six days of worship, the Word, and the whole CAC family in one place. CAC Village, Blue Ridge Summit, PA — July 13–18, 2026. This is the gathering you do not want to miss.
+              Six days of worship and the Word at CAC Village, Blue Ridge Summit, PA — July 13–18, 2026.
             </p>
           </Reveal>
 
           {!isPast && CACNA_REG && (
           <Reveal delay={280}>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
+            <div className="mm-actions" style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
               <a href={CACNA_REG} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(253,200,65,.4)" }}>
                 Register Now →
               </a>
@@ -147,7 +146,7 @@ export default async function CACNA2026Page({
                 width={1127}
                 height={1600}
                 style={{ width: "100%", height: "auto", display: "block" }}
-                priority
+                preload
               />
             </div>
           </Reveal>
@@ -155,7 +154,7 @@ export default async function CACNA2026Page({
       </section>
 
       {/* What is CACNA */}
-      <section style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+      <section className="mm-sec" style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 960, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,440px),1fr))", gap: "clamp(36px,5vw,64px)", alignItems: "center" }}>
           <Reveal>
             <div>
@@ -167,7 +166,7 @@ export default async function CACNA2026Page({
                 The Christ Apostolic Church North America National Convention brings together the entire CAC family across the United States, Canada, and South America for one week at CAC Village — a dedicated conference and retreat center in the mountains of southern Pennsylvania.
               </p>
               <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.78, margin: 0 }}>
-                Unlike most conferences, the convention is residential. You eat, sleep, pray, and worship at the village — which means every conversation is a ministry conversation, every meal is fellowship, and every late-night prayer session is available because no one is commuting. It changes people.
+                Unlike most conferences, the convention is residential: you eat, sleep, pray, and worship at the village. With no one commuting, every meal is fellowship and late-night prayer sessions are open to everyone.
               </p>
             </div>
           </Reveal>
@@ -195,21 +194,21 @@ export default async function CACNA2026Page({
       </section>
 
       {/* Full details live on the Convention website */}
-      <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+      <section className="mm-sec" style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
           <Reveal>
             <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 16 }}>
               <ListOrdered size={16} strokeWidth={2.5} style={{ verticalAlign: "middle", marginRight: 8, color: "var(--flame)" }} aria-hidden />
               {isPast ? "This Convention's Archive" : "Registration & Full Details"}
             </div>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,4vw,48px)", letterSpacing: "-.8px", color: "var(--ink)", margin: "0 0 20px" }}>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,4vw,48px)", letterSpacing: "-.8px", color: "var(--ink)", margin: isPast ? "0 0 20px" : "0 0 32px" }}>
               {isPast ? "This convention has come and gone." : "Registration, hotels, travel, and the full order of service."}
             </h2>
-            <p style={{ fontSize: 15.5, color: "var(--ink-soft)", lineHeight: 1.7, margin: "0 0 32px" }}>
-              {isPast
-                ? "See the full day-by-day order of service from this convention below."
-                : "Online registration, fees by category, hotels, travel, and the full order of service are all right here on this site."}
-            </p>
+            {isPast && (
+              <p style={{ fontSize: 15.5, color: "var(--ink-soft)", lineHeight: 1.7, margin: "0 0 32px" }}>
+                See the full day-by-day order of service from this convention below.
+              </p>
+            )}
             {isPast ? (
               <Link href="/events/cacna-2026/schedule" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--red)", color: "#fff", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none" }}>
                 View Full Schedule →
@@ -225,7 +224,7 @@ export default async function CACNA2026Page({
 
       {/* Registration CTA */}
       {!isPast && CACNA_REG && (
-      <section style={{ background: "var(--ink)", padding: "clamp(60px,8vw,100px) clamp(20px,5vw,64px)" }}>
+      <section className="mm-sec" style={{ background: "var(--ink)", padding: "clamp(60px,8vw,100px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 720, margin: "0 auto", textAlign: "center" }}>
           <Reveal>
             <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 20 }}>Secure your spot</div>
@@ -233,7 +232,7 @@ export default async function CACNA2026Page({
               Register before rates rise.
             </h2>
             <p style={{ fontSize: "clamp(15px,1.8vw,18px)", color: "rgba(245,246,250,.68)", lineHeight: 1.72, marginBottom: 40, textWrap: "pretty" }}>
-              Registration is open online now, and the price goes up as the convention draws near. Register early to pay less — and remember to book your hotel ahead of time.
+              The price goes up as the convention draws near. Book your hotel ahead of time.
             </p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 16, justifyContent: "center" }}>
               <a href={CACNA_REG} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 17, padding: "18px 36px", borderRadius: 999, textDecoration: "none", boxShadow: "0 20px 50px rgba(253,200,65,.35)" }}>
@@ -249,6 +248,7 @@ export default async function CACNA2026Page({
       )}
 
       <FooterExperience />
+      {!isPast && CACNA_REG && <MobileStickyCta href={CACNA_REG} label="Register now" />}
     </main>
   );
 }

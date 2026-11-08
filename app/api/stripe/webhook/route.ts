@@ -1,11 +1,88 @@
 import { NextResponse } from "next/server";
 import { getStripeClient } from "@/lib/stripe";
-import { logToSheet } from "@/lib/sheetsWebhook";
+import { logToSheetChecked } from "@/lib/sheetsWebhook";
 import { unchunkFromMetadata, decodeSummary, type RegistrationSummary } from "@/lib/checkoutSummary";
 import { sendRegistrationConfirmationEmail } from "@/lib/registrationEmail";
 import { sendStoreOrderConfirmationEmail } from "@/lib/storeOrderEmail";
 import { sendGivingConfirmationEmail } from "@/lib/givingEmail";
 import { SITE_URL } from "@/lib/site";
+import { splitCheckoutAmount, isProcessingFeeLine } from "@/lib/processingFee";
+import { giftOf, isGiftLine } from "@/lib/registrationGift";
+import { conventionYears } from "@/lib/conventions";
+import { adultSheetExtras, youthSheetName, youthSheetRows } from "@/lib/youthRegistration";
+import { checkinCodesFor, checkinCodeSheetCell } from "@/lib/checkinCode";
+import { recordCheckinPeople } from "@/lib/checkinStore";
+import { recordGivingInvoice, type InvoiceSummary } from "@/lib/givingInvoice";
+import { givingInvoiceStore } from "@/lib/givingInvoiceStore";
+import { AUTO_CANCEL_PREFIX, handleGivingDispute, handleGivingPaymentFailed, handleGivingSubscriptionEnded, type ProblemDeps, type ProblemOutcome } from "@/lib/givingProblem";
+import { sendGivingProblemEmail } from "@/lib/givingProblemEmail";
+
+// Kept below the invoice claim's two-minute stale limit
+// (lib/givingInvoiceStore.ts): a delivery that hangs is cut off before another
+// may take over its claim and record the same invoice twice.
+export const maxDuration = 60;
+
+// checkout.session.completed also fires for delayed methods (ACH, etc.)
+// before the money has moved; only these statuses mean the checkout is
+// actually paid. A delayed payment is recorded later, when
+// checkout.session.async_payment_succeeded arrives.
+const SETTLED_PAYMENT_STATUSES = new Set(["paid", "no_payment_required"]);
+
+// Best-effort dedupe of Stripe redeliveries, keyed by session id. There is
+// no database for these records, so this only catches repeats that reach the
+// same warm instance. Emails are also deduped across instances by Resend
+// idempotency keys (24h window). A duplicate sheet row is still possible when
+// a redelivery lands on a different instance; its "Stripe Session" column
+// identifies it.
+//
+// handledSessions: fully recorded (sheet row + email); added only on success.
+// inFlightSessions: claimed synchronously, before the first await, so an
+//   overlapping delivery (a redelivery, or the completed +
+//   async_payment_succeeded pair) never records alongside it. The overlapping
+//   delivery waits for the in-flight one to settle and then re-checks: a
+//   duplicate if the session got recorded, otherwise it retrieves and records
+//   it itself. It is never acknowledged unprocessed, because the in-flight
+//   delivery may have retrieved the session while still unpaid and recorded
+//   nothing. Released when the delivery ends, whatever the outcome.
+// completedSteps: steps that succeeded in a delivery that then failed, so a
+//   retry to this instance redoes only the failed step (no second row).
+const handledSessions = new Set<string>();
+/** Settles (never rejects) when the in-flight delivery for the key ends. */
+const inFlightSessions = new Map<string, Promise<void>>();
+// A Youth & Child registration writes one row per person, each its own step
+// (`sheet-${i}`), so a retry after a partial failure appends only the rows
+// that are still missing.
+type RecordStep = "sheet" | "email" | "gift-sheet" | "gift-email" | `sheet-${number}`;
+const completedSteps = new Map<string, Set<RecordStep>>();
+const MAX_TRACKED_SESSIONS = 1000;
+
+function evictOldest(tracked: Set<string> | Map<string, unknown>) {
+  if (tracked.size > MAX_TRACKED_SESSIONS) {
+    const oldest = tracked.keys().next().value;
+    if (oldest) tracked.delete(oldest);
+  }
+}
+
+function markHandled(sessionId: string) {
+  completedSteps.delete(sessionId);
+  handledSessions.add(sessionId);
+  evictOldest(handledSessions);
+}
+
+/** Runs one recording step unless an earlier, partly failed delivery to this
+ *  instance already did it. Resolves false if the step failed. */
+async function runStep(sessionId: string, step: RecordStep, run: () => Promise<boolean>): Promise<boolean> {
+  const done = completedSteps.get(sessionId);
+  if (done?.has(step)) return true;
+  if (!(await run())) return false;
+  if (done) {
+    done.add(step);
+  } else {
+    completedSteps.set(sessionId, new Set([step]));
+    evictOldest(completedSteps);
+  }
+  return true;
+}
 
 function requireEnv(name: string): string {
   const value = process.env[name];
@@ -20,114 +97,411 @@ export async function POST(request: Request) {
   const signature = request.headers.get("stripe-signature") ?? "";
   const rawBody = await request.text();
 
+  // A missing secret is our misconfiguration, not a forged request: answer 500
+  // (Stripe retries) and log it, instead of the 400 a bad signature gets.
+  let webhookSecret: string;
+  try {
+    webhookSecret = requireEnv("STRIPE_WEBHOOK_SECRET");
+  } catch (err) {
+    console.error("[stripe webhook]", err);
+    return NextResponse.json({ error: "Webhook not configured" }, { status: 500 });
+  }
+
   let event;
   try {
-    event = stripe.webhooks.constructEvent(rawBody, signature, requireEnv("STRIPE_WEBHOOK_SECRET"));
+    event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
   } catch {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
-  // Rows are only ever logged here, on confirmed payment -- there's no
+  if (event.type === "checkout.session.async_payment_failed") {
+    const failed = event.data.object as { id: string; metadata?: Record<string, string | undefined> };
+    console.error("Stripe delayed payment failed; nothing was recorded for this checkout", {
+      sessionId: failed.id,
+      kind: failed.metadata?.kind,
+    });
+  }
+
+  // Rows are only ever logged here, on settled payment -- there's no
   // "pending" row created at checkout-start and no update path (the Sheets
   // webhook only appends), so a failed or abandoned checkout simply never
   // produces a row. Stripe's own dashboard remains the record of
   // failed/abandoned payment attempts.
-  if (event.type === "checkout.session.completed") {
-    const session = event.data.object as { id: string; metadata?: Record<string, string | undefined> };
-    const kind = session.metadata?.kind;
-
-    try {
-      const full = await stripe.checkout.sessions.retrieve(session.id, { expand: ["line_items"] });
-      const contactEmail = full.customer_details?.email ?? full.customer_email ?? "";
-      const totalDollars = `$${((full.amount_total ?? 0) / 100).toFixed(2)}`;
-      const lineDescriptions = (full.line_items?.data ?? []).map((li) => li.description ?? "");
-
-      if (kind === "registration") {
-        // The full registration -- including free/comp registrants Stripe
-        // never saw as line items -- travels in the `d` metadata (see
-        // lib/checkoutSummary.ts, ported from the Convention site). Fall
-        // back to Stripe's own line-item descriptions only if that's
-        // somehow missing, so a log row still gets written.
-        const encoded = unchunkFromMetadata(session.metadata, "d");
-        const summary: RegistrationSummary | null = encoded ? decodeSummary(encoded) : null;
-
-        logToSheet(`Registration — CACNA ${summary?.year ?? session.metadata?.convention_year ?? ""}`, {
-          "Registration Type": summary?.registrationType ?? "",
-          "Church Name": summary?.churchName ?? "",
-          "Contact Name": summary?.contactName ?? "",
-          "Contact Email": contactEmail || summary?.contactEmail || "",
-          "Contact Phone": summary?.contactPhone ?? "",
-          "Registrants": summary
-            ? summary.registrants.map((r) => `${r.n} (${r.c})`).join("; ")
-            : lineDescriptions.join("; "),
-          "Total": totalDollars,
-          "Stripe Session": session.id,
-        });
-
-        // Stripe's own customer_details email is more authoritative than
-        // whatever the registrant originally typed into the form (matches
-        // the "Contact Email" fallback above) -- send the confirmation
-        // there, falling back to the summary's email if Stripe somehow
-        // didn't capture one.
-        if (summary) {
-          const emailTo = contactEmail || summary.contactEmail;
-          if (emailTo) {
-            const confirmationUrl = `${SITE_URL}/events/cacna-${summary.year}/register/confirmation?session_id=${session.id}&d=${encoded}`;
-            await sendRegistrationConfirmationEmail({ ...summary, contactEmail: emailTo }, confirmationUrl, true);
-          }
-        }
-      } else if (kind === "store_order") {
-        const itemsSummary = (full.line_items?.data ?? [])
-          .map((li) => `${li.description ?? ""} × ${li.quantity ?? 1}`)
-          .join("; ");
-
-        logToSheet("Store Order", {
-          "Contact Name": session.metadata?.contact_name ?? "",
-          "Contact Email": contactEmail,
-          "Items": itemsSummary,
-          "Total": totalDollars,
-          "Stripe Session": session.id,
-        });
-
-        await sendStoreOrderConfirmationEmail({
-          contactName: session.metadata?.contact_name ?? "",
-          contactEmail,
-          items: (full.line_items?.data ?? []).map((li) => `${li.description ?? ""} × ${li.quantity ?? 1}`),
-          totalLabel: totalDollars,
-        });
-      } else if (kind === "giving") {
-        const campaignTitle = session.metadata?.campaign_title ?? "";
-
-        logToSheet("Giving", {
-          "Campaign": campaignTitle,
-          "Contact Name": session.metadata?.contact_name ?? "",
-          "Contact Email": contactEmail,
-          "Total": totalDollars,
-          "Stripe Session": session.id,
-        });
-
-        await sendGivingConfirmationEmail({
-          contactName: session.metadata?.contact_name ?? "",
-          contactEmail,
-          campaignTitle,
-          totalLabel: totalDollars,
-        });
-      } else {
-        console.error("Stripe checkout.session.completed event with unrecognized metadata.kind", {
-          sessionId: session.id,
-        });
+  if (event.type === "checkout.session.completed" || event.type === "checkout.session.async_payment_succeeded") {
+    const sessionId = (event.data.object as { id: string }).id;
+    for (;;) {
+      if (handledSessions.has(sessionId)) {
+        return NextResponse.json({ received: true, duplicate: true });
       }
-    } catch (recordError) {
-      // The payment already succeeded on Stripe's side regardless of
-      // whether this record-keeping step works -- log loudly rather than
-      // surface a 500 that would make Stripe retry an already-completed
-      // payment's webhook indefinitely.
-      console.error("Failed to record a completed checkout to Google Sheets", {
-        sessionId: session.id,
-        recordError,
-      });
+      const inFlight = inFlightSessions.get(sessionId);
+      if (!inFlight) break;
+      // Another delivery is recording this session right now: wait for it,
+      // then re-check (it may have found the payment unpaid and recorded
+      // nothing, or failed).
+      await inFlight;
+    }
+    // No await between the checks above and this claim.
+    const recording = recordCheckout(stripe, sessionId);
+    inFlightSessions.set(sessionId, recording.then(() => undefined, () => undefined));
+    try {
+      return await recording;
+    } finally {
+      inFlightSessions.delete(sessionId);
     }
   }
+
+  // A recurring gift's charges: the first and every renewal arrive as paid
+  // invoices (a subscription's checkout session is skipped in recordCheckout).
+  if (event.type === "invoice.paid") {
+    return recordInvoice(stripe, (event.data.object as { id: string }).id);
+  }
+  // A recurring gift going wrong: a failed charge, a gift that ended, a dispute.
+  if (event.type === "invoice.payment_failed") {
+    return handleProblem(() => handleInvoiceFailed(stripe, (event.data.object as { id: string }).id));
+  }
+  if (event.type === "customer.subscription.deleted") {
+    return handleProblem(() => handleSubscriptionEnded(stripe, (event.data.object as { id: string }).id));
+  }
+  if (event.type === "charge.dispute.created") {
+    return handleProblem(() => handleDispute(stripe, (event.data.object as { id: string }).id));
+  }
+
+  return NextResponse.json({ received: true });
+}
+
+/** Records one paid invoice of a giving subscription (sheet row + receipt),
+ *  durably deduplicated by invoice id (lib/givingInvoice.ts). The event is only
+ *  a pointer: the invoice is re-read with the pinned client, because an event's
+ *  body follows the webhook endpoint's API version, not ours. */
+async function recordInvoice(stripe: ReturnType<typeof getStripeClient>, invoiceId: string): Promise<Response> {
+  let invoice;
+  try {
+    invoice = await stripe.invoices.retrieve(invoiceId);
+  } catch (retrieveError) {
+    // 5xx so Stripe retries: a 200 would lose a recurring gift's record.
+    console.error("Failed to retrieve a paid invoice", { invoiceId, retrieveError });
+    return NextResponse.json({ error: "Retrieve failed" }, { status: 500 });
+  }
+
+  const summary = summarizeInvoice(invoice, invoiceId);
+
+  const outcome = await recordGivingInvoice(summary, {
+    store: givingInvoiceStore,
+    logSheet: logToSheetChecked,
+    sendEmail: sendGivingConfirmationEmail,
+  });
+  if (outcome === "failed" || outcome === "busy") {
+    // 5xx so Stripe retries (it backs off for up to ~3 days). Steps already
+    // done are remembered, so a retry repeats only what is missing.
+    console.error("Failed to record a paid invoice", { invoiceId, outcome });
+    return NextResponse.json({ error: "Recording failed" }, { status: 500 });
+  }
+  return NextResponse.json({ received: true, ...(outcome === "duplicate" ? { duplicate: true } : {}) });
+}
+
+type StripeInvoice = Awaited<ReturnType<ReturnType<typeof getStripeClient>["invoices"]["retrieve"]>>;
+
+/** The parts of an invoice the giving code reads, from a re-retrieved invoice
+ *  (see recordInvoice for why the event body is not used). */
+function summarizeInvoice(invoice: StripeInvoice, fallbackId: string): InvoiceSummary {
+  const sub = invoice.parent?.subscription_details;
+  return {
+    invoiceId: invoice.id ?? fallbackId,
+    subscriptionId: typeof sub?.subscription === "string" ? sub.subscription : (sub?.subscription?.id ?? ""),
+    amountPaidCents: invoice.amount_paid,
+    billingReason: invoice.billing_reason ?? null,
+    contactEmail: invoice.customer_email ?? "",
+    metadata: sub?.metadata ?? {},
+  };
+}
+
+function problemDeps(stripe: ReturnType<typeof getStripeClient>): ProblemDeps {
+  return {
+    cancelSubscription: async (id, reason) => {
+      try {
+        // Already cancelled counts as done, so a retry after a cancel that
+        // worked does not loop on an error.
+        if ((await stripe.subscriptions.retrieve(id)).status === "canceled") return;
+        await stripe.subscriptions.cancel(id, { cancellation_details: { comment: `${AUTO_CANCEL_PREFIX}${reason}` } });
+      } catch (err) {
+        if ((err as { code?: string }).code === "resource_missing") return;
+        throw err;
+      }
+    },
+    sendEmail: sendGivingProblemEmail,
+  };
+}
+
+/** Runs one problem handler and turns its outcome into the webhook response:
+ *  500 on failure (Stripe retries; the idempotency keys keep an email that did
+ *  send from sending twice), 200 otherwise, including for events that are not
+ *  about a giving subscription. Anything thrown (a Stripe lookup) is a 500 too. */
+async function handleProblem(run: () => Promise<ProblemOutcome>): Promise<Response> {
+  let outcome: ProblemOutcome;
+  try {
+    outcome = await run();
+  } catch (err) {
+    console.error("Failed to handle a recurring-gift problem event", { error: err instanceof Error ? err.name : "error" });
+    return NextResponse.json({ error: "Handling failed" }, { status: 500 });
+  }
+  if (outcome === "failed") return NextResponse.json({ error: "Handling failed" }, { status: 500 });
+  return NextResponse.json({ received: true });
+}
+
+async function handleInvoiceFailed(stripe: ReturnType<typeof getStripeClient>, invoiceId: string): Promise<ProblemOutcome> {
+  const invoice = await stripe.invoices.retrieve(invoiceId);
+  const s = summarizeInvoice(invoice, invoiceId);
+  return handleGivingPaymentFailed(
+    {
+      invoiceId: s.invoiceId,
+      subscriptionId: s.subscriptionId,
+      billingReason: s.billingReason,
+      status: invoice.status ?? null,
+      attemptCount: invoice.attempt_count,
+      nextAttemptAt: invoice.next_payment_attempt,
+      amountDueCents: invoice.amount_due,
+      contactEmail: s.contactEmail,
+      metadata: s.metadata,
+    },
+    problemDeps(stripe),
+  );
+}
+
+async function handleSubscriptionEnded(stripe: ReturnType<typeof getStripeClient>, subscriptionId: string): Promise<ProblemOutcome> {
+  const sub = await stripe.subscriptions.retrieve(subscriptionId, { expand: ["customer"] });
+  const customer = typeof sub.customer === "string" || sub.customer.deleted ? null : sub.customer;
+  return handleGivingSubscriptionEnded(
+    {
+      subscriptionId: sub.id,
+      reason: sub.cancellation_details?.reason ?? null,
+      comment: sub.cancellation_details?.comment ?? null,
+      contactEmail: customer?.email ?? "",
+      metadata: sub.metadata ?? {},
+    },
+    problemDeps(stripe),
+  );
+}
+
+/** A dispute names the payment, not the subscription: payment intent -> the
+ *  invoice it paid -> that invoice's subscription. A dispute on anything else
+ *  the shared account sells (store, registrations) resolves to no giving
+ *  subscription and is acknowledged untouched. */
+async function handleDispute(stripe: ReturnType<typeof getStripeClient>, disputeId: string): Promise<ProblemOutcome> {
+  const dispute = await stripe.disputes.retrieve(disputeId);
+  const intent = typeof dispute.payment_intent === "string" ? dispute.payment_intent : dispute.payment_intent?.id;
+  if (!intent) return "skipped";
+  const payments = await stripe.invoicePayments.list({ payment: { type: "payment_intent", payment_intent: intent }, limit: 1 });
+  const ref = payments.data[0]?.invoice;
+  const invoiceId = typeof ref === "string" ? ref : ref?.id;
+  if (!invoiceId) return "skipped";
+  const s = summarizeInvoice(await stripe.invoices.retrieve(invoiceId), invoiceId);
+  return handleGivingDispute(
+    { disputeId, status: dispute.status, subscriptionId: s.subscriptionId, amountCents: dispute.amount, contactEmail: s.contactEmail, metadata: s.metadata },
+    problemDeps(stripe),
+  );
+}
+
+async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessionId: string): Promise<Response> {
+  let full;
+  try {
+    full = await stripe.checkout.sessions.retrieve(sessionId, { expand: ["line_items"] });
+  } catch (retrieveError) {
+    // 5xx so Stripe retries. A 200 here would lose a paid registration
+    // (no row, no email) on a transient Stripe or network error.
+    console.error("Failed to retrieve a completed checkout session", { sessionId, retrieveError });
+    return NextResponse.json({ error: "Retrieve failed" }, { status: 500 });
+  }
+
+  // A recurring gift is recorded from its invoices (recordInvoice), the first
+  // charge included, so its checkout session must not add a second row.
+  if (full.mode === "subscription") {
+    return NextResponse.json({ received: true });
+  }
+
+  if (!SETTLED_PAYMENT_STATUSES.has(full.payment_status)) {
+    // Delayed payment still pending: record and email nothing yet.
+    return NextResponse.json({ received: true });
+  }
+
+  const metadata = full.metadata ?? undefined;
+  const kind = metadata?.kind;
+  const idempotencyKey = `checkout-session/${sessionId}`;
+  // Both steps run on every attempt (each skipped if an earlier attempt on
+  // this instance already did it); the session counts as handled only when
+  // both succeeded.
+  let sheetOk = true;
+  let emailOk = true;
+
+  try {
+    const contactEmail = full.customer_details?.email ?? full.customer_email ?? "";
+    // "Total" stays the subtotal (registration/order/gift amount); the
+    // processing fee and the amount actually charged get their own columns.
+    const { subtotalCents, processingFeeCents, totalCents } = splitCheckoutAmount(full.amount_total ?? 0, metadata);
+    const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
+    const totalDollars = dollars(subtotalCents);
+    const feeColumns = { "Processing Fee": dollars(processingFeeCents), "Amount Charged": dollars(totalCents) };
+    const feeLabels = processingFeeCents > 0 ? { feeLabel: dollars(processingFeeCents), chargedLabel: dollars(totalCents) } : {};
+    const realLines = (full.line_items?.data ?? []).filter((li) => !isProcessingFeeLine(li.description) && !isGiftLine(li.description));
+    const lineDescriptions = realLines.map((li) => li.description ?? "");
+
+    if (kind === "registration") {
+      // The full registration -- including free registrants Stripe never
+      // saw as line items -- travels in the `d` metadata (see
+      // lib/checkoutSummary.ts, ported from the Convention site). Fall
+      // back to Stripe's own line-item descriptions only if that's
+      // somehow missing, so a log row still gets written.
+      const encoded = unchunkFromMetadata(metadata, "d");
+      const summary: RegistrationSummary | null = encoded ? decodeSummary(encoded) : null;
+      // A gift added at checkout is its own line: the registration rows below
+      // exclude it, and it gets its own Giving row and receipt after them.
+      const gift = summary ? giftOf(summary) : 0;
+      const regTotalDollars = dollars(subtotalCents - gift);
+      const regFeeColumns = { "Processing Fee": dollars(processingFeeCents), "Amount Charged": dollars(totalCents - gift) };
+
+      if (summary?.youth) {
+        // In order, stopping at the first failure so a retry resumes there.
+        const startIso = conventionYears.find((cy) => cy.year === summary.year)?.startIso;
+        const rows = youthSheetRows(summary, { stripeSession: sessionId, status: "paid", startIso, contactEmail, feeColumns: regFeeColumns, checkinCodes: checkinCodesFor(summary) });
+        for (const [i, row] of rows.entries()) {
+          sheetOk = await runStep(sessionId, `sheet-${i}`, () => logToSheetChecked(youthSheetName(summary.year), row));
+          if (!sheetOk) break;
+        }
+      } else sheetOk = await runStep(sessionId, "sheet", () => logToSheetChecked(`Registration — CACNA ${summary?.year ?? metadata?.convention_year ?? ""}`, {
+        "Registration Type": summary?.registrationType ?? "",
+        "Church Name": summary?.churchName ?? "",
+        "Contact Name": summary?.contactName ?? "",
+        "Contact Email": contactEmail || summary?.contactEmail || "",
+        "Contact Phone": summary?.contactPhone ?? "",
+        "Registrants": summary
+          ? summary.registrants.map((r) => `${r.n} (${r.c})`).join("; ")
+          : lineDescriptions.join("; "),
+        "Total": regTotalDollars,
+        ...regFeeColumns,
+        "Stripe Session": sessionId,
+        // New columns go before "Check-in Code" so it stays last; blank in
+        // the no-summary fallback.
+        ...(summary
+          ? adultSheetExtras(summary, conventionYears.find((cy) => cy.year === summary.year)?.startIso)
+          : { "DCC / Zone": "", "Meals": "", "Allergies": "" }),
+        // "Name: CODE" pairs in "Registrants" order; blank in the no-summary
+        // fallback (no ref).
+        "Check-in Code": summary ? checkinCodeSheetCell(summary) : "",
+      }));
+
+      // Check-in lookup rows (lib/checkinStore.ts), once the sheet has the
+      // registration. Best effort and idempotent: never throws, never changes
+      // sheetOk / emailOk, and a retry inserts nothing new.
+      if (summary && sheetOk) {
+        await recordCheckinPeople(summary, { paymentStatus: "paid", stripeSession: sessionId, contactEmail });
+      }
+
+      // Stripe's own customer_details email is more authoritative than
+      // whatever the registrant originally typed into the form (matches
+      // the "Contact Email" fallback above) -- send the confirmation
+      // there, falling back to the summary's email if Stripe somehow
+      // didn't capture one. The link carries only the session id; the
+      // confirmation page reads everything else back from Stripe.
+      if (summary) {
+        const emailTo = contactEmail || summary.contactEmail;
+        if (emailTo) {
+          const confirmationUrl = `${SITE_URL}/events/cacna-${summary.year}/register/confirmation?session_id=${sessionId}`;
+          emailOk = await runStep(sessionId, "email", () =>
+            sendRegistrationConfirmationEmail({ ...summary, contactEmail: emailTo }, confirmationUrl, true, idempotencyKey, processingFeeCents));
+        }
+      }
+
+      // The gift: its own Giving row and receipt, so it is counted and
+      // receipted as a donation (the registration fee is not). Each step is
+      // retried on its own, like the two above.
+      if (summary && gift > 0) {
+        const giftEmailTo = contactEmail || summary.contactEmail;
+        const campaignTitle = `CACNA ${summary.year} Convention gift`;
+        const giftSheetOk = await runStep(sessionId, "gift-sheet", () => logToSheetChecked("Giving", {
+          "Campaign": campaignTitle,
+          "Contact Name": summary.contactName,
+          "Contact Email": giftEmailTo,
+          "Total": dollars(gift),
+          "Processing Fee": dollars(0),
+          "Amount Charged": dollars(gift),
+          "Stripe Session": sessionId,
+        }));
+        sheetOk = sheetOk && giftSheetOk;
+        if (giftEmailTo) {
+          const giftEmailOk = await runStep(sessionId, "gift-email", () => sendGivingConfirmationEmail({
+            contactName: summary.contactName,
+            contactEmail: giftEmailTo,
+            campaignTitle,
+            totalLabel: dollars(gift),
+            idempotencyKey: `${idempotencyKey}/gift`,
+          }));
+          emailOk = emailOk && giftEmailOk;
+        }
+      }
+    } else if (kind === "store_order") {
+      const itemsSummary = realLines
+        .map((li) => `${li.description ?? ""} × ${li.quantity ?? 1}`)
+        .join("; ");
+
+      const ship = full.collected_information?.shipping_details;
+      const shippingAddress = ship?.address
+        ? [ship.name, ship.address.line1, ship.address.line2, `${ship.address.city ?? ""}, ${ship.address.state ?? ""} ${ship.address.postal_code ?? ""}`.trim(), ship.address.country].filter(Boolean).join(", ")
+        : "";
+
+      sheetOk = await runStep(sessionId, "sheet", () => logToSheetChecked("Store Order", {
+        "Contact Name": metadata?.contact_name ?? "",
+        "Contact Email": contactEmail,
+        "Ship To": shippingAddress,
+        "Items": itemsSummary,
+        "Total": totalDollars,
+        ...feeColumns,
+        "Stripe Session": sessionId,
+      }));
+
+      emailOk = await runStep(sessionId, "email", () => sendStoreOrderConfirmationEmail({
+        contactName: metadata?.contact_name ?? "",
+        contactEmail,
+        items: realLines.map((li) => `${li.description ?? ""} × ${li.quantity ?? 1}`),
+        totalLabel: totalDollars,
+        ...feeLabels,
+        shippingAddress,
+        idempotencyKey,
+      }));
+    } else if (kind === "giving") {
+      const campaignTitle = metadata?.campaign_title ?? "";
+
+      sheetOk = await runStep(sessionId, "sheet", () => logToSheetChecked("Giving", {
+        "Campaign": campaignTitle,
+        "Contact Name": metadata?.contact_name ?? "",
+        "Contact Email": contactEmail,
+        "Total": totalDollars,
+        ...feeColumns,
+        "Stripe Session": sessionId,
+      }));
+
+      emailOk = await runStep(sessionId, "email", () => sendGivingConfirmationEmail({
+        contactName: metadata?.contact_name ?? "",
+        contactEmail,
+        campaignTitle,
+        totalLabel: totalDollars,
+        ...feeLabels,
+        idempotencyKey,
+      }));
+    } else {
+      console.error("Stripe checkout event with unrecognized metadata.kind", { sessionId });
+    }
+  } catch (recordError) {
+    // 5xx so Stripe retries (it backs off for up to ~3 days); a 200 here
+    // would silently drop the record.
+    console.error("Failed to record a completed checkout", { sessionId, recordError });
+    return NextResponse.json({ error: "Recording failed" }, { status: 500 });
+  }
+
+  if (!sheetOk || !emailOk) {
+    // Same reason: the sheet row or the confirmation email didn't go out.
+    console.error("Failed to record a completed checkout", { sessionId, sheetOk, emailOk });
+    return NextResponse.json({ error: "Recording failed" }, { status: 500 });
+  }
+  markHandled(sessionId);
 
   return NextResponse.json({ received: true });
 }

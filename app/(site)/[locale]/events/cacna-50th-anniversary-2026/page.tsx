@@ -1,9 +1,11 @@
 import { Nav } from "@/components/navigation/Nav";
+import "@/app/(site)/[locale]/mobile-events-media.css";
+import { PastEventBanner } from "@/components/events/PastEventBanner";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import Link from "next/link";
-import { Sparkles, Users, MapPin, HandHeart, ArrowLeft, CalendarPlus, Download, PartyPopper, ClipboardList } from "lucide-react";
+import { Users, HandHeart, ArrowLeft, CalendarPlus, Download, PartyPopper, ClipboardList } from "lucide-react";
 import { specialEvents, googleCalUrl, icsDataUri, isEventPast } from "@/lib/events";
 import { SITE, SITE_URL, breadcrumbJsonLd } from "@/lib/site";
 import { setRequestLocale } from "next-intl/server";
@@ -25,9 +27,7 @@ const RSVP_URL = "https://forms.gle/FBzNzoXH76SK14Ah9";
 const rsvpFields = ["Your full name", "A contact phone number", "Your church", "Your DCC or Zone", "How many in your group"];
 
 const pillars = [
-  { icon: Sparkles, label: "50 Years of Faithfulness", desc: "Est. 1976 — five decades of ministry across North America." },
-  { icon: Users, label: "One Family, Many Homes", desc: "24 Zones & DCCs across the United States, Canada, and South America." },
-  { icon: MapPin, label: "Same Grounds", desc: "CAC Village, Blue Ridge Summit, PA — home to the Annual Convention, now hosting this milestone too." },
+  { icon: Users, label: "One Family, Many Homes", desc: "26 Zones & DCCs across the United States, Canada, and South America." },
   { icon: HandHeart, label: "A Season of Thanksgiving", desc: "A day set apart to thank God for five decades of grace and growth." },
 ];
 
@@ -55,6 +55,7 @@ export default async function Cacna50thAnniversaryPage({
       address: `${SITE.address.street}, ${SITE.address.city}, ${SITE.address.region} ${SITE.address.postalCode}`,
     },
     organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },
+    performer: { "@type": "Church", name: SITE.name, url: SITE_URL },
     url: `${SITE_URL}/events/cacna-50th-anniversary-2026`,
     offers: { "@type": "Offer", url: RSVP_URL, price: "0", priceCurrency: "USD", availability: "https://schema.org/InStock", validFrom: "2026-01-01T00:00:00-05:00" },
   };
@@ -63,15 +64,10 @@ export default async function Cacna50thAnniversaryPage({
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Events", path: "/calendar" }, { name: ev.navLabel ?? ev.title, path: "/events/cacna-50th-anniversary-2026" }])).replace(/</g, "\\u003c") }} />
       <Nav heroDark />
-      {isPast && (
-        <div role="status" style={{ background: "#2c2825", padding: "13px clamp(20px,5vw,64px)", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px 20px", fontSize: 14, fontWeight: 600, color: "rgba(245,246,250,.7)" }}>
-          <span>This event has passed — page kept as an archive.</span>
-          <Link href="/calendar" style={{ color: "var(--gold)", fontWeight: 700, fontSize: 13, textDecoration: "none", whiteSpace: "nowrap" }}>See upcoming events →</Link>
-        </div>
-      )}
+      {isPast && <PastEventBanner />}
 
       {/* Hero */}
-      <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) clamp(80px,10vw,120px)", position: "relative", overflow: "hidden" }}>
+      <section className="mm-hero" style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) clamp(80px,10vw,120px)", position: "relative", overflow: "hidden" }}>
         <div aria-hidden style={{ position: "absolute", top: -100, right: -80, width: 640, height: 520, background: "radial-gradient(circle,rgba(253,200,65,.28),transparent 65%)", pointerEvents: "none" }} />
 
         <div style={{ maxWidth: 820, margin: "0 auto", position: "relative", zIndex: 2 }}>
@@ -104,12 +100,18 @@ export default async function Cacna50thAnniversaryPage({
 
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(16px,1.9vw,20px)", color: "rgba(245,246,250,.72)", lineHeight: 1.72, maxWidth: 580, margin: "0 0 8px", textWrap: "pretty" }}>
-              Christ Apostolic Church North America celebrates 50 years since its founding in 1976, at CAC Village — the same grounds that host the Annual Convention.
+              Christ Apostolic Church North America celebrates 50 years since its founding in 1976, at CAC Village, Blue Ridge Summit, PA — the same grounds that host the Annual Convention.
+            </p>
+          </Reveal>
+
+          <Reveal delay={200}>
+            <p style={{ fontSize: 15, margin: "12px 0 0" }}>
+              <Link href="/golden-jubilee" style={{ color: "var(--gold)", fontWeight: 700, textDecoration: "none" }}>Read the Golden Jubilee look-back →</Link>
             </p>
           </Reveal>
 
           <Reveal delay={240}>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 36 }}>
+            <div className="mm-actions" style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 36 }}>
               <a href={RSVP_URL} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(253,200,65,.35)" }}>
                 RSVP Now →
               </a>
@@ -125,7 +127,7 @@ export default async function Cacna50thAnniversaryPage({
       </section>
 
       {/* Pillars */}
-      <section style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+      <section className="mm-sec" style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
           <Reveal style={{ marginBottom: 40 }}>
             <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 14 }}>Marking the milestone</div>
@@ -151,7 +153,7 @@ export default async function Cacna50thAnniversaryPage({
 
       {/* RSVP */}
       {!isPast && (
-        <section style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+        <section className="mm-sec" style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
           <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}>
             <Reveal>
               <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 16 }}>

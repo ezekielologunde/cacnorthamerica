@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Reveal } from "@/components/ui/Reveal";
 import { BookOpen, HandHeart, Music, Landmark, ArrowRight } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import "./home-mobile.css";
 
 type MinistryTeaser = { name: string; desc: string; icon: LucideIcon; gradient: string };
 
@@ -19,28 +20,23 @@ const featured: MinistryTeaser[] = [
  *  does as a regional body, via its real ministry departments. */
 export function OurMinistries() {
   return (
-    <section style={{ background: "var(--cream)", padding: "100px clamp(20px,5vw,64px)" }}>
+    <section className="hm-section" style={{ background: "var(--cream)", padding: "100px clamp(20px,5vw,64px)" }}>
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <Reveal style={{ textAlign: "center", marginBottom: 16 }}>
-          <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>
-            What We Do
-          </span>
-        </Reveal>
-        <Reveal delay={80} style={{ textAlign: "center", marginBottom: 60 }}>
+        <Reveal delay={80} className="hm-head" style={{ textAlign: "center", marginBottom: 60 }}>
           <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(36px,5vw,68px)", letterSpacing: "-1.5px", color: "var(--ink)", margin: 0, lineHeight: .95 }}>
             Our Ministries
           </h2>
           <p style={{ fontSize: 16, color: "var(--ink-soft)", maxWidth: 560, margin: "16px auto 0" }}>
-            CACNA is the corporate family of Christ Apostolic Church across North America — part of the wider CAC movement headquartered in Nigeria. These departments carry that work into every zone.
+            These departments carry CACNA&apos;s work into every zone.
           </p>
         </Reveal>
 
-        <div className="r4" style={{ gap: 20 }}>
+        <div className="r4 hm-min-grid" style={{ gap: 20 }}>
           {featured.map((m, i) => {
             const Icon = m.icon;
             return (
               <Reveal key={m.name} delay={i * 100}>
-                <div style={{
+                <div className="hm-min-card" style={{
                   borderRadius: 24, padding: "32px 26px", height: "100%",
                   background: "var(--paper)", border: "1px solid var(--line)",
                   boxShadow: "0 10px 26px rgba(18,20,30,.06)",
@@ -65,7 +61,7 @@ export function OurMinistries() {
         </div>
 
         <Reveal delay={400} style={{ textAlign: "center", marginTop: 40 }}>
-          <Link href="/ministries" className="press" style={{
+          <Link href="/ministries" className="press hm-link" style={{
             display: "inline-flex", alignItems: "center", gap: 8,
             fontWeight: 700, fontSize: 15, color: "var(--red)", textDecoration: "none",
           }}>

@@ -1,8 +1,8 @@
-﻿import { createServiceClient } from "@/lib/supabase/server";
+﻿import { requireAdmin } from "@/lib/supabase/require-admin";
 import Link from "next/link";
 
 export default async function BlogListPage() {
-  const supabase = createServiceClient();
+  const { supabase } = await requireAdmin();
   const { data: posts } = await supabase
     .from("blog_posts")
     .select("id, title, slug, published, published_at, created_at")

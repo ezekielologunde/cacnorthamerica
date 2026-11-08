@@ -1,0 +1,51 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import { adsenseClientId } from "@/lib/adsense";
+
+declare global {
+  interface Window {
+    adsbygoogle?: unknown[];
+  }
+}
+
+// Both values come from AdSense and are set in Vercel (see the privacy page for
+// the visitor-facing wording). While either is unset or malformed this renders
+// nothing, so the site is ad-free by default. The adsbygoogle.js loader itself
+// comes from AdSenseScript, which runs on every blog page.
+const CLIENT = adsenseClientId(process.env.NEXT_PUBLIC_ADSENSE_ID) ?? "";
+const SLOT = process.env.NEXT_PUBLIC_ADSENSE_BLOG_SLOT?.trim() ?? "";
+const ENABLED = CLIENT !== "" && /^\d{6,}$/.test(SLOT);
+
+/** One responsive AdSense display unit, shown only on blog posts. */
+export function BlogAd() {
+  const requested = useRef(false);
+
+  useEffect(() => {
+    if (!ENABLED || requested.current) return;
+    requested.current = true;
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch {
+      // An ad blocker or a late script must never break the article.
+    }
+  }, []);
+
+  if (!ENABLED) return null;
+
+  return (
+    <aside aria-label="Advertisement" style={{ margin: "36px 0 8px", textAlign: "center" }}>
+      <div style={{ fontSize: 10.5, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "var(--ink-soft)", marginBottom: 8 }}>
+        Advertisement
+      </div>
+      <ins
+        className="adsbygoogle"
+        style={{ display: "block" }}
+        data-ad-client={CLIENT}
+        data-ad-slot={SLOT}
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      />
+    </aside>
+  );
+}

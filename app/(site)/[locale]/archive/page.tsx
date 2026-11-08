@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
+import "@/app/(site)/[locale]/mobile-events-media.css";
 import type { Metadata } from "next";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
@@ -7,6 +9,17 @@ import { RevealText } from "@/components/ui/RevealText";
 import { conventionYears, isConventionPast, dateRangeLabel, type RegistrantCategory } from "@/lib/conventions";
 import { setRequestLocale } from "next-intl/server";
 import { SITE_URL } from "@/lib/site";
+import { archivedEvents } from "@/lib/archive-notes";
+
+const archiveLinks = [
+  { slug: "golden-jubilee-message-from-the-president", label: "Golden Jubilee message from the President of CAC" },
+  { slug: "golden-jubilee-welcome-address-regional-superintendent", label: "Golden Jubilee welcome address, Regional Superintendent" },
+  { slug: "golden-jubilee-convention-chairmans-address", label: "Golden Jubilee Chairman’s Address" },
+  { slug: "golden-jubilee-messages-from-latunde-region-departments", label: "Golden Jubilee messages from Latunde Region departments" },
+  { slug: "cac-in-brazil-joins-latunde-region", label: "CAC in Brazil joins Latunde Region" },
+  { slug: "latunde-region-good-women-prayer-and-pilgrimage", label: "Good Women: daily prayer, Marathon Prayers and the 2022 pilgrimage" },
+  { slug: "spiritual-power-and-gifts-2024-teaching-outline", label: "Purpose of spiritual gifts: the 2024 teaching outline" },
+];
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -40,12 +53,9 @@ export default async function ArchivePage({
     <main id="main-content">
       <Nav heroDark />
 
-      <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 80px" }}>
+      <section className="mm-hero" style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 80px" }}>
         <div style={{ maxWidth: 760, margin: "0 auto", textAlign: "center" }}>
-          <Reveal>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Archive</span>
-          </Reveal>
-          <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(38px,6vw,68px)", letterSpacing: "-0.03em", color: "#fff", margin: "16px 0 0", lineHeight: 1 }}>
+          <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(38px,6vw,68px)", letterSpacing: "-0.03em", color: "#fff", margin: 0, lineHeight: 1 }}>
             <RevealText immediate>Past Conventions</RevealText>
           </h1>
           <Reveal delay={140}>
@@ -56,7 +66,7 @@ export default async function ArchivePage({
         </div>
       </section>
 
-      <section style={{ background: "var(--cream)", padding: "clamp(48px,6vw,72px) clamp(20px,5vw,64px)" }}>
+      <section className="mm-sec" style={{ background: "var(--cream)", padding: "clamp(48px,6vw,72px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 760, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
           {pastYears.map((cy, i) => {
             const tiers = cy.pricingTiers ?? [];
@@ -91,6 +101,9 @@ export default async function ArchivePage({
                     </div>
                   )}
                   {cy.year === 2026 && (
+                    <Image src="/photos/archive/cacna-2026-convention-flier.jpg" alt="Flier for the CACNA 2026 Annual Convention, The Bible: God’s Message to Man, 13 to 18 July 2026" width={1127} height={1600} sizes="(max-width: 760px) 100vw, 420px" style={{ width: "100%", maxWidth: 420, height: "auto", borderRadius: 12, marginTop: 16, display: "block" }} />
+                  )}
+                  {cy.year === 2026 && (
                     <Link href="/events/cacna-2026/schedule" style={{ display: "inline-block", marginTop: 16, fontSize: 13.5, fontWeight: 700, color: "var(--red)", textDecoration: "none" }}>
                       View full schedule →
                     </Link>
@@ -99,6 +112,32 @@ export default async function ArchivePage({
               </Reveal>
             );
           })}
+        </div>
+      </section>
+
+      <section className="mm-sec" style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) clamp(48px,6vw,72px)" }}>
+        <div style={{ maxWidth: 760, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
+          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 26, color: "var(--ink)", margin: "16px 0 0" }}>Other past events</h2>
+          {archivedEvents.map((ev) => (
+            <div key={ev.title} style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, padding: "24px 26px" }}>
+              <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20, color: "var(--ink)", margin: 0 }}>{ev.title}</h3>
+              <p style={{ fontSize: 14, color: "var(--ink-soft)", margin: "6px 0 0" }}>{ev.dateLabel}</p>
+              <p style={{ fontSize: 14.5, color: "var(--ink-soft)", margin: "10px 0 0", lineHeight: 1.6 }}>{ev.detail}</p>
+              {ev.imageSrc && (
+                <Image src={ev.imageSrc} alt={ev.imageAlt ?? ""} width={1280} height={1600} sizes="(max-width: 760px) 100vw, 500px" style={{ width: "100%", maxWidth: 420, height: "auto", borderRadius: 12, marginTop: 16 }} />
+              )}
+            </div>
+          ))}
+
+          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 26, color: "var(--ink)", margin: "32px 0 0" }}>More from the archive</h2>
+          <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, padding: "24px 26px" }}>
+            <p style={{ fontSize: 14.5, color: "var(--ink-soft)", margin: 0, lineHeight: 1.6 }}>Looking-back stories, messages and teaching outlines now live on the blog.</p>
+            <ul style={{ margin: "12px 0 0", paddingLeft: 20, fontSize: 14.5, lineHeight: 1.9 }}>
+              {archiveLinks.map((l) => (
+                <li key={l.slug}><Link href={`/blog/${l.slug}`} style={{ color: "var(--red)", fontWeight: 600, textDecoration: "none" }}>{l.label}</Link></li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
 

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PastEventBanner } from "@/components/events/PastEventBanner";
 import { ArrowLeft } from "lucide-react";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
@@ -40,10 +41,7 @@ export default async function Cacna2026SchedulePage({
     <main id="main-content">
       <Nav heroDark />
 
-      <div role="status" style={{ background: "#2c2825", padding: "13px clamp(20px,5vw,64px)", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px 20px", fontSize: 14, fontWeight: 600, color: "rgba(245,246,250,.7)" }}>
-        <span>The 2026 convention has come and gone — this schedule is kept as an archive.</span>
-        <Link href="/events/cacna-2026" style={{ color: "var(--gold)", fontWeight: 700, fontSize: 13, textDecoration: "none", whiteSpace: "nowrap" }}>Back to CACNA 2026 →</Link>
-      </div>
+      <PastEventBanner message="The 2026 convention has come and gone — this schedule is kept as an archive." link={null} />
 
       <section style={{ background: "var(--ink)", padding: "80px clamp(20px,5vw,64px) 70px", position: "relative", overflow: "hidden" }}>
         <div style={{ maxWidth: 760, margin: "0 auto", position: "relative", zIndex: 2 }}>

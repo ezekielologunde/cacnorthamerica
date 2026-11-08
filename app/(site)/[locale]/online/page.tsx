@@ -1,9 +1,10 @@
 import { Nav } from "@/components/navigation/Nav";
+import "@/app/(site)/[locale]/mobile-events-media.css";
 import { FooterExperience } from "@/components/sections/FooterExperience";
+import { FeaturedStories } from "@/components/sections/FeaturedStories";
 import { Reveal } from "@/components/ui/Reveal";
 import Image from "next/image";
-import Link from "next/link";
-import { getSermons, getLiveStream, formatSermonDate } from "@/lib/sermons";
+import { getSermons, getLiveStream, formatSermonDate, videoListJsonLd } from "@/lib/sermons";
 import { PRAYER_LINE } from "@/lib/prayerLine";
 import { Video } from "lucide-react";
 import { archiveEntries } from "@/lib/archive";
@@ -11,7 +12,7 @@ import { ArchiveBrowser } from "@/components/media/ArchiveBrowser";
 import { currentOrNextConvention, getConventionState } from "@/lib/conventions";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, breadcrumbJsonLd } from "@/lib/site";
 
 const YOUTUBE_URL = "https://youtube.com/@cacnorthamericalatunderegi1330";
 const YOUTUBE_LIVE_URL = "https://www.youtube.com/@cacnorthamericalatunderegi1330/live";
@@ -22,6 +23,16 @@ const YOUTUBE_LIVE_URL = "https://www.youtube.com/@cacnorthamericalatunderegi133
 // uploaded during convention week into one continuously-updating embed --
 // shown only while the convention is actually underway.
 const CONVENTION_SESSIONS_PLAYLIST_ID = "PLhXt6OVepbyjadJt8WufxY-5Mt5OAjsSf";
+
+// Event playlists on the channel (created 2026-11-03), oldest session first so
+// each one plays in order. Linked as plain playlist pages: they stay accurate
+// without the YouTube Data API, and keep working if the channel handle changes.
+const eventPlaylists = [
+  { id: "PLb-ihZD68x5U", name: "Annual Convention 2026", desc: "Every session from CAC Village, July 2026" },
+  { id: "PLYJXaS50eCkI", name: "Annual Convention 2025", desc: "Revival nights, ministering sessions, graduation" },
+  { id: "PLbILm1457uD8", name: "Annual Convention 2024", desc: "Revival nights, Sunday School, Holy Communion" },
+  { id: "PLQw6OoF9wSdk", name: "Good Women Marathon Fasting & Prayer 2026", desc: "Days 1 to 7, February 2026" },
+];
 
 const platforms = [
   { name: "YouTube", desc: "The Annual Convention & message replays", href: YOUTUBE_URL },
@@ -59,12 +70,17 @@ export default async function OnlinePage({
   const featured = live ?? pastSermons[0];
   const cy = currentOrNextConvention();
   const conventionIsLive = getConventionState(cy) === "live";
+  const videosJsonLd = videoListJsonLd(pastSermons, `${SITE_URL}/online`);
   return (
     <main id="main-content" style={{ background: "#0C0E13", minHeight: "100vh" }}>
+      {videosJsonLd && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(videosJsonLd).replace(/</g, "\\u003c") }} />
+      )}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Watch Online", path: "/online" }])).replace(/</g, "\\u003c") }} />
       <Nav dark />
 
       {/* Hero */}
-      <section style={{ padding: "140px clamp(20px,5vw,64px) 80px", position: "relative", overflow: "hidden" }}>
+      <section className="mm-hero" style={{ padding: "140px clamp(20px,5vw,64px) 80px", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: -80, right: -80, width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle,rgba(200,30,58,.25),transparent 70%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
           <Reveal>
@@ -81,7 +97,7 @@ export default async function OnlinePage({
           </Reveal>
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "rgba(255,255,255,.55)", lineHeight: 1.65, maxWidth: 560, margin: "0 auto" }}>
-              The Annual Convention streams live, and messages are available on demand. The full experience — wherever you are.
+              The Annual Convention streams live, and messages are available on demand.
             </p>
           </Reveal>
         </div>
@@ -99,7 +115,7 @@ export default async function OnlinePage({
                 <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#fff", animation: "pulse-red 1.8s infinite", display: "inline-block" }} /> Watch on YouTube
               </div>
               <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.4vw,40px)", letterSpacing: "-1px", color: "#fff", margin: "0 0 6px" }}>CAC North America (Latunde Region)</h2>
-              <p style={{ fontSize: 15, color: "rgba(255,255,255,.88)", margin: 0 }}>The Annual Convention and message replays — Zoom is also available during convention week.</p>
+              <p style={{ fontSize: 15, color: "rgba(255,255,255,.88)", margin: 0 }}>Zoom is also available during convention week.</p>
             </div>
             <span style={{ flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 8, background: "#fff", color: "var(--red-deep)", fontWeight: 800, fontSize: 16, padding: "15px 28px", borderRadius: 999 }}>
               Open YouTube →
@@ -156,20 +172,40 @@ export default async function OnlinePage({
                 ? <span style={{ fontSize: 12, fontWeight: 700, color: "var(--red)", marginRight: 8, animation: "pulse-red 1.8s infinite" }}>● LIVE NOW</span>
                 : <span style={{ fontSize: 12, fontWeight: 700, color: "var(--gold)", marginRight: 8 }}>● Latest message</span>
               }
-              <span style={{ fontSize: 12, color: "rgba(255,255,255,.4)", fontWeight: 600, marginRight: 4 }}>Watch on:</span>
-              {platforms.map(p => (
-                <a key={p.name} href={p.href} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, fontWeight: 700, color: "rgba(255,255,255,.7)", textDecoration: "none", padding: "6px 14px", borderRadius: 999, border: "1px solid rgba(255,255,255,.12)" }}>
-                  {p.name}
-                </a>
-              ))}
-              <a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer" style={{ marginLeft: "auto", fontSize: 13, fontWeight: 700, color: "var(--gold)", textDecoration: "none" }}>
-                View channel →
-              </a>
             </div>
           </div>
         </Reveal>
       </section>
       )}
+
+      {/* Browse by event: one playlist per convention / fast */}
+      <section style={{ padding: "0 clamp(20px,5vw,64px) 56px" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <Reveal>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,36px)", letterSpacing: "-.8px", color: "#fff", margin: "0 0 20px" }}>
+              Watch by event
+            </h2>
+          </Reveal>
+          <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,260px),1fr))", gap: 16 }}>
+            {eventPlaylists.map((p) => (
+              <li key={p.id}>
+                <a
+                  href={`https://www.youtube.com/playlist?list=${p.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="card-lift"
+                  aria-label={`${p.name}, opens in a new tab`}
+                  style={{ display: "block", height: "100%", background: "#161B22", border: "1px solid rgba(253,200,65,.25)", borderRadius: 20, padding: "22px 24px", textDecoration: "none" }}
+                >
+                  <span style={{ display: "block", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "#fff" }}>{p.name}</span>
+                  <span style={{ display: "block", marginTop: 6, fontSize: 14, color: "rgba(255,255,255,.7)" }}>{p.desc}</span>
+                  <span style={{ display: "block", marginTop: 14, fontSize: 13, fontWeight: 700, color: "var(--gold)" }}>Watch playlist →</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
 
       {/* Past messages grid */}
       {pastSermons.length > 0 && (
@@ -217,6 +253,9 @@ export default async function OnlinePage({
         </div>
       </section>
       )}
+
+      {/* Featured stories -- curated videos from lib/featuredStories.ts */}
+      <FeaturedStories tone="dark" />
 
       {/* Full archive, year-grouped, filterable */}
       <section style={{ padding: "20px clamp(20px,5vw,64px) 80px" }}>

@@ -4,9 +4,8 @@ import "./globals.css";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { SITE, SITE_URL, churchJsonLd } from "@/lib/site";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import { GoogleTags } from "@/components/analytics/GoogleTags";
+import { adsenseClientId } from "@/lib/adsense";
+import { VercelTelemetry } from "@/components/analytics/VercelTelemetry";
 import { SiteOverlays } from "@/components/ui/SiteOverlays";
 import { SkipToContent } from "@/components/ui/SkipToContent";
 import { createServiceClient } from "@/lib/supabase/server";
@@ -28,12 +27,13 @@ const jakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "Christ Apostolic Church North America (CACNA)",
-  description: "CACNA unites Christ Apostolic Church member churches across the United States, Canada, and South America under 24 Zones & DCCs, preaching the whole Gospel in a clear and undiluted manner.",
+  description: "CACNA unites Christ Apostolic Church member churches across the United States, Canada, and South America under 26 Zones & DCCs, preaching the whole Gospel in a clear and undiluted manner.",
   keywords: [
     "CACNA", "Christ Apostolic Church North America", "Christ Apostolic Church",
     "Nigerian church USA", "Yoruba church", "Aladura church USA",
-    "CAC Village", "Blue Ridge Summit convention", "CAC member church",
-    "Annual Convention", "online church", "prayer line",
+    "CAC Village", "CAC City of Prayer", "CACNA Annual Convention",
+    "CAC Village Convention", "Blue Ridge Summit convention", "CAC member church",
+    "Annual Convention", "convention registration", "online church", "prayer line",
   ],
   applicationName: SITE.shortName,
   alternates: { canonical: "/" },
@@ -58,6 +58,9 @@ export const metadata: Metadata = {
     // Console <meta> tag; omitted automatically when unset.
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
   },
+  // Lets AdSense verify ownership of the site. Loads no ads and sets no cookies;
+  // actual ad units are added separately, on blog posts only.
+  other: { "google-adsense-account": adsenseClientId(process.env.NEXT_PUBLIC_ADSENSE_ID) ?? "ca-pub-1672033318309677" },
 };
 
 export const viewport: Viewport = {
@@ -101,9 +104,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <SiteOverlays bannerAnn={bannerAnn} />
         <ScrollProgress />
         <SmoothScroll>{children}</SmoothScroll>
-        <Analytics />
-        <SpeedInsights />
-        <GoogleTags />
+        <VercelTelemetry />
       </body>
     </html>
   );

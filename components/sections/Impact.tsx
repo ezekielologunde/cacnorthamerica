@@ -2,6 +2,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { Phone } from "lucide-react";
 import { PRAYER_LINE } from "@/lib/prayerLine";
+import "./home-mobile.css";
 
 const DIAL_TEL = `tel:+1${PRAYER_LINE.dialIn.replace(/\s/g, "")}`;
 
@@ -11,7 +12,7 @@ export function Impact() {
       position: "relative", overflow: "hidden",
       background: "var(--gradient-hero)",
       padding: "80px clamp(20px,5vw,64px)",
-    }}>
+    }} className="hm-section">
       {/* This used to be a per-slide hero background (the giving-campaign
           slide, before the hero moved to one persistent video for every
           slide) -- featured here full-bleed instead of shrunk into the
@@ -27,15 +28,13 @@ export function Impact() {
 
       <div className="r2c" style={{ position: "relative", zIndex: 2, maxWidth: 1100, margin: "0 auto", gap: 60 }}>
         <Reveal>
-          <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "rgba(255,255,255,.65)" }}>
-            {PRAYER_LINE.org}
-          </span>
-          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(34px,4.5vw,58px)", letterSpacing: "-1.5px", color: "#fff", margin: "14px 0 20px", lineHeight: .96 }}>
+          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(34px,4.5vw,58px)", letterSpacing: "-1.5px", color: "#fff", margin: "0 0 16px", lineHeight: .96 }}>
             {PRAYER_LINE.name}
           </h2>
           <p style={{ fontSize: 16, color: "rgba(255,255,255,.75)", lineHeight: 1.7, maxWidth: 420 }}>
-            {PRAYER_LINE.tagline} — come as you are, wherever you are.
+            {PRAYER_LINE.tagline}.
           </p>
+          <p style={{ fontSize: 14, color: "rgba(255,255,255,.7)", margin: "12px 0 0" }}>{PRAYER_LINE.org}</p>
         </Reveal>
 
         <Reveal delay={120}>
@@ -46,14 +45,14 @@ export function Impact() {
                 <span key={t.zone}>{t.label} {t.zone}{i < PRAYER_LINE.times.length - 1 && " ·"}</span>
               ))}
             </div>
-            <a href={DIAL_TEL} style={{ display: "block", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,36px)", color: "#FFD9A8", textDecoration: "none", marginBottom: 18 }}>
+            <a href={DIAL_TEL} style={{ display: "block", minHeight: 44, padding: "4px 0", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,36px)", color: "#FFD9A8", textDecoration: "none", marginBottom: 18 }}>
               {PRAYER_LINE.dialIn}
             </a>
             <div style={{ fontSize: 14, color: "rgba(255,255,255,.65)", marginBottom: 24 }}>
               Access Code: <strong style={{ color: "#fff" }}>{PRAYER_LINE.code}</strong>
             </div>
             <Magnetic strength={0.45}>
-              <a href={DIAL_TEL} className="btn-sheen" style={{
+              <a href={DIAL_TEL} className="btn-sheen hm-btn-block" style={{
                 display: "inline-flex", alignItems: "center", gap: 10,
                 background: "#fff", color: "var(--red)",
                 fontWeight: 800, fontSize: 15,

@@ -1,4 +1,6 @@
 import { Nav } from "@/components/navigation/Nav";
+import "@/app/(site)/[locale]/mobile-events-media.css";
+import { PastEventBanner } from "@/components/events/PastEventBanner";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
@@ -49,6 +51,7 @@ export default async function MinistersRetreat2027Page({
     eventAttendanceMode: "https://schema.org/OnlineEventAttendanceMode",
     location: { "@type": "VirtualLocation", url: `${SITE_URL}/events/ministers-retreat-2027` },
     organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },
+    performer: { "@type": "Church", name: SITE.name, url: SITE_URL },
     url: `${SITE_URL}/events/ministers-retreat-2027`,
   };
   return (
@@ -56,15 +59,10 @@ export default async function MinistersRetreat2027Page({
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Events", path: "/calendar" }, { name: ev.navLabel ?? ev.title, path: "/events/ministers-retreat-2027" }])).replace(/</g, "\\u003c") }} />
       <Nav heroDark />
-      {isPast && (
-        <div role="status" style={{ background: "#2c2825", padding: "13px clamp(20px,5vw,64px)", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px 20px", fontSize: 14, fontWeight: 600, color: "rgba(245,246,250,.7)" }}>
-          <span>This event has passed — page kept as an archive.</span>
-          <Link href="/calendar" style={{ color: "var(--gold)", fontWeight: 700, fontSize: 13, textDecoration: "none", whiteSpace: "nowrap" }}>See upcoming events →</Link>
-        </div>
-      )}
+      {isPast && <PastEventBanner />}
 
       {/* Hero */}
-      <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) clamp(80px,10vw,120px)", position: "relative", overflow: "hidden" }}>
+      <section className="mm-hero" style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) clamp(80px,10vw,120px)", position: "relative", overflow: "hidden" }}>
         <div aria-hidden style={{ position: "absolute", top: -100, right: -80, width: 640, height: 520, background: "radial-gradient(circle,rgba(45,66,201,.3),transparent 65%)", pointerEvents: "none" }} />
 
         <div style={{ maxWidth: 820, margin: "0 auto", position: "relative", zIndex: 2 }}>
@@ -102,7 +100,7 @@ export default async function MinistersRetreat2027Page({
           </Reveal>
 
           <Reveal delay={240}>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 36 }}>
+            <div className="mm-actions" style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 36 }}>
               <a href={googleCalUrl(ev)} target="_blank" rel="noopener noreferrer" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(253,200,65,.35)" }}>
                 <CalendarPlus size={17} strokeWidth={2} aria-hidden /> Add to Calendar
               </a>
@@ -115,10 +113,9 @@ export default async function MinistersRetreat2027Page({
       </section>
 
       {/* Pillars */}
-      <section style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+      <section className="mm-sec" style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
           <Reveal style={{ marginBottom: 40 }}>
-            <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 14 }}>A time of refreshing, renewal & equipping</div>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,50px)", letterSpacing: "-.8px", color: "var(--ink)", margin: 0 }}>
               Four days set apart.
             </h2>
@@ -141,7 +138,7 @@ export default async function MinistersRetreat2027Page({
 
       {/* Contact CTA */}
       {!isPast && (
-        <section style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+        <section className="mm-sec" style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
           <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}>
             <Reveal>
               <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,48px)", letterSpacing: "-1px", color: "#fff", margin: "0 0 18px", lineHeight: 1.04 }}>

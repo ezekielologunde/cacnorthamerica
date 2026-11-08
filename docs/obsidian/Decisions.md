@@ -2,13 +2,23 @@
 project: cacnorthamerica
 type: decisions
 status: active
-last_updated: 2026-09-07
+last_updated: 2026-11-06
 tags: [project/cacnorthamerica]
 ---
 
 # Decisions
 
 Related: [[Project]] · [[Architecture]] · [[Features]]
+
+## Convention registration gift: its own line, fee not passed on (2026-11-06)
+
+A card registration can add an optional gift. It is a separate Stripe line item
+and a separate `Giving` row with a giving receipt, so it is receipted as a
+donation and the registration fee is not. The processing fee stays sized on the
+registration only, so the church absorbs Stripe's percentage on the gift and the
+donor's receipt equals what they chose. Zelle and free registrations are not
+offered it (no Stripe session to carry it). Charging the fee on the gift too is
+a small change if the church prefers. See [[Payments]].
 
 ## Merge the Convention site into CACNA, in phases (2026-09)
 
@@ -160,3 +170,49 @@ Update 2026-09-07: PR #31 had temporarily reverted the `SITE_URL` default to `ca
 `public/llms.txt` exists and is deliberately maintained (kept in sync with
 site metadata per commit `8f1c9ec`), showing the project actively considers
 LLM-based crawling/indexing of its content.
+
+## Retire Yoruba; single-locale English (2026-09-16, PR #36)
+
+Supersedes the two i18n decisions above. Most `/yo` pages were untranslated
+near-duplicates of the English ones, and Search Console flagged duplicate
+content with a canonical mismatch on 22 pages (PR #36 body). Locales cut to
+`["en"]` with `localePrefix: "as-needed"`, `messages/yo.json` deleted,
+`/yo/*` and legacy `/en/...` destinations redirected to plain paths.
+
+## Canonical host is cacna.org (2026-11-03, PR #99)
+
+Supersedes "Canonical domain correction" above (which moved through
+`cacna.cacsalvationcenter.org` and, in PR #38, `cacnorthamerica.com`).
+`lib/site.ts` defaults `SITE_URL` to `https://cacna.org`; four older hosts
+redirect there for non-API paths so webhooks pointed at old hosts keep
+working. The code comment says `NEXT_PUBLIC_SITE_URL` was deleted from Vercel
+on 2026-11-03 (PR #100) -- dashboard state, **Unverified** here.
+
+## Separate `cacna` schema on the shared Supabase project (0010)
+
+CACNA's own Supabase project was gone (confirmed 2026-09-06 per the
+migration header), so the tables were recreated in a `cacna` schema on the
+sibling cac-salvation-center project rather than its `public` schema, which
+already serves that live site. See [[Database]].
+
+## Payer covers processing fees, disclosed as a line item (PRs #71, #95)
+
+`lib/processingFee.ts`: card fee grosses the charge up so the church nets the
+subtotal (2.9% + 30c); bank (ACH) fee likewise, capped. See [[Payments]].
+
+## Zelle is the recommended registration payment (PR #84)
+
+No card fee; forms default to Zelle; staff confirm receipt by memo reference
+on `/admin/check-in`. See [[Payments]].
+
+## Recurring gifts ship dark (PRs #129-#133)
+
+Recurring code merged in five PRs but stays off until the server-only
+`GIVING_RECURRING_ENABLED` is `"true"`, so it can be tested in Stripe test
+mode first (`lib/givingRecurring.ts`). Tithe and projects only; a general
+offering is "given as the donor is led, not on a schedule" (code comment).
+
+## Stripe hosted checkout by default, embedded opt-in (PR #106)
+
+Embedded checkout was added (PRs #103, #105), then hosted made the default;
+embedded is behind `NEXT_PUBLIC_STRIPE_EMBEDDED`.

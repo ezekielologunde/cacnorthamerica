@@ -3,6 +3,7 @@ import { RevealText } from "@/components/ui/RevealText";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { PartyPopper } from "lucide-react";
 import { specialEvents, isEventPast } from "@/lib/events";
+import "./home-mobile.css";
 
 // Same facts as the dedicated event page (app/events/cacna-50th-anniversary-2026)
 // and the Hero carousel's rotating slide -- this is the third, most
@@ -14,13 +15,13 @@ export function AnniversaryCelebration() {
   if (isEventPast(ev)) return null;
 
   return (
-    <section style={{ position: "relative", overflow: "hidden", background: "var(--gradient-band)", padding: "clamp(72px,9vw,120px) clamp(20px,5vw,64px)" }}>
+    <section className="hm-section" style={{ position: "relative", overflow: "hidden", background: "var(--gradient-band)", padding: "clamp(72px,9vw,120px) clamp(20px,5vw,64px)" }}>
       {/* This used to be a per-slide hero background (the anniversary slide,
           before the hero moved to one persistent video for every slide) --
           featured here full-bleed instead of shrunk into the photo marquee. */}
       <div aria-hidden style={{
         position: "absolute", inset: 0,
-        backgroundImage: "url(/images/cac-gathering-crowd.jpg)", backgroundSize: "cover", backgroundPosition: "center",
+        backgroundImage: "url(/photos/gallery-archive/whatsapp-image-2018-07-23-at-10-11-12-pm-1-1601.jpg)", backgroundSize: "cover", backgroundPosition: "center 60%",
       }} />
       <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg,rgba(10,11,18,.92) 0%,rgba(28,30,46,.85) 55%,rgba(10,11,18,.92) 100%)" }} />
       <div aria-hidden style={{ position: "absolute", top: -120, right: -100, width: 640, height: 560, background: "radial-gradient(circle,rgba(253,200,65,.22),transparent 65%)", pointerEvents: "none" }} />
@@ -49,7 +50,7 @@ export function AnniversaryCelebration() {
           <Magnetic strength={0.35}>
             <a
               href={ev.href}
-              className="btn-sheen press"
+              className="btn-sheen press hm-btn-block"
               style={{
                 display: "inline-flex", alignItems: "center", gap: 9,
                 background: "var(--gold)", color: "var(--ink)",

@@ -1,8 +1,10 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { useFormStatus } from "react-dom";
 import { subscribeAction } from "@/app/newsletter/actions";
+import { HONEYPOT_FIELD } from "@/lib/spam";
+import { TurnstileField, resetTurnstile } from "@/components/TurnstileField";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -34,6 +36,12 @@ function SubmitButton() {
 
 export function NewsletterForm() {
   const [state, action] = useActionState(subscribeAction, null);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // A failed attempt used up the verification token; ask for a fresh one.
+  useEffect(() => {
+    if (state && !state.ok) resetTurnstile(formRef.current);
+  }, [state]);
 
   if (state?.ok) {
     return (
@@ -58,7 +66,8 @@ export function NewsletterForm() {
   }
 
   return (
-    <form action={action} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+    <form ref={formRef} action={action} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      <input type="text" name={HONEYPOT_FIELD} tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }} />
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
         <label htmlFor="newsletter-email" style={{
           position: "absolute", width: 1, height: 1, padding: 0, margin: -1,
@@ -89,6 +98,7 @@ export function NewsletterForm() {
         />
         <SubmitButton />
       </div>
+      <TurnstileField />
       {state && !state.ok && (
         <p role="alert" style={{ fontSize: 13, color: "#fca5a5", margin: 0 }}>{state.message}</p>
       )}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition, useEffect } from "react";
+import type { BlogAuthor } from "@/lib/blog-authors";
 import { createPost, updatePost, deletePost } from "@/app/admin/(protected)/blog/actions";
 
 type Post = {
@@ -12,6 +13,7 @@ type Post = {
   published: boolean;
   image_url: string | null;
   image_alt: string | null;
+  authors?: BlogAuthor[];
 };
 
 function slugify(text: string) {
@@ -50,6 +52,7 @@ export default function PostForm({ post }: { post?: Post }) {
   const [published, setPublished] = useState(post?.published ?? false);
   const [imageUrl, setImageUrl] = useState(post?.image_url ?? "");
   const [imageAlt, setImageAlt] = useState(post?.image_alt ?? "");
+  const [authors, setAuthors] = useState<BlogAuthor[]>(post?.authors ?? []);
   const [uploading, setUploading] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState("");
@@ -85,7 +88,10 @@ export default function PostForm({ post }: { post?: Post }) {
           callback(await res.json());
         },
         multiple: false,
+        // Must match the fixed folder/formats the sign route enforces.
         folder: "blog",
+        resourceType: "image",
+        clientAllowedFormats: ["jpg", "jpeg", "png", "webp", "gif", "heic", "avif"],
         sources: ["local", "url", "camera"],
         cropping: false,
       },
@@ -101,6 +107,11 @@ export default function PostForm({ post }: { post?: Post }) {
       },
     );
     widget.open();
+  }
+
+  function setAuthor(i: number, patch: Partial<BlogAuthor>) {
+    setAuthors((prev) => prev.map((a, j) => (j === i ? { ...a, ...patch } : a)));
+    setSaved(false);
   }
 
   function handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -233,6 +244,30 @@ export default function PostForm({ post }: { post?: Post }) {
               className="adm-inp"
               style={inp}
             />
+          </div>
+        </div>
+
+        <div>
+          <label style={label}>
+            Publishers <span style={muted}>— who published this (up to 4). Leave empty to show &quot;CACNA&quot;.</span>
+          </label>
+          <input type="hidden" name="authors" value={JSON.stringify(authors.filter((a) => a.name.trim()))} />
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {authors.map((a, i) => (
+              <div key={i} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr)) auto", gap: 8, alignItems: "center" }}>
+                <input aria-label={`Publisher ${i + 1} name`} placeholder="Name" value={a.name} onChange={(e) => setAuthor(i, { name: e.target.value })} className="adm-inp" style={inp} />
+                <input aria-label={`Publisher ${i + 1} role`} placeholder="Role (optional)" value={a.role ?? ""} onChange={(e) => setAuthor(i, { role: e.target.value })} className="adm-inp" style={inp} />
+                <input aria-label={`Publisher ${i + 1} profile picture URL`} placeholder="Profile picture URL (optional)" value={a.photo ?? ""} onChange={(e) => setAuthor(i, { photo: e.target.value })} className="adm-inp" style={inp} />
+                <button type="button" onClick={() => { setAuthors((prev) => prev.filter((_, j) => j !== i)); setSaved(false); }} style={{ background: "transparent", border: "1.5px solid rgba(0,0,0,0.15)", borderRadius: 8, padding: "9px 12px", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                  Remove
+                </button>
+              </div>
+            ))}
+            {authors.length < 4 && (
+              <button type="button" onClick={() => { setAuthors((prev) => [...prev, { name: "" }]); setSaved(false); }} style={{ alignSelf: "flex-start", background: "transparent", border: "1.5px dashed rgba(0,0,0,0.25)", borderRadius: 8, padding: "9px 16px", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                + Add a publisher
+              </button>
+            )}
           </div>
         </div>
 

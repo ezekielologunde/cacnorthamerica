@@ -23,15 +23,33 @@ const AI_BOTS = [
   "Meta-ExternalAgent",
 ];
 
+// Convention and CAC Village pages must stay crawlable (they are the pages
+// people search "CAC Village", "CAC City of Prayer" and "CACNA Annual
+// Convention" to reach). Listing them as explicit allows keeps them open even
+// if a broader disallow is added to the wildcard group later; the longest
+// matching rule wins, so these always beat any shorter disallow.
+const KEY_PUBLIC_PATHS = ["/events", "/archive", "/about", "/giving", "/calendar"];
+
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       // Everyone is welcome to crawl the public site; admin and checkout are private.
       {
         userAgent: "*",
-        allow: "/",
+        // /category/news is the one old category URL we redirect (see
+        // next.config.ts); it must stay crawlable or Google never sees the
+        // 301. The longer allow path wins over the "/category/" disallow.
+        // /api/gallery feeds the /gallery page's photo grid client-side, so
+        // it stays crawlable for Google's renderer; the rest of /api/ is
+        // form posts, checkout and webhooks.
+        allow: ["/", "/category/news", "/api/gallery", ...KEY_PUBLIC_PATHS],
         disallow: [
-          "/admin", "/admin/",
+          "/admin",
+          "/api/",
+          "/newsletter",
+          // The post-payment confirmation pages are deliberately NOT disallowed:
+          // they send noindex, and Google can only apply a noindex it is
+          // allowed to fetch.
           // This domain ran WordPress before this Next.js rebuild. These paths
           // are leftovers Google still remembers crawling (theme assets,
           // uploads, category archives) that now 404 correctly — disallowing

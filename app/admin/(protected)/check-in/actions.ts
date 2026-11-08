@@ -1,0 +1,77 @@
+"use server";
+
+import { requireAdmin } from "@/lib/supabase/require-admin";
+import { revalidatePath } from "next/cache";
+import { redirect, RedirectType } from "next/navigation";
+import { checkinPageHref, isCheckinId } from "@/lib/checkinSearch";
+
+// Every action is bound to the person's id and posted from a form that
+// carries the current search (hidden q / year), so the volunteer lands back
+// on the same results, with or without JavaScript.
+
+export async function checkInPerson(id: string, formData?: FormData) {
+  const { supabase, user } = await requireAdmin();
+  if (!isCheckinId(id)) throw new Error("Could not check this person in. Please try again.");
+  // Only where not yet checked in: a double tap, or two volunteers on the same
+  // person, never overwrites who checked them in or when.
+  const { error } = await supabase
+    .from("checkin_people")
+    .update({ checked_in_at: new Date().toISOString(), checked_in_by: user.email ?? null })
+    .eq("id", id)
+    .is("checked_in_at", null);
+  if (error) {
+    console.error(`[check-in] checkInPerson failed for id ${id}`);
+    throw new Error("Could not check this person in. Please try again.");
+  }
+  revalidatePath("/admin/check-in");
+  redirect(checkinPageHref(formData?.get("q"), formData?.get("year")), RedirectType.replace);
+}
+
+// Staff confirm a Zelle payment arrived (name, amount and the ZEL-
+// reference in the memo). One Zelle transfer covers the whole registration (one
+// amount, one reference shared by every row with the same ref), so this marks
+// every awaiting row of the clicked person's registration paid. Only rows still
+// awaiting Zelle: it never touches a free or card-paid row, and a double tap
+// changes nothing. Check-in itself stays per person.
+export async function markZellePaid(id: string, formData?: FormData) {
+  const { supabase } = await requireAdmin();
+  if (!isCheckinId(id)) throw new Error("Could not mark this payment as received. Please try again.");
+  const { data: row, error: lookupError } = await supabase
+    .from("checkin_people")
+    .select("ref")
+    .eq("id", id)
+    .eq("payment_status", "awaiting_zelle")
+    .maybeSingle();
+  if (lookupError) {
+    console.error(`[check-in] markZellePaid failed for id ${id}`);
+    throw new Error("Could not mark this payment as received. Please try again.");
+  }
+  if (row) {
+    const { error } = await supabase
+      .from("checkin_people")
+      .update({ payment_status: "paid" })
+      .eq("ref", row.ref)
+      .eq("payment_status", "awaiting_zelle");
+    if (error) {
+      console.error(`[check-in] markZellePaid failed for id ${id}`);
+      throw new Error("Could not mark this payment as received. Please try again.");
+    }
+  }
+  revalidatePath("/admin/check-in");
+  redirect(checkinPageHref(formData?.get("q"), formData?.get("year")), RedirectType.replace);
+}
+
+export async function undoCheckIn(id: string, formData?: FormData) {
+  const { supabase } = await requireAdmin();
+  if (!isCheckinId(id)) throw new Error("Could not undo this check-in. Please try again.");
+  const { error } = await supabase
+    .from("checkin_people")
+    .update({ checked_in_at: null, checked_in_by: null })
+    .eq("id", id);
+  if (error) {
+    console.error(`[check-in] undoCheckIn failed for id ${id}`);
+    throw new Error("Could not undo this check-in. Please try again.");
+  }
+  revalidatePath("/admin/check-in");
+  redirect(checkinPageHref(formData?.get("q"), formData?.get("year")), RedirectType.replace);
+}

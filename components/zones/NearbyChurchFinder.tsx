@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { LocateFixed, MapPin, Navigation, Phone, Mail, Loader2 } from "lucide-react";
 import { MEMBER_CHURCHES, distanceMiles } from "@/lib/churches";
 import type { Leader } from "@/lib/leaders";
@@ -11,6 +11,27 @@ const RESULT_COUNT = 6;
 export function NearbyChurchFinder({ leaders }: { leaders: Leader[] }) {
   const [status, setStatus] = useState<Status>("idle");
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+  // "approx" = estimated from the visitor's network (no permission needed);
+  // "precise" = the browser's geolocation after they allowed it.
+  const [source, setSource] = useState<"approx" | "precise" | null>(null);
+  const [place, setPlace] = useState("");
+
+  // Show nearby churches straight away from an approximate location, so the
+  // finder works even if the visitor never grants (or can't grant) location.
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/approx-location")
+      .then((r) => (r.ok ? r.json() : {}))
+      .then((d: { lat?: number; lng?: number; city?: string; region?: string }) => {
+        if (cancelled || typeof d.lat !== "number" || typeof d.lng !== "number") return;
+        setCoords((prev) => prev ?? { lat: d.lat as number, lng: d.lng as number });
+        setSource((prev) => prev ?? "approx");
+        setPlace([d.city, d.region].filter(Boolean).join(", "));
+        setStatus((prev) => (prev === "idle" ? "done" : prev));
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
 
   const leaderByZone = useMemo(() => {
     const map = new Map<string, Leader>();
@@ -35,9 +56,12 @@ export function NearbyChurchFinder({ leaders }: { leaders: Leader[] }) {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        setSource("precise");
         setStatus("done");
       },
       (err) => {
+        // Results render whenever coords exist, so a refusal never hides an
+        // approximate lookup, whichever request finishes first.
         setStatus(err.code === err.PERMISSION_DENIED ? "denied" : "error");
       },
       { enableHighAccuracy: false, timeout: 10000, maximumAge: 5 * 60 * 1000 }
@@ -49,7 +73,7 @@ export function NearbyChurchFinder({ leaders }: { leaders: Leader[] }) {
       style={{
         background: "var(--ink)",
         borderRadius: 24,
-        padding: "clamp(28px,4vw,44px)",
+        padding: "clamp(20px,4vw,44px)",
         marginBottom: 40,
         position: "relative",
         overflow: "hidden",
@@ -59,19 +83,18 @@ export function NearbyChurchFinder({ leaders }: { leaders: Leader[] }) {
       <div style={{ position: "relative", zIndex: 1 }}>
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 20 }}>
           <div style={{ maxWidth: 480 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--gold)" }}>Find a Church Near You</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3vw,32px)", letterSpacing: "-.5px", color: "#fff", margin: "10px 0 0", lineHeight: 1.15 }}>
-              Share your location — we'll show the closest member churches.
+              Find a church near you
             </h2>
             <p style={{ fontSize: 14.5, color: "rgba(245,246,250,.68)", margin: "10px 0 0", lineHeight: 1.55 }}>
-              Only churches with a verified, sourced address are included — not every zone has one yet.
+              We&apos;ll estimate your area, or you can use your exact location. Only churches with a verified, sourced address are included — not every zone has one yet.
             </p>
           </div>
           <button
             type="button"
             onClick={findNearby}
             disabled={status === "locating"}
-            className="press"
+            className="press ap-finder-btn"
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -94,22 +117,22 @@ export function NearbyChurchFinder({ leaders }: { leaders: Leader[] }) {
             ) : (
               <LocateFixed size={17} aria-hidden />
             )}
-            {status === "locating" ? "Locating…" : "Use my location"}
+            {status === "locating" ? "Locating…" : source === "approx" ? "Use my exact location" : "Use my location"}
           </button>
         </div>
 
         {status === "denied" && (
-          <p style={{ marginTop: 20, fontSize: 14, color: "rgba(245,246,250,.75)" }}>
+          <p style={{ marginTop: 20, fontSize: 15, color: "rgba(245,246,250,.75)" }}>
             Location access was denied. You can still browse every zone by scrolling down, or search by name/zone in the directory below.
           </p>
         )}
         {(status === "unsupported" || status === "error") && (
-          <p style={{ marginTop: 20, fontSize: 14, color: "rgba(245,246,250,.75)" }}>
-            We couldn't get your location just now. Browse every zone below instead.
+          <p style={{ marginTop: 20, fontSize: 15, color: "rgba(245,246,250,.75)" }}>
+            We couldn&apos;t get your location just now. Browse every zone below instead.
           </p>
         )}
 
-        {status === "done" && (
+        {coords && status !== "locating" && (
           <div style={{ marginTop: 28 }}>
             <p role="status" style={{
               position: "absolute", width: 1, height: 1, padding: 0, margin: -1,
@@ -117,12 +140,17 @@ export function NearbyChurchFinder({ leaders }: { leaders: Leader[] }) {
             }}>
               {results.length === 0 ? "No churches found." : `${results.length} church${results.length === 1 ? "" : "es"} found near you.`}
             </p>
-            {results.length > 0 && results[0].miles > 150 && (
-              <p style={{ fontSize: 13.5, color: "rgba(245,246,250,.65)", marginBottom: 16, lineHeight: 1.5 }}>
-                Coverage is still growing — the closest verified church we have is {Math.round(results[0].miles)} miles away. Browse the full directory below in case your zone's Superintendent knows of a closer assembly not yet listed here.
+            {source === "approx" && (
+              <p style={{ fontSize: 15, color: "rgba(245,246,250,.65)", marginBottom: 16, lineHeight: 1.5 }}>
+                {place ? `Showing churches near ${place}` : "Showing churches near you"} — estimated from your network, so it may be off. Use &ldquo;Use my exact location&rdquo; for a precise result, or browse the full directory below.
               </p>
             )}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: 14 }}>
+            {results.length > 0 && results[0].miles > 150 && (
+              <p style={{ fontSize: 15, color: "rgba(245,246,250,.65)", marginBottom: 16, lineHeight: 1.5 }}>
+                Coverage is still growing — the closest verified church we have is {Math.round(results[0].miles)} miles away. Browse the full directory below in case your zone&apos;s Superintendent knows of a closer assembly not yet listed here.
+              </p>
+            )}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(280px,100%),1fr))", gap: 14 }}>
             {results.length === 0 ? (
               <p style={{ fontSize: 14.5, color: "rgba(245,246,250,.75)" }}>No churches found — try the full directory below.</p>
             ) : (
@@ -142,8 +170,8 @@ export function NearbyChurchFinder({ leaders }: { leaders: Leader[] }) {
                     }}
                   >
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                      <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: ".8px", textTransform: "uppercase", color: "var(--gold)" }}>{church.zoneName}</span>
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12.5, fontWeight: 700, color: "#fff" }}>
+                      <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: ".8px", textTransform: "uppercase", color: "var(--gold)" }}>{church.zoneName}</span>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 13.5, fontWeight: 700, color: "#fff" }}>
                         <Navigation size={12} strokeWidth={2.5} aria-hidden />
                         {miles < 1 ? "< 1 mi" : `${Math.round(miles)} mi`}
                       </span>
@@ -152,22 +180,25 @@ export function NearbyChurchFinder({ leaders }: { leaders: Leader[] }) {
                       <div style={{ fontSize: 15, fontWeight: 700, color: "#fff", lineHeight: 1.3 }}>{church.name}</div>
                       <div style={{ display: "flex", alignItems: "flex-start", gap: 6, marginTop: 5 }}>
                         <MapPin size={13} strokeWidth={2} color="rgba(245,246,250,.55)" aria-hidden style={{ marginTop: 2, flexShrink: 0 }} />
-                        <span style={{ fontSize: 13, color: "rgba(245,246,250,.68)", lineHeight: 1.4 }}>
+                        <span style={{ fontSize: 14, color: "rgba(245,246,250,.68)", lineHeight: 1.4 }}>
                           {church.address}
                           {church.approxLocation && " (approximate)"}
                         </span>
                       </div>
                     </div>
+                    <a className="ap-contact-link" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(church.address)}`} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 15, fontWeight: 700, color: "var(--gold)", textDecoration: "none" }}>
+                      <Navigation size={14} aria-hidden /> Get directions
+                    </a>
                     {leader && (leader.phone || leader.email) && (
                       <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 4, paddingTop: 10, borderTop: "1px solid rgba(245,246,250,.1)" }}>
-                        <span style={{ fontSize: 12, color: "rgba(245,246,250,.55)" }}>{leader.full_name} — {leader.title}</span>
+                        <span style={{ fontSize: 13, color: "rgba(245,246,250,.55)" }}>{leader.full_name} — {leader.title}</span>
                         {leader.phone && (
-                          <a href={`tel:${leader.phone.replace(/[^\d+]/g, "")}`} style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 600, color: "#fff", textDecoration: "none" }}>
+                          <a className="ap-contact-link" href={`tel:${leader.phone.replace(/[^\d+]/g, "")}`} style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 14, fontWeight: 600, color: "#fff", textDecoration: "none" }}>
                             <Phone size={12} strokeWidth={2} aria-hidden /> {leader.phone}
                           </a>
                         )}
                         {leader.email && (
-                          <a href={`mailto:${leader.email}`} style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 600, color: "#fff", textDecoration: "none", wordBreak: "break-all" }}>
+                          <a className="ap-contact-link" href={`mailto:${leader.email}`} style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 14, fontWeight: 600, color: "#fff", textDecoration: "none", wordBreak: "break-all" }}>
                             <Mail size={12} strokeWidth={2} aria-hidden /> {leader.email}
                           </a>
                         )}

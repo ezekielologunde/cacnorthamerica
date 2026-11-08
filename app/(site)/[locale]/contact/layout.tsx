@@ -5,7 +5,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Contact & Visit — Christ Apostolic Church North America (CACNA)",
     description:
-      "Reach CACNA at (305) 469-0346 or info@cacnorthamerica.com, or find a CACNA member church near you across the United States, Canada, and South America. CAC Village: 14051 Stahley Road, Blue Ridge Summit, PA 17214.",
+      "Reach CACNA at (305) 469-0346 or info@cacna.org, or find a CACNA member church near you across the United States, Canada, and South America. CAC Village: 14051 Stahley Road, Blue Ridge Summit, PA 17214.",
     alternates: { canonical: `${SITE_URL}/contact` },
   };
 }

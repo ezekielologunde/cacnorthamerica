@@ -2,7 +2,7 @@
 project: cacnorthamerica
 type: project-overview
 status: active
-last_updated: 2026-09-05
+last_updated: 2026-11-05
 tags: [project/cacnorthamerica]
 ---
 
@@ -41,9 +41,14 @@ donor project. See [[Changelog]].
 ## Stack
 
 - **Framework**: Next.js 16 (App Router), React 19, TypeScript
-- **i18n**: `next-intl`, locales `en`/`yo`, every public route under
-  `/[locale]/...` (added 2026-09-05, still English-only content beyond
-  Nav/Footer chrome -- see [[Tasks]])
+- **i18n**: `next-intl`, single locale `en` with `localePrefix: "as-needed"`
+  (plain URLs). Yoruba (`yo`) was added 2026-09-05 and removed 2026-09-16
+  (PR #36); `/yo/*` redirects to the unprefixed path. Routes still live under
+  `app/(site)/[locale]/`. See [[Decisions]], [[Frontend]].
+- **Canonical host**: `https://cacna.org` (PR #99, `lib/site.ts`);
+  `cacnorthamerica.com`, `www.cacnorthamerica.com`, `cacnorthamerica.vercel.app`
+  and `cacna.cacsalvationcenter.org` redirect to it for non-API paths
+  (`next.config.ts`).
 - **Styling**: Tailwind CSS 4
 - **Backend**: Supabase (Postgres, Auth, Row Level Security)
 - **Payments**: Stripe (`stripe` SDK) — registration (`/api/register`),
@@ -63,15 +68,11 @@ See [[Architecture]] for how these pieces fit together, [[Features]] for
 what's implemented, and [[Decisions]] for notable choices visible in the
 code and commit history.
 
-## Scope notes (what this project deliberately does NOT have)
+## Scope notes
 
-- No `Database.md`/`Backend.md` split — the backend is entirely Supabase
-  (schema + RLS), covered inline in [[Architecture]].
-- No `Security.md` — auth is a single gate (Supabase Auth + `proxy.ts`
-  middleware protecting `/admin`); covered in [[Architecture]] and
-  [[Decisions]].
-- No `Payments.md` — Stripe checkout/webhook code exists (`api/register`,
-  `api/store/checkout`, `api/stripe/webhook`) but is small enough to cover
-  inline in [[Architecture]]; split out if it grows (refunds, disputes).
-- This is a **content site**, not a SaaS product — most "features" are
+- Superseded 2026-11-05: the payment, database and security surface grew
+  (giving checkout, recurring gifts, Zelle, check-in, serve sign-ups), so the
+  split notes now exist: [[Database]], [[Backend]], [[Frontend]],
+  [[Security]], [[Payments]], [[Bugs]].
+- This is primarily a **content site**, not a SaaS product — most "features" are
   informational pages backed by Supabase tables editable from `/admin`.

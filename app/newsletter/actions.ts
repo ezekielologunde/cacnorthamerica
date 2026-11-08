@@ -1,22 +1,27 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
 import { Resend } from "resend";
 import { headers } from "next/headers";
-import { rateLimit } from "@/lib/rateLimit";
+import { clientIp, rateLimit } from "@/lib/rateLimit";
+import { HONEYPOT_FIELD, TURNSTILE_FIELD } from "@/lib/spam";
+import { TURNSTILE_ERROR, verifyTurnstile } from "@/lib/turnstile";
 import { SITE_URL } from "@/lib/site";
 import { logToSheet } from "@/lib/sheetsWebhook";
-import { EMAIL_FROM } from "@/lib/email";
+import { sender, emailLogoHtml } from "@/lib/email";
 
 export type SubscribeState = { ok: boolean; message: string } | null;
 
-function welcomeHtml(name: string | null): string {
-  const greeting = name ? `Hi ${name},` : "Hi there,";
+// Fixed text only: the form sends no name, so none is accepted (a submitted
+// name would otherwise reach this HTML, sent to an unverified address).
+function welcomeHtml(): string {
+  const greeting = "Hi there,";
   return `<!DOCTYPE html>
 <html>
 <body style="margin:0;padding:0;background:#F9F8F6;font-family:Georgia,serif">
   <div style="max-width:600px;margin:40px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(18,20,30,.10)">
     <div style="background:#12141E;padding:36px 40px;text-align:center">
+      ${emailLogoHtml()}
       <p style="margin:0 0 10px;font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,246,250,.45)">CACNA</p>
       <h1 style="margin:0;font-size:34px;font-weight:800;color:#fff;letter-spacing:-0.5px;line-height:1.1">You're in the family.</h1>
     </div>
@@ -41,9 +46,9 @@ function welcomeHtml(name: string | null): string {
       <hr style="border:none;border-top:1px solid rgba(18,20,30,.08);margin:0 0 24px">
       <p style="font-size:12px;color:rgba(18,20,30,.4);line-height:1.7;margin:0">
         You're receiving this because you subscribed at
-        <a href="https://www.cacnorthamerica.com" style="color:#C81E3A;text-decoration:none">cacnorthamerica.com</a>.
+        <a href="https://cacna.org" style="color:#C81E3A;text-decoration:none">cacna.org</a>.
         Questions? Email us at
-        <a href="mailto:info@cacnorthamerica.com" style="color:#C81E3A;text-decoration:none">info@cacnorthamerica.com</a>.
+        <a href="mailto:info@cacna.org" style="color:#C81E3A;text-decoration:none">info@cacna.org</a>.
       </p>
     </div>
   </div>
@@ -55,38 +60,53 @@ export async function subscribeAction(
   _prev: SubscribeState,
   formData: FormData,
 ): Promise<SubscribeState> {
-  const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "anon";
+  const ip = clientIp(await headers());
   if (!rateLimit(ip, 5, 60_000)) {
     return { ok: false, message: "Too many requests. Please try again in a minute." };
   }
 
-  const email = (formData.get("email") as string | null)?.trim().toLowerCase() ?? "";
-  const name = (formData.get("name") as string | null)?.trim() || null;
+  // Honeypot: bots fill every input, people never see this one.
+  if (formData.get(HONEYPOT_FIELD)) {
+    return { ok: true, message: "You're in! Welcome to the family." };
+  }
 
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+  if (!(await verifyTurnstile(formData.get(TURNSTILE_FIELD), ip))) {
+    return { ok: false, message: TURNSTILE_ERROR };
+  }
+
+  const email = (formData.get("email") as string | null)?.trim().toLowerCase() ?? "";
+  if (!email || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return { ok: false, message: "Please enter a valid email address." };
   }
 
-  const supabase = await createClient();
+  // Plain insert, not upsert, so an address that unsubscribed can never be
+  // re-activated from this public form. Written with the service client so
+  // direct anon inserts can be revoked (see the admin hardening migration).
+  // An address that's already on the list (23505) counts as success, but gets
+  // no second welcome email.
+  const supabase = await createServiceClient();
   const { error } = await supabase
     .from("newsletter_subscribers")
-    .upsert({ email, name, active: true, source: "website" }, { onConflict: "email" });
+    .insert({ email, active: true, source: "website" });
 
+  if (error?.code === "23505") {
+    return { ok: true, message: "You're in! Welcome to the family." };
+  }
   if (error) {
     console.error("Newsletter subscribe error:", error.message);
     return { ok: false, message: "Something went wrong. Please try again." };
   }
 
-  logToSheet("Newsletter Signup", { "Email": email, "Name": name ?? "" });
+  logToSheet("Newsletter Signup", { "Email": email });
 
   // Send welcome email — fire-and-forget, never blocks the response
   const apiKey = process.env.RESEND_API_KEY;
   if (apiKey) {
     new Resend(apiKey).emails.send({
-      from: EMAIL_FROM,
+      ...sender("general"),
       to: email,
       subject: "Welcome to CACNA 🙏",
-      html: welcomeHtml(name),
+      html: welcomeHtml(),
     }).catch((e) => console.error("[newsletter] Welcome email failed:", e));
   }
 

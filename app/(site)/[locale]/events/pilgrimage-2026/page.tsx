@@ -1,4 +1,7 @@
 import { Nav } from "@/components/navigation/Nav";
+import "@/app/(site)/[locale]/mobile-events-media.css";
+import { PastEventBanner } from "@/components/events/PastEventBanner";
+import { MobileStickyCta } from "@/components/events/MobileStickyCta";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
@@ -37,12 +40,12 @@ const highlights = [
   {
     icon: Waves,
     label: "The Dead Sea",
-    desc: "Float in the mineral-rich waters of the lowest point on earth and rejuvenate your body and soul in this ancient, sacred landscape.",
+    desc: "Float in the mineral-rich waters of the lowest point on earth.",
   },
   {
     icon: Landmark,
     label: "The Garden Tomb",
-    desc: "Celebrate holy communion at the place of the resurrection — a moment of worship that will mark your faith for the rest of your life.",
+    desc: "Celebrate holy communion at the place of the resurrection.",
   },
   {
     icon: Eye,
@@ -86,6 +89,7 @@ export default async function PilgrimagePage({
     url: `${SITE_URL}/events/pilgrimage-2026`,
     location: { "@type": "Place", name: "Israel & Egypt (departing JFK)", address: { "@type": "PostalAddress", addressCountry: "IL" } },
     organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },
+    performer: { "@type": "Church", name: SITE.name, url: SITE_URL },
     offers: { "@type": "Offer", price: "4549", priceCurrency: "USD", availability: "https://schema.org/InStock", url: `${SITE_URL}/events/pilgrimage-2026` },
   };
   return (
@@ -93,15 +97,10 @@ export default async function PilgrimagePage({
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Events", path: "/calendar" }, { name: ev.navLabel ?? ev.title, path: "/events/pilgrimage-2026" }])).replace(/</g, "\\u003c") }} />
       <Nav heroDark />
-      {isPast && (
-        <div role="status" style={{ background: '#2c2825', padding: '13px clamp(20px,5vw,64px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px 20px', fontSize: 14, fontWeight: 600, color: 'rgba(245,246,250,.7)' }}>
-          <span>This event has passed — page kept as an archive.</span>
-          <Link href="/calendar" style={{ color: 'var(--gold)', fontWeight: 700, fontSize: 13, textDecoration: 'none', whiteSpace: 'nowrap' }}>See upcoming events →</Link>
-        </div>
-      )}
+      {isPast && <PastEventBanner />}
 
       {/* Hero */}
-      <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) clamp(80px,10vw,120px)", position: "relative", overflow: "hidden" }}>
+      <section className="mm-hero" style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) clamp(80px,10vw,120px)", position: "relative", overflow: "hidden" }}>
         <style>{`
           .pilgrimage-hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: clamp(32px,5vw,60px); align-items: center; }
           @media (max-width: 900px) { .pilgrimage-hero-grid { grid-template-columns: 1fr; } }
@@ -146,13 +145,13 @@ export default async function PilgrimagePage({
 
             <Reveal delay={200}>
               <p style={{ fontSize: "clamp(16px,1.9vw,20px)", color: "rgba(245,246,250,.72)", lineHeight: 1.72, maxWidth: 600, margin: "0 0 44px", textWrap: "pretty" }}>
-                Walk where Jesus walked. Stand where Moses stood. Ten days in the land of Scripture — Israel and Egypt — with your CAC family.
+                Walk where Jesus walked. Stand where Moses stood. Ten days in Israel and Egypt with your CAC family.
               </p>
             </Reveal>
 
             {!isPast && (
             <Reveal delay={280}>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
+              <div className="mm-actions" style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
                 <a href="mailto:info@cacnapilgrimage.org?subject=Holy Land Pilgrimage 2026 — Registration" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(253,200,65,.4)" }}>
                   Register — $500 Deposit →
                 </a>
@@ -179,7 +178,7 @@ export default async function PilgrimagePage({
                 width={1600}
                 height={1035}
                 style={{ width: "100%", height: "auto", display: "block" }}
-                priority
+                preload
               />
             </div>
           </Reveal>
@@ -187,15 +186,14 @@ export default async function PilgrimagePage({
       </section>
 
       {/* Leadership */}
-      <section style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+      <section className="mm-sec" style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
           <Reveal>
-            <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 14 }}>The journey</div>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,52px)", letterSpacing: "-.8px", color: "var(--ink)", margin: "0 0 16px", lineHeight: 1 }}>
-              Walk where it all happened.
+              From JFK to the Holy Land.
             </h2>
             <p style={{ fontSize: "clamp(15px,1.7vw,18px)", color: "var(--ink-soft)", lineHeight: 1.72, maxWidth: 640, margin: "0 0 36px" }}>
-              For 10 days your CAC family will journey from JFK to the Holy Land — tracing the footsteps of Moses through Egypt and the life, death, and resurrection of Jesus Christ across Israel.
+              The route traces the footsteps of Moses through Egypt and the life, death, and resurrection of Jesus Christ across Israel.
             </p>
           </Reveal>
 
@@ -218,12 +216,11 @@ export default async function PilgrimagePage({
       </section>
 
       {/* Highlights */}
-      <section style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+      <section className="mm-sec" style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
           <Reveal style={{ marginBottom: 44 }}>
-            <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 12 }}>Pilgrimage highlights</div>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,50px)", letterSpacing: "-.8px", color: "var(--cream)", margin: 0 }}>
-              Ten days of sacred sites.
+              Pilgrimage highlights
             </h2>
           </Reveal>
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -245,14 +242,13 @@ export default async function PilgrimagePage({
       </section>
 
       {/* Package + Pricing */}
-      <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+      <section className="mm-sec" style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 960, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,420px),1fr))", gap: "clamp(36px,5vw,60px)" }}>
 
           {/* Included */}
           <Reveal>
-            <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 16 }}>Package inclusions</div>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.5vw,42px)", letterSpacing: "-.6px", color: "var(--ink)", margin: "0 0 24px" }}>
-              Everything covered.
+              What&apos;s included
             </h2>
             <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 12 }}>
               {included.map((item, i) => (
@@ -273,9 +269,8 @@ export default async function PilgrimagePage({
           {/* Pricing + Payment */}
           <Reveal delay={120}>
             <div>
-              <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 16 }}>Pricing & payment</div>
               <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.5vw,42px)", letterSpacing: "-.6px", color: "var(--ink)", margin: "0 0 24px" }}>
-                Investment
+                Pricing &amp; payment
               </h2>
 
               <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 28 }}>
@@ -325,12 +320,12 @@ export default async function PilgrimagePage({
 
       {/* Contact CTA */}
       {!isPast && (
-      <section style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+      <section className="mm-sec" style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 720, margin: "0 auto", textAlign: "center" }}>
           <Reveal>
             <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 20 }}>Reserve your space</div>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(32px,5vw,68px)", letterSpacing: "-1.2px", color: "#fff", margin: "0 0 20px", lineHeight: 0.96 }}>
-              Seats are limited.<br />Don&apos;t wait.
+              Seats are limited.
             </h2>
             <p style={{ fontSize: "clamp(15px,1.8vw,18px)", color: "rgba(245,246,250,.65)", lineHeight: 1.72, marginBottom: 40 }}>
               Send your $500 deposit and reach out to one of the contacts below to confirm your registration.
@@ -369,6 +364,7 @@ export default async function PilgrimagePage({
       )}
 
       <FooterExperience />
+      {!isPast && <MobileStickyCta href="mailto:info@cacnapilgrimage.org?subject=Holy Land Pilgrimage 2026 — Registration" label="Register — $500 deposit" external={false} />}
     </main>
   );
 }

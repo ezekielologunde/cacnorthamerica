@@ -1,28 +1,26 @@
 import { googleReviews, REVIEW_AVERAGE, REVIEW_COUNT } from "@/lib/reviews";
 import { conventionYears } from "@/lib/conventions";
 
-// Canonical host. cacna.cacsalvationcenter.org is a subdomain of the sibling
-// church site, so the whole CAC family shares one domain for SEO. It was
-// attached to the cacnorthamerica Vercel project in September 2026 (before
-// that the default had to fall back to the project's *.vercel.app domain,
-// see PR #31). Three places must agree on this value, or canonicals,
-// hreflang and the sitemap point Google at the wrong host:
+// Canonical host: cacna.org (decided 2026-11-03; cacnorthamerica.com stays live
+// and redirects here). Do not deploy this until cacna.org's DNS points at the
+// Vercel project, or canonicals and the sitemap would point at a dead host.
+// Three places must agree on this value:
 //   1. this default,
 //   2. NEXT_PUBLIC_SITE_URL in the Vercel project (it overrides this default),
+//      which was deleted on 2026-11-03 so this default applies,
 //   3. Supabase Auth -> URL Configuration -> Redirect URLs (password-reset
 //      emails link to SITE_URL; a host missing from that allow-list makes
 //      the link silently go nowhere).
-// cacnorthamerica.com still serves an old, unrelated WordPress build.
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cacna.cacsalvationcenter.org";
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cacna.org";
 
 export const SITE = {
   name: "Christ Apostolic Church North America",
   shortName: "CACNA",
   url: SITE_URL,
   description:
-    "CACNA unites Christ Apostolic Church member churches across the United States, Canada, and South America under 24 Zones & DCCs, preaching the whole Gospel in a clear and undiluted manner.",
+    "CACNA unites Christ Apostolic Church member churches across the United States, Canada, and South America under 26 Zones & DCCs, preaching the whole Gospel in a clear and undiluted manner.",
   telephone: "+1-305-469-0346",
-  email: "info@cacnorthamerica.com",
+  email: "info@cacna.org",
   address: {
     street: "14051 Stahley Road",
     city: "Blue Ridge Summit",
@@ -30,6 +28,13 @@ export const SITE = {
     postalCode: "17214",
     country: "US",
   },
+  // Names people search for. CAC Village is the campus the regional office and
+  // the Annual Convention share; keep these in sync with robots.ts/llms.txt.
+  keywords: [
+    "CACNA", "CAC North America", "Christ Apostolic Church North America",
+    "CAC Village", "CAC City of Prayer", "CACNA Annual Convention",
+    "CAC Village Convention", "Blue Ridge Summit convention",
+  ],
   sameAs: [
     "https://youtube.com/@cacnorthamericalatunderegi1330",
     "https://instagram.com/cacnorthamericalatunderegion",
@@ -40,25 +45,49 @@ export const SITE = {
 export const ROUTES: { path: string; priority: number }[] = [
   { path: "/", priority: 1 },
   { path: "/about", priority: 0.8 },
+  { path: "/history", priority: 0.5 },
+  { path: "/golden-jubilee", priority: 0.5 },
   { path: "/leadership", priority: 0.7 },
   { path: "/leadership/past", priority: 0.5 },
   { path: "/zones", priority: 0.7 },
   { path: "/ministries", priority: 0.7 },
   { path: "/bible-institute", priority: 0.6 },
   { path: "/statement-of-faith", priority: 0.5 },
+  { path: "/faq", priority: 0.5 },
+  { path: "/forms", priority: 0.6 },
   { path: "/online", priority: 0.9 },
   { path: "/giving", priority: 0.8 },
   { path: "/store", priority: 0.5 },
   { path: "/watchwords", priority: 0.5 },
-  ...conventionYears.map((cy) => ({ path: cy.href, priority: cy.year === 2026 ? 0.75 : 0.5 })),
+  // Years with a dedicated page and real content (a theme or a registration
+  // link). Archived years point at /archive, listed once below, and the
+  // 2028+ placeholders have nothing to index yet.
+  ...conventionYears
+    .filter((cy) => cy.href !== "/archive" && (cy.theme || cy.registrationUrl))
+    .map((cy) => ({ path: cy.href, priority: cy.year === 2026 ? 0.75 : 0.9 })),
+  // On-site registration for any year that has it (adult form + youth form).
+  ...conventionYears.flatMap((cy) =>
+    cy.registrationUrl && !/^https?:\/\//.test(cy.registrationUrl)
+      ? [
+          { path: cy.registrationUrl, priority: 0.9 },
+          { path: `${cy.registrationUrl}/youth`, priority: 0.8 },
+        ]
+      : []
+  ),
   { path: "/events/pilgrimage-2026", priority: 0.7 },
+  { path: "/events/beyond-the-swipe-2026", priority: 0.5 },
+  { path: "/events/hope-for-all-summit-2026", priority: 0.5 },
   { path: "/events/cacna-50th-anniversary-2026", priority: 0.6 },
   { path: "/events/ministers-retreat-2027", priority: 0.6 },
+  { path: "/events/beyond-the-swipe-2026", priority: 0.5 },
+  { path: "/events/hope-for-all-summit-2026", priority: 0.5 },
+  { path: "/events/cacna-2026/schedule", priority: 0.5 },
   { path: "/calendar", priority: 0.8 },
   { path: "/blog", priority: 0.6 },
   { path: "/gallery", priority: 0.6 },
   { path: "/archive", priority: 0.5 },
   { path: "/plan-your-visit", priority: 0.6 },
+  { path: "/serve", priority: 0.7 },
   { path: "/sitemap", priority: 0.3 },
   // Sub-ministry pages -- were missing from this list entirely despite
   // being live routes (found during the Phase F branding-cleanup pass,
@@ -71,12 +100,19 @@ export const ROUTES: { path: string; priority: number }[] = [
   { path: "/business-group", priority: 0.5 },
   { path: "/children", priority: 0.5 },
   { path: "/contact", priority: 0.9 },
+  { path: "/privacy", priority: 0.3 },
+  { path: "/terms", priority: 0.3 },
+  { path: "/accessibility", priority: 0.3 },
+  { path: "/refunds", priority: 0.3 },
 ];
 
-/** schema.org structured data (@graph: Church + WebSite) for rich results,
- *  local SEO, and AI answer-engines. */
+/** schema.org structured data (@graph: Church + Organization + WebSite) for
+ *  rich results, local SEO, and AI answer-engines. schema.org's Church is a
+ *  Place, not an Organization, so the Organization node is what Google reads
+ *  for the site's name and logo. */
 export function churchJsonLd() {
   const churchId = `${SITE_URL}/#church`;
+  const organizationId = `${SITE_URL}/#organization`;
   const fullAddress = `${SITE.address.street}, ${SITE.address.city}, ${SITE.address.region} ${SITE.address.postalCode}`;
   return {
     "@context": "https://schema.org",
@@ -85,7 +121,8 @@ export function churchJsonLd() {
         "@type": "Church",
         "@id": churchId,
         name: SITE.name,
-        alternateName: SITE.shortName,
+        alternateName: [SITE.shortName, "CAC North America", "CAC Village", "CAC City of Prayer"],
+        keywords: SITE.keywords.join(", "),
         url: SITE_URL,
         logo: `${SITE_URL}/images/logo.png`,
         image: `${SITE_URL}/images/logo.png`,
@@ -109,7 +146,7 @@ export function churchJsonLd() {
         sameAs: SITE.sameAs,
         employee: [
           { "@type": "Person", name: "Pastor Dr. T.O. Agbeja", jobTitle: "Regional Superintendent, CACNA" },
-          { "@type": "Person", name: "Pastor David Adenodi, Ph.D.", jobTitle: "Chairman, CACNA Convention" },
+          { "@type": "Person", name: "Pastor Oluwagbemiga Famojuro, D.Min.", jobTitle: "Chairman, CACNA Convention" },
           { "@type": "Person", name: "Pastor Joseph Olawale Latunde", jobTitle: "Regional Secretary, CACNA" },
           { "@type": "Person", name: "Pastor Timothy Adelani", jobTitle: "Regional Treasurer, CACNA" },
           { "@type": "Person", name: "Pastor John Oluwatimilehin, Ph.D.", jobTitle: "Chairman, CAC Village Management Council" },
@@ -125,13 +162,25 @@ export function churchJsonLd() {
         } : {}),
       },
       {
+        "@type": "Organization",
+        "@id": organizationId,
+        name: SITE.name,
+        alternateName: SITE.shortName,
+        url: SITE_URL,
+        logo: { "@type": "ImageObject", url: `${SITE_URL}/images/logo.png`, width: 370, height: 318 },
+        email: SITE.email,
+        telephone: SITE.telephone,
+        location: { "@id": churchId },
+        sameAs: SITE.sameAs,
+      },
+      {
         "@type": "WebSite",
         "@id": `${SITE_URL}/#website`,
         url: SITE_URL,
         name: SITE.name,
         alternateName: SITE.shortName,
         description: SITE.description,
-        publisher: { "@id": churchId },
+        publisher: { "@id": organizationId },
         inLanguage: "en-US",
       },
     ],

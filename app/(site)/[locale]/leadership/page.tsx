@@ -1,3 +1,4 @@
+import "@/components/about-people-mobile.css";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
@@ -9,6 +10,7 @@ import { CAC_WORLDWIDE, CAC_ANOSIKE_EUROPE } from "@/lib/global";
 import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
+import { initials } from "@/lib/initials";
 
 export const revalidate = 3600;
 
@@ -31,11 +33,6 @@ async function combinedBio(leader: Leader): Promise<string | null> {
   const roles = await getLeaderRoles(leader.person_key);
   if (roles.length <= 1) return null;
   return roles.map((r) => r.title).join(" · ");
-}
-
-function initials(name: string) {
-  const parts = name.replace(/^(Pastor|Prophet|Evangelist|Apostle)\s+(Dr\.?\s+)?(\(Mrs\.?\)\s+)?/i, "").trim().split(/\s+/);
-  return ((parts[0]?.[0] || "") + (parts[parts.length - 1]?.[0] || "")).toUpperCase();
 }
 
 const gradients = [
@@ -64,25 +61,22 @@ export default async function LeadershipPage({
   );
 
   return (
-    <main id="main-content">
+    <main id="main-content" className="ap-main">
       <Nav />
 
       {/* Hero */}
       <section style={{ background: "var(--cream)", padding: "140px clamp(20px,5vw,64px) 72px", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: -60, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,var(--blue),var(--red) 70%)", opacity: .1, filter: "blur(6px)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 820, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
-          <Reveal>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Leadership</span>
-          </Reveal>
           <Reveal delay={80}>
-            <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(46px,6.5vw,90px)", letterSpacing: "-2px", color: "var(--ink)", margin: "16px 0", lineHeight: .92 }}>
+            <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(40px,6.5vw,90px)", letterSpacing: "-2px", color: "var(--ink)", margin: "16px 0", lineHeight: .92 }}>
               Meet Our<br />
               <span style={{ color: "var(--red)" }}>Leadership.</span>
             </h1>
           </Reveal>
           <Reveal delay={160}>
             <p style={{ fontSize: "clamp(16px,1.8vw,19px)", color: "var(--ink-soft)", lineHeight: 1.65, maxWidth: 580, margin: "0 auto" }}>
-              The CACNA Coordinating Council, committed to preaching the whole Gospel and shepherding every member church across the United States, Canada, and South America.
+              The CACNA Coordinating Council, shepherding the member churches across the United States, Canada, and South America.
             </p>
           </Reveal>
         </div>
@@ -98,11 +92,11 @@ export default async function LeadershipPage({
           <div style={{ maxWidth: 1080, margin: "0 auto" }}>
             <Reveal>
               <div className="ldr-card" style={{ display: "grid", background: "var(--ink)", borderRadius: 28, overflow: "hidden", boxShadow: "0 30px 60px rgba(18,20,30,.22)" }}>
-                <Link href={`/leadership/${slugifyLeaderName(featured.full_name)}`} style={{ padding: "clamp(36px,5vw,60px)", display: "flex", flexDirection: "column", justifyContent: "center", color: "var(--cream)", textDecoration: "none" }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 14 }}>{featured.title}</div>
+                <Link href={`/leadership/${slugifyLeaderName(featured.full_name)}`} style={{ padding: "clamp(24px,5vw,60px)", display: "flex", flexDirection: "column", justifyContent: "center", color: "var(--cream)", textDecoration: "none" }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 14 }}>{featured.title}</div>
                   <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3vw,42px)", letterSpacing: "-1px", margin: "0 0 22px", lineHeight: 1.04 }}>{featured.full_name}</h2>
                   <p style={{ fontSize: 16.5, lineHeight: 1.75, color: "rgba(245,246,250,.78)", margin: 0 }}>{bios.get(featured.id)?.split(/\n\n+/)[0]}</p>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 18, fontSize: 13.5, fontWeight: 700, color: "var(--gold)" }}>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 18, fontSize: 15, fontWeight: 700, color: "var(--gold)" }}>
                     Read full story <span aria-hidden>→</span>
                   </span>
                 </Link>
@@ -121,7 +115,6 @@ export default async function LeadershipPage({
       <section style={{ background: "var(--cream-2)", padding: "0 clamp(20px,5vw,64px) 90px" }}>
         <div style={{ maxWidth: 1080, margin: "0 auto" }}>
           <Reveal style={{ marginBottom: 36 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Pastoral Team</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,3.5vw,44px)", letterSpacing: "-1px", color: "var(--ink)", margin: "10px 0 0", lineHeight: 1 }}>
               Serving alongside.
             </h2>
@@ -149,11 +142,11 @@ export default async function LeadershipPage({
                   </div>
                   <div style={{ padding: "22px 26px 28px", display: "flex", flexDirection: "column", gap: 12, flex: 1 }}>
                     <div>
-                      <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 4 }}>{p.title}</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 4 }}>{p.title}</div>
                       <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 19, letterSpacing: "-0.4px", color: "var(--ink)", margin: 0, lineHeight: 1.15 }}>{p.full_name}</h3>
                     </div>
                     {bios.get(p.id) && (
-                      <p style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.7, margin: 0 }}>{bios.get(p.id)}</p>
+                      <p style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.7, margin: 0 }} className="ap-clamp">{bios.get(p.id)}</p>
                     )}
                   </div>
                 </Link>
@@ -168,7 +161,6 @@ export default async function LeadershipPage({
         <section style={{ background: "var(--ink)", padding: "clamp(64px,7vw,96px) clamp(20px,5vw,64px)" }}>
           <div style={{ maxWidth: 1080, margin: "0 auto" }}>
             <Reveal style={{ marginBottom: 36 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Christ Apostolic Church Worldwide</span>
               <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,3.5vw,44px)", letterSpacing: "-1px", color: "var(--cream)", margin: "10px 0 0", lineHeight: 1 }}>
                 Global leadership.
               </h2>
@@ -193,7 +185,7 @@ export default async function LeadershipPage({
                       }}>{initials(p.full_name)}</div>
                     )}
                     <div>
-                      <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 4 }}>{p.title}</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 4 }}>{p.title}</div>
                       <div style={{ fontWeight: 800, fontSize: 17, color: "var(--cream)", lineHeight: 1.3 }}>{p.full_name}</div>
                     </div>
                   </Link>
@@ -208,20 +200,18 @@ export default async function LeadershipPage({
       <section id="global-family" style={{ background: "var(--cream)", padding: "0 clamp(20px,5vw,64px) 56px", scrollMarginTop: 90 }}>
         <div style={{ maxWidth: 1080, margin: "0 auto" }}>
           <Reveal style={{ marginBottom: 28 }}>
-            <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)" }}>One Fold, One Shepherd</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3vw,38px)", letterSpacing: "-.7px", color: "var(--ink)", margin: "10px 0 0" }}>Our Global Family</h2>
           </Reveal>
           <div className="r2" style={{ gap: 18 }}>
             <Reveal>
               <div style={{ height: "100%", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, padding: "26px 24px" }}>
-                <span style={{ fontSize: 10.5, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)" }}>Worldwide</span>
                 <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 19, color: "var(--ink)", margin: "8px 0 10px" }}>{CAC_WORLDWIDE.name}</h3>
-                <p style={{ fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.65, marginBottom: 18 }}>{CAC_WORLDWIDE.description}</p>
+                <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.65, marginBottom: 18 }}>{CAC_WORLDWIDE.description}</p>
                 <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                  <a href={CAC_WORLDWIDE.url} target="_blank" rel="noopener noreferrer" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "var(--red)", color: "#fff", fontWeight: 800, fontSize: 13.5, padding: "10px 20px", borderRadius: 999, textDecoration: "none" }}>
+                  <a href={CAC_WORLDWIDE.url} target="_blank" rel="noopener noreferrer" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "var(--red)", color: "#fff", fontWeight: 800, fontSize: 15, padding: "10px 20px", borderRadius: 999, textDecoration: "none" }}>
                     Visit cacworld.org →
                   </a>
-                  <a href={CAC_WORLDWIDE.newsUrl} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "var(--cream-2)", color: "var(--ink)", fontWeight: 700, fontSize: 13.5, padding: "10px 20px", borderRadius: 999, textDecoration: "none", border: "1px solid var(--line)" }}>
+                  <a href={CAC_WORLDWIDE.newsUrl} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "var(--cream-2)", color: "var(--ink)", fontWeight: 700, fontSize: 15, padding: "10px 20px", borderRadius: 999, textDecoration: "none", border: "1px solid var(--line)" }}>
                     CAC World News →
                   </a>
                 </div>
@@ -229,17 +219,16 @@ export default async function LeadershipPage({
             </Reveal>
             <Reveal delay={80}>
               <div style={{ height: "100%", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, padding: "26px 24px" }}>
-                <span style={{ fontSize: 10.5, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)" }}>Sister Region</span>
                 <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 19, color: "var(--ink)", margin: "8px 0 10px" }}>{CAC_ANOSIKE_EUROPE.name}</h3>
-                <p style={{ fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.65, marginBottom: 8 }}>{CAC_ANOSIKE_EUROPE.description}</p>
-                <p style={{ fontSize: 12.5, color: "var(--ink-soft)", marginBottom: 18 }}>
+                <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.65, marginBottom: 8 }}>{CAC_ANOSIKE_EUROPE.description}</p>
+                <p style={{ fontSize: 13.5, color: "var(--ink-soft)", marginBottom: 18 }}>
                   Regional Superintendent: <strong style={{ color: "var(--ink)" }}>{CAC_ANOSIKE_EUROPE.regionalSuperintendent}</strong>
                 </p>
                 <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                  <a href={CAC_ANOSIKE_EUROPE.url} target="_blank" rel="noopener noreferrer" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "var(--red)", color: "#fff", fontWeight: 800, fontSize: 13.5, padding: "10px 20px", borderRadius: 999, textDecoration: "none" }}>
+                  <a href={CAC_ANOSIKE_EUROPE.url} target="_blank" rel="noopener noreferrer" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "var(--red)", color: "#fff", fontWeight: 800, fontSize: 15, padding: "10px 20px", borderRadius: 999, textDecoration: "none" }}>
                     Visit cacanosike.org →
                   </a>
-                  <a href={CAC_ANOSIKE_EUROPE.directoryUrl} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "var(--cream-2)", color: "var(--ink)", fontWeight: 700, fontSize: 13.5, padding: "10px 20px", borderRadius: 999, textDecoration: "none", border: "1px solid var(--line)" }}>
+                  <a href={CAC_ANOSIKE_EUROPE.directoryUrl} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "var(--cream-2)", color: "var(--ink)", fontWeight: 700, fontSize: 15, padding: "10px 20px", borderRadius: 999, textDecoration: "none", border: "1px solid var(--line)" }}>
                     Find a church in the UK & Europe →
                   </a>
                 </div>
@@ -263,14 +252,11 @@ export default async function LeadershipPage({
           }}>
             <div aria-hidden style={{ position: "absolute", top: -80, right: -60, width: 320, height: 280, background: "radial-gradient(circle,rgba(253,200,65,.25),transparent 65%)", pointerEvents: "none" }} />
             <div style={{ flex: "1 1 420px", position: "relative", zIndex: 2 }}>
-              <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 10 }}>
-                Training the next generation
-              </div>
               <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3vw,38px)", letterSpacing: "-.7px", color: "#fff", margin: "0 0 10px", lineHeight: 1.05 }}>
                 The CACNA Bible Institute.
               </h2>
               <p style={{ fontSize: 15.5, color: "rgba(245,246,250,.78)", margin: 0, lineHeight: 1.65, maxWidth: 520 }}>
-                CACNA's ministerial training arm, led by a Chancellor, Provost, Dean, Registrar, and Lecturer drawn from our regional leadership.
+                CACNA&apos;s ministerial training arm, led by a Chancellor, Provost, Dean, Registrar, and Lecturer drawn from our regional leadership.
               </p>
             </div>
             <Link href="/bible-institute" className="press" style={{
@@ -287,7 +273,7 @@ export default async function LeadershipPage({
       <section style={{ background: "var(--paper)", padding: "80px clamp(20px,5vw,64px)", textAlign: "center" }}>
         <Reveal>
           <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4.5vw,60px)", letterSpacing: "-1.2px", color: "var(--ink)", margin: "0 0 16px", lineHeight: .96 }}>Explore further.</h2>
-          <p style={{ fontSize: 17, color: "var(--ink-soft)", margin: "0 0 36px" }}>Find your zone's superintendent, or read about the leaders who came before.</p>
+          <p style={{ fontSize: 17, color: "var(--ink-soft)", margin: "0 0 36px" }}>Find your zone&apos;s superintendent, or read about the leaders who came before.</p>
           <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
             <Link href="/zones" style={{ background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(200,30,58,.4)" }}>Find Your Zone →</Link>
             <Link href="/leadership/past" style={{ background: "var(--cream-2)", color: "var(--ink)", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", border: "1px solid var(--line)" }}>Past Leaders</Link>

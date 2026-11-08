@@ -1,9 +1,8 @@
 "use server";
 
-import { createServiceClient } from "@/lib/supabase/server";
 import { Resend } from "resend";
 import { requireAdmin } from "@/lib/supabase/require-admin";
-import { EMAIL_FROM } from "@/lib/email";
+import { sender } from "@/lib/email";
 
 export type BroadcastState = {
   ok: boolean;
@@ -31,7 +30,7 @@ function buildBroadcastHtml(subject: string, body: string): string {
     </div>
     <div style="padding:20px 32px;border-top:1px solid #ede9e4;font-size:12px;color:#999">
       You're receiving this because you subscribed at
-      <a href="https://www.cacnorthamerica.com" style="color:#C81E3A">cacnorthamerica.com</a>.
+      <a href="https://cacna.org" style="color:#C81E3A">cacna.org</a>.
     </div>
   </div>
 </body>
@@ -42,7 +41,7 @@ export async function broadcastAction(
   _prev: BroadcastState,
   formData: FormData,
 ): Promise<BroadcastState> {
-  await requireAdmin();
+  const { supabase } = await requireAdmin();
 
   const subject = (formData.get("subject") as string | null)?.trim() ?? "";
   const body = (formData.get("body") as string | null)?.trim() ?? "";
@@ -54,7 +53,6 @@ export async function broadcastAction(
   if (body.length > 10000)
     return { ok: false, sent: 0, failed: 0, message: "Body must be 10,000 characters or fewer." };
 
-  const supabase = createServiceClient();
   const { data: subscribers, error: fetchError } = await supabase
     .from("newsletter_subscribers")
     .select("email, name")
@@ -83,7 +81,7 @@ export async function broadcastAction(
   for (const subscriber of subscribers) {
     try {
       await resend.emails.send({
-        from: EMAIL_FROM,
+        ...sender("general"),
         to: subscriber.email,
         subject,
         html,

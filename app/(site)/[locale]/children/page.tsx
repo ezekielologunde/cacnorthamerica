@@ -2,6 +2,7 @@ import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
+import "@/components/ministries/ministries-mobile.css";
 import Link from "next/link";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
@@ -74,13 +75,10 @@ export default async function ChildrenPage({
       <Nav heroDark />
 
       {/* Hero */}
-      <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 80px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -100, left: "50%", transform: "translateX(-50%)", width: 760, height: 460, background: "radial-gradient(circle,rgba(200,30,58,.3),transparent 65%)", pointerEvents: "none" }} />
+      <section className="min-hero" style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 80px", position: "relative", overflow: "hidden" }}>
+        <div className="min-hero-glow" style={{ position: "absolute", top: -100, left: "50%", transform: "translateX(-50%)", width: 760, height: 460, background: "radial-gradient(circle,rgba(200,30,58,.3),transparent 65%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 820, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
-          <Reveal from="scale">
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Children&apos;s Ministry</span>
-          </Reveal>
-          <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(40px,6vw,76px)", letterSpacing: "-0.03em", color: "#fff", margin: "16px 0", lineHeight: 1.02, textWrap: "balance" }}>
+          <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(40px,6vw,76px)", letterSpacing: "-0.03em", color: "#fff", margin: "0 0 16px", lineHeight: 1.02, textWrap: "balance" }}>
             <RevealText immediate>{CHILDREN_CONVENTION.theme}</RevealText>
           </h1>
           <Reveal delay={200}>
@@ -88,18 +86,18 @@ export default async function ChildrenPage({
           </Reveal>
           <Reveal delay={280}>
             <p style={{ fontSize: "clamp(16px,1.8vw,19px)", color: "rgba(245,246,250,.72)", lineHeight: 1.7, maxWidth: 560, margin: "20px auto 0", textWrap: "pretty" }}>
-              A dedicated program for children during the Annual Convention — worship, teaching, and fun, at every session.
+              The children&apos;s program at the CACNA Annual Convention.
             </p>
           </Reveal>
         </div>
       </section>
 
       {/* Coordinator */}
-      <section style={{ background: "var(--cream)", padding: "clamp(48px,6vw,72px) clamp(20px,5vw,64px) 0" }}>
+      <section className="min-section" style={{ background: "var(--cream)", padding: "clamp(48px,6vw,72px) clamp(20px,5vw,64px) 0" }}>
         <div style={{ maxWidth: 500, margin: "0 auto" }}>
           <Reveal>
             <div style={{ borderRadius: 18, padding: "22px 24px", background: "var(--paper)", border: "1px solid var(--line)", textAlign: "center" }}>
-              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 8 }}>{t("coordinatorLabel")}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: ".03em", color: "var(--red)", marginBottom: 8 }}>{t("coordinatorLabel")}</div>
               <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 17, color: "var(--ink)", margin: 0 }}>{CHILDREN_CONVENTION.coordinator}</p>
             </div>
           </Reveal>
@@ -107,10 +105,9 @@ export default async function ChildrenPage({
       </section>
 
       {/* Daily structure */}
-      <section style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+      <section className="min-section" style={{ background: "var(--cream)", padding: "clamp(40px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 700, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 32 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Every Day</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3vw,36px)", color: "var(--ink)", margin: "12px 0 0" }}>The daily rhythm.</h2>
           </Reveal>
           <div style={{ borderRadius: 18, border: "1px solid var(--line)", overflow: "hidden" }}>
@@ -129,11 +126,10 @@ export default async function ChildrenPage({
       </section>
 
       {/* Schedule */}
-      <section style={{ background: "var(--paper)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+      <section className="min-section" style={{ background: "var(--paper)", padding: "clamp(40px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 700, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 40 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>2026 Convention Schedule</span>
-          </Reveal>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,4vw,38px)", letterSpacing: "-.8px", color: "var(--ink)", margin: 0, lineHeight: 1.05 }}>2026 Convention Schedule</h2></Reveal>
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             {schedule2026.map((day, i) => (
               <Reveal key={day.dayLabel} delay={i * 70}>
@@ -159,19 +155,18 @@ export default async function ChildrenPage({
       </section>
 
       {/* Teachers */}
-      <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+      <section className="min-section" style={{ background: "var(--cream-2)", padding: "clamp(40px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 36 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>2026 Teachers</span>
-          </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 16 }}>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,4vw,38px)", letterSpacing: "-.8px", color: "var(--ink)", margin: 0, lineHeight: 1.05 }}>2026 Teachers</h2></Reveal>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(240px,100%),1fr))", gap: 16 }}>
             {[
               { label: "Ages 5–8", names: teachers5to8 },
               { label: "Ages 9–12", names: teachers9to12 },
               { label: "Additional Teachers", names: teachersUnassigned },
             ].map((group) => (
               <div key={group.label} style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 16, padding: "18px 20px" }}>
-                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 10 }}>{group.label}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: ".03em", color: "var(--red)", marginBottom: 10 }}>{group.label}</div>
                 <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 6 }}>
                   {group.names.map((n) => (
                     <li key={n} style={{ fontSize: 13.5, color: "var(--ink-soft)" }}>{n}</li>
@@ -184,7 +179,7 @@ export default async function ChildrenPage({
       </section>
 
       {/* Safety + closing note */}
-      <section style={{ background: "var(--paper)", padding: "0 clamp(20px,5vw,64px) clamp(56px,7vw,90px)" }}>
+      <section className="min-section" style={{ background: "var(--paper)", padding: "0 clamp(20px,5vw,64px) clamp(40px,7vw,90px)" }}>
         <Reveal>
           <p style={{ maxWidth: 620, margin: "0 auto", textAlign: "center", fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.7, fontStyle: "italic" }}>
             {CHILDREN_CONVENTION.safetyNote} {CHILDREN_CONVENTION.closingNote}
@@ -193,13 +188,13 @@ export default async function ChildrenPage({
       </section>
 
       {/* CTA */}
-      <section style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)", textAlign: "center" }}>
+      <section className="min-section" style={{ background: "var(--ink)", padding: "clamp(40px,7vw,90px) clamp(20px,5vw,64px)", textAlign: "center" }}>
         <Reveal>
           <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4.5vw,54px)", letterSpacing: "-1.2px", color: "var(--cream)", margin: "0 0 16px", lineHeight: 0.98 }}>
             Bring the whole family.
           </h2>
           <p style={{ fontSize: 16, color: "rgba(245,246,250,.6)", margin: "0 0 32px" }}>
-            Questions about the children&apos;s program? Reach out to us.
+            Questions about the children&apos;s program?
           </p>
           <Link
             href="/contact"

@@ -42,7 +42,7 @@ export interface ConventionYear {
  *  as soon as it's announced — everything downstream (nav CTA, events page,
  *  announcement bar) picks it up automatically. */
 export const conventionYears: ConventionYear[] = [
-  // 2019/2020/2024 have no dedicated /events/cacna-YYYY detail page (excluded
+  // 2019/2020/2022/2024/2025 have no dedicated /events/cacna-YYYY detail page (excluded
   // from the [slug] "Save the Date" template via its FUTURE_YEARS filter,
   // since that copy is written for upcoming years, not archived ones) --
   // href points at the archive listing instead. No pricingTiers recorded for
@@ -62,8 +62,19 @@ export const conventionYears: ConventionYear[] = [
     href: "/archive",
   },
   {
+    year: 2022, startIso: "2022-07-11", endIso: "2022-07-16",
+    // From the printed 2022 convention booklet cover (CAC Village, Blue Ridge Summit, PA).
+    theme: "Grow in the Grace and Knowledge of Our Lord Jesus",
+    href: "/archive",
+  },
+  {
     year: 2024, startIso: "2024-07-15", endIso: "2024-07-20",
     theme: "Spiritual Power and Gifts for the Body of Christ",
+    href: "/archive",
+  },
+  {
+    year: 2025, startIso: "2025-07-14", endIso: "2025-07-19",
+    theme: "Preparing God’s People for Leadership",
     href: "/archive",
   },
   {
@@ -122,13 +133,6 @@ export const conventionYears: ConventionYear[] = [
   { year: 2029, startIso: "2029-07-09", endIso: "2029-07-14", href: "/events/cacna-2029" },
   { year: 2030, startIso: "2030-07-15", endIso: "2030-07-20", href: "/events/cacna-2030" },
 ];
-
-/** The venue to display for a given year -- almost always CONVENTION_VENUE,
- *  except a year with its own `venue` override (currently only 2020,
- *  virtual due to COVID). */
-export function venueFor(cy: ConventionYear): string {
-  return cy.venue ?? CONVENTION_VENUE;
-}
 
 /** True only when `registrationUrl` is set AND points off-site — an
  *  internal path like "/convention/register" should render as a normal
@@ -215,16 +219,6 @@ export function getConventionState(cy: ConventionYear): ConventionState {
   return daysSince <= CONCLUDED_RECENT_DAYS ? "concluded-recent" : "concluded";
 }
 
-/** Which day of the convention "today" is (1-indexed), or null when not live.
- *  Powers the Hero's "Day X of 6" live-state indicator. */
-export function conventionDayNumber(cy: ConventionYear): number | null {
-  if (getConventionState(cy) !== "live") return null;
-  const [y, m, d] = cy.startIso.split("-").map(Number);
-  const startUtc = Date.UTC(y, m - 1, d);
-  const daysElapsed = Math.floor((Date.now() - startUtc) / 86400000);
-  return Math.min(RECURRING_SESSION_PATTERN.length, Math.max(1, daysElapsed + 1));
-}
-
 /** The convention year most relevant to feature RIGHT NOW. Unlike
  *  currentOrNextConvention() (which rolls to next year the instant the
  *  current one is past), this holds onto a just-concluded convention through
@@ -258,7 +252,7 @@ export function conventionChurchEvent(cy: ConventionYear): ConventionChurchEvent
     title: `CACNA ${cy.year} Annual Convention`,
     desc: cy.theme
       ? `Christ Apostolic Church North America Annual Convention — theme “${cy.theme}.” Six days of worship, teaching, and family at ${CONVENTION_VENUE}.`
-      : `Christ Apostolic Church North America Annual Convention — six days of worship, teaching, and family at ${CONVENTION_VENUE}. Registration details announced closer to the date.`,
+      : `Christ Apostolic Church North America Annual Convention — six days of worship, teaching, and family at ${CONVENTION_VENUE}.${cy.registrationUrl ? " Registration is open." : " Registration details announced closer to the date."}`,
     dateLabel: dateRangeLabel(cy), timeLabel: "All week", month: "JUL", day: startDay,
     startLocal: `${cy.startIso.replace(/-/g, "")}T180000`, endLocal: `${cy.endIso.replace(/-/g, "")}T220000`,
     href: cy.href, navLabel: `CACNA ${cy.year}`,
@@ -282,14 +276,6 @@ export function activePricing(cy: ConventionYear, onDate: Date = new Date()): Pr
 
 export function priceForCategory(tiers: PricingTier[], category: RegistrantCategory): number | null {
   return tiers.find((t) => t.category === category)?.priceCents ?? null;
-}
-
-/** True once a category has ever had a priced tier for `cy` — used to tell
- *  "this year's registration isn't open yet" apart from "this category
- *  simply isn't offered" (not currently a distinction this data models,
- *  but kept as a single choke point in case that changes). */
-export function registrationIsOpen(cy: ConventionYear): boolean {
-  return activePricing(cy).length > 0;
 }
 
 // ---------------------------------------------------------------------------
@@ -360,14 +346,27 @@ export function getDetailedSchedule(year: number): ScheduleSession[] | null {
 export interface StoreProduct {
   id: string;
   name: string;
-  category: "convention" | "good_women" | "youth" | "christian_education";
+  category: "convention" | "good_women" | "youth" | "merchandise" | "christian_education";
   priceCents: number;
   sizes: string[];
   /** Real product photo only — omit entirely rather than fabricate one. */
   imageSrc?: string;
+  /** Still listed, but cannot be added to a cart or bought. */
+  soldOut?: boolean;
 }
 
 export const storeProducts: StoreProduct[] = [
+  { id: "merch-2026-convention-recording-flash-drive", name: "2026 Annual Convention Recording — Flash Drive", category: "merchandise", priceCents: 2000, sizes: [], soldOut: true },
+  { id: "ce-2027-unified-bible-study-manual", name: "2027 Unified Bible Study Manual", category: "christian_education", priceCents: 1800, sizes: [], imageSrc: "/photos/store/store-2027-unified-bible-study-manual.jpg" },
+  { id: "ce-2027-eko-ile-eko-oluko", name: "2027 Awon Eko Ile Eko Ojo Isimi — Iwe Oluko", category: "christian_education", priceCents: 2000, sizes: [], imageSrc: "/photos/store/store-2027-eko-ile-eko-oluko.jpg" },
+  { id: "ce-2027-eko-ile-eko-akeko", name: "2027 Awon Eko Ile Eko Ojo Isimi — Iwe Akeko", category: "christian_education", priceCents: 1800, sizes: [], imageSrc: "/photos/store/store-2027-eko-ile-eko-akeko.jpg" },
+  { id: "ce-2027-sunday-school-teacher-manual", name: "2027 Sunday School Lessons Teacher’s Manual", category: "christian_education", priceCents: 2000, sizes: [], imageSrc: "/photos/store/store-2027-sunday-school-teacher-manual.jpg" },
+  { id: "ce-2027-sunday-school-student-manual", name: "2027 Sunday School Lessons Students Manual", category: "christian_education", priceCents: 1800, sizes: [], imageSrc: "/photos/store/store-2027-sunday-school-student-manual.jpg" },
+  { id: "ce-2027-omi-iye-naa", name: "2027 Omi Iye Naa", category: "christian_education", priceCents: 2000, sizes: [], imageSrc: "/photos/store/store-2027-omi-iye-naa.jpg" },
+  { id: "ce-2027-living-water-devotional", name: "2027 The Living Water Devotional", category: "christian_education", priceCents: 2000, sizes: [], imageSrc: "/photos/store/store-2027-living-water-devotional.jpg" },
+  { id: "ce-2027-youth-young-adults-lesson", name: "2027 Youth and Young Adults Sunday School Lessons", category: "christian_education", priceCents: 1600, sizes: [], imageSrc: "/photos/store/store-2027-youth-young-adults-lesson.jpg" },
+  { id: "ce-2027-pre-teens-elementary-lesson", name: "2027 Pre Teens Elementary Sunday School Lessons", category: "christian_education", priceCents: 1600, sizes: [], imageSrc: "/photos/store/store-2027-pre-teens-elementary-lesson.jpg" },
+  { id: "ce-2027-children-lesson", name: "2027 Children Sunday School Lessons", category: "christian_education", priceCents: 1600, sizes: [], imageSrc: "/photos/store/store-2027-children-lesson.jpg" },
   { id: "ce-2026-youth-young-adults-lesson", name: "2026 Youth & Young Adults Teenagers Sunday School Lesson", category: "christian_education", priceCents: 1600, sizes: [], imageSrc: "/photos/store/store-2026-youth-young-adults-lesson.jpg" },
   { id: "ce-2026-pre-teen-lesson", name: "2026 Pre-Teen Sunday School Lesson", category: "christian_education", priceCents: 1600, sizes: [], imageSrc: "/photos/store/store-2026-pre-teen-lesson.jpg" },
   { id: "ce-2026-elementary-lesson", name: "2026 Elementary Sunday School Lesson", category: "christian_education", priceCents: 1600, sizes: [], imageSrc: "/photos/store/store-2026-elementary-lesson.jpg" },

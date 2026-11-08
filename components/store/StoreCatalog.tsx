@@ -1,9 +1,11 @@
 "use client";
 
 import { useMemo, useState, type CSSProperties, type FormEvent } from "react";
+import { EmbeddedCheckoutScreen } from "@/components/checkout/EmbeddedStripeCheckout";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import type { StoreProduct } from "@/lib/conventions";
+import { FeeBreakdown } from "@/components/checkout/FeeBreakdown";
 
 type CartLine = { productId: string; name: string; unitPriceCents: number; size: string | null; quantity: number };
 
@@ -29,6 +31,7 @@ export function StoreCatalog({ categories }: { categories: { key: string; label:
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [selections, setSelections] = useState<Record<string, string>>({});
 
@@ -65,6 +68,11 @@ export function StoreCatalog({ categories }: { categories: { key: string; label:
         }),
       });
       const data = await response.json().catch(() => null);
+      if (response.ok && typeof data?.clientSecret === "string") {
+        setClientSecret(data.clientSecret);
+        setStatus("idle");
+        return;
+      }
       if (!response.ok || !data?.checkoutUrl) {
         setErrorMessage(typeof data?.error === "string" ? data.error : t("checkoutError"));
         setStatus("error");
@@ -75,6 +83,10 @@ export function StoreCatalog({ categories }: { categories: { key: string; label:
       setErrorMessage(t("checkoutError"));
       setStatus("error");
     }
+  }
+
+  if (clientSecret) {
+    return <EmbeddedCheckoutScreen clientSecret={clientSecret} onBack={() => setClientSecret(null)} backLabel="← Back to my order" />;
   }
 
   return (
@@ -96,6 +108,7 @@ export function StoreCatalog({ categories }: { categories: { key: string; label:
                   <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: "auto", paddingTop: 16 }}>
                     {product.sizes.length > 0 && (
                       <select
+                        aria-label={`Size for ${product.name}`}
                         value={selections[product.id] ?? product.sizes[0]}
                         onChange={(e) => setSelections((s) => ({ ...s, [product.id]: e.target.value }))}
                         style={{ ...inputStyle, width: "auto", padding: "8px 10px", cursor: "pointer" }}
@@ -106,10 +119,11 @@ export function StoreCatalog({ categories }: { categories: { key: string; label:
                     <button
                       type="button"
                       onClick={() => addToCart(product)}
+                      disabled={product.soldOut}
                       className="press"
-                      style={{ flex: 1, background: "var(--ink)", color: "#fff", fontWeight: 700, fontSize: 13.5, padding: "10px 18px", borderRadius: 999, border: "none", cursor: "pointer" }}
+                      style={{ flex: 1, background: product.soldOut ? "var(--line)" : "var(--ink)", color: product.soldOut ? "var(--ink-soft)" : "#fff", fontWeight: 700, fontSize: 13.5, padding: "10px 18px", borderRadius: 999, border: "none", cursor: product.soldOut ? "not-allowed" : "pointer" }}
                     >
-                      {t("addCta")}
+                      {product.soldOut ? t("soldOutCta") : t("addCta")}
                     </button>
                   </div>
                 </div>
@@ -139,19 +153,18 @@ export function StoreCatalog({ categories }: { categories: { key: string; label:
                 );
               })}
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid var(--line)", paddingTop: 14, marginBottom: 20 }}>
-              <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", color: "var(--ink-soft)" }}>{t("totalLabel")}</span>
-              <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 19, color: "var(--ink)" }}>{formatPrice(total)}</span>
+            <div style={{ borderTop: "1px solid var(--line)", paddingTop: 14, marginBottom: 20 }}>
+              <FeeBreakdown subtotalCents={total} />
             </div>
 
             <form onSubmit={handleCheckout}>
               <div style={{ marginBottom: 12 }}>
-                <label style={labelStyle}>{t("nameLabel")} <span style={{ color: "var(--red)" }}>*</span></label>
-                <input className="field-input" style={inputStyle} value={contactName} onChange={(e) => setContactName(e.target.value)} required autoComplete="name" />
+                <label htmlFor="store-name" style={labelStyle}>{t("nameLabel")} <span style={{ color: "var(--red)" }}>*</span></label>
+                <input id="store-name" className="field-input" style={inputStyle} value={contactName} onChange={(e) => setContactName(e.target.value)} required autoComplete="name" />
               </div>
               <div style={{ marginBottom: 16 }}>
-                <label style={labelStyle}>{t("emailLabel")} <span style={{ color: "var(--red)" }}>*</span></label>
-                <input className="field-input" style={inputStyle} type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} required autoComplete="email" />
+                <label htmlFor="store-email" style={labelStyle}>{t("emailLabel")} <span style={{ color: "var(--red)" }}>*</span></label>
+                <input id="store-email" className="field-input" style={inputStyle} type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} required autoComplete="email" />
               </div>
               {status === "error" && errorMessage && (
                 <p role="alert" style={{ color: "var(--red)", fontWeight: 600, fontSize: 14, marginBottom: 14 }}>{errorMessage}</p>

@@ -3,6 +3,7 @@ import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import { DepartmentDirectory, type Department } from "@/components/ministries/DepartmentDirectory";
+import "@/components/ministries/ministries-mobile.css";
 import Link from "next/link";
 import Image from "next/image";
 import { Music, Landmark, Sparkles, HandHeart, Video, Wrench, Globe, ShieldCheck, BookOpen, Users2, Smile } from "lucide-react";
@@ -52,7 +53,7 @@ const departments: Department[] = [
     team: [
       { name: "Pastor Dr. Timothy A.O. Agbeja", title: "CACNA/Latunde Region Superintendent", photo: "/images/pastor-agbeja-portrait.jpg" },
       { name: "Pastor Dr. Timothy O. Famojuro", title: "Chairman, Christian Education Dept.", photo: "/images/pastor-timothy-famojuro-portrait.jpg" },
-      { name: "Pastor Samuel Tunji Ayeni", title: "Secretary; CAC Agbala Itura Representative", photo: "/images/pastor-ayeni-portrait.jpg" },
+      { name: "Pastor Samuel Tunji Ayeni", title: "Secretary; CAC Vineyard of Comfort Representative", photo: "/images/pastor-ayeni-portrait.jpg" },
       { name: "Pastor Stephen O. Aluko", title: "Director of Sunday School, CAC Worldwide", photo: "/images/pastor-aluko-portrait.jpg" },
       { name: "Pastor Sam. Olu. Falade", title: "Assistant Director, Sunday School, CAC Worldwide", photo: "/images/pastor-falade-portrait.jpg" },
       { name: "Pastor Femi Olaluwoye", title: "EDCC Superintendent", photo: "/images/pastor-olaluwoye-portrait.jpg" },
@@ -115,8 +116,9 @@ const departments: Department[] = [
   },
 ];
 
-// Descriptions sourced verbatim from Christ Apostolic Church's own
-// "Our Departments" listing (2026-07-21) -- real denominational copy
+// Descriptions sourced from Christ Apostolic Church's own
+// "Our Departments" listing (2026-07-21), verbatim apart from the filler
+// trimmed from the Administration and ICT entries -- real denominational copy
 // rather than CACNA-specific paraphrase, matching this project's practice
 // of preferring authentic source text over invented marketing language.
 // Presidency is a genuine department that this list was previously missing;
@@ -125,16 +127,16 @@ const ministries: Ministry[] = [
   { name: "Presidency", desc: "The Presidency of Christ Apostolic Church administers and carries out policies formulated by the General Executive Council of the church.", icon: Landmark, gradient: "linear-gradient(140deg,var(--red-deep),var(--ink))", href: "/leadership", cta: "Meet our leadership" },
   { name: "Missions", desc: "The Missions Department of Christ Apostolic Church is responsible for taking the message of Jesus Christ to all nooks and crannies of the world.", icon: Globe, gradient: "linear-gradient(140deg,#1B4332,#2D6A4F)", href: "/contact", cta: "Get involved" },
   { name: "Evangelism, Prayer & Counselling", desc: "The principal occupant of the Evangelical Department of Christ Apostolic Church leads all evangelical efforts and prophecy of the church.", icon: HandHeart, gradient: "linear-gradient(140deg,var(--ember),var(--red-deep))", href: "#departments", cta: "Read our history" },
-  { name: "Administration", desc: "Whether you need information regarding a specific department or you want to find out more information, dive into the departments of Christ Apostolic Church.", icon: Wrench, gradient: "linear-gradient(140deg,var(--red),var(--flame))", href: "#departments", cta: "Explore departments" },
+  { name: "Administration", desc: "Information on each of the departments of Christ Apostolic Church.", icon: Wrench, gradient: "linear-gradient(140deg,var(--red),var(--flame))", href: "#departments", cta: "Explore departments" },
   { name: "Christian Education", desc: "The Christian Education Department is an established concept in Christ Apostolic Church from inception and it was established by the progenitors of the church.", icon: BookOpen, gradient: "linear-gradient(140deg,var(--flame),var(--gold))", href: "/christian-education", cta: "Meet the department" },
   { name: "Music", desc: "The Music Department of Christ Apostolic Church is the formation of choir groups and dates back to the very foundations of the church.", icon: Music, gradient: "linear-gradient(140deg,var(--gold),var(--flame))", href: "#departments", cta: "Read our history" },
-  { name: "ICT", desc: "The history of the ICT Department of Christ Apostolic Church dates back to 2003 and allows for the seamless liaison with Christ Apostolic Churches overseas.", icon: Video, gradient: "linear-gradient(140deg,var(--ink),var(--red-deep))", href: "/online", cta: "Watch online" },
+  { name: "ICT", desc: "The history of the ICT Department of Christ Apostolic Church dates back to 2003 and allows for liaison with Christ Apostolic Churches overseas.", icon: Video, gradient: "linear-gradient(140deg,var(--ink),var(--red-deep))", href: "/online", cta: "Watch online" },
   { name: "CAC Men Association", desc: "The history of CACMA at Christ Apostolic Church is narrated for the benefits of all men members of the church.", icon: ShieldCheck, gradient: "linear-gradient(140deg,var(--red-deep),var(--ink))", href: "/cacma", cta: "Meet CACMA" },
   { name: "CAC Good Women Association", desc: "The impact of the Good Women, either as members, ministers, or spouses of ministers has embellished the history of Christ Apostolic Church at all levels.", icon: Users2, gradient: "linear-gradient(140deg,var(--gold),var(--red))", href: "/good-women", cta: "Meet the department" },
   { name: "Ministers' Wives Conference", desc: "A fellowship for the wives of CACNA's ministers, gathered in prayer and mutual support for those who shepherd alongside their husbands.", icon: HandHeart, gradient: "linear-gradient(140deg,var(--red),var(--red-deep))", href: "/ministers-wives", cta: "Meet the fellowship" },
   { name: "Business Group Fellowship", desc: "A platform for interaction, mentorship, and support among CAC members who are business-inclined — supporting projects and programs of the Church.", icon: Wrench, gradient: "linear-gradient(140deg,#1B4332,#2D6A4F)", href: "/business-group", cta: "Meet the fellowship" },
   { name: "Youth & Young Adult", desc: "The history of the Youth Department dates back to the 1930s when Nigerian and white Apostolic from Britain were still in alliance.", icon: Sparkles, gradient: "linear-gradient(140deg,var(--red-deep),var(--red))", href: "/youth", cta: "Meet the ministry" },
-  { name: "Children's Ministry", desc: "A dedicated program for children during the Annual Convention — worship, teaching, and fun, at every session.", icon: Smile, gradient: "linear-gradient(140deg,var(--gold),var(--red-deep))", href: "/children", cta: "Meet the ministry" },
+  { name: "Children's Ministry", desc: "Worship and teaching for children during the Annual Convention.", icon: Smile, gradient: "linear-gradient(140deg,var(--gold),var(--red-deep))", href: "/children", cta: "Meet the ministry" },
 ];
 
 export default async function MinistriesPage({
@@ -150,13 +152,10 @@ export default async function MinistriesPage({
       <Nav heroDark />
 
       {/* Hero */}
-      <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 90px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -100, left: "50%", transform: "translateX(-50%)", width: 760, height: 460, background: "radial-gradient(circle,rgba(200,30,58,.3),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 16s ease-in-out infinite" }} />
+      <section className="min-hero" style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 90px", position: "relative", overflow: "hidden" }}>
+        <div className="min-hero-glow" style={{ position: "absolute", top: -100, left: "50%", transform: "translateX(-50%)", width: 760, height: 460, background: "radial-gradient(circle,rgba(200,30,58,.3),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 16s ease-in-out infinite" }} />
         <div style={{ maxWidth: 820, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
-          <Reveal from="scale">
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Ministries</span>
-          </Reveal>
-          <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(44px,6.5vw,92px)", letterSpacing: "-0.03em", color: "#fff", margin: "16px 0", lineHeight: 0.95, textWrap: "balance" }}>
+          <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(40px,6.5vw,92px)", letterSpacing: "-0.03em", color: "#fff", margin: "0 0 16px", lineHeight: 0.98, textWrap: "balance" }}>
             <RevealText immediate>There&apos;s a place</RevealText>
             <br />
             <RevealText immediate delay={0.15} style={{ color: "var(--red)" }}>
@@ -165,19 +164,19 @@ export default async function MinistriesPage({
           </h1>
           <Reveal delay={360}>
             <p style={{ fontSize: "clamp(16px,1.8vw,20px)", color: "rgba(245,246,250,.72)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto", textWrap: "pretty" }}>
-              CACNA&apos;s departments serve every member church across the United States, Canada, and South America — a place to grow, to serve, and to belong.
+              CACNA&apos;s departments serve every member church across the United States, Canada, and South America.
             </p>
           </Reveal>
         </div>
       </section>
 
       {/* Grid */}
-      <section style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,96px) clamp(20px,5vw,64px)" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: 22 }}>
+      <section className="min-section" style={{ background: "var(--cream-2)", padding: "clamp(32px,7vw,96px) clamp(20px,5vw,64px)" }}>
+        <div className="min-grid" style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(300px,100%),1fr))", gap: 22 }}>
           {ministries.map((m, i) => (
             <Reveal key={m.name} delay={(i % 3) * 90}>
-              <div className="card-lift" style={{ height: "100%", borderRadius: 24, overflow: "hidden", background: "var(--paper)", border: "1px solid var(--line)", boxShadow: "0 14px 34px rgba(18,20,30,.08)", display: "flex", flexDirection: "column" }}>
-                <div style={{ position: "relative", height: 200, background: m.image ? "#0F1F0F" : m.gradient }}>
+              <div className="card-lift min-card" style={{ height: "100%", borderRadius: 24, overflow: "hidden", background: "var(--paper)", border: "1px solid var(--line)", boxShadow: "0 14px 34px rgba(18,20,30,.08)", display: "flex", flexDirection: "column" }}>
+                <div className="min-card-banner" style={{ position: "relative", height: 200, background: m.image ? "#0F1F0F" : m.gradient }}>
                   <span style={{ position: "absolute", top: 16, left: 16, width: 44, height: 44, borderRadius: 13, background: "rgba(255,255,255,.18)", backdropFilter: "blur(6px)", display: "grid", placeItems: "center", border: "1px solid rgba(255,255,255,.25)", zIndex: 2 }}>
                     <m.icon size={22} strokeWidth={1.85} color="#fff" aria-hidden />
                   </span>
@@ -186,20 +185,20 @@ export default async function MinistriesPage({
                       <Image src={m.image} alt={m.alt ?? m.name} width={960} height={720} style={{ maxHeight: 130, width: "auto", height: "auto", maxWidth: "100%", objectFit: "contain" }} />
                     </div>
                   ) : (
-                    <div style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center" }}>
+                    <div className="min-card-bigicon" style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center" }}>
                       <m.icon size={64} strokeWidth={1.4} color="rgba(255,255,255,.9)" aria-hidden />
                     </div>
                   )}
                 </div>
-                <div style={{ padding: "24px 26px 26px", display: "flex", flexDirection: "column", flex: 1 }}>
+                <div className="min-card-body" style={{ padding: "24px 26px 26px", display: "flex", flexDirection: "column", flex: 1 }}>
                   <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22, letterSpacing: "-.4px", color: "var(--ink)", margin: "0 0 10px" }}>{m.name}</h3>
                   <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.65, margin: "0 0 20px" }}>{m.desc}</p>
                   {m.href.startsWith("http") ? (
-                    <a href={m.href} target="_blank" rel="noopener noreferrer" className="press" style={{ marginTop: "auto", display: "inline-flex", alignItems: "center", gap: 7, fontSize: 14, fontWeight: 700, color: "var(--red)", textDecoration: "none" }}>
+                    <a href={m.href} target="_blank" rel="noopener noreferrer" className="press min-card-link" style={{ marginTop: "auto", gap: 7, fontSize: 14, fontWeight: 700, color: "var(--red)", textDecoration: "none" }}>
                       {m.cta} <span aria-hidden style={{ fontSize: 16 }}>→</span>
                     </a>
                   ) : (
-                    <Link href={m.href} className="press" style={{ marginTop: "auto", display: "inline-flex", alignItems: "center", gap: 7, fontSize: 14, fontWeight: 700, color: "var(--red)", textDecoration: "none" }}>
+                    <Link href={m.href} className="press min-card-link" style={{ marginTop: "auto", gap: 7, fontSize: 14, fontWeight: 700, color: "var(--red)", textDecoration: "none" }}>
                       {m.cta} <span aria-hidden style={{ fontSize: 16 }}>→</span>
                     </Link>
                   )}
@@ -211,11 +210,10 @@ export default async function MinistriesPage({
       </section>
 
       {/* Department directory — history + leadership, one department at a time */}
-      <section id="departments" style={{ background: "var(--paper)", padding: "clamp(56px,7vw,96px) clamp(20px,5vw,64px)", scrollMarginTop: 90 }}>
+      <section id="departments" className="min-section" style={{ background: "var(--paper)", padding: "clamp(40px,7vw,96px) clamp(20px,5vw,64px)", scrollMarginTop: 90 }}>
         <div style={{ maxWidth: 1080, margin: "0 auto" }}>
-          <Reveal style={{ marginBottom: 40, textAlign: "center" }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Where we come from</span>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,44px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 0", lineHeight: 1 }}>
+          <Reveal style={{ marginBottom: 28, textAlign: "center" }}>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,44px)", letterSpacing: "-1px", color: "var(--ink)", margin: 0, lineHeight: 1 }}>
               Department histories.
             </h2>
           </Reveal>
@@ -224,11 +222,11 @@ export default async function MinistriesPage({
       </section>
 
       {/* CTA */}
-      <section style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)", textAlign: "center" }}>
+      <section className="min-section" style={{ background: "var(--ink)", padding: "clamp(44px,7vw,90px) clamp(20px,5vw,64px)", textAlign: "center" }}>
         <Reveal>
-          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4.5vw,58px)", letterSpacing: "-1.2px", color: "var(--cream)", margin: "0 0 16px", lineHeight: 0.96 }}>Not sure where you fit?</h2>
+          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4.5vw,58px)", letterSpacing: "-1.2px", color: "var(--cream)", margin: "0 0 16px", lineHeight: 0.96 }}>Find where you can serve.</h2>
           <p style={{ fontSize: 17, color: "rgba(245,246,250,.6)", margin: "0 0 36px" }}>Reach out and we&apos;ll connect you with the right department or zone.</p>
-          <Link href="/contact" className="btn-sheen press-lg" style={{ display: "inline-block", background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 34px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 34px rgba(200,30,58,.4)" }}>
+          <Link href="/contact" className="btn-sheen press-lg min-cta-row-btn" style={{ display: "inline-block", minHeight: 52, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 34px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 34px rgba(200,30,58,.4)" }}>
             Fill the serve form →
           </Link>
         </Reveal>

@@ -58,8 +58,8 @@ export function HomepageAnnouncements({ announcements }: { announcements: Homepa
               background: "rgba(255,255,255,0.2)",
               color: ann.text_color,
               fontWeight: 800,
-              fontSize: 12.5,
-              padding: "5px 14px",
+              fontSize: 13.5,
+              padding: "0 16px", minHeight: 44, display: "inline-flex", alignItems: "center",
               borderRadius: 20,
               textDecoration: "none",
               border: "1px solid rgba(255,255,255,0.35)",
@@ -71,7 +71,7 @@ export function HomepageAnnouncements({ announcements }: { announcements: Homepa
           <button
             onClick={() => dismiss(ann.id)}
             aria-label="Dismiss announcement"
-            style={{ background: "none", border: "none", color: ann.text_color, cursor: "pointer", fontSize: 18, lineHeight: 1, padding: 0, opacity: 0.6, flexShrink: 0 }}
+            style={{ background: "none", border: "none", color: ann.text_color, cursor: "pointer", fontSize: 22, lineHeight: 1, padding: 0, minWidth: 44, minHeight: 44, opacity: 0.85, flexShrink: 0 }}
           >
             ×
           </button>

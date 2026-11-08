@@ -25,7 +25,6 @@ export default async function GoodWomenPage({
 
   return (
     <SubConferencePage
-      kicker={t("kicker")}
       headingLines={[t("headingLine1"), t("headingLine2")]}
       intro={t("intro")}
       photoStrip={{ photos: mainGalleryPhotos.slice(9, 12), caption: "From the 2025 convention" }}

@@ -7,6 +7,10 @@ export function badgeTextColor(hex: string): string {
   return DARK_BADGE_COLORS.has(hex.toUpperCase()) ? "var(--ink)" : "#fff";
 }
 
+import { POST_AUTHORS, type BlogAuthor } from "@/lib/blog-authors";
+
+export type { BlogAuthor };
+
 export interface BlogPost {
   slug: string;
   title: string;
@@ -25,6 +29,12 @@ export interface BlogPost {
    *  headshot) instead renders inline alongside the opening paragraph,
    *  since forcing a tall portrait into a short wide band crops the face. */
   image?: { url: string; alt: string; orientation?: "landscape" | "portrait" };
+  /** Extra real photos shown under the body (archive posts with several pictures). */
+  gallery?: { url: string; alt: string }[];
+  /** Who published it (one or more). Empty falls back to "CACNA". */
+  authors?: BlogAuthor[];
+  /** A YouTube video shown above the text (click-to-play), with its credit. */
+  video?: { id: string; title: string; channel: string; channelUrl: string };
   body: string[];
 }
 
@@ -35,6 +45,194 @@ export interface BlogPost {
 // posts genuinely written for CACNA remain; new posts should be added here
 // or via the admin console (/admin/blog) going forward.
 const RAW_POSTS: Omit<BlogPost, "categoryColor" | "accent">[] = [
+  {
+    slug: "pastor-agbeja-ancient-alters-interview",
+    title: "Faith Through Grief and Hard Lessons: Pastor Agbeja on Ancient Alters",
+    excerpt:
+      "Regional Superintendent Pastor Dr. T.A.O. Agbeja talks about the calling he first resisted, losing a son, church hurt and keeping Christ central after 52 years in ministry.",
+    date: "November 7, 2026",
+    dateIso: "2026-11-07",
+    category: "Reflection",
+    readTime: "3 min read",
+    video: {
+      id: "eRYo76wMwAk",
+      title: "The Mistakes That Almost Cost Him His Ministry | Pastor Dr. T.A.O. Agbeja | Ancient Alters #0001",
+      channel: "Ancient Alters, What Alters You?",
+      channelUrl: "https://www.youtube.com/@WhatAltersYou",
+    },
+    body: [
+      "_Our Regional Superintendent sits down with host Adelani Eranola for the first episode of Ancient Alters (What Alters You?). Watch the full conversation above._",
+      "Pastor Dr. T.A.O. Agbeja is the Regional Superintendent of Christ Apostolic Church in North America. In this interview he looks back on **52 years in ministry and 40 years in America**, a journey that took him from Nigeria to England and then to the United States. The conversation goes behind the public ministry, to the calling he first resisted, the people who shaped him, the hard seasons that tested him and the faith that carried him through.",
+      "**A calling he did not plan.** He speaks about answering God’s call when ministry was not his plan, and about the moments along the way when he questioned whether he was where God wanted him to be.",
+      "**Mentors and prayer.** He reflects on Christian mentorship, including his time with the late Prophet Obadare, and on prayer and revival, with a caution about depending on systems more than on God.",
+      "**Provision.** He shares how God provided for his family through a year without a ministry salary, along with unexpected provision at other points in his journey.",
+      "**Trust, hurt and discernment.** He is open about misplaced trust and church hurt, why discernment matters, and the personal mistakes and boundaries every minister has to take seriously.",
+      "**Grief.** The interview also turns to the loss of his son. When the person who comforts others becomes the one who needs comfort, he asks what happens to faith, and shares how he found strength in God while continuing to serve others.",
+      "**Christ at the center.** He closes with keeping Christ central in everything and passing the faith on to the next generation.",
+      "**Who it is for.** Whether you are grieving, questioning your calling, serving in ministry or simply in a hard season, this conversation offers honest reflections on faith, leadership and perseverance. Which lesson stayed with you? Tell us, along with the timestamp, in the comments on the video.",
+      "_Credit: the video is from the Ancient Alters, What Alters You? YouTube channel._",
+    ],
+  },
+  {
+    slug: "tribute-to-late-pastor-abraham-adegoke-oyedeji",
+    title: "A Tribute to Late Pastor (Dr.) Abraham Adegoke Oyedeji",
+    excerpt:
+      "The Oyedeji family and CAC First in the Americas remember the Senior Pastor and DCC Superintendent who planted the seeds of Christ Apostolic Church in the Western Hemisphere.",
+    date: "October 10, 2026",
+    dateIso: "2026-10-10",
+    category: "Ministry Update",
+    readTime: "2 min read",
+    image: { url: "/images/leaders/oyedeji-2026.jpg", alt: "Late Pastor (Dr.) Abraham Adegoke Oyedeji, Senior Pastor and DCC Superintendent, CAC First in the Americas", orientation: "portrait" },
+    body: [
+      "_From the Golden Jubilee brochure: “We celebrate the goodness of God and 50 years of CAC in the Americas.”_",
+      "The brochure remembers Late Pastor (Dr.) Abraham Adegoke Oyedeji, Senior Pastor and DCC Superintendent of CAC First in the Americas, as a man of true spiritual leadership, marked by humility, compassion and devotion to the service of others.",
+      "**A pioneer of the church in the Americas.** The tribute says that through his pioneering work and dedication he was instrumental in planting the seeds of Christ Apostolic Church in the Western Hemisphere. His efforts and foresight established not only congregations but vibrant spiritual homes and lasting communities where faith thrives.",
+      "**A legacy that continues.** The family writes that they are eternally grateful for his legacy, and that his enduring vision and selfless commitment to spreading the Gospel continue to inspire, as a testament to a life lived in service to God and humanity.",
+      "_Signed: The Oyedeji Family and CAC First in the Americas._",
+    ],
+  },
+  {
+    slug: "apostle-timothy-oluwole-obadare-life-and-ministry",
+    title: "Apostle Timothy Oluwole Obadare: A Life of Preaching the Gospel",
+    excerpt:
+      "From the Golden Jubilee brochure: the life and ministry of the late Apostle Dr. T.O. Obadare, who established Christ Apostolic Church in London in 1979 and in the United States in 1981.",
+    date: "October 10, 2026",
+    dateIso: "2026-10-10",
+    category: "Reflection",
+    readTime: "3 min read",
+    image: { url: "/images/leaders/obadare-2026.jpg", alt: "The late Apostle Dr. Timothy Oluwole Obadare" },
+    body: [
+      "_From the Golden Jubilee brochure, the page honouring Apostle T.O. Obadare._",
+      "Born in 1925, the late Apostle Dr. Timothy Oluwole Obadare was a chosen preacher of the Word of God. Many called him a divine microphone of the Lord Jesus Christ and an ambassador of Almighty God. Like Paul, he said that it was a must for him to preach the gospel, and he preached in season and out of season.",
+      "**A passion for souls.** He travelled the world speaking at revival meetings and crusades, and on radio and television at home and abroad, with a visible burden “to reach the world, be instant in season, out of season, rebuke, exhort, with all long suffering and doctrine” (2 Timothy 4:2).",
+      "**Honours.** He received many honorary degrees, including a Doctor of Ministry from St. John’s University, Missouri (1985), and an Honorary Doctor of Divinity from the Trinity College of Ministerial Arts, Aba, Imo State, Nigeria (1990). He was also made a member of the International Affairs Leadership Parliament of the Golden State University of Los Angeles, and was recognised by the International Theological Seminary of Desoto and Honolulu University, Hawaii.",
+      "**Service in the church.** He served Christ Apostolic Church worldwide as a choir leader, prophet, pastor, Assistant General Evangelist, General Evangelist and Apostle. By God’s grace he established Christ Apostolic Church in London in 1979 and in the United States in 1981. He was Executive Director and Founder of the World Soul-Winning Evangelistic Ministry (WOSEM), a ministry established solely for evangelism, and President of the Interdenominational Ministers’ Association of Nigeria.",
+      "**Signs and wonders.** The brochure records that thousands were saved in his crusades, that the blind received sight, barren women conceived and people were healed of many conditions, and gives glory to God for the life of His servant.",
+      "After more than six decades of evangelistic work he lived 88 years and went to be with the Lord in 2013. The brochure closes: “Praise God for such a gift to our generation.”",
+    ],
+  },
+  {
+    slug: "golden-jubilee-message-from-the-president",
+    title: "Golden Jubilee Message from the President of CAC",
+    excerpt:
+      "Pastor Samuel Olusegun Oladele, President of Christ Apostolic Church, celebrates fifty years of God’s faithfulness to the church in America.",
+    date: "October 10, 2026",
+    dateIso: "2026-10-10",
+    category: "Ministry Update",
+    readTime: "3 min read",
+    body: [
+      "_From the opening pages of the Golden Jubilee brochure: “Celebrating 50 years of God’s faithfulness to Christ Apostolic Church in America.”_",
+      "Pastor S.O. Oladele, President of Christ Apostolic Church, began with James 1:17–18 and gave glory to God for His mercy and faithfulness. He said the emergence of the Christ Apostolic Church in America was not by accident but a fulfilment of prophecy.",
+      "**Where the church began.** Christ Apostolic Church is the first Pentecostal church in Nigeria. It began in 1918 as a prayer group known as “The Precious Stone Society”, whose members sought a re-enactment of the experience of believers on the day of Pentecost (Acts 2). The group made contact with the International Faith Tabernacle in Philadelphia. In 1930 the Great Oke Ooye Revival was orchestrated through Apostle Joseph Ayo Babalola, who became the first General Evangelist. The church was incorporated in 1943 as Christ Apostolic Church.",
+      "**What the church is known for.** The church is known as a People of Prayer, of the Word of God and of Worship. Its evangelical mandate includes teaching members so that they can add value to society (Matthew 28:18–20), through in-depth Bible study, Sunday School, 17 theological seminaries and the Joseph Ayo Babalola University (JABU) at Ikeji-Arakeji, Osun State, Nigeria, described as the first entrepreneurial university in Nigeria. The church has more than 1.3 million members in 24 nations, including the United States.",
+      "**Thanks.** He acknowledged the vision and sacrifice of the pioneers in America, Pastor Abraham Adegoke Oyedeji and Prophet Timothy Oluwole Obadare, and many others too numerous to mention; thanked Pastor Joshua Owoeye, whose leadership was a catalyst for the growth and unity of the church in America; and recognised the Regional Superintendent, Pastor T.O.A. Agbeja, and his lieutenants. He thanked all the members who represent the church and the nation well in their places of work, and praised their contributions to the spiritual and socio-economic growth of America.",
+      "**A prayer for the years ahead.** He said the celebration is not only for CAC in the United States but a milestone in the history of CAC Nigeria and Overseas, and prayed for further growth spiritually, numerically and materially, and that the church would continue to be His voice to this generation and hear at the end, “Well done, good and faithful servant.”",
+      "_Signed: Pastor Samuel Olusegun Oladele, President, Christ Apostolic Church._",
+    ],
+  },
+  {
+    slug: "golden-jubilee-welcome-address-regional-superintendent",
+    title: "Golden Jubilee Welcome Address: Regional Superintendent",
+    excerpt:
+      "Pastor T.A.O. Agbeja’s welcome to the CACNA Golden Jubilee at CAC Village on 10 October 2026 — from a mustard-seed beginning to fifty years of God’s faithfulness.",
+    date: "October 10, 2026",
+    dateIso: "2026-10-10",
+    category: "Ministry Update",
+    readTime: "3 min read",
+    body: [
+      "_A summary of the printed welcome address from the Golden Jubilee brochure, delivered at CAC Village on 10 October 2026._",
+      "Pastor T.A.O. Omolayo Agbeja, Ph.D., Regional Superintendent of CAC North America (Latunde Region), opened by giving glory to God for fifty years of the Christ Apostolic Church in America. He compared the small, mustard-seed beginning of the work with what it has become, and drew on Isaiah 40:18, 25 to point to the greatness of God.",
+      "He welcomed the President of CAC Nigeria & Overseas, Pastor S.O. Oladele, and Mrs. Susanna Oladele, Leader of the Ministers’ Wives Fellowship; Prophet (Dr.) S.K. Abiara, retired General Evangelist, and Mama Grace Abiara, present by special invitation; Pastor J.O. Owoeye, Ph.D., retired first Coordinator of CAC North America, whom he called the grandfather of all in America; and Evangelist Agnes Adebomi Agbeja, Leader of the Ministers’ Wives.",
+      "He closed with thanks to the invited guests, the Convention Planning Committee and every worker, and noted that the history of the work is told in a separate leaflet. The 2026 watchword printed with the address is Psalm 119:18: “Open my eyes, that I may see wondrous things from Your law.”",
+    ],
+  },
+  {
+    slug: "golden-jubilee-convention-chairmans-address",
+    title: "Golden Jubilee Chairman’s Address",
+    excerpt:
+      "Fifty years after the apostolic faith was planted in the Americas, the Convention & Conference Committee chairman looks back with thanks and ahead with prayer.",
+    date: "October 10, 2026",
+    dateIso: "2026-10-10",
+    category: "Ministry Update",
+    readTime: "3 min read",
+    body: [
+      "_A summary of the Chairman’s Address printed in the Golden Jubilee brochure._",
+      "Pastor Oluwagbemiga Famojuro, D.Min, Chairman of the Convention & Conference Committee (Latunde Region, USA), addressed the President, the General Superintendent, the General Evangelist and the Regional Superintendent. He gave thanks for fifty years since the apostolic faith was planted in the Americas, framing the jubilee around God’s faithfulness and answered prayer (Psalm 107:1; 1 Samuel 7:12, “Ebenezer”).",
+      "He remembered the late Pastor Dr. Abraham Adegoke Oyedeji, who planted the church in the Americas, and other pioneers who have passed on: Pastors A.A. Adeojo, J.O. Adeyanju, A.S. Shasanmi, Ogunjeminiyi and J.T.F. Brown. He also noted that the church began in Nigeria in 1918.",
+      "The address thanks the committee and everyone who attended, and ends with a prayer for the next fifty years (Psalm 126:3; Deuteronomy 31:8).",
+    ],
+  },
+  {
+    slug: "golden-jubilee-messages-from-latunde-region-departments",
+    title: "Golden Jubilee Messages from Latunde Region Departments",
+    excerpt:
+      "Greetings printed in the Golden Jubilee brochure from the Regional Treasurer, Conventions & Conferences, Evangelism & Empowerment, the Women Leader and the youth ministry.",
+    date: "October 10, 2026",
+    dateIso: "2026-10-10",
+    category: "Ministry Update",
+    readTime: "3 min read",
+    body: [
+      "_Departments and offices of Latunde Region each sent a page of congratulations for the Golden Jubilee. Here is what they said, in short._",
+      "**Office of the Regional Treasurer** (Pastor Timothy Adelani and Evangelist Mrs. Janet Adelani): thanks to God for five decades of provision, with congratulations to the Regional Superintendent, the Executive Council and the CAC Nigeria leadership.",
+      "**Office of Conventions and Conferences** (Pastor Oluwagbemiga Famojuro and Evangelist Mrs. Olajumoke Famojuro): a message celebrating five decades of gatherings, revivals and conventions, with a prayer for a fresh outpouring of the Holy Spirit.",
+      "**Evangelical and Empowerment Department:** rejoicing with CAC Nigeria and Overseas and the Regional Superintendent on the Golden Jubilee, signed by the department head and secretary.",
+      "**Regional Women Leader** (on behalf of the Good Women Association): honours the women of CACNA as pillars of prayer and service. The **Good Women Association** itself sent a separate greeting (Psalm 68:11).",
+      "**Youth and Young Adult Ministry:** congratulations, with a promise that the young people will usher in the next fifty years.",
+      "**Christian Education Department:** a congratulatory message to the Latunde Region on its fiftieth anniversary.",
+    ],
+  },
+  {
+    slug: "cac-in-brazil-joins-latunde-region",
+    title: "CAC in Brazil Joins Latunde Region",
+    excerpt:
+      "From Pastor Oyeleke’s first visit in 2023 to the Regional Superintendent’s revival in November 2024 — how the church in Brazil became part of Latunde Region.",
+    date: "November 18, 2024",
+    dateIso: "2024-11-18",
+    category: "Ministry Update",
+    readTime: "3 min read",
+    body: [
+      "_From the July 2025 Hope for All newsletter, in pieces written by Pastor A.K. Bamidele, Acting Superintendent in Brazil._",
+      "**2023: a first visit.** Pastor S.A. Oyeleke (Rtd.) made a first missionary visit to Brazil from 4 to 23 April 2023 and celebrated Easter at CAC São Paulo on 9 April. He also visited the CAC assembly in Rio de Janeiro, which he had learned of through the secretariat in Nigeria. He returned to São Paulo in September 2023, which began a reformation and realignment of the CAC churches in Brazil.",
+      "**November 2023: “Arise São Paulo!”** A power-packed revival program brought Pastor Ayeni back to Brazil from London after eight years away. In August 2024 four ministers from Nigeria, two pastors and two evangelists, joined the work, through the coordinated efforts of CAC Agbala Idande (Akilings Region), CAC Way to Life Ottawa and CAC 1930 Miracle Explosions, Bronx, New York.",
+      "**January 2024: joining Latunde Region.** The authority of the church wrote to say that Brazil was now an integral part of Latunde Region. The Regional Superintendent, Pastor T.A.O. Agbeja, Ph.D., called to pray with them and promised a visit, which he made in November 2024.",
+      "**12–18 November 2024: regional visit.** Pastor Agbeja and the Regional Secretary, Pastor J.O. Olawale, were welcomed for a revival tagged “And there’s great joy in the city” (Acts 8:8). From 13 to 16 November the team visited Rio de Janeiro, where Pastor Luciano is minister in charge, and held a joint ministers’ meeting. The ministers were urged to work as a team in unity for the rapid growth of the church in Brazil.",
+    ],
+  },
+  {
+    slug: "latunde-region-good-women-prayer-and-pilgrimage",
+    title: "Latunde Region Good Women: Daily Prayer, Marathon Prayers and the 2022 Pilgrimage",
+    excerpt:
+      "How “10 Minutes with My Maker” began in July 2021, the 2022 Marathon Prayers, and the pilgrimage to Israel — from the Good Women Association leader’s report.",
+    date: "May 10, 2022",
+    dateIso: "2022-05-10",
+    category: "Ministry Update",
+    readTime: "3 min read",
+    body: [
+      "_From the Latunde Region Good Women Association leader’s report in the convention booklet._",
+      "**A new executive, July 2021.** On 15 July 2021 five women were appointed as executive members: a Women Leader, a Secretary, a Chaplain, a Financial Secretary and a Treasurer. The leader asked each of them to encourage the DCCs and zones assigned to them and to help the pastors, evangelists and deaconesses with attendance, timely quarterly contributions and daily prayer.",
+      "**“10 Minutes with My Maker.”** The daily prayer meeting began on 23 July 2021, from 8:00 to 8:10 am Eastern. Each of the region’s superintendents leads on a set day each month, and the Regional Superintendent leads on the 1st and 15th.",
+      "**Marathon Prayers, 20–26 February 2022.** The week of prayers was themed “Give unto the Lord Glory and Strength” (Psalm 29:1) and marked ten years of the Good Women Association’s Marathon Prayers. It was anchored by the Chaplain and the Holy Spirit, and hosted on Zoom for the first time.",
+      "**Pilgrimage to Israel, 2–10 May 2022.** The region’s pilgrimage was led by the Regional Superintendent, Pastor T.A.O. Agbeja, Ph.D., and Pastor Hezekiah Ilufoye, Ph.D., and described as a spiritual exercise with sound teaching at every stop. Preparations for a 2023 pilgrimage were already under way, led by the President of CAC Worldwide, Pastor S.O. Oladele.",
+    ],
+  },
+  {
+    slug: "spiritual-power-and-gifts-2024-teaching-outline",
+    title: "Purpose of Spiritual Gifts for the Body of Christ",
+    excerpt:
+      "A teaching outline kept from the 2024 convention theme, “Spiritual Power and Gifts for the Body of Christ” (Acts 1:8): gifts, fruit, and why you need both.",
+    date: "July 17, 2024",
+    dateIso: "2024-07-17",
+    category: "Reflection",
+    readTime: "3 min read",
+    body: [
+      "_A slide outline kept for the record. It follows the 2024 convention theme (Acts 1:8). The speaker is not recorded._",
+      "**The Ministries of God the Holy Spirit.** The Holy Spirit is the third Person of the Trinity, the Lord and Giver of Life (Nicene Creed), co-equal and co-eternal with the Father and the Son.",
+      "**Two manifestations.** Gifts of the Spirit (1 Corinthians 12:7) and fruit of the Spirit (Galatians 5:16–18, 22–26). Paul places 1 Corinthians 13, on love, between chapters 12 and 14, which are about the gifts.",
+      "**The danger of gifts without the fruit.** The fruit of the Spirit is the evidence of being born again. Gifts without the fruit do not save (1 Corinthians 13:1–3; Galatians 5:19–26), and a prophet who shows every gift but no fruit is still lost (Matthew 7:15–20). Gifts can be counterfeited; the fruit cannot (2 Thessalonians 2:8–12; Acts 8:9–24).",
+      "**Acts 1:8 in context.** The promise follows the post-resurrection appearances (Luke 24:3, 45; Mark 16:9–16; Matthew 28:19–20; John 20:21–22; Acts 1:4–5). It is spiritual enabling (John 6:63): the Lord both teaches His followers and equips them to live out what He teaches.",
+      "**What Acts 1:8 with 2:4 means.** Power comes with the fruit and the gifts, a new power to witness (Ephesians 5:17–21). The witness is the gospel, the power of God to salvation (Romans 1:16–17; 1 Corinthians 1:18–25). The Helper teaches all things and brings to remembrance all that Christ said (John 14:26). Spirit-empowered witness means preaching the cross, not telling stories; Paul resolved to know nothing but Jesus Christ and Him crucified (1 Corinthians 2:2).",
+    ],
+  },
   {
     slug: "cacna-2026-what-to-expect",
     title: "CACNA 2026 — what to expect.",
@@ -478,6 +676,257 @@ const RAW_POSTS: Omit<BlogPost, "categoryColor" | "accent">[] = [
       "Paul's words to the Corinthians are the New Testament echo of this whole chapter: **your body is the temple of the Holy Spirit; you are not your own; you were bought with a price** (1 Corinthians 6:19–20). Purity is not a rule kept for its own sake — it is the natural posture of someone who knows they belong to Someone else. And when we fail, the way back is never hiding. It is confession, restitution, and a return to the God who is faithful to forgive (1 Thessalonians 4:7; 1 Corinthians 4:2). **Let your yes be yes and your no be no — and where you have wronged someone, go and make it right.**",
     ],
   },
+  {
+    slug: "offerings-from-the-tribal-leaders",
+    title: "Offerings from the Tribal Leaders",
+    excerpt:
+      "Study 31 of the CAC Unified Bible Study Manual, on Numbers 7 — twelve leaders, twelve days, the same offering from each: what Israel's dedication of the altar teaches about unity, commitment, and worship.",
+    date: "November 2, 2026",
+    dateIso: "2026-11-02",
+    category: "Reflection",
+    readTime: "3 min read",
+    body: [
+      '_"Endeavouring to keep the unity of the Spirit in the bond of peace."_ — Ephesians 4:3',
+      "Numbers 7 comes after the dedication of the tabernacle and the ordination of the priests (Leviticus 8–10). It records the offerings the leaders of Israel's twelve tribes brought to dedicate the altar and celebrate the tabernacle's completion. Study 31 of the Unified Bible Study Manual draws out what the long, repeated list is really saying: **each leader brought the same offering for his tribe**, and in doing so the twelve tribes showed their unity, and their leaders showed their commitment to God as representatives of their people.",
+      "**The people in the story.** Moses received God's instructions and oversaw the dedication. The tribal leaders brought the offerings. The priests, led by Aaron, were responsible for the sacrifices and for worship at the tabernacle, with the Levites assisting them. The offerings themselves were gifts for worship, thanksgiving, or atonement — animals, grain, and precious metals — and through them the altar was **dedicated: set apart for God's use.**",
+      "**Twelve days, one offering.** The leaders brought their offerings over twelve days, a communal act that shows the importance of working together in faith — the same unity of the Spirit Paul urges us to keep (Ephesians 4:3). Each brought the same gifts: silver plates, sprinkling bowls, fine flour, wine, incense, and animals for the different sacrifices (vv. 13–17). No tribe outgave another; the identical offerings promoted equality and unity. Romans 12:1 asks the same of us — **to offer our lives as living sacrifices to God**, just as those leaders offered their gifts.",
+      "**Dedicated together.** Moses oversaw the dedication and Aaron performed the sacrifices (vv. 84–86) — a reminder that we are co-workers with God in His ongoing work (1 Corinthians 3:9). The offerings marked the tabernacle's completion and the leaders' dedication (v. 88), and they were, above all, worship. Hebrews 13:15 calls us to offer God the sacrifice of praise in the same spirit.",
+      "The study's questions for reflection: _How can you help promote unity and cooperation in your community, church, or workplace? How can you set an example for others in your commitment to God? Who are you accountable to, and how can you meet your responsibilities? How can you show generosity, obedience, and support for God's work? How can you support and encourage your leaders in their roles and responsibilities?_",
+      "Like the tribal leaders, we are called to work toward unity in our churches and communities, and to show our commitment to God in both words and actions (Numbers 7:6–9). Generous giving expresses gratitude to God with our resources, time, and actions (vv. 13–17). Set aside time each day for prayer and worship, and let go of grudges, forgiving as God forgives us (Matthew 6:12; Ephesians 4:32). Support those in need as an act of faith (1 John 3:17–18), and be supportive and obedient to God and to your leaders, as Israel followed Moses and the priests (Numbers 7:89; Hebrews 13:17). **True leadership means leading by example, putting worship first, and showing devotion through our actions and sacrifices.** Pray with the study for unity among believers, for a deeper commitment to Christ in word, action, and sacrifice, and for every leader to lead by example.",
+    ],
+  },
+  {
+    slug: "consequences-of-complaints",
+    title: "Consequences of Complaints",
+    excerpt:
+      "Study 33 of the CAC Unified Bible Study Manual, on Numbers 10–11 — Israel's grumbling in the wilderness, a leader at the end of himself, and the God who kept providing anyway.",
+    date: "November 2, 2026",
+    dateIso: "2026-11-02",
+    category: "Reflection",
+    readTime: "3 min read",
+    body: [
+      '_"Do all things without murmurings and disputings."_ — Philippians 2:14',
+      "Numbers 10 and 11 follow Israel out from Mount Sinai and into a season of complaint. Study 33 of the Unified Bible Study Manual traces what that grumbling cost them: God's anger and a fire that consumed part of the camp (Numbers 11:1–3), Moses' frustration and his plea for help (vv. 10–15), the appointment of 70 elders to share his load, and a provision of quail that ended in a plague (vv. 16–35). The study defines its subject carefully: **the consequences of a complaint depend on how it is expressed, received, and addressed.**",
+      "**How the story unfolds.** God had Moses make two silver trumpets to signal gatherings, movements, and warnings (10:1–10), and the people left Sinai following the cloud of His presence (10:11–36). Soon they grumbled about their hardships, and God's anger burned in a fire at the edge of the camp (11:1–3). Then they despised the manna and craved meat (11:4–6). Overwhelmed, Moses brought the burden to God (11:10–15). God answered by appointing 70 elders and putting on them some of the spirit that rested on Moses, so that they could carry the leadership with him (11:16–30). He gave the people quail — but their indulgence brought a plague, and many died (11:31–35).",
+      "The study's questions for reflection: _Do you often find yourself complaining about your circumstances, and what triggers it? How do you respond to challenges or difficulties? Do you trust God's sovereignty and provision? How do your words and attitudes affect those around you — do you encourage or discourage others? How can you deepen your understanding of God's character as revealed in Numbers 10–11, and apply these lessons to your spiritual growth and relationships?_",
+      "**Gratitude guards the heart.** Israel's complaints about God's provision remind us to be thankful for what we have and to avoid grumbling, because it brings its own consequences (11:1–2; Philippians 2:14). **Leadership is meant to be shared.** Moses' frustration and God's response show the importance of supporting one another and empowering others to lighten the load (vv. 16–17; Ecclesiastes 4:9–10); the 70 elders show the strength of a community that shares responsibility (vv. 24–25; 1 Corinthians 12:4–7). **God keeps providing.** Even through the complaints, He went on caring for His people — so we can trust His sovereignty when things are not going as planned (vv. 31–34; Philippians 4:19).",
+      "The study's practical counsel: keep a gratitude journal, focus on God's faithfulness, encourage others, and build communities where tasks and leadership are shared (1 Thessalonians 5:18). Pray with it this week: _Lord, help me appreciate Your goodness and provision; I trust in Your sovereignty even when I do not understand Your ways; guide me to empower others and build unity; protect me from the consequences of my own complaining, and help me trust You instead._ **Even in challenging times, God will provide.**",
+    ],
+  },
+  {
+    slug: "miriams-rebellion",
+    title: "Miriam's Rebellion",
+    excerpt:
+      "Study 34 of the CAC Unified Bible Study Manual, on Numbers 12 — when Moses' own sister and brother challenged his place, God answered, judged, and then showed mercy.",
+    date: "November 2, 2026",
+    dateIso: "2026-11-02",
+    category: "Reflection",
+    readTime: "3 min read",
+    body: [
+      '_"And they said, Hath the LORD indeed spoken only by Moses? hath he not spoken also by us? And the LORD heard it."_ — Numbers 12:2',
+      "Numbers 12 records a painful moment in the wilderness: Miriam and Aaron, Moses' own sister and brother, spoke against his leadership. Study 34 of the Unified Bible Study Manual points out that **this was not just an attack on Moses but on God's sovereign choice of him.** Their complaint pointed to Moses' marriage to a Cushite woman, but the deeper issue was jealousy of his unique place with God and a desire for equal authority (vv. 1–2).",
+      "**A challenge to God's choice.** Their question — _has the Lord spoken only through Moses? Has He not spoken through us also?_ — came at a point in the journey when Moses' leadership was vital (vv. 2–3). Scripture shows the same pattern elsewhere, in Korah's rebellion (Numbers 16) and in Israel's demand for a king (1 Samuel 8:7). The event reminded Israel that **rejecting the leader God had chosen was rejecting God Himself** (Exodus 4:10–16).",
+      "**God's response.** God called Moses, Miriam, and Aaron to the Tent of Meeting and rebuked the two for questioning Moses' position (vv. 4–9). He affirmed that Moses was His chosen servant, with whom He spoke face to face, unlike other prophets (vv. 6–8), and His anger made plain that speaking against His appointed leaders is an offence against Him. Miriam was struck with leprosy, her skin white as snow — a visible sign of judgement on undermining God's authority (v. 10).",
+      "**Then mercy.** Aaron admitted their wrong and asked Moses to pray, and Moses, in humility and compassion, immediately prayed for his sister's healing (vv. 11–13). God had Miriam stay outside the camp for seven days, a time of both discipline and restoration; afterwards she was healed and brought back (vv. 14–15). **God's justice is swift, but His mercy is abundant** — when we repent, He forgives and restores.",
+      "The study's questions for reflection: _How do you react when you disagree with leaders, and what can Miriam and Aaron teach you about handling disagreement respectfully? Are you quick to criticise, or do you approach issues with humility? Have you felt jealous or proud when others are in charge, and how can you guard against it? What should your attitude be toward those in authority? How can we reduce rebellion, jealousy, and argument in our groups, and encourage unity and respect for leadership in the Church?_",
+      "Rebellion against God's appointed leaders is serious; defying them is like defying God (1 Samuel 15:23). Jealousy and pride divide, while humility, submission to God's will, and loyalty build unity. Leaders and followers are both accountable — leaders need humility, and followers should support and uplift them. So **pray for your leaders, appreciate their work, and speak respectfully even when you disagree.** Pray with the study: _Lord, help me honour and support the leaders You have placed over me, and grant them wisdom; bring unity to the body of Christ; and rid me of pride and rebellion, giving me grace to be loyal and humble in all things, in Jesus' name._",
+    ],
+  },
+  {
+    slug: "the-twelve-spies",
+    title: "The Twelve Spies",
+    excerpt:
+      "Study 35 of the CAC Unified Bible Study Manual, on Numbers 13 — twelve leaders saw the same land, and only two saw God in it. What kind of report are we bringing back?",
+    date: "November 2, 2026",
+    dateIso: "2026-11-02",
+    category: "Reflection",
+    readTime: "4 min read",
+    body: [
+      '_"And Caleb stilled the people before Moses, and said, Let us go up at once, and possess it; for we are well able to overcome it."_ — Numbers 13:30',
+      "The previous study looked at Miriam's rebellion and the importance of respecting the leaders God has chosen. Numbers 13 turns the question around: **leaders, too, must lead with commitment, dedication, and trust in God**, guiding the people toward the inheritance He has promised. Study 35 of the Unified Bible Study Manual uses the story of the twelve spies to teach how to keep faith and hope in the face of obstacles — by keeping our eyes on the greatness and power of God.",
+      "**Who were the spies?** As Israel prepared to enter Canaan, twelve men were chosen to survey the land (vv. 1–2; Deuteronomy 1:22–23). Each one was a leader of his tribe, expected to strengthen the people's faith and encourage them to take what God was giving (v. 3; 1 Peter 2:9). Only two — Joshua (Oshea) and Caleb — came back with a good report. The other ten spread fear and doubt through the camp (vv. 30–33; 14:6–9; Joshua 14:6–9). Good leaders build faith, hope, and progress in others, helping them trust God's plans (Hebrews 10:23; 1 Thessalonians 5:11). Bad leadership causes delay, and can keep people from the blessings God meant for them (Numbers 14:1–4; 2 Corinthians 5:20).",
+      "**The mission and the commission.** The task was simple: scout the land God had promised to their ancestors (vv. 2, 17–20). It was not Moses' idea or the spies' own — **God ordered the mission**, and Moses sent them at His command (vv. 1–3). A mission backed by God's power was never going to fail on God's side. When it failed, it was because the spies did not recognise His part in it (Joshua 1:5; 2 Corinthians 3:5).",
+      "**What they left out, and what they said.** The ten had a clear task, yet instead of inspiring confidence they spread fear (14:1–4). They saw a great deal — a beautiful land flowing with milk and honey, and giants living in it (vv. 25–29, 31–33) — **but they failed to see God**, the true source of their strength (Isaiah 41:10; Psalm 121:1–2). Only Caleb and Joshua tried to quiet the negative report (v. 30). The others preached hopelessness, impossibility, and defeat. The study puts the question to each of us: _what message are we spreading?_",
+      "The study's questions for reflection are worth carrying through the week. _How can you show godly leadership when facing challenges? How can you support your leaders in guiding you to the blessings God has for you? Why do you think God allows challenges in your life — is it to strengthen your trust in Him? What steps can you take to trust God more as a leader and help others grow in their faith? How can you improve your leadership attitude to help others stay on track?_",
+      "**Our words carry spiritual weight.** Fear spread through a negative report (Numbers 13:31–33); faith-filled speech builds hope (Proverbs 18:21). Doubt cost Israel the promise (Numbers 14:22–23), but those with a different spirit, like Caleb, received God's best (Numbers 14:24). Trusting God above all gives strength and direction in uncertain times, and acknowledging Him makes our paths clear (Proverbs 3:5–6). God also tests our obedience and loyalty through the leaders He appoints over His people (Numbers 13:1–3; Hebrews 13:17), and seeing His hand in that leadership helps us follow wisely.",
+      "Challenges can look like giants. But when we focus on God's greatness, they shrink. David saw Goliath not as a threat but as an opportunity for God's power to be revealed (1 Samuel 17:45–47). **True leadership begins with deep trust in God and a heart anchored in hope** — recognising His presence in all things, speaking with faith, and walking in obedience, so that we can overcome every challenge and lead others into their God-given purpose. The study closes in prayer: thanking God for bringing us this far, asking Him to build our confidence in Him, and asking Him to help our leaders, in the church and in public life, lead His people well.",
+    ],
+  },
+  {
+    slug: "israels-fear-and-rebellion",
+    title: "Israel's Fear and Rebellion",
+    excerpt:
+      "Study 36 of the CAC Unified Bible Study Manual, on Numbers 14 — how fear turned into rebellion at the edge of the Promised Land, and what Caleb's different spirit teaches us.",
+    date: "November 2, 2026",
+    dateIso: "2026-11-02",
+    category: "Reflection",
+    readTime: "3 min read",
+    body: [
+      '_"But my servant Caleb, because he had another spirit with him, and hath followed me fully, him will I bring into the land whereinto he went; and his seed shall possess it."_ — Numbers 14:24',
+      "Numbers 14 is a turning point in Israel's journey. Standing at the edge of the land, the people had a choice between faith and fear — and even after everything they had seen God do, they gave in to fear when things got hard. Study 36 of the Unified Bible Study Manual points out that **their reaction was not just emotion; it showed a heart resisting God.** The chapter shows how fear can block what God wants to do in our lives, and the value of the courage and full trust Caleb had (v. 24).",
+      "**What happened.** The people mourned, murmured, and wanted to go back to Egypt (vv. 1–4). Caleb and Joshua answered with bold trust in God's promise (vv. 6–9). The crowd rejected that faith-filled leadership and nearly turned to violence (v. 10). God judged their unbelief and withheld the promise from that generation (vv. 22–23), while Caleb was honoured for his devoted faith (v. 24). Then Israel went ahead presumptuously, without God's presence, and was defeated (vv. 44–45).",
+      "**Fear made them forget.** The people let fear take over and forgot how God had helped them, despite all the miracles they had seen (v. 1; Psalm 106:7–13). Instead of thanking Him, they complained and longed for their old life in Egypt — a life that had been full of pain (vv. 3–4; Exodus 16:2–3). They lost confidence in their leaders and ignored the direction God had clearly given through Moses (v. 4). Fear did not just make them anxious; it pushed them toward bad decisions. **The fear of man brings a snare, but whoever trusts in the Lord is kept safe** (Proverbs 29:25). Israel learnt that the hard way.",
+      "**Fear became rebellion.** It did not stay quiet. God treated their refusal to trust Him as a serious offence (v. 11), and because of their unbelief, that whole generation was told it would not enter the land — they missed what could have been theirs (Hebrews 3:18–19). When they then tried to go up anyway, it looked like obedience, but it was too late, and they were defeated (vv. 44–45). Scripture compares rebellion to witchcraft and stubbornness to idolatry (1 Samuel 15:23). **It is not just bad behaviour; it is a heart problem.**",
+      "The study's questions for reflection: _What fears are keeping you from full obedience today? Are you relying on God's past faithfulness, or focusing on present challenges? Do your words feed courage or encourage doubt in those around you? What is your response when God says \"wait\" or redirects you? What does cultivating a \"different spirit\" look like in your personal walk?_",
+      "We need faith that stands when others panic. Caleb and Joshua held on to what God said, not what the crowd felt (vv. 6–9; 2 Timothy 1:7). Real obedience means following God when He leads — not only doing the right thing, but doing it at the right time and in the right way (Proverbs 3:5–6). And what we say matters: the ten spies discouraged a whole nation, while Joshua and Caleb tried to lift its heart (Proverbs 18:21). **Caleb's different spirit is a call not to settle or follow the crowd.** Pray with the study this week: _Lord, help me trust You more deeply when fear clouds my judgement; give me a heart like Caleb's, willing to stand when others shrink back; and teach me to follow Your lead with patience, wisdom, and unwavering faith._",
+    ],
+  },
+  {
+    slug: "offerings-ordinance-and-korahs-rebellion",
+    title: "Offerings' Ordinance in Canaan and Korah's Rebellion",
+    excerpt:
+      "Study 37 of the CAC Unified Bible Study Manual, on Numbers 15–16 — what God asked of Israel's worship in Canaan, and why Korah's grab for power ended in judgement.",
+    date: "November 2, 2026",
+    dateIso: "2026-11-02",
+    category: "Reflection",
+    readTime: "4 min read",
+    body: [
+      '_"Let nothing be done through strife or vainglory; but in lowliness of mind let each esteem other better than themselves."_ — Philippians 2:3',
+      "Numbers 15 and 16 sit side by side for a reason. The first restates how God wanted Israel to worship once they entered Canaan; the second records Korah, a Levite, rising up against the authority of Moses and Aaron. Study 37 of the Unified Bible Study Manual notes that the rebellion brought severe consequences **not only on Korah and his followers but on the whole community.** Read together, the two chapters set grateful, ordered worship against a heart that wanted power.",
+      "**The ordinance of offerings.** When Israel entered the land, God specified what they were to bring Him, and how and when (15:1–16). Burnt offerings and freewill offerings were to be a pleasing aroma to Him, each accompanied by its measure of fine flour, olive oil, and wine; a vow offering of a young bullock had to come with its grain offering (15:8). **The native-born and the foreigner were to offer the same** (15:14–16). A portion of the first ground meal from the threshing floor was given as a heave offering (15:18–21). God provided atonement for unintentional sin (15:22–29), while deliberate sin — such as wilfully breaking the Sabbath — was punished (15:30–36). And Israel was to wear tassels on their garments as a reminder to keep His commandments (15:37–41).",
+      "**Korah's rebellion.** Rebellion is defiance against authority, rules, or expectations, and it often grows out of a desire for change, autonomy, or recognition (1 Samuel 15:23). Korah, with Dathan, Abiram, and 250 prominent men, accused Moses and Aaron of taking too much power and of not recognising the holiness of the whole congregation (16:1–3). The study reads Korah's real motive as a desire for power and recognition. Moses answered in humility, leaving the judgement to God (16:4–19) — and God's judgement came: the earth swallowed Korah, Dathan, Abiram, and their households, and fire consumed the 250 men (16:23–35).",
+      "The study's questions for reflection: _How can you show gratitude to God for His blessings, including daily provision and Jesus' sacrifice? What does the New Testament teach about worship and sacrifice, now that we no longer follow Old Testament rituals? How can you offer yourself as a living sacrifice, holy and pleasing to God (Romans 12:1–2)? How can you guard against a desire for power, like Korah's, that sets you against leaders or authority? What should your attitude be when you work under a leader you feel is ungodly — and how can you support godly leaders instead of criticising them?_",
+      "**The offerings still point somewhere.** They remind us of worship, honour, and trust in God's provision. Jesus' sacrifice is symbolised in the drink and burnt offerings (Matthew 26:28), and the peace offering shows the closeness God wants with His people (Leviticus 7:11–15). Christ is the atonement for all sin, and the Sabbath remains a holy day of rest and worship (Matthew 12:8; Hebrews 4:9–10). So give thanks for His provision and commit to His will (1 Thessalonians 5:18).",
+      "**Rebellion is not tolerated by God, and its consequences are severe** (Numbers 16:31–33). Leadership is ordained by God, and we are called to show respect, love, and obedience to those in authority (Romans 13:1–2; Hebrews 13:17), staying humble before Him (James 4:10) and guarding against selfish ambition (Proverbs 3:5–6; Philippians 2:3–4). Numbers 15–16 call us to gratitude, sacrifice, humility, and obedience — trusting God's provision, submitting to His authority, and recognising His sovereignty in every part of life (Colossians 3:17). Pray with the study: _Lord, keep me humble before the authority You have placed in my life; protect me from selfish ambition; give me courage to follow Your guidance when it is hard; and help me stay faithful to You and respect the leaders You have set before me._",
+    ],
+  },
+  // Imported from the CACNA newsletter blog (cacnewsletter.blogspot.com, May 6, 2015).
+  {
+    slug: "cac-village-ready-for-use-2015",
+    title: "CAC Village is ready for use.",
+    excerpt: "We give glory and honor to the Almighty God for the purchase of C.A.C. Village. The property is for all of us in C.A.C. North America and available for any Church for…",
+    date: "May 6, 2015",
+    dateIso: "2015-05-06",
+    category: "Ministry Update",
+    readTime: "1 min read",
+    image: {
+      url: "/images/blog/archive/village-ready-2015.jpg",
+      alt: "Tables set with red napkins and glassware for a banquet"
+    },
+    body: [
+      "We give glory and honor to the Almighty God for the purchase of C.A.C. Village. The property is for all of us in C.A.C. North America and available for any Church for important events.",
+      "The CAC Village is ready to be used for the following:",
+      "Center for our Convention/Conference",
+      "Center for Youth Camp for C.A.C. NA, and All",
+      "Prayer Mountain For ALL",
+      "Center For Retreat for Ministers, CACMA, Good Women, Youth etc.",
+      "Center For Resort – For Vacation, Holiday, Family Reunion etc.",
+      "Church Workers Refresher Programs etc.",
+      "For Multipurpose use like Inside or Outside Weddings, Re-Union, etc.",
+      "For the use of any Christian Organization or Group.",
+      "And many more.",
+      "We need financial support from everyone through donations to be able to maintain and keep the place up to the standard. For the details of the usage of the place, donations, and more information, visit our website, www.cacnorthamerica.net"
+    ]
+  },
+  // Imported from the CACNA newsletter blog (cacnewsletter.blogspot.com, May 6, 2015).
+  {
+    slug: "cacna-2015-convention-faithfulness-of-god",
+    title: "CACNA 2015 Convention — The Faithfulness of God.",
+    excerpt: "Preparation for the 2015 Convention is coming from Monday, July 6, to Friday, July 10, 2015. The Theme for this year Convention is:",
+    date: "May 6, 2015",
+    dateIso: "2015-05-06",
+    category: "Event Spotlight",
+    readTime: "1 min read",
+    image: {
+      url: "/images/blog/archive/convention-2015-ad.png",
+      alt: "Flyer for the 2015 CAC North America Convention at CAC Village, July 6–10, theme The Faithfulness of God"
+    },
+    body: [
+      "Preparation for the 2015 Convention is coming from Monday, July 6, to Friday, July 10, 2015. The Theme for this year Convention is:",
+      "THE FAITHFULNESS OF GOD.",
+      "The Schedule for the event is as followed:",
+      "Monday, July 6, Arrival Day. Evening Revival. By General Evangelist. Pastor S.K. Abiara - 7 pm to 9 pm",
+      "Tuesday, July 7, Ministers Conference. 9 am to 6 pm. Evening Revival. By General Evangelist. Pastor S.K. Abiara - 7 pm to 9 pm",
+      "Wednesday, July 8, CACMA, GOOD WOMEN, MINISTERS WIVES & YOUTH CONFERENCES. 9 am to 6 pm. Evening Revival. By General Evangelist. Pastor S.K. Abiara - 7 pm to 9 pm",
+      "Thursday, July 9, CONVENTION DAY. 9 am to 6 pm. Evening Revival. By General Evangelist. Pastor S.K. Abiara - 7 pm to 9 pm",
+      "Friday, July 10, Ordination of Pastors & Closing of the program.",
+      "VENUE:",
+      "C.A.C. VILLAGE",
+      "14051 Stahley Road,",
+      "Blue Ridge Summit, PA 17214"
+    ]
+  },
+  // Imported from the CACNA newsletter blog (cacnewsletter.blogspot.com, February 20, 2013).
+  {
+    slug: "cacna-chairmen-re-invigorated-2013",
+    title: "CAC North America chairmen re-invigorated.",
+    excerpt: "After four days of retreat at Atlanta Georgia,by the Chairmen of Christ Apostolic Church North America, where Church Management Principles and Leadership Techniques…",
+    date: "February 20, 2013",
+    dateIso: "2013-02-20",
+    category: "Ministry Update",
+    readTime: "2 min read",
+    image: {
+      url: "/images/blog/archive/chairmen-retreat-2013.gif",
+      alt: "Chairmen seated at tables during the retreat in Atlanta, Georgia"
+    },
+    gallery: [
+      {
+        url: "/images/blog/archive/bible-institute-2013.gif",
+        alt: "Banner graphic for the CAC Bible Institute, U.S.A."
+      }
+    ],
+    body: [
+      "After four days of retreat at Atlanta Georgia,by the Chairmen of Christ Apostolic Church North America, where Church Management Principles and Leadership Techniques were properly treated,a great hope is in sight for a great development in the Church.",
+      "The Coordinator,Pastor Dr. Joshua Owoeye demonstrated a true leadership quality that was appreciated by all the Chairmen present.This is a follow up to a similar program that was held earlier in September, 2012 at Chicago.IL.''THE CHURCH IS MARCHING ON.''",
+      "ANOTHER NATIONAL COUNCIL MEETING OF C.A.C.N.A.",
+      "CAME UP SUCCESSFULLY.",
+      "As the Chairmen were concluding their retreat,other members of this Council comprising of selected District Superintendents,Elders representatives and National Good Women Leader sat to deliberate on the progress of the Church in North America.",
+      "Reports of last year activities were rendered,discussed and decisions were taken as to means of moving the Church forward in North America.",
+      "Highlights of logistics of finally taking over the CAC Village very soon were considered and approved.Therefore, high expectations of using this site",
+      "for programs of the Church this year, beginning with Good Women Association Convention,from April 10th -13th,2013 is D.V.possible.",
+      "Every one is implored to pay his/her contributions-$1,000.00, $500.00, $250.00 now and have your receipts,letters and Golden buttons,etc.",
+      "C.A.C. BIBLE INSTITUTE - U.S.A.TAKES OFF.",
+      "Another milestone is the take off of the Bible Institute,C.A.C North America.Mondays from 8 pm -10 pm Eastern Time, is the forum for the un-ordained Ministers, while Thursday 8 pm-10 pm is that of ordained Ministers.",
+      "It will be concluded in July with practicals and graduation ceremonies. The Provost,Pastor Dr.Timothy Agbeja assisted by able men of God have been giving impressive teachings after the coordinator- Pastor Dr. Joshua Owoeye declared the program open.",
+      "''UNPRECEDENTED'' - A MARATHON WEEK OF SPIRITUAL RELAY RACE",
+      "''Behold,how good and pleasant it is for brethren to dwell together in unity''(Psalm 133 Vs.1).",
+      "This came alive at the just concluded ''MARATHON 7 DAYS OF PRAISE,PRAYER AND FASTING''-TELECONFERENCE, organized by Christ Apostolic Church North America Good Women Association from Sunday January 27th to Saturday February 2nd,2013.",
+      "Amazingly,what was supposed to be a program of a small group of women suddenly exploded and became worldwide and involving not only women,but also men including non CAC Members and Muslims.It was followed by a thanksgiving service in various Assemblies all over North America.The Good Women Leader,CAC worldwide - Deaconess Adebule congratulated her comrades and encouraged them to move forward as such prayers can not but bring miraculous results. The President of the Church- Pastor A.O. Akinosun blessed the participants in the program."
+    ]
+  },
+  // Imported from the CACNA newsletter blog (cacnewsletter.blogspot.com, October 30, 2012).
+  {
+    slug: "first-sunday-school-rally-orlando-2012",
+    title: "First Sunday School Rally in CAC North America, Orlando, Florida.",
+    excerpt: "Christ Apostolic Church (Worldwide) is a Pentecostal church which is known for passionate evangelism, divine healing and ceaseless prophetic prayer among others. It…",
+    date: "October 30, 2012",
+    dateIso: "2012-10-30",
+    category: "Event Spotlight",
+    readTime: "4 min read",
+    image: {
+      url: "/images/blog/archive/sunday-school-rally-2012-1.jpg",
+      alt: "Delegates seated at tables during a session of the Sunday School Rally"
+    },
+    gallery: [
+      {
+        url: "/images/blog/archive/sunday-school-rally-2012-2.jpg",
+        alt: "Delegates at the Sunday School Rally in Orlando"
+      },
+      {
+        url: "/images/blog/archive/sunday-school-rally-2012-3.jpg",
+        alt: "Attendees of the Sunday School Rally"
+      },
+      {
+        url: "/images/blog/archive/sunday-school-rally-2012-4.jpg",
+        alt: "Group photo of delegates at the Sunday School Rally in Orlando, Florida"
+      }
+    ],
+    body: [
+      "Christ Apostolic Church (Worldwide) is a Pentecostal church which is known for passionate evangelism, divine healing and ceaseless prophetic prayer among others. It was therefore not a surprise when the CAC North America organized it first Sunday school Rally at Orlando, Florida on Oct. 4th- 6th, 2012.",
+      "The Theme of the Rally was - Wanted: Sacrificial, Sincere and Sanctified Vessels The National coordinator, Pastor Dr. Joshua O. Owoeye PhD declared the conference open. In his opening remark, he declared that: \"This is truly the doing of the Lord-for us members of Christ Apostolic Church North America, to see the inauguration and the First North America Conference Sunday School Rally. We have come this far by faith and by the grace of God. We will keep moving ahead in the Lord and doing exploits in God despite what the enemy may bring. As a church and part of the body of Christ, we are victorious and every of our endeavor shall succeed gloriously in Jesus Name. Amen.\" The Chairman of the Education Department, CAC North America, Pastor Dr. Gabriel Dada Th.D whose selfless service with the committee members of the Education department made the conference a reality, remarked in his Welcome Address that:",
+      "\"Firstly, God has His work (program) here with us; Secondly, He is looking for vessels to serve Him; Thirdly, He has standard and qualities for the work; and fourthly’ the examples of Jesus. God has always chosen people. He has always thrown out His gracious invitation for people to respond (II Chro. 6:9; Isa. 6:8).”",
+      "The president of the CAC (Worldwide) Pastor Abraham O. Akinosun’s sent in his goodwill address which was read by Pastor J.A. Olawale Secretary, CAC North America. The President declared that:",
+      "\"God has good, pleasing and perfect plans for His children. He wants us to be transformed people with renewed minds, living to honor and obey Him. Because He wants only what is best for us, and because He gave His Son to make our new lives possible, we should joyfully give ourselves as living sacrifices for His service.\" The opening lecture was given by Pastor Dr. Francis Iselowo Th.D who spoke on “Jesus Came, Lived and Died For Mankind.” He emphasized that:",
+      "Our lives must be rooted in Jesus Christ whose mission was to make Himself the sacrificial Lamb of God that takes away our sins. If you are a Christian and you are not making any sacrifice for His kingdom sake, check your stand in the Lord. Jesus called us to come to him, live for Him and die for Him if possible.",
+      "Notable speakers include Pastor Felix Adunyame a Ghanian whose lecture on The Quantity And Quality Of Jesus Prayer resonated with the audience. Pastor Oyegoke spoke on The Compassionate and Passionate Jesus and Dr. Duke Maduagwu spoke on Christ and Crisis Management. Pastor Arnold Ogunmoyero gave the fourth lecture on Jesus and The Children.",
+      "The praise and worship team comprised of Lady Evangelist Bolanle Mustapha, Mama Joy Iselowo, Lady Evangelist Funke Ogunwuyi (Texas) and Sister Adejoke Oyelowo from Atlanta Georgia.",
+      "There was time for prayers where burdens were lifted up to mount Calvary.",
+      "We want to place on record the services of our CAC members in Orlando Florida for their impeccable hospitality. Deacon and Deaconess Ben Akinola and Engineer Olaleye from Orlando Florida supervised and sacrificed their resources in transporting delegates from the Orlando International Airport to the conference venue at Double Tree Hotel by Hilton, Orlando Florida.",
+      "The conference ended with the National Coordinator, Pastor Dr. Joshua O. Owoeye praying and declaring prophetic blessings upon the delegates that attended. Finally, Pastor Dr. Gabriel Dada Th. D declared that:",
+      "God really glorified Himself considering the short notice and all the Zones in CAC North America which included 10 delegates from Canada. This portrayed a good sign of Unity for CAC here in North America and Canada under the visionary leadership of our Father in the Lord Pastor Dr. Joshua Owoeye PhD whose unwavering love for the correct teaching of the word of God in our churches motivated our organizing this 1st Sunday School Rally and Orlando, Florida happened to be the first history making city in pioneering the venue of the meeting. Thanks to my committee members and our brethren in Orlando Florida.",
+      "Glory Be to God!"
+    ]
+  },
 ];
 
 export const CATEGORY_COLOR: Record<PostCategory, string> = {
@@ -499,9 +948,19 @@ export const CATEGORY_ACCENT: Record<PostCategory, string> = {
  *  entry picking its own swatch. */
 export const POSTS: BlogPost[] = RAW_POSTS.map((p) => ({
   ...p,
+  authors: p.authors ?? POST_AUTHORS[p.slug],
   categoryColor: CATEGORY_COLOR[p.category],
   accent: CATEGORY_ACCENT[p.category],
 }));
+
+/** Posts dated before this are the old newsletter archive (2012-2015 imports).
+ *  They live on /blog under "From the Archives" and never appear in "latest"
+ *  strips like the homepage Latest News. */
+export const ARCHIVE_BEFORE = "2020-01-01";
+
+export function isArchivePost(p: Pick<BlogPost, "dateIso">): boolean {
+  return p.dateIso < ARCHIVE_BEFORE;
+}
 
 export function getPost(slug: string): BlogPost | undefined {
   return POSTS.find((p) => p.slug === slug);

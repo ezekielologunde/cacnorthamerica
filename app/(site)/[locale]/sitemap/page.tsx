@@ -33,12 +33,14 @@ export default async function SitemapPage({
       title: "Who We Are",
       pages: [
         { label: "About CACNA", href: "/about" },
+        { label: "Our History", href: "/history" },
         { label: "Leadership", href: "/leadership" },
         { label: "Past Leaders", href: "/leadership/past" },
         { label: "Zones & DCCs", href: "/zones" },
         { label: "Ministries", href: "/ministries" },
         { label: "Bible Institute", href: "/bible-institute" },
         { label: "Statement of Faith", href: "/statement-of-faith" },
+        { label: "FAQs", href: "/faq" },
       ],
     },
     {
@@ -46,6 +48,7 @@ export default async function SitemapPage({
       pages: [
         { label: `Convention ${cy.year}`, href: cy.href },
         { label: "Plan Your Visit", href: "/plan-your-visit" },
+        { label: "Serve at the Convention", href: "/serve" },
         { label: "Past Conventions Archive", href: "/archive" },
         { label: "Calendar & Events", href: "/calendar" },
         { label: "Store", href: "/store" },
@@ -79,31 +82,36 @@ export default async function SitemapPage({
         { label: "Giving", href: "/giving" },
       ],
     },
+    {
+      title: "Legal",
+      pages: [
+        { label: "Privacy Policy", href: "/privacy" },
+        { label: "Terms of Service", href: "/terms" },
+        { label: "Refund & Cancellation", href: "/refunds" },
+      ],
+    },
   ];
 
   return (
     <main id="main-content">
       <Nav heroDark />
-      <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) 70px" }}>
+      <section style={{ background: "var(--ink)", padding: "calc(var(--bar-h, 0px) + 108px) clamp(20px,5vw,64px) 40px" }}>
         <div style={{ maxWidth: 760, margin: "0 auto", textAlign: "center" }}>
-          <Reveal>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>{t("title")}</span>
-          </Reveal>
-          <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(38px,6vw,64px)", letterSpacing: "-0.03em", color: "#fff", margin: "14px 0 0", lineHeight: 1 }}>
+          <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(34px,6vw,64px)", letterSpacing: "-0.03em", color: "#fff", margin: 0, lineHeight: 1 }}>
             {t("subtitle")}
           </h1>
         </div>
       </section>
 
       <section style={{ background: "var(--paper)", padding: "clamp(48px,6vw,72px) clamp(20px,5vw,64px) clamp(72px,8vw,110px)" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: "clamp(32px,4vw,48px)" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,240px),1fr))", gap: "clamp(28px,4vw,48px)" }}>
           {groups.map((group, i) => (
             <Reveal key={group.title} delay={i * 60}>
-              <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 17, color: "var(--red)", margin: "0 0 16px" }}>{group.title}</h2>
-              <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
+              <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, color: "var(--red)", margin: "0 0 4px" }}>{group.title}</h2>
+              <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 0 }}>
                 {group.pages.map((page) => (
-                  <li key={page.href}>
-                    <Link href={page.href} style={{ fontSize: 14.5, color: "var(--ink-soft)", textDecoration: "none" }}>
+                  <li key={page.href} style={{ borderBottom: "1px solid var(--line)" }}>
+                    <Link href={page.href} style={{ display: "flex", alignItems: "center", minHeight: 48, fontSize: 16, color: "var(--ink-soft)", textDecoration: "none" }}>
                       {page.label}
                     </Link>
                   </li>

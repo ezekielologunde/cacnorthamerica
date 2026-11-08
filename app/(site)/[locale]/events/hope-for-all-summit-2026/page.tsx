@@ -1,4 +1,6 @@
 import { Nav } from "@/components/navigation/Nav";
+import "@/app/(site)/[locale]/mobile-events-media.css";
+import { PastEventBanner } from "@/components/events/PastEventBanner";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
@@ -63,6 +65,7 @@ export default async function HopeForAllSummit2026Page({
     eventAttendanceMode: "https://schema.org/OnlineEventAttendanceMode",
     location: { "@type": "VirtualLocation", url: JOIN_URL },
     organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },
+    performer: { "@type": "Church", name: SITE.name, url: SITE_URL },
     url: `${SITE_URL}/events/hope-for-all-summit-2026`,
   };
 
@@ -71,15 +74,10 @@ export default async function HopeForAllSummit2026Page({
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Events", path: "/calendar" }, { name: ev.navLabel ?? ev.title, path: "/events/hope-for-all-summit-2026" }])).replace(/</g, "\\u003c") }} />
       <Nav heroDark />
-      {isPast && (
-        <div role="status" style={{ background: "#2c2825", padding: "13px clamp(20px,5vw,64px)", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px 20px", fontSize: 14, fontWeight: 600, color: "rgba(245,246,250,.7)" }}>
-          <span>This event has passed — page kept as an archive.</span>
-          <Link href="/calendar" style={{ color: "var(--gold)", fontWeight: 700, fontSize: 13, textDecoration: "none", whiteSpace: "nowrap" }}>See upcoming events →</Link>
-        </div>
-      )}
+      {isPast && <PastEventBanner />}
 
       {/* Hero */}
-      <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) clamp(80px,10vw,120px)", position: "relative", overflow: "hidden" }}>
+      <section className="mm-hero" style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) clamp(80px,10vw,120px)", position: "relative", overflow: "hidden" }}>
         <div aria-hidden style={{ position: "absolute", top: -100, right: -80, width: 640, height: 520, background: "radial-gradient(circle,rgba(45,66,201,.3),transparent 65%)", pointerEvents: "none" }} />
 
         <div style={{ maxWidth: 820, margin: "0 auto", position: "relative", zIndex: 2 }}>
@@ -117,7 +115,7 @@ export default async function HopeForAllSummit2026Page({
           </Reveal>
 
           <Reveal delay={240}>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 36 }}>
+            <div className="mm-actions" style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 36 }}>
               {!isPast && (
                 <a href={JOIN_URL} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(253,200,65,.35)" }}>
                   <Video size={17} strokeWidth={2} aria-hidden /> Join on Zoom →
@@ -135,7 +133,7 @@ export default async function HopeForAllSummit2026Page({
       </section>
 
       {/* Speakers */}
-      <section style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+      <section className="mm-sec" style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
           <Reveal style={{ marginBottom: 40 }}>
             <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 14 }}>Ministering the Word</div>
@@ -171,7 +169,7 @@ export default async function HopeForAllSummit2026Page({
 
       {/* Zoom access details */}
       {!isPast && (
-        <section style={{ background: "var(--paper)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)", borderTop: "1px solid var(--line)" }}>
+        <section className="mm-sec" style={{ background: "var(--paper)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)", borderTop: "1px solid var(--line)" }}>
           <div style={{ maxWidth: 680, margin: "0 auto" }}>
             <Reveal style={{ marginBottom: 28 }}>
               <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 14 }}>Join details</div>
@@ -203,7 +201,7 @@ export default async function HopeForAllSummit2026Page({
 
       {/* Contact CTA */}
       {!isPast && (
-        <section style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+        <section className="mm-sec" style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
           <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}>
             <Reveal>
               <div style={{ display: "grid", placeItems: "center", width: 56, height: 56, borderRadius: 16, background: "linear-gradient(135deg,var(--blue),var(--ink))", margin: "0 auto 22px" }}>

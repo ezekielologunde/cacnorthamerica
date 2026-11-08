@@ -2,18 +2,17 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import type { ReactNode } from 'react';
 import { useTranslations } from 'next-intl';
 import { Reveal } from '@/components/ui/Reveal';
-import { InstagramIcon, YoutubeIcon } from '@/components/ui/SocialIcons';
+import { InstagramIcon, TikTokIcon, XIcon, YoutubeIcon } from '@/components/ui/SocialIcons';
 import { haptic } from '@/lib/haptics';
-import { Phone, Mail, ArrowUp, ArrowRight } from 'lucide-react';
+import { Phone, Mail, MapPin, ArrowUp, ArrowRight } from 'lucide-react';
 import { NewsletterForm } from '@/components/sections/NewsletterForm';
 import { currentOrNextConvention } from '@/lib/conventions';
-
-const socials = [
-  { icon: <YoutubeIcon />, title: 'YouTube', href: 'https://youtube.com/@cacnorthamericalatunderegi1330' },
-  { icon: <InstagramIcon />, title: 'Instagram', href: 'https://instagram.com/cacnorthamericalatunderegion' },
-];
+import { SITE } from '@/lib/site';
+import { CACNA_X_URL, youthSocialLinks, type SocialPlatform } from '@/lib/youthSocials';
+import '@/components/navigation/chrome-mobile.css';
 
 const isExternalHref = (href: string) => href.startsWith('http');
 
@@ -24,20 +23,52 @@ const isExternalHref = (href: string) => href.startsWith('http');
 // the-date page for that year actually is.
 const nextConvention = currentOrNextConvention();
 const conventionHref = nextConvention.registrationUrl ?? nextConvention.href;
+// Same rule as the Youth page: the youth form lives at <register>/youth when
+// registration is on-site; until then, point at the Youth page's register
+// section, which says registration opens soon.
+const internalReg = nextConvention.registrationUrl?.startsWith('/') ? nextConvention.registrationUrl : undefined;
+const youthRegisterHref = internalReg ? `${internalReg}/youth` : '/youth#register';
+
+// Contact details come only from SITE (lib/site.ts).
+const telDigits = SITE.telephone.replace(/[^\d+]/g, '');
+const telDisplay = SITE.telephone.replace(/^\+1-(\d{3})-(\d{3})-(\d{4})$/, '($1) $2-$3');
+const fullAddress = `${SITE.address.street}, ${SITE.address.city}, ${SITE.address.region} ${SITE.address.postalCode}`;
+const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
+
+const ICONS: Record<SocialPlatform | 'youtube', ReactNode> = {
+  youtube: <YoutubeIcon size={18} />,
+  instagram: <InstagramIcon size={18} />,
+  tiktok: <TikTokIcon size={17} />,
+  x: <XIcon size={16} />,
+  whatsapp: null,
+};
+
+// CACNA's own accounts: the two in SITE.sameAs plus the main X account.
+const cacnaSocials: { platform: SocialPlatform | 'youtube'; href: string; label: string }[] = [
+  ...SITE.sameAs.map(href => (href.includes('youtube')
+    ? { platform: 'youtube' as const, href, label: 'YouTube' }
+    : { platform: 'instagram' as const, href, label: 'Instagram' })),
+  { platform: 'x', href: CACNA_X_URL, label: 'X @christ_north' },
+];
+const PLATFORM_NAME: Record<SocialPlatform, string> = { instagram: 'Instagram', tiktok: 'TikTok', x: 'X', whatsapp: 'WhatsApp' };
+const youthSocials = youthSocialLinks()
+  .filter(l => l.owner === 'youth' && (l.platform === 'instagram' || l.platform === 'tiktok'))
+  .map(l => ({ platform: l.platform, href: l.url, label: `${PLATFORM_NAME[l.platform]} ${l.handle}` }));
+
+function FooterLink({ href, children }: { href: string; children: ReactNode }) {
+  return isExternalHref(href)
+    ? <a href={href} target="_blank" rel="noopener noreferrer" className="ft-link">{children}</a>
+    : <Link href={href} className="ft-link">{children}</Link>;
+}
 
 function BackToTop({ label }: { label: string }) {
   return (
     <button
+      type="button"
       onClick={() => { haptic('selection'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-      className="press"
-      style={{
-        display: 'inline-flex', alignItems: 'center', gap: 8,
-        background: 'rgba(245,246,250,.07)', border: '1px solid rgba(245,246,250,.14)',
-        color: 'rgba(245,246,250,.75)', fontSize: 12.5, fontWeight: 700,
-        padding: '9px 16px', borderRadius: 999, cursor: 'pointer',
-      }}
+      className="press ft-top"
     >
-      <ArrowUp size={13} strokeWidth={2.5} aria-hidden /> {label}
+      <ArrowUp size={14} strokeWidth={2.5} aria-hidden /> {label}
     </button>
   );
 }
@@ -46,19 +77,18 @@ export function FooterExperience() {
   const t = useTranslations('Footer');
   const tNav = useTranslations('Nav');
 
-  // Four simple link-list columns -- directory style, mirroring the
-  // Convention site's own footer layout (Attend/Programs/Connect + a
-  // Who We Are column for CACNA's org-wide pages that layout didn't carry).
-  // Contact is rendered separately below since phone/email aren't plain
-  // internal/external hrefs.
+  // Directory-style link columns. Contact/Visit is rendered separately since
+  // phone/email/address aren't plain page links.
   const columns: { heading: string; links: readonly (readonly [string, string])[] }[] = [
     {
       heading: t('attendHeading'),
       links: [
         [conventionHref, t('register')],
+        [youthRegisterHref, t('youthRegister')],
         ['/about#convention', t('aboutConvention')],
         [`${nextConvention.href}/schedule`, t('schedule')],
         ['/plan-your-visit', t('planYourVisit')],
+        ['/serve', t('serve')],
       ],
     },
     {
@@ -89,160 +119,157 @@ export function FooterExperience() {
     {
       heading: t('whoWeAre'),
       links: [
+        ['/about', t('aboutCacna')],
+        ['/history', t('history')],
+        ['/leadership', t('leadership')],
+        ['/zones', t('zonesDccs')],
+        ['/bible-institute', t('bibleInstitute')],
         // CAC North America is one region of the global Christ Apostolic
         // Church movement headquartered in Nigeria -- linking out to the
         // parent body's own site rather than just mentioning it in prose.
         ['https://cacworld.org/', 'CAC World Headquarters'],
-        ['/about', t('aboutCacna')],
-        ['/leadership', t('leadership')],
-        ['/zones', t('zonesDccs')],
-        ['/bible-institute', t('bibleInstitute')],
       ],
     },
   ];
 
-  const registerCtaProps = {
-    onClick: () => haptic('medium'),
-    className: 'press',
-    style: {
-      display: 'inline-flex' as const, alignItems: 'center' as const, gap: 7,
-      background: 'var(--gold)', color: 'var(--ink)',
-      fontWeight: 800, fontSize: 13.5, padding: '11px 18px', borderRadius: 999, textDecoration: 'none',
-    },
-  };
+  const legalLinks: [string, string][] = [
+    ['/about#tenets', t('ourTenets')],
+    ['/statement-of-faith', t('statementOfFaith')],
+    ['/faq', t('faq')],
+    ['/leadership/past', t('pastLeaders')],
+    ['/privacy', t('privacy')],
+    ['/terms', t('terms')],
+    ['/refunds', t('refunds')],
+    ['/accessibility', t('accessibility')],
+    ['/sitemap', t('sitemap')],
+  ];
+
+  const registerCta = (
+    <>{t('registerNowCta')} <ArrowRight size={14} strokeWidth={2.5} aria-hidden /></>
+  );
 
   return (
-    <footer style={{ background: 'var(--ink)', padding: 'clamp(48px,7vw,80px) clamp(20px,5vw,64px) 0' }}>
+    <footer className="ft">
       <Reveal>
-        {/* Sidebar + link columns + contact */}
-        <div style={{
-          maxWidth: 1240, margin: '0 auto',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%,210px), 1fr))',
-          gap: 'clamp(32px,4vw,48px)',
-          paddingBottom: 44,
-        }}>
-
-          {/* Sidebar */}
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <Image src="/images/logo.png" alt={t('logoAlt')} width={42} height={42}
-                style={{ borderRadius: 12, objectFit: 'cover', flexShrink: 0 }} />
-              <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
-                <span style={{ fontSize: 9.5, letterSpacing: '2.5px', textTransform: 'uppercase', color: 'var(--gold)', fontWeight: 700 }}>{t('orgKicker')}</span>
-                <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18, color: '#fff', marginTop: 3 }}>{t('orgName')}</span>
+        <div className="ft-inner">
+          {/* Brand + newsletter */}
+          <div className="ft-top-row">
+            <div className="ft-brand">
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <Image src="/images/logo.png" alt={t('logoAlt')} width={48} height={48}
+                  style={{ borderRadius: 12, objectFit: 'cover', flexShrink: 0 }} />
+                <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
+                  <span style={{ fontSize: 10, letterSpacing: '2.5px', textTransform: 'uppercase', color: 'var(--gold)', fontWeight: 700 }}>{t('orgKicker')}</span>
+                  <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 22, color: '#fff', marginTop: 4, letterSpacing: '-.3px' }}>{t('orgName')}</span>
+                </div>
               </div>
-            </div>
 
-            <Link href={'/contact#convention-committee'} className="press" style={{
-              display: 'inline-flex', alignItems: 'center', gap: 7, marginTop: 18,
-              background: 'linear-gradient(135deg,var(--red),var(--red-deep))', color: '#fff',
-              fontWeight: 700, fontSize: 13, padding: '11px 16px', borderRadius: 999, textDecoration: 'none',
-            }}>
-              {t('contactConventionCommittee')} <ArrowRight size={13} strokeWidth={2.5} aria-hidden />
-            </Link>
+              <p className="ft-blurb">{t('blurb')}</p>
 
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 14 }}>
-              <Link href={'/events/cacna-50th-anniversary-2026'} style={{
-                display: 'inline-flex', alignItems: 'center', gap: 6,
-                border: '1px solid rgba(253,200,65,.4)', borderRadius: 999, padding: '6px 14px',
-                fontSize: 11, fontWeight: 800, color: 'var(--gold)', textDecoration: 'none',
-              }}>
+              <div className="ft-cta-row">
+                {isExternalHref(conventionHref) ? (
+                  <a href={conventionHref} target="_blank" rel="noopener noreferrer" onClick={() => haptic('medium')} className="press ft-cta ft-cta-gold">{registerCta}</a>
+                ) : (
+                  <Link href={conventionHref} onClick={() => haptic('medium')} className="press ft-cta ft-cta-gold">{registerCta}</Link>
+                )}
+                <Link href="/contact#convention-committee" className="press ft-cta ft-cta-ghost">
+                  {t('contactConventionCommittee')}
+                </Link>
+              </div>
+
+              <Link href="/events/cacna-50th-anniversary-2026" className="ft-badge">
                 {t('anniversaryBadge')}
               </Link>
-              <a href="https://cacworld.org/" target="_blank" rel="noopener noreferrer" style={{
-                display: 'inline-flex', alignItems: 'center', gap: 6,
-                border: '1px solid rgba(245,246,250,.2)', borderRadius: 999, padding: '6px 14px',
-                fontSize: 11, fontWeight: 800, color: 'rgba(245,246,250,.8)', textDecoration: 'none',
-              }}>
-                CAC Worldwide ↗
-              </a>
             </div>
 
-            <p style={{ fontSize: 14, color: 'rgba(245,246,250,.55)', margin: '16px 0 20px', lineHeight: 1.7, maxWidth: 260 }}>
-              {t('blurb')}
-            </p>
+            <div className="ft-news">
+              <h2 className="ft-news-h">{t('newsletterHeading')}</h2>
+              <p className="ft-news-p">{t('newsletterBody')}</p>
+              <NewsletterForm />
+            </div>
+          </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-              {isExternalHref(conventionHref) ? (
-                <a href={conventionHref} target="_blank" rel="noopener noreferrer" {...registerCtaProps}>
-                  {t('registerNowCta')} <ArrowRight size={13} strokeWidth={2.5} aria-hidden />
-                </a>
-              ) : (
-                <Link href={conventionHref} {...registerCtaProps}>
-                  {t('registerNowCta')} <ArrowRight size={13} strokeWidth={2.5} aria-hidden />
-                </Link>
-              )}
-              {socials.map(s => (
-                <a key={s.title} href={s.href} target="_blank" rel="noopener noreferrer"
-                  aria-label={s.title} onClick={() => haptic('selection')} className="press"
-                  style={{ width: 38, height: 38, borderRadius: 10, background: 'rgba(245,246,250,.07)', border: '1px solid rgba(245,246,250,.11)', display: 'grid', placeItems: 'center', textDecoration: 'none', color: 'rgba(245,246,250,.75)', flexShrink: 0 }}>
-                  {s.icon}
-                </a>
+          {/* Directory */}
+          <nav aria-label={t('navLabel')} className="ft-grid">
+            {columns.map((col) => (
+              <div key={col.heading} className="ft-col">
+                <h2 className="ft-h">{col.heading}</h2>
+                <ul className="ft-links">
+                  {col.links.map(([href, label]) => (
+                    <li key={href}><FooterLink href={href}>{label}</FooterLink></li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+
+            <div className="ft-col ft-contact">
+              <h2 className="ft-h">{t('contactHeading')}</h2>
+              <ul className="ft-links">
+                <li><Link href="/contact" className="ft-link">{t('contact')}</Link></li>
+                <li>
+                  <a href={`tel:${telDigits}`} className="ft-link ft-link-icon">
+                    <Phone size={15} strokeWidth={2} aria-hidden /> {telDisplay}
+                  </a>
+                </li>
+                <li>
+                  <a href={`mailto:${SITE.email}`} className="ft-link ft-link-icon" style={{ wordBreak: 'break-word' }}>
+                    <Mail size={15} strokeWidth={2} aria-hidden /> {SITE.email}
+                  </a>
+                </li>
+                <li>
+                  <a href={mapsHref} target="_blank" rel="noopener noreferrer" className="ft-link ft-link-icon ft-address">
+                    <MapPin size={15} strokeWidth={2} aria-hidden />
+                    <span>
+                      {SITE.address.street}<br />
+                      {SITE.address.city}, {SITE.address.region} {SITE.address.postalCode}
+                      <span className="ft-directions">{t('directions')}</span>
+                    </span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+
+          {/* Socials, grouped by who runs the account */}
+          <div className="ft-follow">
+            <h2 className="ft-h ft-follow-h">{t('followHeading')}</h2>
+            <div className="ft-follow-groups">
+              {[
+                { name: t('followCacna'), links: cacnaSocials },
+                { name: t('followYouth'), links: youthSocials },
+              ].filter(g => g.links.length > 0).map(group => (
+                <div key={group.name} className="ft-follow-group">
+                  <span className="ft-follow-name">{group.name}</span>
+                  <ul className="ft-socials">
+                    {group.links.map(s => (
+                      <li key={s.href}>
+                        <a href={s.href} target="_blank" rel="noopener noreferrer"
+                          onClick={() => haptic('selection')} className="press ft-social"
+                          aria-label={`${group.name}: ${s.label}`}>
+                          {ICONS[s.platform]}<span>{s.label}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ))}
             </div>
           </div>
 
-          {/* Link columns */}
-          {columns.map((col) => (
-            <div key={col.heading}>
-              <div style={{ fontWeight: 800, fontSize: 12, textTransform: 'uppercase', letterSpacing: '1.8px', color: 'rgba(245,246,250,.4)', marginBottom: 18 }}>{col.heading}</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 14 }}>
-                {col.links.map(([href, label]) => (
-                  isExternalHref(href) ? (
-                    <a key={href} href={href} target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(245,246,250,.65)', textDecoration: 'none' }}>{label}</a>
-                  ) : (
-                    <Link key={href} href={href} style={{ color: 'rgba(245,246,250,.65)', textDecoration: 'none' }}>{label}</Link>
-                  )
+          {/* Bottom bar */}
+          <div className="ft-bottom">
+            <nav aria-label={t('legalNavLabel')}>
+              <ul className="ft-legal">
+                {legalLinks.map(([href, label]) => (
+                  <li key={href}><Link href={href} className="ft-link">{label}</Link></li>
                 ))}
-              </div>
+              </ul>
+            </nav>
+            <p style={{ margin: 0 }}>{t('taxStatus')}</p>
+            <div className="ft-bottom-row">
+              <span>{t('copyright')}</span>
+              <BackToTop label={t('backToTop')} />
             </div>
-          ))}
-
-          {/* Contact */}
-          <div>
-            <div style={{ fontWeight: 800, fontSize: 12, textTransform: 'uppercase', letterSpacing: '1.8px', color: 'rgba(245,246,250,.4)', marginBottom: 18 }}>{t('contactHeading')}</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 14 }}>
-              <Link href={'/contact'} style={{ color: 'rgba(245,246,250,.65)', textDecoration: 'none' }}>{t('contact')}</Link>
-              <a href="tel:+13054690346" style={{ display: 'flex', alignItems: 'center', gap: 9, color: 'rgba(245,246,250,.65)', textDecoration: 'none' }}>
-                <Phone size={14} strokeWidth={2} style={{ flexShrink: 0 }} aria-hidden /> (305) 469-0346
-              </a>
-              <a href="mailto:info@cacnorthamerica.com" style={{ display: 'flex', alignItems: 'center', gap: 9, color: 'rgba(245,246,250,.65)', textDecoration: 'none', wordBreak: 'break-word' }}>
-                <Mail size={14} strokeWidth={2} style={{ flexShrink: 0 }} aria-hidden /> info@cacnorthamerica.com
-              </a>
-            </div>
-          </div>
-
-        </div>
-
-        {/* Newsletter — below the columns, matching the reference layout */}
-        <div style={{
-          maxWidth: 1240, margin: '0 auto 44px', borderRadius: 24,
-          background: 'linear-gradient(120deg,rgba(253,200,65,.1),rgba(200,30,58,.12))',
-          border: '1px solid rgba(253,200,65,.2)',
-          padding: 'clamp(28px,4vw,40px)',
-          display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 24,
-        }}>
-          <div style={{ flex: '1 1 260px' }}>
-            <div style={{ fontWeight: 800, fontSize: 11.5, textTransform: 'uppercase', letterSpacing: '1.8px', color: 'var(--gold)', marginBottom: 8 }}>{t('stayConnected')}</div>
-            <p style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(20px,2.4vw,26px)', color: '#fff', margin: '0 0 6px', letterSpacing: '-.4px' }}>{t('newsletterHeading')}</p>
-            <p style={{ fontSize: 13.5, color: 'rgba(245,246,250,.5)', margin: 0 }}>{t('newsletterBody')}</p>
-          </div>
-          <div style={{ flex: '1 1 340px' }}>
-            <NewsletterForm />
-          </div>
-        </div>
-
-        {/* Bottom bar */}
-        <div style={{ maxWidth: 1240, margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 16, padding: '24px 0 28px', fontSize: 12.5, color: 'rgba(245,246,250,.3)', borderTop: '1px solid rgba(245,246,250,.1)' }}>
-          <span>{t('copyright')}</span>
-          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px 20px' }}>
-            <Link href={'/about#tenets'} style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>{t('ourTenets')}</Link>
-            <Link href={'/statement-of-faith'} style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>{t('statementOfFaith')}</Link>
-            <Link href={'/leadership/past'} style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>{t('pastLeaders')}</Link>
-            <Link href={'/contact'} style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>{t('contact')}</Link>
-            <Link href={'/sitemap'} style={{ color: 'rgba(245,246,250,.3)', textDecoration: 'none' }}>{t('sitemap')}</Link>
-            <BackToTop label={t('backToTop')} />
           </div>
         </div>
       </Reveal>

@@ -1,0 +1,56 @@
+/* Mobile pass for about, leadership, zones, statement-of-faith, plan-your-visit.
+   Inline styles on these pages need !important to be overridden at phone width. */
+.ap-main .ap-hotel-head,
+.ap-main .ap-hotel-row { display: grid; grid-template-columns: 2fr 1.2fr 1fr 1fr; }
+.ap-main .ap-chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 24px; }
+.ap-main .ap-chip {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px;
+  font-size: 15px; font-weight: 700; text-decoration: none;
+  background: rgba(245,246,250,.1); color: #fff; border: 1px solid rgba(245,246,250,.22);
+}
+.ap-main .ap-dir-bar { display: none; }
+.ap-main .ap-tenet-toggle { display: none; }
+
+@media (max-width: 700px) {
+  .ap-main { padding-bottom: calc(0px + env(safe-area-inset-bottom)); }
+  .ap-main.ap-has-bar { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+  .ap-main > section { padding-top: 56px !important; padding-bottom: 56px !important; }
+  .ap-main > section:first-of-type { padding-top: 112px !important; padding-bottom: 44px !important; }
+  .ap-main a[style*="inline-flex"], .ap-main button { min-height: 44px; }
+
+  .ap-main .ap-hotel-head { display: none; }
+  .ap-main .ap-hotel-row {
+    grid-template-columns: 1fr auto; gap: 4px 12px; padding: 14px 16px !important;
+  }
+  .ap-main .ap-hotel-row .ap-hotel-name { grid-column: 1; font-size: 16px !important; }
+  .ap-main .ap-hotel-row .ap-hotel-rate { grid-column: 2; grid-row: 1; font-weight: 700; color: var(--ink) !important; font-size: 16px !important; }
+  .ap-main .ap-hotel-row .ap-hotel-city { grid-column: 1 / -1; }
+  .ap-main .ap-hotel-row .ap-hotel-call {
+    grid-column: 1 / -1; display: flex; align-items: center; justify-content: center;
+    min-height: 44px; margin-top: 8px; border-radius: 999px; background: var(--paper);
+    border: 1.5px solid var(--red); font-size: 15px;
+  }
+  .ap-main .ap-dir-bar {
+    display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    background: color-mix(in srgb, var(--ink) 94%, transparent); backdrop-filter: blur(8px);
+  }
+  .ap-main .ap-dir-bar a {
+    flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px;
+    border-radius: 999px; background: var(--red); color: #fff; font-weight: 700; font-size: 16px; text-decoration: none;
+  }
+  .ap-main .ap-map { height: 240px !important; }
+
+  .ap-main #tenets:not([data-open="true"]) .ap-tenet-more { display: none; }
+  .ap-main .ap-tenet-toggle { display: flex; }
+  .ap-main .ap-faith-text { margin-left: 0 !important; }
+  .ap-main .ap-clamp {
+    display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .ap-main .ap-finder-btn { width: 100%; justify-content: center; }
+  .ap-main .ap-dir-controls { flex-direction: column-reverse; align-items: stretch !important; }
+  .ap-main .ap-dir-controls input { width: 100% !important; }
+  .ap-main .ap-filters button { flex: 1; }
+  .ap-main .ap-contact-link { min-height: 44px; }
+  .ap-main .ldr-card .ldr-photo { order: -1; min-height: 300px; }
+}

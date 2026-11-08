@@ -90,7 +90,7 @@ export function SiteOverlays({ bannerAnn }: { bannerAnn?: BannerAnn | null }) {
           {bannerAnn.cta_text && bannerAnn.cta_url && (
             <a
               href={bannerAnn.cta_url}
-              style={{ color: bannerAnn.text_color, fontSize: 'clamp(12.5px,3.2vw,16px)', fontWeight: 800, textDecoration: 'underline', whiteSpace: 'nowrap', flexShrink: 0, opacity: 0.9 }}
+              style={{ color: bannerAnn.text_color, fontSize: 'clamp(12.5px,3.2vw,16px)', fontWeight: 800, textDecoration: 'underline', whiteSpace: 'nowrap', flexShrink: 0, opacity: 0.9, display: 'inline-flex', alignItems: 'center', minHeight: 44, padding: '0 6px', margin: '-12px -6px' }}
             >
               {bannerAnn.cta_text} →
             </a>
@@ -98,7 +98,7 @@ export function SiteOverlays({ bannerAnn }: { bannerAnn?: BannerAnn | null }) {
           <button
             onClick={dismissDbBar}
             aria-label="Dismiss announcement"
-            style={{ background: 'none', border: 'none', color: bannerAnn.text_color, cursor: 'pointer', fontSize: 'clamp(20px,5vw,26px)', lineHeight: 1, padding: '0 0 0 8px', flexShrink: 0, opacity: 0.5 }}
+            style={{ background: 'none', border: 'none', color: bannerAnn.text_color, cursor: 'pointer', fontSize: 'clamp(22px,5vw,26px)', lineHeight: 1, padding: 0, minWidth: 44, minHeight: 44, margin: '-12px -8px -12px 0', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, opacity: 0.85 }}
           >
             ×
           </button>
@@ -127,7 +127,7 @@ export function SiteOverlays({ bannerAnn }: { bannerAnn?: BannerAnn | null }) {
             </span>
             <Link
               href={currentBarEvent.href!}
-              style={{ color: 'var(--gold)', fontSize: 'clamp(12.5px,3.2vw,16px)', fontWeight: 800, textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0 }}
+              style={{ color: 'var(--gold)', fontSize: 'clamp(12.5px,3.2vw,16px)', fontWeight: 800, textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0, display: 'inline-flex', alignItems: 'center', minHeight: 44, padding: '0 6px', margin: '-12px -6px' }}
             >
               Learn more →
             </Link>
@@ -135,7 +135,7 @@ export function SiteOverlays({ bannerAnn }: { bannerAnn?: BannerAnn | null }) {
           <button
             onClick={dismissBar}
             aria-label="Dismiss announcement"
-            style={{ background: 'none', border: 'none', color: 'rgba(245,246,250,.4)', cursor: 'pointer', fontSize: 'clamp(20px,5vw,26px)', lineHeight: 1, padding: '0 0 0 8px', flexShrink: 0 }}
+            style={{ background: 'none', border: 'none', color: 'rgba(245,246,250,.8)', cursor: 'pointer', fontSize: 'clamp(22px,5vw,26px)', lineHeight: 1, padding: 0, minWidth: 44, minHeight: 44, margin: '-12px -8px -12px 0', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
           >
             ×
           </button>

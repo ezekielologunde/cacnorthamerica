@@ -2,7 +2,7 @@
 
 export default function AdminNotFound() {
   return (
-    <div style={{
+    <div role="alert" className="err-rise" style={{
       display: "flex", flexDirection: "column", alignItems: "center",
       justifyContent: "center", minHeight: "60vh", textAlign: "center", padding: "40px 24px",
     }}>

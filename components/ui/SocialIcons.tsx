@@ -1,14 +1,6 @@
 // Inline brand glyphs — lucide-react removed its brand icons, so we ship our own.
 // Color follows `currentColor`; size via the `size` prop.
 
-export function FacebookIcon({ size = 18 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-      <path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.95c0-.9.25-1.5 1.55-1.5h1.65V3.65c-.3-.04-1.3-.13-2.45-.13-2.43 0-4.1 1.48-4.1 4.2v2.18H7.45V13h2.7v8h3.35z" />
-    </svg>
-  );
-}
-
 export function InstagramIcon({ size = 18 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden>
@@ -24,6 +16,23 @@ export function YoutubeIcon({ size = 19 }: { size?: number }) {
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden>
       <rect x="2" y="5.5" width="20" height="13" rx="4" fill="currentColor" />
       <path d="M10 9.3 15 12l-5 2.7z" fill="#fff" />
+    </svg>
+  );
+}
+
+export function XIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M17.8 3h3.1l-6.8 7.7L22 21h-6.2l-4.9-6.3L5.3 21H2.2l7.3-8.3L2 3h6.4l4.4 5.8L17.8 3zm-1.1 16.2h1.7L7.4 4.7H5.6l11.1 14.5z" />
+    </svg>
+  );
+}
+
+export function WhatsAppIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path d="M3.5 20.5l1.3-4.2A8.5 8.5 0 1 1 8 19.4l-4.5 1.1z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+      <path d="M9 8.2c.2-.4.5-.4.8-.4h.5c.2 0 .4.1.5.4l.7 1.6c.1.2 0 .5-.1.6l-.5.6c.6 1.2 1.6 2.1 2.8 2.7l.6-.6c.2-.2.4-.2.6-.1l1.6.7c.3.1.4.3.4.5v.5c0 .3-.1.6-.4.8-.6.5-1.5.7-2.3.4-2.4-.8-4.3-2.7-5.1-5.1-.2-.7 0-1.4.3-1.9z" fill="currentColor" />
     </svg>
   );
 }

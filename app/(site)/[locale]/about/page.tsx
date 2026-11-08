@@ -1,7 +1,10 @@
+import "@/components/about-people-mobile.css";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
+import { FeaturedStories } from "@/components/sections/FeaturedStories";
 import { Reveal } from "@/components/ui/Reveal";
 import { IconBadge } from "@/components/ui/IconBadge";
+import { TenetsToggle } from "@/components/about-tenets-toggle";
 import { Church, HeartHandshake, Globe } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -16,18 +19,18 @@ const values = [
   { icon: Globe, title: "Ambassadors", desc: "Equipping every believer to carry the Kingdom into everyday life." },
 ];
 
-type Home = { tag: string; name: string; place: string; href: string; cta: string; external?: boolean };
+type Home = { name: string; place: string; href: string; cta: string; external?: boolean };
 
 const homes: Home[] = [
-  { tag: "Explore", name: "Our Leadership", place: "Regional officers and 24 zonal superintendents", href: "/leadership", cta: "Meet the team" },
-  { tag: "Explore", name: "Bible Institute", place: "CACNA's ministerial training arm", href: "/bible-institute", cta: "Learn more" },
-  { tag: "Explore", name: "Our Ministries", place: "Departments serving every CACNA zone", href: "/ministries", cta: "See ministries" },
-  { tag: "Explore", name: "Zones & DCCs", place: "Member churches across the U.S., Canada, and South America", href: "/zones", cta: "Find a zone" },
-  { tag: "Explore", name: "Annual Convention", place: "CAC Village, Blue Ridge Summit, PA", href: "/calendar", cta: "Upcoming events" },
-  { tag: "Explore", name: "Watch Online", place: "Services and the Convention, streamed live", href: "/online", cta: "Watch now" },
-  { tag: "Explore", name: "Giving", place: "Support CACNA's ministries and the Centenary Building Project", href: "/giving", cta: "Give now" },
-  { tag: "Explore", name: "Blog & News", place: "Stories, updates, and reflections from across CACNA", href: "/blog", cta: "Read the latest" },
-  { tag: "Explore", name: "Gallery", place: "Photos from the Convention and CACNA life", href: "/gallery", cta: "See photos" },
+  { name: "Our Leadership", place: "Regional officers and 24 zonal superintendents", href: "/leadership", cta: "Meet the team" },
+  { name: "Bible Institute", place: "CACNA's ministerial training arm", href: "/bible-institute", cta: "Learn more" },
+  { name: "Our Ministries", place: "Departments serving every CACNA zone", href: "/ministries", cta: "See ministries" },
+  { name: "Zones & DCCs", place: "Member churches across the U.S., Canada, and South America", href: "/zones", cta: "Find a zone" },
+  { name: "Annual Convention", place: "CAC Village, Blue Ridge Summit, PA", href: "/calendar", cta: "Upcoming events" },
+  { name: "Watch Online", place: "Services and the Convention, streamed live", href: "/online", cta: "Watch now" },
+  { name: "Giving", place: "Support CACNA's ministries and the Centenary Building Project", href: "/giving", cta: "Give now" },
+  { name: "Blog & News", place: "Stories, updates, and reflections from across CACNA", href: "/blog", cta: "Read the latest" },
+  { name: "Gallery", place: "Photos from the Convention and CACNA life", href: "/gallery", cta: "See photos" },
 ];
 
 const homeCardStyle: CSSProperties = {
@@ -39,10 +42,9 @@ const homeCardStyle: CSSProperties = {
 function HomeCard({ h }: { h: Home }) {
   const content = (
     <>
-      <span style={{ alignSelf: "flex-start", fontSize: 10, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)", background: "rgba(253,200,65,.12)", border: "1px solid rgba(253,200,65,.28)", padding: "3px 10px", borderRadius: 999, marginBottom: 10 }}>{h.tag}</span>
       <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 17, letterSpacing: "-.3px", color: "var(--cream)", margin: "0 0 4px", lineHeight: 1.2 }}>{h.name}</h3>
-      <p style={{ fontSize: 13, color: "rgba(245,246,250,.55)", lineHeight: 1.5, margin: "0 0 12px", flex: 1 }}>{h.place}</p>
-      <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 700, color: "var(--gold)" }}>{h.cta} <span aria-hidden>→</span></span>
+      <p style={{ fontSize: 14, color: "rgba(245,246,250,.55)", lineHeight: 1.5, margin: "0 0 12px", flex: 1 }}>{h.place}</p>
+      <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 14, fontWeight: 700, color: "var(--gold)" }}>{h.cta} <span aria-hidden>→</span></span>
     </>
   );
   return h.external
@@ -53,7 +55,7 @@ function HomeCard({ h }: { h: Home }) {
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "About Us — Christ Apostolic Church North America (CACNA)",
-    description: "The story of CACNA — the corporate regional family of Christ Apostolic Church across the United States, Canada, and South America, organized into 24 Zones & DCCs, part of a global movement born in Nigeria in 1918.",
+    description: "The story of CACNA — the corporate regional family of Christ Apostolic Church across the United States, Canada, and South America, organized into 26 Zones & DCCs, part of a global movement born in Nigeria in 1918.",
     alternates: { canonical: `${SITE_URL}/about` },
   };
 }
@@ -68,7 +70,7 @@ export default async function AboutPage({
   const t = await getTranslations("About");
 
   return (
-    <main id="main-content">
+    <main id="main-content" className="ap-main">
       <Nav />
 
       {/* Hero */}
@@ -78,11 +80,8 @@ export default async function AboutPage({
       }}>
         <div style={{ position: "absolute", top: -60, right: -60, width: 360, height: 360, borderRadius: "50%", background: "radial-gradient(circle,var(--blue),var(--red) 70%)", opacity: .12, filter: "blur(6px)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
-          <Reveal>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Our Story</span>
-          </Reveal>
           <Reveal delay={80}>
-            <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(48px,7vw,96px)", letterSpacing: "-2px", color: "var(--ink)", margin: "18px 0", lineHeight: .92 }}>
+            <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(38px,7vw,96px)", letterSpacing: "-2px", color: "var(--ink)", margin: "18px 0", lineHeight: .92 }}>
               One movement.<br />
               <span style={{ color: "var(--red)" }}>Every corner of North America.</span>
             </h1>
@@ -93,8 +92,8 @@ export default async function AboutPage({
             </p>
           </Reveal>
           <Reveal delay={220}>
-            <Link href="/leadership" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(200,30,58,.34)" }}>
-              Meet Our Leadership →
+            <Link href="/zones" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(200,30,58,.34)" }}>
+              Find a church near you →
             </Link>
           </Reveal>
         </div>
@@ -104,26 +103,15 @@ export default async function AboutPage({
       <section style={{ background: "var(--paper)", padding: "100px clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 760, margin: "0 auto", textAlign: "center" }}>
           <Reveal>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>One Regional Family</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(34px,4.5vw,56px)", letterSpacing: "-1.2px", color: "var(--ink)", margin: "14px 0 26px", lineHeight: .98 }}>
               CACNA isn&apos;t a building.<br />
               <span style={{ color: "var(--red)" }}>It&apos;s a network of churches.</span>
             </h2>
           </Reveal>
           <Reveal delay={100}>
-            <p style={{ fontSize: 17.5, color: "var(--ink-soft)", lineHeight: 1.8, margin: "0 0 20px" }}>
+            <p style={{ fontSize: 17.5, color: "var(--ink-soft)", lineHeight: 1.8, margin: 0 }}>
               CACNA doesn&apos;t hold its own Sunday services — it exists to connect the member churches that do. From a handful of congregations to a regional family spanning three countries, every CACNA zone has its own local church, pastor, and gathering.
             </p>
-            <p style={{ fontSize: 17.5, color: "var(--ink-soft)", lineHeight: 1.8, margin: 0 }}>
-              What ties them together is one shared mandate, one Gospel, and one shepherd — Zonal Superintendents leading local congregations, all part of a movement that stretches back to Nigeria in 1918.
-            </p>
-          </Reveal>
-          <Reveal delay={180}>
-            <div style={{ marginTop: 36 }}>
-              <Link href="/zones" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--ink)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "16px 28px", borderRadius: 999, textDecoration: "none", boxShadow: "0 12px 28px rgba(18,20,30,.18)" }}>
-                Find a church near you →
-              </Link>
-            </div>
           </Reveal>
         </div>
       </section>
@@ -132,8 +120,8 @@ export default async function AboutPage({
       <section style={{ background: "var(--cream-2)", padding: "100px clamp(20px,5vw,64px)" }}>
         <div className="r2" style={{ maxWidth: 1100, margin: "0 auto", gap: 60, alignItems: "start" }}>
           <Reveal>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(32px,4vw,54px)", letterSpacing: "-1.2px", color: "var(--ink)", margin: "0 0 24px", lineHeight: .96 }}>
-              Our Mandate
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4vw,54px)", letterSpacing: "-1.2px", color: "var(--ink)", margin: "0 0 24px", lineHeight: .96 }}>
+              What we stand for
             </h2>
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               {[
@@ -142,7 +130,7 @@ export default async function AboutPage({
                 { label: "Our Promise", text: "Everyone who walks through our doors finds a home." },
               ].map((m, i) => (
                 <div key={i} style={{ padding: "22px 24px", background: "var(--paper)", borderRadius: 18, border: "1px solid var(--line)" }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 8 }}>{m.label}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 8 }}>{m.label}</div>
                   <p style={{ fontSize: 17, color: "var(--ink)", fontWeight: 600, margin: 0, lineHeight: 1.5 }}>{m.text}</p>
                 </div>
               ))}
@@ -156,7 +144,7 @@ export default async function AboutPage({
               The first Christ Apostolic Church in North America started as a house fellowship in <strong style={{ color: "var(--ink)" }}>1976</strong>, planted by the late <strong style={{ color: "var(--ink)" }}>Rev. Goke Oyedeji, Ph.D.</strong>, in Brooklyn, New York.
             </p>
             <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.75, marginBottom: 20 }}>
-              As Christ Apostolic Church member churches took root across the United States, Canada, and South America, CACNA was formed to unite them under one regional body — organized today into 24 Zones &amp; DCCs (District Church Councils), each led by a Zonal Superintendent.
+              As Christ Apostolic Church member churches took root across the United States, Canada, and South America, CACNA was formed to unite them under one regional body — organized today into 26 Zones &amp; DCCs (District Church Councils), each led by a Zonal Superintendent.
             </p>
             <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.75 }}>
               Part of the Christ Apostolic Church — one of Africa&apos;s largest Pentecostal denominations — our mission is raising generations of believers liberated through the light of God&apos;s Word and prayer, across North America and beyond.
@@ -169,7 +157,6 @@ export default async function AboutPage({
       <section style={{ background: "var(--cream)", padding: "100px clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 60 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>What We Value</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(36px,5vw,64px)", letterSpacing: "-1.5px", color: "var(--ink)", margin: "14px 0 0", lineHeight: .95 }}>
               Core Values
             </h2>
@@ -180,7 +167,7 @@ export default async function AboutPage({
                 <div style={{ background: "var(--paper)", borderRadius: 20, padding: "28px 24px", border: "1px solid var(--line)", boxShadow: "0 8px 22px rgba(18,20,30,.05)" }}>
                   <IconBadge icon={v.icon} style={{ marginBottom: 16 }} />
                   <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20, color: "var(--ink)", margin: "0 0 10px" }}>{v.title}</h3>
-                  <p style={{ fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.65, margin: 0 }}>{v.desc}</p>
+                  <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.65, margin: 0 }}>{v.desc}</p>
                 </div>
               </Reveal>
             ))}
@@ -192,28 +179,21 @@ export default async function AboutPage({
       <section style={{ background: "var(--cream-2)", padding: "100px clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 48 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Heritage</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(36px,5vw,64px)", letterSpacing: "-1.5px", color: "var(--ink)", margin: "14px 0 0", lineHeight: .95 }}>
-              One movement, 24 zones &amp; DCCs.
+              One movement, 26 zones &amp; DCCs.
             </h2>
           </Reveal>
           <div className="r2" style={{ gap: 44, alignItems: "center" }}>
             <Reveal>
-              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 12 }}>Christ Apostolic Church across North America</div>
-              <p style={{ fontSize: 17, color: "var(--ink-soft)", lineHeight: 1.75, margin: "0 0 18px" }}>
-                As CAC member churches were planted across the United States, Canada, and South America, CACNA emerged to give this growing family a shared structure — <strong style={{ color: "var(--ink)" }}>24 Zones &amp; DCCs (District Church Councils)</strong>, each shepherded by a Zonal Superintendent, all under one regional leadership.
-              </p>
+              <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "var(--red)", marginBottom: 12 }}>Christ Apostolic Church across North America</div>
               <p style={{ fontSize: 17, color: "var(--ink-soft)", lineHeight: 1.75, margin: 0 }}>
                 Every July, the family gathers as one at the Annual Convention — CAC Village, Blue Ridge Summit, Pennsylvania — for six days of worship, teaching, and fellowship, onsite and online.
               </p>
-              <Link href="/leadership" style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: 24, color: "var(--red)", fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
-                Meet our leadership →
-              </Link>
             </Reveal>
             <Reveal delay={120}>
               <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 24, padding: "30px 28px", boxShadow: "0 14px 32px rgba(18,20,30,.06)" }}>
                 {[
-                  { year: "24", text: "Zones & DCCs (District Church Councils) across the U.S., Canada, and South America." },
+                  { year: "26", text: "Zones & DCCs (District Church Councils) across the U.S., Canada, and South America." },
                   { year: "1", text: "Regional leadership uniting every member church under one mandate." },
                   { year: "July", text: "The whole family gathers each year at the CACNA Annual Convention." },
                 ].map((t, i) => (
@@ -232,7 +212,6 @@ export default async function AboutPage({
       <section style={{ background: "var(--paper)", padding: "100px clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 48 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Our Global Roots</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(32px,4.5vw,56px)", letterSpacing: "-1.2px", color: "var(--ink)", margin: "14px 0 0", lineHeight: .98 }}>
               A movement born in 1918.
             </h2>
@@ -253,7 +232,7 @@ export default async function AboutPage({
                     color: "#fff", fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 22,
                   }}>{f.name.split(" ").filter((w) => /^[A-Z]/.test(w)).map((w) => w[0]).slice(-2).join("")}</div>
                   <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 15, color: "var(--ink)", lineHeight: 1.3, marginBottom: 4 }}>{f.name}</div>
-                  <div style={{ fontSize: 12, color: "var(--ink-soft)" }}>{f.title}</div>
+                  <div style={{ fontSize: 13, color: "var(--ink-soft)" }}>{f.title}</div>
                 </div>
               </Reveal>
             ))}
@@ -262,18 +241,26 @@ export default async function AboutPage({
           <Reveal delay={120}>
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               <p style={{ fontSize: 16.5, color: "var(--ink-soft)", lineHeight: 1.8, margin: 0 }}>
-                Christ Apostolic Church is a distinctly indigenous Pentecostal church, with roots tracing back to 1918 — a gathering of forefathers including Oba/Pastor Isaac Babalola Akinyele, Pastor David Ogunleye Odubanjo, Joseph Sadare, and Miss Sophia Odunlami. From 1918 to 1928, the founders called their group Faith Tabernacle, later known as the Precious Stone or Diamond Society, establishing 12 units across Nigeria.
+                Christ Apostolic Church is a distinctly indigenous Pentecostal church, with roots tracing back to 1918 — a gathering of forefathers including Oba/Pastor Isaac Babalola Akinyele, Pastor David Ogunleye Odubanjo, Joseph Sadare, and Miss Sophia Odunlami. The founders first called their group the Precious Stone or Diamond Society; it later affiliated with Faith Tabernacle, establishing 12 units across Nigeria.
               </p>
               <p style={{ fontSize: 16.5, color: "var(--ink-soft)", lineHeight: 1.8, margin: 0 }}>
-                Evangelist (later Apostle) Joseph Ayodele Babalola joined the group in October 1928, and his ministry led to the Great Revival of 1930 at Oke Ooye, Ilesa — a turning point that spread the church across Nigeria. Over time, the group took the name &ldquo;Apostolic Church,&rdquo; then &ldquo;Nigerian Apostolic Church&rdquo; (1939), then &ldquo;United Apostolic Church&rdquo; (1942), before God revealed the name it carries today: <strong style={{ color: "var(--ink)" }}>Christ Apostolic Church</strong>, registered on May 4, 1943.
+                Evangelist (later Apostle) Joseph Ayodele Babalola, called in October 1928, joined the group, and his ministry led to the Great Revival of 1930 at Oke Ooye, Ilesa — a turning point that spread the church across Nigeria. From 1931 the group was affiliated with the British Apostolic Church and took the name &ldquo;Apostolic Church.&rdquo; After the two parted in 1939–40, it was known as the &ldquo;Nigerian Apostolic Church&rdquo; and then the &ldquo;United Apostolic Church,&rdquo; until in 1942 God revealed the name it carries today: <strong style={{ color: "var(--ink)" }}>Christ Apostolic Church</strong>, registered in May 1943.
               </p>
               <p style={{ fontSize: 16.5, color: "var(--ink-soft)", lineHeight: 1.8, margin: 0 }}>
-                In the decades since, the Church has planted Bible training colleges — including at Iperu and Ilesa — a theological seminary at Ijebu-Ife, and grammar schools across Nigeria, and today operates <strong style={{ color: "var(--ink)" }}>Joseph Ayo Babalola University (JABU)</strong> in Ikeji-Arakeji, Osun State. Over a little more than six decades, Christ Apostolic Church has grown from a small band of persecuted believers into a denomination with many millions of adherents across the world — CACNA is proud to carry this same heritage across the United States, Canada, and South America.
+                In the decades since, the Church has planted Bible training colleges — including at Iperu and Ilesa — a theological seminary at Ile-Ife, and grammar schools across Nigeria, and today operates <strong style={{ color: "var(--ink)" }}>Joseph Ayo Babalola University (JABU)</strong> in Ikeji-Arakeji, Osun State. Over a little more than six decades, Christ Apostolic Church has grown from a small band of persecuted believers into a denomination with many millions of adherents across the world.
               </p>
+              <Link href="/history" style={{ display: "inline-flex", alignItems: "center", gap: 8, alignSelf: "flex-start", color: "var(--red)", fontWeight: 700, fontSize: 16, textDecoration: "none" }}>
+                Read the full history →
+              </Link>
+              <Link href="/golden-jubilee" style={{ display: "inline-flex", alignItems: "center", gap: 8, alignSelf: "flex-start", color: "var(--red)", fontWeight: 700, fontSize: 16, textDecoration: "none" }}>
+                Our Golden Jubilee, 50 years in the Americas →
+              </Link>
             </div>
           </Reveal>
         </div>
       </section>
+
+      <FeaturedStories />
 
       {/* About the Annual Convention -- ported from the Convention site's own
           "About" content (lib/content/about-convention.ts) during the
@@ -283,7 +270,6 @@ export default async function AboutPage({
       <section id="convention" style={{ background: "var(--paper)", padding: "100px clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 44 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Annual Convention</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(32px,4.5vw,56px)", letterSpacing: "-1.2px", color: "var(--ink)", margin: "14px 0 0", lineHeight: .98 }}>
               About the Convention.
             </h2>
@@ -335,7 +321,6 @@ export default async function AboutPage({
         <div aria-hidden style={{ position: "absolute", top: -80, left: "50%", transform: "translateX(-50%)", width: 600, height: 320, background: "radial-gradient(circle,rgba(253,200,65,.14),transparent 65%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative", zIndex: 2 }}>
           <Reveal style={{ textAlign: "center", marginBottom: 28 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Our Homes</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,4vw,48px)", letterSpacing: "-1.2px", color: "var(--cream)", margin: "10px 0 0", lineHeight: .97 }}>
               One family, many homes.
             </h2>
@@ -354,18 +339,17 @@ export default async function AboutPage({
       <section id="tenets" style={{ background: "var(--cream)", padding: "100px clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 1180, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 56 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>What We Believe</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(36px,5vw,64px)", letterSpacing: "-1.5px", color: "var(--ink)", margin: "14px 0 0", lineHeight: .95 }}>
               The Thirteen Tenets of Faith.
             </h2>
             <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.7, maxWidth: 640, margin: "20px auto 0" }}>
-              The doctrinal foundation of the Christ Apostolic Church — what every CACNA pulpit preaches and what we live by.
+              The doctrinal foundation of the Christ Apostolic Church.
             </p>
             <Link href="/statement-of-faith" style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: 18, color: "var(--red)", fontWeight: 700, fontSize: 15, textDecoration: "none" }}>
               Read our full Statement of Faith →
             </Link>
           </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
+          <div id="tenets-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
             {[
               { n: "01", t: "The Unity of the Godhead", d: "The unity of the Godhead and the trinity of the persons therein — Father, Son, and Holy Spirit.", s: "Matthew 28:19, 2 Corinthians 13:14, 1 John 5:7" },
               { n: "02", t: "The Fall of Man", d: "The utter depravity of human nature, the necessity for repentance and regeneration, and the eternal doom of the finally impenitent.", s: "Romans 3:23, Ephesians 2, Acts 20:21, 2 Corinthians 5:17, Revelation 20:11-15, John 3:16-17" },
@@ -381,16 +365,17 @@ export default async function AboutPage({
               { n: "12", t: "Divine Healing", d: "Divine healing through obedience to the command of our Lord Jesus Christ, and faith in His name and the merit of His blood, for all sickness, disease and infirmities.", s: "James 5:14-18, 2 Kings 1:2-4" },
               { n: "13", t: "Jehovah Jireh", d: "Faith in God, the Jehovah Jireh, to supply all financial needs without going into indebtedness.", s: "Genesis 22:12-14, Philippians 4:19" },
             ].map((t, i) => (
-              <Reveal key={t.n} delay={(i % 3) * 60}>
+              <Reveal key={t.n} delay={(i % 3) * 60} className={i >= 4 ? "ap-tenet-more" : undefined}>
                 <div style={{ height: "100%", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 18, padding: "22px 22px 24px", boxShadow: "0 6px 18px rgba(18,20,30,.04)" }}>
-                  <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 13, color: "var(--red)", letterSpacing: "1.5px", marginBottom: 8 }}>{t.n}</div>
+                  <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 14, color: "var(--red)", letterSpacing: "1.5px", marginBottom: 8 }}>{t.n}</div>
                   <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, letterSpacing: "-.3px", color: "var(--ink)", margin: "0 0 8px", lineHeight: 1.2 }}>{t.t}</h3>
-                  <p style={{ fontSize: 13.5, color: "var(--ink-soft)", lineHeight: 1.6, margin: "0 0 10px" }}>{t.d}</p>
-                  <p style={{ fontSize: 11.5, fontStyle: "italic", color: "var(--red)", lineHeight: 1.5, margin: 0 }}>{t.s}</p>
+                  <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.6, margin: "0 0 10px" }}>{t.d}</p>
+                  <p style={{ fontSize: 13, fontStyle: "italic", color: "var(--red)", lineHeight: 1.5, margin: 0 }}>{t.s}</p>
                 </div>
               </Reveal>
             ))}
           </div>
+          <TenetsToggle />
         </div>
       </section>
 
@@ -398,29 +383,27 @@ export default async function AboutPage({
       <section style={{ background: "var(--cream-2)", padding: "100px clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <Reveal style={{ textAlign: "center", marginBottom: 60 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--red)" }}>Leadership</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(36px,5vw,64px)", letterSpacing: "-1.5px", color: "var(--ink)", margin: "14px 0 0", lineHeight: .95 }}>
               Meet Our Regional Superintendent
             </h2>
           </Reveal>
           <div className="r2" style={{ gap: 22, alignItems: "stretch" }}>
             <Reveal style={{ background: "var(--ink)", color: "var(--cream)", borderRadius: 26, overflow: "hidden", display: "flex", flexDirection: "column" }}>
-              <div style={{ height: 340, position: "relative" }}>
+              <div style={{ height: 300, position: "relative" }}>
                 <Image src="/images/pastor-agbeja-portrait.jpg" alt="Pastor Dr. T.O. Agbeja" fill style={{ objectFit: "cover", objectPosition: "center 28%" }} />
               </div>
               <div style={{ padding: 28 }}>
                 <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 26, lineHeight: 1.1 }}>Pastor Dr. T.O. Agbeja</div>
-                <div style={{ color: "var(--gold)", fontWeight: 700, fontSize: 13, letterSpacing: "1.5px", textTransform: "uppercase", marginTop: 8 }}>Regional Superintendent, CACNA</div>
-                <p style={{ fontSize: 14.5, lineHeight: 1.65, opacity: .82, margin: "16px 0 0" }}>Leading the CACNA family — building God’s ambassadors and welcoming every soul home.</p>
+                <div style={{ color: "var(--gold)", fontWeight: 700, fontSize: 14, letterSpacing: "1.5px", textTransform: "uppercase", marginTop: 8 }}>Regional Superintendent, CACNA</div>
               </div>
             </Reveal>
             <Reveal delay={120} style={{ background: "linear-gradient(155deg, var(--red), var(--red-deep))", color: "var(--cream)", borderRadius: 26, padding: "clamp(32px,4vw,48px) clamp(28px,3.5vw,40px)", display: "flex", flexDirection: "column", justifyContent: "center", boxShadow: "0 18px 36px rgba(200,30,58,.26)" }}>
-              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "rgba(245,246,250,.72)", marginBottom: 16 }}>The Regional Team</div>
+              <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "rgba(245,246,250,.72)", marginBottom: 16 }}>The Regional Team</div>
               <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(28px,3.6vw,40px)", letterSpacing: "-.8px", margin: "0 0 18px", lineHeight: 1 }}>
-                24 zones &amp; DCCs.<br />One family.<br />One Gospel.
+                26 zones &amp; DCCs.<br />One family.<br />One Gospel.
               </h3>
               <p style={{ fontSize: 15.5, lineHeight: 1.7, opacity: .92, margin: "0 0 26px" }}>
-                Alongside CACNA&apos;s national officers, Zonal Superintendents across all 24 Zones &amp; DCCs shepherd member churches spanning the United States, Canada, and South America — one regional leadership, one mandate.
+                Alongside CACNA&apos;s national officers, a Zonal Superintendent shepherds the member churches of each zone.
               </p>
               <Link href="/leadership" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, alignSelf: "flex-start", background: "var(--cream)", color: "var(--ink)", fontWeight: 700, fontSize: 15, padding: "14px 24px", borderRadius: 999, textDecoration: "none" }}>
                 Meet the full team →
@@ -433,8 +416,7 @@ export default async function AboutPage({
       {/* CTA */}
       <section style={{ background: "var(--ink)", padding: "80px clamp(20px,5vw,64px)", textAlign: "center" }}>
         <Reveal>
-          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(36px,5vw,64px)", letterSpacing: "-1.5px", color: "var(--cream)", margin: "0 0 16px", lineHeight: .95 }}>Ready to connect?</h2>
-          <p style={{ fontSize: 17, color: "rgba(245,246,250,.6)", margin: "0 0 36px" }}>Find a CACNA member church near you — onsite or online.</p>
+          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(36px,5vw,64px)", letterSpacing: "-1.5px", color: "var(--cream)", margin: "0 0 36px", lineHeight: .95 }}>Visit a church, or watch online.</h2>
           <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
             <Link href="/contact" style={{ background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(200,30,58,.4)" }}>Plan a Visit →</Link>
             <Link href="/online" style={{ background: "rgba(245,246,250,.1)", color: "var(--cream)", fontWeight: 700, fontSize: 16, padding: "17px 30px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(245,246,250,.2)" }}>Watch Online</Link>

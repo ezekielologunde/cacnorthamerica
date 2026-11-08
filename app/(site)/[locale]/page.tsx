@@ -9,6 +9,11 @@ import { Nav } from "@/components/navigation/Nav";
 import { Hero } from "@/components/sections/Hero";
 import { HomepageAnnouncements } from "@/components/ui/HomepageAnnouncements";
 import { createServiceClient } from "@/lib/supabase/server";
+import { CacWorldNewsStrip } from "@/components/sections/CacWorldNewsStrip";
+import { ConventionRegister } from "@/components/sections/ConventionRegister";
+import { HistoryTeaser } from "@/components/sections/HistoryTeaser";
+import { FaqTeaser } from "@/components/sections/FaqTeaser";
+import { SocialsRow } from "@/components/sections/SocialsRow";
 
 // Below-fold sections split into separate JS chunks — browser parses them
 // incrementally instead of one blocking task, cutting TBT significantly.
@@ -32,7 +37,7 @@ const faqJsonLd = {
     {
       "@type": "Question",
       name: "What is Christ Apostolic Church North America (CACNA)?",
-      acceptedAnswer: { "@type": "Answer", text: "CACNA is the regional body uniting Christ Apostolic Church member churches across the United States, Canada, and South America, organized under 24 Zones & DCCs (District Church Councils), each led by a Zonal Superintendent." },
+      acceptedAnswer: { "@type": "Answer", text: "CACNA is the regional body uniting Christ Apostolic Church member churches across the United States, Canada, and South America, organized under 26 Zones & DCCs (District Church Councils), each led by a Zonal Superintendent." },
     },
     {
       "@type": "Question",
@@ -47,7 +52,7 @@ const faqJsonLd = {
     {
       "@type": "Question",
       name: "How do I contact CACNA?",
-      acceptedAnswer: { "@type": "Answer", text: "Call (305) 469-0346, or email info@cacnorthamerica.com. Address: 14051 Stahley Road, Blue Ridge Summit, PA 17214." },
+      acceptedAnswer: { "@type": "Answer", text: "Call (305) 469-0346, or email info@cacna.org. Address: 14051 Stahley Road, Blue Ridge Summit, PA 17214." },
     },
   ],
 };
@@ -95,19 +100,25 @@ export default async function Home({
       <Nav heroDark />
       {announcements && announcements.length > 0 && <HomepageAnnouncements announcements={announcements} />}
       <Hero />
-      {/* Right after the hero's video, while the visitor is still in a
-          "watching CACNA" mindset — a stronger visual follow-through than
-          waiting until after five text-heavy sections. */}
-      <PhotoMarquee />
+      {/* Phone-first order: what a visitor most often came for (registering
+          for the convention, what is coming up, then watching a service)
+          sits right under the hero; the photo strip and the
+          superintendent's letter follow. */}
+      <ConventionRegister />
+      <UpcomingPrograms />
+      <WatchOnline />
       <AnniversaryCelebration />
+      <PhotoMarquee />
       <PastorWelcome />
       <Watchword />
-      <WatchOnline />
-      <UpcomingPrograms />
+      <HistoryTeaser />
       <LatestNews />
+      <CacWorldNewsStrip limit={3} />
       <OurMinistries />
       <Impact />
       <GlobalChurches />
+      <FaqTeaser />
+      <SocialsRow />
       <PlanVisit />
       <FooterExperience />
     </main>

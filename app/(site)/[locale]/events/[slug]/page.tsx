@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation";
+import "@/app/(site)/[locale]/mobile-events-media.css";
+import { PastEventBanner } from "@/components/events/PastEventBanner";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
@@ -44,7 +46,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   if (!cy) return {};
   return {
     title: `CACNA ${cy.year} Annual Convention — Christ Apostolic Church North America`,
-    description: `Save the date: the CACNA ${cy.year} National Convention runs ${dateRangeLabel(cy)} at ${CONVENTION_VENUE}. Full schedule and registration details are announced closer to the date.`,
+    description: `Save the date: the CACNA ${cy.year} National Convention runs ${dateRangeLabel(cy)} at ${CONVENTION_VENUE}. ${cy.registrationUrl ? "Registration is open." : "Full schedule and registration details are announced closer to the date."}`,
     alternates: { canonical: `${SITE_URL}/events/cacna-${cy.year}` },
   };
 }
@@ -73,6 +75,7 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
     url: `${SITE_URL}${ev.href}`,
     location: { "@type": "Place", name: "CAC Village", address: { "@type": "PostalAddress", streetAddress: "14051 Stahley Rd", addressLocality: "Blue Ridge Summit", addressRegion: "PA", postalCode: "17214", addressCountry: "US" } },
     organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },
+    performer: { "@type": "Church", name: SITE.name, url: SITE_URL },
   };
 
   return (
@@ -80,15 +83,10 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Events", path: "/calendar" }, { name: `CACNA ${cy.year}`, path: ev.href }])).replace(/</g, "\\u003c") }} />
       <Nav heroDark />
-      {isPast && (
-        <div role="status" style={{ background: '#2c2825', padding: '13px clamp(20px,5vw,64px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px 20px', fontSize: 14, fontWeight: 600, color: 'rgba(245,246,250,.7)' }}>
-          <span>This event has passed — page kept as an archive.</span>
-          <Link href="/calendar" style={{ color: 'var(--gold)', fontWeight: 700, fontSize: 13, textDecoration: 'none', whiteSpace: 'nowrap' }}>See upcoming events →</Link>
-        </div>
-      )}
+      {isPast && <PastEventBanner />}
 
       {/* Hero */}
-      <section style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) clamp(80px,10vw,120px)", position: "relative", overflow: "hidden" }}>
+      <section className="mm-hero" style={{ background: "var(--ink)", padding: "150px clamp(20px,5vw,64px) clamp(80px,10vw,120px)", position: "relative", overflow: "hidden" }}>
         <div aria-hidden style={{ position: "absolute", top: -140, right: -120, width: 760, height: 600, background: "radial-gradient(circle,rgba(253,200,65,.25),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 18s ease-in-out infinite" }} />
         <div aria-hidden style={{ position: "absolute", bottom: -80, left: -80, width: 500, height: 400, background: "radial-gradient(circle,rgba(200,30,58,.15),transparent 65%)", pointerEvents: "none" }} />
 
@@ -111,13 +109,13 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
 
           <Reveal delay={200}>
             <p style={{ fontSize: "clamp(16px,2vw,20px)", color: "rgba(245,246,250,.72)", lineHeight: 1.7, maxWidth: 620, margin: "0 0 44px", textWrap: "pretty" }}>
-              {dateRangeLabel(cy)} — {CONVENTION_VENUE}. The full schedule, theme, and registration will be announced closer to the date, but the dates and venue are confirmed today.
+              {dateRangeLabel(cy)} — {CONVENTION_VENUE}.
             </p>
           </Reveal>
 
           {!isPast && (
             <Reveal delay={280}>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
+              <div className="mm-actions" style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
                 {cy.registrationUrl ? (
                   hasExternalRegistrationUrl(cy) ? (
                     <a href={cy.registrationUrl} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(253,200,65,.4)" }}>
@@ -146,13 +144,13 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
       </section>
 
       {/* Recurring day-by-day pattern */}
-      <section style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+      <section className="mm-sec" style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <Reveal style={{ marginBottom: 40 }}>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--flame)" }}>What to expect</span>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.6vw,44px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 14px" }}>The rhythm stays the same</h2>
             <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.7, maxWidth: 640 }}>
-              CACNA's convention follows the same six-day pattern every year — only the calendar dates change. Here is what {cy.year} will look like, based on that recurring rhythm.
+              The convention follows the same six-day pattern every year. Here is what {cy.year} will look like.
             </p>
           </Reveal>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -172,7 +170,7 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
       </section>
 
       {/* Logistics */}
-      <section style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+      <section className="mm-sec" style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <Reveal style={{ marginBottom: 32 }}>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3.4vw,40px)", letterSpacing: "-1px", color: "var(--cream)", margin: 0 }}>Confirmed so far</h2>

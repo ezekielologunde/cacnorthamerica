@@ -1,9 +1,23 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { getStripeClient } from "@/lib/stripe";
+import { isPaidCheckout } from "@/lib/registrationConfirmation";
+import { splitCheckoutAmount, isProcessingFeeLine } from "@/lib/processingFee";
 import { setRequestLocale } from "next-intl/server";
+
+// A per-person receipt reached from Stripe: never indexed, and no inherited
+// canonical pointing at the home page.
+export const metadata: Metadata = {
+  title: "Order Confirmation — CACNA",
+  robots: { index: false, follow: false },
+  // The URL carries a session id or sealed token: never send it as a Referer
+  // (same-origin included) or into analytics page_referrer.
+  referrer: "no-referrer",
+  alternates: { canonical: null },
+};
 
 export default async function StoreConfirmationPage({
   params,
@@ -19,16 +33,25 @@ export default async function StoreConfirmationPage({
 
   let contactEmail: string | null = null;
   let totalCents: number | null = null;
+  let subtotalCents = 0;
+  let feeCents = 0;
   let items: { description: string; amountCents: number }[] = [];
-  let notFound = false;
+  // Only a paid session of this page's own kind is a completed checkout; an
+  // abandoned or unpaid session, another kind's session, or no session at
+  // all gets the not-found state rather than a receipt.
+  let notFound = !sessionId;
 
   if (sessionId) {
     try {
       const stripe = getStripeClient();
       const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: ["line_items"] });
+      if (!isPaidCheckout(session, "store_order")) throw new Error("not a paid store_order session");
       contactEmail = session.customer_details?.email ?? session.customer_email ?? null;
-      totalCents = session.amount_total ?? 0;
-      items = (session.line_items?.data ?? []).map((li) => ({ description: li.description ?? "", amountCents: li.amount_total ?? 0 }));
+      const split = splitCheckoutAmount(session.amount_total ?? 0, session.metadata);
+      totalCents = split.totalCents;
+      subtotalCents = split.subtotalCents;
+      feeCents = split.processingFeeCents;
+      items = (session.line_items?.data ?? []).filter((li) => !isProcessingFeeLine(li.description)).map((li) => ({ description: li.description ?? "", amountCents: li.amount_total ?? 0 }));
     } catch {
       notFound = true;
     }
@@ -61,7 +84,7 @@ export default async function StoreConfirmationPage({
           Thank you for your order!
         </h1>
         <p style={{ fontSize: 15.5, color: "rgba(245,246,250,.65)", maxWidth: 480, margin: "0 auto 32px", lineHeight: 1.7 }}>
-          We&apos;ve received your order. A confirmation email is on its way.
+          A confirmation email is on its way.
         </p>
 
         {sessionId && (
@@ -75,6 +98,18 @@ export default async function StoreConfirmationPage({
                 </li>
               ))}
             </ul>
+            {feeCents > 0 && (
+              <div style={{ borderTop: "1px solid rgba(245,246,250,.14)", paddingTop: 12, marginBottom: 10 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, color: "rgba(245,246,250,.6)", marginTop: 0 }}>
+                <span>Subtotal</span>
+                <span>{`$${(subtotalCents / 100).toFixed(2)}`}</span>
+              </div>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, color: "rgba(245,246,250,.6)", marginTop: 4 }}>
+                <span>Processing fee</span>
+                <span>{`$${(feeCents / 100).toFixed(2)}`}</span>
+              </div>
+              </div>
+            )}
             {totalCents !== null && (
               <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid rgba(245,246,250,.14)", paddingTop: 14 }}>
                 <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--gold)" }}>Paid</span>

@@ -5,12 +5,41 @@
 // installed (see package.json), so this stays a plain template-literal
 // builder like everything else in this file's family.
 
-// cacnorthamerica.com isn't a verified Resend sending domain yet (DNS
-// verification pending) -- sending from the already-verified
-// cacsalvationcenter.org in the meantime so confirmation emails actually go
-// out. Switch this back to noreply@cacnorthamerica.com once that domain
-// verifies in Resend.
-export const EMAIL_FROM = "CACNA <noreply@cacsalvationcenter.org>";
+import { SITE_URL } from "@/lib/site";
+
+// Each kind of mail goes out from its own address on the Resend-verified
+// cacna.org domain, with replies routed to a matching mailbox
+// (forwarded to the team's Gmail). Resend can send from any address on a
+// verified domain, but the reply-to mailbox must exist or replies bounce.
+const DOMAIN = "cacna.org";
+
+// The church logo in every designed email's header. A small (176x151, ~13 KB)
+// JPEG hosted on the site (public/email/cac-logo.jpg), not the 181 KB site
+// logo: Gmail blocks data: images, so it has to be a normal https URL, and a
+// small file keeps the mail light. Shown at 88px wide (2x for sharp screens)
+// on a white badge so the dark lettering stays readable on the dark header.
+export const EMAIL_LOGO_URL = `${SITE_URL}/email/cac-logo.jpg`;
+
+export function emailLogoHtml(): string {
+  return `<img src="${EMAIL_LOGO_URL}" width="88" height="76" alt="Christ Apostolic Church North America" style="display:block;margin:0 auto 14px;width:88px;height:76px;border:0;border-radius:14px;background:#fff" />`;
+}
+
+const SENDERS = {
+  general: { name: "CACNA", address: `info@${DOMAIN}` },
+  convention: { name: "CACNA Convention", address: `convention@${DOMAIN}` },
+  store: { name: "CACNA Store", address: `store@${DOMAIN}` },
+  giving: { name: "CACNA Giving", address: `giving@${DOMAIN}` },
+} as const;
+
+export type EmailPurpose = keyof typeof SENDERS;
+
+/** Spread into resend.emails.send(): sets both `from` and `replyTo`. */
+export function sender(purpose: EmailPurpose) {
+  const { name, address } = SENDERS[purpose];
+  return { from: `${name} <${address}>`, replyTo: address };
+}
+
+export const EMAIL_FROM = sender("general").from;
 
 /** Every string here is inserted as raw HTML -- callers must run any
  *  user-supplied value through lib/html.ts's escapeHtml() themselves before
@@ -30,10 +59,11 @@ export function emailShell(opts: {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
-<body style="margin:0;padding:0;background:#ECE9E4;font-family:Arial,Helvetica,sans-serif">
+<body style="margin:0;padding:0;background:#ECE9E4;font-family:'Segoe UI',Helvetica,Verdana,sans-serif">
   <div style="max-width:560px;margin:0 auto;background:#F5F6FA">
     <div style="height:5px;background:linear-gradient(90deg,#7A1128,#C81E3A,#FDC841)"></div>
     <div style="background:#12141E;padding:30px 32px;text-align:center">
+      ${emailLogoHtml()}
       <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:2.5px;color:#FDC841;text-transform:uppercase">Christ Apostolic Church</p>
       <p style="margin:4px 0 0;font-size:20px;font-weight:700;color:#fff">North America</p>
     </div>
@@ -50,7 +80,7 @@ export function emailShell(opts: {
         : ""
     }
     <div style="padding:16px 32px 28px;border-top:1px solid #ECE9E4;margin-top:16px">
-      <p style="font-size:12px;color:#8a8983;margin:0">${opts.footerNote ?? "Sent via cacnorthamerica.com · Questions? Reply to this email."}</p>
+      <p style="font-size:12px;color:#8a8983;margin:0">${opts.footerNote ?? "Sent via cacna.org · Questions? Reply to this email."}</p>
     </div>
   </div>
 </body>
