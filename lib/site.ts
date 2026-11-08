@@ -131,7 +131,7 @@ export function churchJsonLd() {
         email: SITE.email,
         priceRange: "Free",
         isAccessibleForFree: true,
-        knowsLanguage: ["en"],
+        knowsLanguage: ["en", "yo"],
         areaServed: ["United States", "Canada", "South America"],
         hasMap: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`,
         geo: { "@type": "GeoCoordinates", latitude: 39.7454, longitude: -77.4894 },

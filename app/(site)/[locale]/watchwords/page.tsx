@@ -68,7 +68,7 @@ export default async function WatchwordsPage({
           </Reveal>
           {CURRENT_WATCHWORD.verseTextYoruba && (
             <Reveal delay={320}>
-              <p style={{ fontStyle: "italic", fontSize: "clamp(15px,1.6vw,18px)", color: "rgba(245,246,250,.7)", margin: "22px 0 0", lineHeight: 1.6 }}>
+              <p lang="yo" style={{ fontStyle: "italic", fontSize: "clamp(15px,1.6vw,18px)", color: "rgba(245,246,250,.7)", margin: "22px 0 0", lineHeight: 1.6 }}>
                 &ldquo;{CURRENT_WATCHWORD.verseTextYoruba}&rdquo;
               </p>
             </Reveal>

@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test": "node --test lib/cacWorldNews.test.mjs lib/turnstile.test.mjs lib/registrationGift.test.mjs lib/cronAuth.test.mjs lib/blogMerge.test.mjs lib/contentRevalidation.test.mjs lib/navMatch.test.mjs && node scripts/check-adsense.mjs"
+    "test": "node --test lib/cacWorldNews.test.mjs lib/turnstile.test.mjs lib/registrationGift.test.mjs lib/cronAuth.test.mjs lib/blogMerge.test.mjs lib/contentRevalidation.test.mjs lib/navMatch.test.mjs lib/yoruba.test.mjs && node scripts/check-adsense.mjs"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^7.0.1",
