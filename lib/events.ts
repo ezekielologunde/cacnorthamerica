@@ -108,6 +108,15 @@ export const specialEvents: ChurchEvent[] = [
     navLabel: "Singles Game Night",
   },
   {
+    id: "operation-impact-brazil-2026",
+    title: "Operation Impact Brazil: Preparing the Ground",
+    desc: "A 3-day encounter and Zoom prayer meeting hosted by the CAC North America Empowerment Department. \"For a great and effective door has opened to me, and there are many adversaries\" (1 Corinthians 16:9). With Pastor Dr. T.A.O. Agbeja, Regional Superintendent, CAC Latunde Region; Pastor S.O. Oladele, President, CAC Nigeria & Overseas; and Pastor Z.O. Oloba, Regional Revivalist.",
+    dateLabel: "November 8–10, 2026", timeLabel: "8:00 PM ET · On Zoom", month: "NOV", day: "08",
+    startLocal: "20261108T200000", endLocal: "20261110T210000",
+    location: "Zoom Meeting ID 821 781 5665, Passcode CACNAED12",
+    navLabel: "Operation Impact Brazil",
+  },
+  {
     id: "holy-land-pilgrimage-2026",
     title: "Holy Land Pilgrimage 2026",
     desc: "CACNA Latunde Region Pilgrimage to Israel & Egypt, November 2–12, 2026. Package includes round-trip flights from JFK, 8 nights accommodation (7 in Israel + 1 in St. Catherine, Egypt), daily meals, private guide, group coach, and Pilgrimage Certificate. Price $4,549 · $500 deposit to register · $2,000 second payment due Oct 31. Contact: info@cacnapilgrimage.org | @cacnapilgrimage",
