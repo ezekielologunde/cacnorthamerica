@@ -125,6 +125,7 @@ function YesNoGroup({
   name, legend, hint, value, onChange, yes, no, kit,
 }: { name: string; legend: string; hint?: string; value: YesNo; onChange: (v: YesNo) => void; yes: string; no: string; kit: FieldKit }) {
   const invalid = kit.errors[name] ? true : undefined;
+  const errorId = invalid ? kit.fid(`${name}-err`) : undefined;
   const describedBy = [kit.errors[name] ? kit.fid(`${name}-err`) : null, hint ? kit.fid(`${name}-hint`) : null].filter(Boolean).join(" ");
   return (
     <fieldset style={{ border: "none", padding: 0, margin: "14px 0 0", minWidth: 0 }} aria-describedby={describedBy || undefined}>
@@ -137,6 +138,8 @@ function YesNoGroup({
               id={kit.fid(`${name}-${i}`)}
               type="radio"
               name={kit.fid(name)}
+              aria-invalid={invalid}
+              aria-describedby={errorId}
               checked={value === v}
               onChange={() => { onChange(v); kit.clearError(name); }}
             />
@@ -159,7 +162,7 @@ export function ChildCarePanel({
   }
   function addAllergy() {
     if (value.allergies.length >= MAX_CHILD_ALLERGIES) return;
-    onChange({ allergies: [...value.allergies, { key: kit.newKey(), type: "food", name: "", severity: "" }] });
+    onChange({ allergies: [...value.allergies, { key: kit.newKey(), type: "", name: "", severity: "" }] });
     kit.clearError(`${prefix}-has`);
   }
 
@@ -175,7 +178,7 @@ export function ChildCarePanel({
         name={`${prefix}-has`}
         legend={t("hasAllergiesLegend", { who })}
         value={value.hasAllergies}
-        onChange={(v) => onChange({ hasAllergies: v, allergies: v === "yes" && value.allergies.length === 0 ? [{ key: kit.newKey(), type: "food", name: "", severity: "" }] : value.allergies })}
+        onChange={(v) => onChange({ hasAllergies: v, allergies: v === "yes" && value.allergies.length === 0 ? [{ key: kit.newKey(), type: "", name: "", severity: "" }] : value.allergies })}
         yes={t("yesAllergies")}
         no={t("noAllergies")}
         kit={kit}
@@ -216,6 +219,7 @@ export function ChildCarePanel({
                     value={a.type}
                     onChange={(e) => { updateAllergy(a.key, { type: e.target.value as AllergyType }); kit.clearError(`${prefix}-a${a.key}-type`); }}
                   >
+                    <option value="" disabled>{t("typePlaceholder")}</option>
                     {ALLERGY_TYPES.map((type) => <option key={type} value={type}>{t(`type_${type}`)}</option>)}
                   </select>
                   {kit.fieldError(`${prefix}-a${a.key}-type`)}
@@ -230,6 +234,8 @@ export function ChildCarePanel({
                         id={kit.fid(`${prefix}-a${a.key}-severity-${si}`)}
                         type="radio"
                         name={kit.fid(`${prefix}-a${a.key}-severity`)}
+                        aria-invalid={kit.errors[`${prefix}-a${a.key}-severity`] ? true : undefined}
+                        aria-describedby={kit.errors[`${prefix}-a${a.key}-severity`] ? kit.fid(`${prefix}-a${a.key}-severity-err`) : undefined}
                         checked={a.severity === sev}
                         onChange={() => { updateAllergy(a.key, { severity: sev }); kit.clearError(`${prefix}-a${a.key}-severity`); }}
                       />

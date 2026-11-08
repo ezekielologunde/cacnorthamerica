@@ -22,6 +22,9 @@ type ChildRow = {
 };
 
 const LIMIT = 1000;
+// Refs per care lookup: a registration has at most 30 people, so 30 refs
+// return at most 900 care rows, under PostgREST's 1000-row cap.
+const REF_CHUNK = 30;
 
 export default async function ChildCareSheetPage({
   searchParams,
@@ -33,22 +36,33 @@ export default async function ChildCareSheetPage({
   const year = resolveCheckinYear(params.year);
   const yearParam = year === currentOrNextConvention().year ? "" : String(year);
 
-  const [people, care] = await Promise.all([
-    supabase
-      .from("checkin_people")
-      .select("ref, idx, full_name, code, age, checked_in_at")
+  const people = await supabase
+    .from("checkin_people")
+    .select("ref, idx, full_name, code, age, checked_in_at")
+    .eq("year", year)
+    .gte("age", 1)
+    .lte("age", CHILD_CARE_MAX_AGE)
+    .order("full_name")
+    .limit(LIMIT);
+  // Care rows are looked up only for the children listed, by their refs in
+  // chunks, so no listed child's details can fall outside a row limit.
+  const refs = [...new Set(((people.data ?? []) as ChildRow[]).map((p) => p.ref))];
+  const careRecords: ChildCareRecord[] = [];
+  let careError: typeof people.error = null;
+  for (let i = 0; i < refs.length && !careError; i += REF_CHUNK) {
+    const chunk = await supabase
+      .from("child_care_details")
+      .select(CHILD_CARE_COLUMNS)
       .eq("year", year)
-      .gte("age", 1)
-      .lte("age", CHILD_CARE_MAX_AGE)
-      .order("full_name")
-      .limit(LIMIT),
-    supabase.from("child_care_details").select(CHILD_CARE_COLUMNS).eq("year", year).limit(LIMIT),
-  ]);
-  const failed = people.error ?? care.error;
+      .in("ref", refs.slice(i, i + REF_CHUNK));
+    if (chunk.error) careError = chunk.error;
+    else careRecords.push(...((chunk.data ?? []) as ChildCareRecord[]));
+  }
+  const failed = people.error ?? careError;
   if (failed) console.error("[care-sheet] load failed:", failed.code);
 
   const byKey = new Map<string, ChildCareRecord>();
-  for (const c of (care.data ?? []) as ChildCareRecord[]) byKey.set(careKey(c.ref, c.idx), c);
+  for (const c of careRecords) byKey.set(careKey(c.ref, c.idx), c);
   const rank = (c?: ChildCareRecord) =>
     c?.has_allergies ? 1 + ALLERGY_SEVERITIES.indexOf((c.max_allergy_severity ?? "mild") as (typeof ALLERGY_SEVERITIES)[number]) : 0;
   const rows = ((people.data ?? []) as ChildRow[])

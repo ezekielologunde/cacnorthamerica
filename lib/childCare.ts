@@ -103,7 +103,7 @@ function phone(value: unknown, label: string): Result<string> {
  *  consent, so "not answered" can never be read as "none" or "yes". */
 export function parseChildCare(raw: unknown, who: string): Result<ChildCareInput> {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
-    return { ok: false, error: `${who}: please fill in the care details` };
+    return { ok: false, error: `${who}: please fill in the care details. If the form doesn't show them, refresh the page and try again.` };
   }
   const c = raw as Record<string, unknown>;
   if (typeof c.hasAllergies !== "boolean") {

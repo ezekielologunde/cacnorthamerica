@@ -224,6 +224,7 @@
     "type_food": "Food",
     "type_medication": "Medication",
     "type_other": "Other",
+    "typePlaceholder": "Choose a type",
     "severityLegend": "How serious is it?",
     "severity_mild": "Mild",
     "severity_moderate": "Moderate",
