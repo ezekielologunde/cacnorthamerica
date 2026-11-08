@@ -5,6 +5,7 @@ export interface Sermon {
   id: string;
   title: string;
   published: string;
+  description?: string;
 }
 
 const FALLBACK: Sermon[] = [];
@@ -47,13 +48,14 @@ async function fromApi(limit: number): Promise<Sermon[] | null> {
       `&eventType=completed&order=date&maxResults=${limit}&key=${encodeURIComponent(key)}`;
     const res = await fetch(url, { next: { revalidate: 86400 } });
     if (!res.ok) return null;
-    const data = await res.json() as { items?: { id: { videoId: string }; snippet: { title: string; publishedAt: string } }[] };
+    const data = await res.json() as { items?: { id: { videoId: string }; snippet: { title: string; publishedAt: string; description?: string } }[] };
     const items = data.items ?? [];
     if (!items.length) return null;
     return items.map((item) => ({
       id: item.id.videoId,
       title: item.snippet.title,
       published: item.snippet.publishedAt ?? "",
+      description: item.snippet.description || undefined,
     }));
   } catch {
     return null;
@@ -71,7 +73,8 @@ async function fromRss(limit: number): Promise<Sermon[] | null> {
       const id = entry.match(/<yt:videoId>([^<]+)<\/yt:videoId>/)?.[1];
       const title = entry.match(/<title>([^<]*)<\/title>/)?.[1];
       const published = entry.match(/<published>([^<]+)<\/published>/)?.[1];
-      if (id && title) sermons.push({ id, title: decodeXml(title), published: published ?? "" });
+      const description = entry.match(/<media:description>([\s\S]*?)<\/media:description>/)?.[1]?.trim();
+      if (id && title) sermons.push({ id, title: decodeXml(title), published: published ?? "", description: description ? decodeXml(description) : undefined });
     }
     return sermons.length ? sermons.slice(0, limit) : null;
   } catch {
@@ -94,4 +97,31 @@ export function formatSermonDate(iso: string): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "CACNA";
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+/**
+ * schema.org VideoObject list for the sermons shown on a page, so search engines
+ * can index each replay as a video result. thumbnailUrl/embedUrl point at YouTube;
+ * the description falls back to the title-based line when YouTube has none.
+ */
+export function videoListJsonLd(videos: Sermon[], pageUrl: string) {
+  const items = videos
+    .filter((v) => v.id && v.title && !Number.isNaN(new Date(v.published).getTime()))
+    .map((v) => ({
+      "@type": "VideoObject",
+      name: v.title,
+      description: (v.description?.split(String.fromCharCode(10))[0] || `${v.title} — Christ Apostolic Church North America.`).slice(0, 300),
+      thumbnailUrl: [`https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`],
+      uploadDate: new Date(v.published).toISOString(),
+      embedUrl: `https://www.youtube.com/embed/${v.id}`,
+      contentUrl: `https://www.youtube.com/watch?v=${v.id}`,
+      publisher: { "@type": "Organization", name: "Christ Apostolic Church North America" },
+    }));
+  if (!items.length) return null;
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    url: pageUrl,
+    itemListElement: items.map((item, i) => ({ "@type": "ListItem", position: i + 1, item })),
+  };
 }
