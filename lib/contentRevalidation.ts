@@ -30,6 +30,13 @@ function expireCacWorldFeed(): void {
   revalidateTag(CAC_WORLD_NEWS_TAG, { expire: 0 });
 }
 
+/** Marks the cached Blogger feed stale (stale-while-revalidate): the next
+ *  visitor still gets the cached copy instantly while a fresh fetch runs in
+ *  the background, so nobody waits on Blogger. Used by the scheduled refresh. */
+function refreshCacWorldFeedInBackground(): void {
+  revalidateTag(CAC_WORLD_NEWS_TAG, "max");
+}
+
 /** A post was published, edited or deleted in /admin/blog. */
 export function revalidateBlogContent(): void {
   revalidatePages(["home", "blog", "blogPost"]);
@@ -60,7 +67,7 @@ const SCHEDULED_PAGES: readonly PublicPage[] = ["home", "blog", "blogPost", "cal
 /** Everything the scheduled refresh touches: the CAC World feed and every
  *  page that shows feed, blog or event content. */
 export function refreshAllPublicContent(): { tags: number; pages: number } {
-  expireCacWorldFeed();
+  refreshCacWorldFeedInBackground();
   revalidatePages(SCHEDULED_PAGES);
   return { tags: 1, pages: SCHEDULED_PAGES.length };
 }
