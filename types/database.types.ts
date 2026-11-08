@@ -799,6 +799,143 @@ export type Database = {
         }
         Relationships: []
       }
+      social_post_targets: {
+        Row: {
+          attempts: number
+          caption_sent: string
+          caption_title: string
+          claimed_at: string | null
+          error_code: string | null
+          finished_at: string | null
+          id: string
+          platform: string
+          platform_post_id: string | null
+          post_id: string
+          retryable: boolean
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          attempts?: number
+          caption_sent?: string
+          caption_title?: string
+          claimed_at?: string | null
+          error_code?: string | null
+          finished_at?: string | null
+          id?: string
+          platform: string
+          platform_post_id?: string | null
+          post_id: string
+          retryable?: boolean
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          attempts?: number
+          caption_sent?: string
+          caption_title?: string
+          claimed_at?: string | null
+          error_code?: string | null
+          finished_at?: string | null
+          id?: string
+          platform?: string
+          platform_post_id?: string | null
+          post_id?: string
+          retryable?: boolean
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_post_targets_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "social_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      social_posts: {
+        Row: {
+          caption: string
+          created_at: string
+          dry_run: boolean
+          id: string
+          submitted_by: string
+          title: string
+          video_bytes: number
+          video_duration_s: number | null
+          video_format: string
+          video_height: number | null
+          video_public_id: string
+          video_url: string
+          video_width: number | null
+        }
+        Insert: {
+          caption?: string
+          created_at?: string
+          dry_run: boolean
+          id?: string
+          submitted_by: string
+          title: string
+          video_bytes: number
+          video_duration_s?: number | null
+          video_format: string
+          video_height?: number | null
+          video_public_id: string
+          video_url: string
+          video_width?: number | null
+        }
+        Update: {
+          caption?: string
+          created_at?: string
+          dry_run?: boolean
+          id?: string
+          submitted_by?: string
+          title?: string
+          video_bytes?: number
+          video_duration_s?: number | null
+          video_format?: string
+          video_height?: number | null
+          video_public_id?: string
+          video_url?: string
+          video_width?: number | null
+        }
+        Relationships: []
+      }
+      social_settings: {
+        Row: {
+          dry_run: boolean
+          facebook_enabled: boolean
+          id: number
+          instagram_enabled: boolean
+          posting_enabled: boolean
+          tiktok_enabled: boolean
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          dry_run?: boolean
+          facebook_enabled?: boolean
+          id?: number
+          instagram_enabled?: boolean
+          posting_enabled?: boolean
+          tiktok_enabled?: boolean
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          dry_run?: boolean
+          facebook_enabled?: boolean
+          id?: number
+          instagram_enabled?: boolean
+          posting_enabled?: boolean
+          tiktok_enabled?: boolean
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       tenets: {
         Row: {
           body: string
