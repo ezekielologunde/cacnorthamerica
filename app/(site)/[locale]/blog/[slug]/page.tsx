@@ -17,6 +17,7 @@ import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
 import { BlogAd } from "@/components/blog/BlogAd";
 import { ServeCallout } from "@/components/ServeCallout";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
+import { VideoFacade } from "@/components/ui/VideoFacade";
 import { setRequestLocale } from "next-intl/server";
 
 // db.schema: "cacna" -- see lib/supabase/server.ts's comment; without it
@@ -245,6 +246,22 @@ export default async function BlogSlugPage({
             <ImageLightbox src={post.image.url} alt={post.image.alt} />
           </div>
         </figure>
+      )}
+
+      {post.video && (
+        <div className="ed-post-col" style={{ marginBottom: 28 }}>
+          <VideoFacade videoId={post.video.id} title={post.video.title} showTitle={false} />
+          <p style={{ fontSize: 14, lineHeight: 1.6, margin: "12px 0 0" }}>
+            Credit:{" "}
+            <a href={post.video.channelUrl} target="_blank" rel="noopener noreferrer" style={{ fontWeight: 700 }}>
+              {post.video.channel} (YouTube)
+            </a>
+            <span aria-hidden> · </span>
+            <a href={`https://www.youtube.com/watch?v=${post.video.id}`} target="_blank" rel="noopener noreferrer" style={{ fontWeight: 700 }}>
+              Watch on YouTube →
+            </a>
+          </p>
+        </div>
       )}
 
       <div className="ed-post-col ed-post-body">

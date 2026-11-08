@@ -19,6 +19,12 @@ export interface FeaturedStory {
 
 export const FEATURED_STORIES: FeaturedStory[] = [
   {
+    id: "eRYo76wMwAk",
+    title: "The Mistakes That Almost Cost Him His Ministry | Pastor Dr. T.A.O. Agbeja | Ancient Alters #0001",
+    channel: "Ancient Alters, What Alters You?",
+    channelUrl: "https://www.youtube.com/@WhatAltersYou",
+  },
+  {
     id: "qKcigj55p2s",
     title: "I do hawk and did houseboy when I was a young boy",
     channel: "Pastor S.O. Oladele",

@@ -33,6 +33,8 @@ export interface BlogPost {
   gallery?: { url: string; alt: string }[];
   /** Who published it (one or more). Empty falls back to "CACNA". */
   authors?: BlogAuthor[];
+  /** A YouTube video shown above the text (click-to-play), with its credit. */
+  video?: { id: string; title: string; channel: string; channelUrl: string };
   body: string[];
 }
 
@@ -43,6 +45,34 @@ export interface BlogPost {
 // posts genuinely written for CACNA remain; new posts should be added here
 // or via the admin console (/admin/blog) going forward.
 const RAW_POSTS: Omit<BlogPost, "categoryColor" | "accent">[] = [
+  {
+    slug: "pastor-agbeja-ancient-alters-interview",
+    title: "Faith Through Grief and Hard Lessons: Pastor Agbeja on Ancient Alters",
+    excerpt:
+      "Regional Superintendent Pastor Dr. T.A.O. Agbeja talks about the calling he first resisted, losing a son, church hurt and keeping Christ central after 52 years in ministry.",
+    date: "November 7, 2026",
+    dateIso: "2026-11-07",
+    category: "Reflection",
+    readTime: "3 min read",
+    video: {
+      id: "eRYo76wMwAk",
+      title: "The Mistakes That Almost Cost Him His Ministry | Pastor Dr. T.A.O. Agbeja | Ancient Alters #0001",
+      channel: "Ancient Alters, What Alters You?",
+      channelUrl: "https://www.youtube.com/@WhatAltersYou",
+    },
+    body: [
+      "_Our Regional Superintendent sits down with host Adelani Eranola for the first episode of Ancient Alters (What Alters You?). Watch the full conversation above._",
+      "Pastor Dr. T.A.O. Agbeja is the Regional Superintendent of Christ Apostolic Church in North America. In this interview he looks back on **52 years in ministry and 40 years in America**, a journey that took him from Nigeria to England and then to the United States. The conversation goes behind the public ministry, to the calling he first resisted, the people who shaped him, the hard seasons that tested him and the faith that carried him through.",
+      "**A calling he did not plan.** He speaks about answering God’s call when ministry was not his plan, and about the moments along the way when he questioned whether he was where God wanted him to be.",
+      "**Mentors and prayer.** He reflects on Christian mentorship, including his time with the late Prophet Obadare, and on prayer and revival, with a caution about depending on systems more than on God.",
+      "**Provision.** He shares how God provided for his family through a year without a ministry salary, along with unexpected provision at other points in his journey.",
+      "**Trust, hurt and discernment.** He is open about misplaced trust and church hurt, why discernment matters, and the personal mistakes and boundaries every minister has to take seriously.",
+      "**Grief.** The interview also turns to the loss of his son. When the person who comforts others becomes the one who needs comfort, he asks what happens to faith, and shares how he found strength in God while continuing to serve others.",
+      "**Christ at the center.** He closes with keeping Christ central in everything and passing the faith on to the next generation.",
+      "**Who it is for.** Whether you are grieving, questioning your calling, serving in ministry or simply in a hard season, this conversation offers honest reflections on faith, leadership and perseverance. Which lesson stayed with you? Tell us, along with the timestamp, in the comments on the video.",
+      "_Credit: the video is from the Ancient Alters, What Alters You? YouTube channel._",
+    ],
+  },
   {
     slug: "tribute-to-late-pastor-abraham-adegoke-oyedeji",
     title: "A Tribute to Late Pastor (Dr.) Abraham Adegoke Oyedeji",

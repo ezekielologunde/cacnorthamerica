@@ -2,13 +2,18 @@
 project: cacnorthamerica
 type: changelog
 status: active
-last_updated: 2026-11-07
+last_updated: 2026-11-08
 tags: [project/cacnorthamerica]
 ---
 
 # Changelog
 
 Related: [[Project]] · [[Decisions]] · [[Features]] · [[Payments]] · [[Security]]
+
+## 2026-11-08 -- video blog posts, Pastor Agbeja interview (PR 156)
+
+- Blog posts can now carry an optional `video` (YouTube id, title, channel, channel link), shown click-to-play above the text with a credit line. Rendered by `VideoFacade` in `app/(site)/[locale]/blog/[slug]/page.tsx`. The field exists only in `lib/blog.ts`; posts created in the admin console cannot set it.
+- Added the Ancient Alters #0001 interview with Regional Superintendent Pastor Dr. T.A.O. Agbeja as a Featured story (`lib/featuredStories.ts`) and as the blog post `pastor-agbeja-ancient-alters-interview`. The write-up uses only the video's published description.
 
 ## 2026-11-07 -- secrets kept out of analytics, one AdSense ID (PR 155)
 
