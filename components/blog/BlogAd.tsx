@@ -1,7 +1,7 @@
 "use client";
 
-import Script from "next/script";
 import { useEffect, useRef } from "react";
+import { adsenseClientId } from "@/lib/adsense";
 
 declare global {
   interface Window {
@@ -11,10 +11,11 @@ declare global {
 
 // Both values come from AdSense and are set in Vercel (see the privacy page for
 // the visitor-facing wording). While either is unset or malformed this renders
-// nothing and no Google script loads, so the site is ad-free by default.
-const CLIENT = process.env.NEXT_PUBLIC_ADSENSE_ID?.trim() ?? "";
+// nothing, so the site is ad-free by default. The adsbygoogle.js loader itself
+// comes from AdSenseScript, which runs on every blog page.
+const CLIENT = adsenseClientId(process.env.NEXT_PUBLIC_ADSENSE_ID) ?? "";
 const SLOT = process.env.NEXT_PUBLIC_ADSENSE_BLOG_SLOT?.trim() ?? "";
-const ENABLED = /^ca-pub-\d{16}$/.test(CLIENT) && /^\d{6,}$/.test(SLOT);
+const ENABLED = CLIENT !== "" && /^\d{6,}$/.test(SLOT);
 
 /** One responsive AdSense display unit, shown only on blog posts. */
 export function BlogAd() {
@@ -37,13 +38,6 @@ export function BlogAd() {
       <div style={{ fontSize: 10.5, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", color: "var(--ink-soft)", marginBottom: 8 }}>
         Advertisement
       </div>
-      <Script
-        id="adsbygoogle-loader"
-        async
-        strategy="afterInteractive"
-        crossOrigin="anonymous"
-        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${CLIENT}`}
-      />
       <ins
         className="adsbygoogle"
         style={{ display: "block" }}

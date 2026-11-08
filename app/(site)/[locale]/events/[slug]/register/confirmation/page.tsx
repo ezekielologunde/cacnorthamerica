@@ -24,6 +24,9 @@ function findYear(slug: string): ConventionYear | undefined {
 export const metadata: Metadata = {
   title: "Registration Confirmation — CACNA",
   robots: { index: false, follow: false },
+  // The URL carries a session id or sealed token: never send it as a Referer
+  // (same-origin included) or into analytics page_referrer.
+  referrer: "no-referrer",
   alternates: { canonical: null },
 };
 

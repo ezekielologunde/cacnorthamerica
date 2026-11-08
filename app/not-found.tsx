@@ -1,7 +1,10 @@
 import Link from "next/link";
+import { GoogleTags } from "@/components/analytics/GoogleTags";
 
 export default function NotFound() {
   return (
+    <>
+    <GoogleTags />
     <div role="alert" style={{
       minHeight: "100vh", display: "flex", flexDirection: "column",
       alignItems: "center", justifyContent: "center", textAlign: "center",
@@ -40,5 +43,6 @@ export default function NotFound() {
         Back to home
       </Link>
     </div>
+    </>
   );
 }

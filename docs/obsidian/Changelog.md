@@ -15,6 +15,13 @@ Related: [[Project]] · [[Decisions]] · [[Features]] · [[Payments]] · [[Secur
 - Blog posts can now carry an optional `video` (YouTube id, title, channel, channel link), shown click-to-play above the text with a credit line. Rendered by `VideoFacade` in `app/(site)/[locale]/blog/[slug]/page.tsx`. The field exists only in `lib/blog.ts`; posts created in the admin console cannot set it.
 - Added the Ancient Alters #0001 interview with Regional Superintendent Pastor Dr. T.A.O. Agbeja as a Featured story (`lib/featuredStories.ts`) and as the blog post `pastor-agbeja-ancient-alters-interview`. The write-up uses only the video's published description.
 
+## 2026-11-07 -- secrets kept out of analytics, one AdSense ID (PR 155)
+
+- Mergestorm review of #73: a padded AdSense ID gave `ads.txt` a valid line but a bad script URL, and only `/register/confirmation` was stripped from GA `page_location`. Both fixed.
+- `adsenseClientId()` is now the single normalizer (`ads.txt`, `AdSenseScript`, `BlogAd`, `GoogleTags`, `google-adsense-account` meta). `BlogAd` no longer loads `adsbygoogle.js` itself.
+- Query stripped from GA `page_location` and from Vercel Analytics / Speed Insights URLs on the three confirmation pages and `/giving/cancel` (and `/admin` for Vercel); confirmation pages send `no-referrer`. Google tags moved out of the root layout so `/admin` never loads them. Details and the GA4 setting to change: [[Security]].
+- `scripts/check-adsense.mjs` now runs in `npm test`.
+
 ## 2026-11-06 -- registration contact fields and Quick help
 
 - Adult form: one required **DCC / Zone / Church** field (people who do not know their zone enter their church). Youth form: DCC / Zone is optional (church name is already required).
