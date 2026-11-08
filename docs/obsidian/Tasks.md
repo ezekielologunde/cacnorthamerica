@@ -2,7 +2,7 @@
 project: cacnorthamerica
 type: tasks
 status: active
-last_updated: 2026-11-05
+last_updated: 2026-11-08
 tags: [project/cacnorthamerica]
 ---
 
@@ -21,6 +21,20 @@ Related: [[Project]] · [[Features]] · [[Architecture]] · [[Decisions]] · [[B
   `scripts/check-*.mjs` pin scripts and `lib/*.test.mjs` exist; whether CI
   runs them is **Unverified**.
 - Check-in QR -- dropped (PR #82); the 4-character code is the only method.
+
+**Open after round 2 (PR 160, 2026-11-08):**
+- Set `CRON_SECRET` (at least 16 characters, ideally 32+) on the Vercel project
+  for Production and redeploy; until then `/api/cron/refresh-content` answers 401
+  to every request. Steps in `docs/cron-refresh-content.md`.
+- Apply migration `0026_child_care_details.sql` **before** deploying the code
+  that writes it, with the site owner's say-so; until then every Youth & Child
+  registration that includes a child 12 or under is refused. See [[Database]].
+- Legal review of the care-consent and privacy wording for children's medical
+  data.
+- Native-Yoruba review of the phrases in `lib/yoruba.ts`.
+- After each convention, purge that year's care rows
+  (`delete from cacna.child_care_details where year = N`), and periodically the
+  orphan rows from abandoned card checkouts (query in the 0026 header).
 
 **Open (owner / dashboard; state Unverified from the repo):**
 - Apply migrations 0015, 0016, 0018, 0019 "only with the site owner's say-so"

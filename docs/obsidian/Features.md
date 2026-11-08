@@ -95,3 +95,23 @@ Implemented unless marked otherwise. Details in [[Payments]], [[Backend]].
   `app/(site)/[locale]/`)
 - **Partial (off until env set):** blog-only AdSense unit (PR #123)
 - **Partial (off until `NEXT_PUBLIC_ADSENSE_ID` is set):** AdSense auto-ads script on **blog pages only** (rule in `lib/adsense.ts`, owner decision 2026-11-06), public `/ads.txt` built from the same variable (404 while unset), and robots/sitemap tuned for AdSense's crawler. Owner steps in `docs/adsense-readiness.md` (PR #73)
+- **Children's Ministry care details (2026-11-08):** the Youth & Child
+  registration collects, for each child 12 or under, allergies (type and
+  severity), medical notes, medications, dietary and special needs and photo
+  consent, plus a shared family block (emergency contact, up to 4 authorized
+  pickups, guardian consent). Stored in `cacna.child_care_details`
+  ([[Database]]); check-in staff see an allergy flag and care summary on
+  `/admin/check-in` and a printable sheet at `/admin/check-in/children`.
+  **Needs migration 0026 applied before deploy**; legal wording not yet
+  reviewed. See [[Security]], [[Tasks]].
+- **Shared navigation (2026-11-08):** header and footer render one list
+  (`lib/nav.ts`), with the current page highlighted. See [[Frontend]].
+- **Yoruba-friendly touches (2026-11-08):** inline Yoruba phrases
+  (`lib/yoruba.ts`) on the otherwise English site; native-speaker review
+  pending ([[Tasks]]).
+- **Home shows admin-published content (2026-11-08):** posts and events
+  published in `/admin/blog` and `/admin/events` appear on the home page as
+  well as `/blog` and `/calendar`.
+- **Scheduled content refresh (2026-11-08):** a daily Vercel Cron job refreshes
+  the CAC World News feed and public pages; admin saves refresh immediately.
+  Needs `CRON_SECRET` set. See [[Backend]], [[Architecture]].

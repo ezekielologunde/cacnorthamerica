@@ -2,7 +2,7 @@
 project: cacnorthamerica
 type: database
 status: active
-last_updated: 2026-11-05
+last_updated: 2026-11-08
 tags: [project/cacnorthamerica]
 ---
 
@@ -56,6 +56,32 @@ Later:
   (non-empty), `note`, `under_18`, `guardian_consent`, `convention_year`;
   index on `created_at` (the one-confirmation-a-day check).
 
+- `child_care_details` (0026) -- Children's Ministry care details, one row per
+  child aged 12 or under in a Youth & Child registration, keyed `(ref, idx)`
+  (unique) like `checkin_people`. Columns: `id` uuid PK, `year`, `ref`, `idx`
+  (>= 0), `child_name` (<= 241), `age` (1-12), `has_allergies`, `allergies`
+  jsonb array (<= 6; each `{type: food|medication|other, name,
+  severity: mild|moderate|severe}`), `max_allergy_severity`, `medical_notes`
+  (<= 300), `medications` (<= 300), `dietary_needs` (<= 200), `special_needs`
+  (<= 300), `photo_consent`, `emergency_name` / `emergency_phone` /
+  `emergency_relationship`, `pickups` jsonb array (<= 4; `{name, phone}`),
+  `guardian_name`, `guardian_phone`, `consent_at`, `created_at`. A check
+  constraint ties `has_allergies` to a non-empty `allergies` array; index on
+  `year`. Rationale and data model: [[Security]], [[Decisions]].
+  - **Apply BEFORE deploying the code that writes it** (and only with the site
+    owner's say-so, per the file header). The writer fails closed, so until the
+    table exists every Youth & Child registration that includes a child 12 or
+    under is refused with a "please try again" message. See [[Tasks]].
+  - **Retention:** rows are only needed for their convention. Purge a year once
+    it is over: `delete from cacna.child_care_details where year = N`.
+  - **Orphans:** care rows are saved before the payment step and deleted again
+    if it fails, but an abandoned card checkout (Stripe sessions expire after
+    24 hours) leaves rows with no matching `checkin_people` row. The header of
+    0026 carries the purge query: delete rows older than 2 days with no
+    `checkin_people` row for the same `(ref, idx)`. Look for `[checkin]` errors
+    in the logs first, since a paid registration whose check-in row failed
+    would match too.
+
 ## RPCs / functions
 
 - `cacna.is_admin()` -- `security definer`, `search_path = cacna`, true when
@@ -74,3 +100,15 @@ admin-only select policy, `grant all` to `service_role` (writes are
 server-side only). Note 0010's default privileges grant `select` to anon on
 every new table, which is why each later migration revokes explicitly -- see
 [[Security]].
+
+### `child_care_details` (0026) RLS
+
+RLS is enabled **and forced**, with **no policies on purpose**: with RLS on and
+no policy every non-bypass role is denied every row. All privileges are revoked
+from `public`, `anon` and `authenticated` (0010's default privileges would
+otherwise grant `select` to anon and authenticated), and `grant all` goes to
+`service_role` only. So neither the public anon key nor a signed-in admin's own
+session can read or write it through PostgREST; both the writer
+(`app/api/register/route.ts` via `lib/childCareStore.ts`) and the readers (the
+admin check-in pages, after `requireAdmin()`) use the service client. See
+[[Security]] and [[Backend]].
