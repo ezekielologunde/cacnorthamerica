@@ -114,7 +114,7 @@ export function videoListJsonLd(videos: Sermon[], pageUrl: string) {
       thumbnailUrl: [`https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`],
       uploadDate: new Date(v.published).toISOString(),
       embedUrl: `https://www.youtube.com/embed/${v.id}`,
-      contentUrl: `https://www.youtube.com/watch?v=${v.id}`,
+      url: `https://www.youtube.com/watch?v=${v.id}`,
       publisher: { "@type": "Organization", name: "Christ Apostolic Church North America" },
     }));
   if (!items.length) return null;
