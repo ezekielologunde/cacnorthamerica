@@ -237,6 +237,81 @@ export type Database = {
         }
         Relationships: []
       }
+      child_care_details: {
+        Row: {
+          age: number
+          allergies: Json
+          child_name: string
+          consent_at: string
+          created_at: string
+          dietary_needs: string | null
+          emergency_name: string
+          emergency_phone: string
+          emergency_relationship: string | null
+          guardian_name: string
+          guardian_phone: string
+          has_allergies: boolean
+          id: string
+          idx: number
+          max_allergy_severity: string | null
+          medical_notes: string | null
+          medications: string | null
+          photo_consent: boolean
+          pickups: Json
+          ref: string
+          special_needs: string | null
+          year: number
+        }
+        Insert: {
+          age: number
+          allergies: Json
+          child_name: string
+          consent_at: string
+          created_at?: string
+          dietary_needs?: string | null
+          emergency_name: string
+          emergency_phone: string
+          emergency_relationship?: string | null
+          guardian_name: string
+          guardian_phone: string
+          has_allergies: boolean
+          id?: string
+          idx: number
+          max_allergy_severity?: string | null
+          medical_notes?: string | null
+          medications?: string | null
+          photo_consent: boolean
+          pickups: Json
+          ref: string
+          special_needs?: string | null
+          year: number
+        }
+        Update: {
+          age?: number
+          allergies?: Json
+          child_name?: string
+          consent_at?: string
+          created_at?: string
+          dietary_needs?: string | null
+          emergency_name?: string
+          emergency_phone?: string
+          emergency_relationship?: string | null
+          guardian_name?: string
+          guardian_phone?: string
+          has_allergies?: boolean
+          id?: string
+          idx?: number
+          max_allergy_severity?: string | null
+          medical_notes?: string | null
+          medications?: string | null
+          photo_consent?: boolean
+          pickups?: Json
+          ref?: string
+          special_needs?: string | null
+          year?: number
+        }
+        Relationships: []
+      }
       churches: {
         Row: {
           address: string
