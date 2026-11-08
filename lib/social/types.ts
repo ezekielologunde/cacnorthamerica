@@ -37,13 +37,34 @@ export type PlatformCaption = { title: string; text: string };
 export type ValidateResult = { ok: true } | { ok: false; code: string };
 
 /** `retryable` is the adapter's call: true only when the platform said
- *  definitively that nothing was posted. */
-export type PublishResult = { id: string } | { error: string; retryable: boolean };
+ *  definitively that nothing was posted. On success, `notice` is an optional
+ *  code the admin should see beside the posted status (e.g. TikTok's "posted,
+ *  but private until the app is audited"); it is stored in the target's
+ *  error_code column and sanitised like any other code. */
+export type PublishResult = { id: string; notice?: string } | { error: string; retryable: boolean };
 
 export interface PlatformAdapter {
   readonly platform: Platform;
   validate(video: VideoMeta): ValidateResult;
   publish(video: VideoMeta, caption: PlatformCaption): Promise<PublishResult>;
+}
+
+/** A platform credential that rotates (TikTok's refresh token changes on
+ *  every refresh, so it can't live in an env var). Stored only encrypted
+ *  (lib/social/token-crypto.ts) in cacna.social_credentials. Instants are
+ *  epoch milliseconds; `seed` is a fingerprint of the env token the chain
+ *  started from, so pasting a new one restarts it. */
+export type StoredCredential = {
+  accessToken: string;
+  accessExpiresAt: number;
+  refreshToken: string;
+  refreshExpiresAt: number;
+  seed?: string;
+};
+
+export interface CredentialStore {
+  get(platform: Platform): Promise<StoredCredential | null>;
+  put(platform: Platform, credential: StoredCredential): Promise<void>;
 }
 
 export type SocialSettings = {

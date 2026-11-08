@@ -1,18 +1,44 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/supabase/require-admin";
 import ActionButton from "@/components/admin/ActionButton";
-import { realAdapter } from "@/lib/social/adapters";
-import { readSocialSettings } from "@/lib/social/supabase-store";
-import { PLATFORM_LABELS, PLATFORMS } from "@/lib/social/types";
+import { realAdapterFor } from "@/lib/social/adapters";
+import { readSocialSettings, type ServiceClient } from "@/lib/social/supabase-store";
+import { PLATFORM_LABELS, PLATFORMS, type Platform } from "@/lib/social/types";
 import { saveSocialSettings } from "../actions";
 
 const row: React.CSSProperties = { display: "flex", gap: 12, alignItems: "flex-start", padding: "12px 0", borderTop: "1px solid rgba(0,0,0,0.06)" };
 const title: React.CSSProperties = { display: "block", fontSize: 14, fontWeight: 700, color: "var(--ink)", margin: 0 };
 const note: React.CSSProperties = { display: "block", fontSize: 12.5, color: "var(--ink-soft)", margin: "2px 0 0" };
 
+/** When the stored TikTok refresh token lapses. Only the expiry instant is
+ *  read (it is stored in clear); the tokens never are. Null before migration
+ *  0027 or the first TikTok post. */
+async function readTikTokAuth(db: ServiceClient): Promise<{ when: string; expired: boolean } | null> {
+  const { data } = await db.from("social_credentials")
+    .select("refresh_expires_at").eq("platform", "tiktok").maybeSingle();
+  if (!data) return null;
+  const until = new Date(data.refresh_expires_at);
+  return {
+    when: until.toLocaleDateString("en-US", { dateStyle: "medium", timeZone: "America/New_York" }),
+    expired: until.getTime() <= Date.now(),
+  };
+}
+
 export default async function SocialSettingsPage() {
   const { supabase } = await requireAdmin();
   const settings = await readSocialSettings(supabase).catch(() => null);
+  const configured = realAdapterFor(supabase);
+  const tiktokAuth = await readTikTokAuth(supabase);
+
+  function connection(p: Platform): string {
+    if (!configured(p)) return "Not connected yet: real posts to this platform are logged as skipped.";
+    if (p !== "tiktok") return "Connected.";
+    const privateNote = process.env.TIKTOK_APP_AUDITED === "true" ? "" : " Posts are PRIVATE until TikTok audits the app.";
+    if (!tiktokAuth) return `Connected; TikTok is authorised on the first post.${privateNote}`;
+    return tiktokAuth.expired
+      ? `Reconnect needed: the TikTok authorisation expired on ${tiktokAuth.when}. Put a new TIKTOK_REFRESH_TOKEN in Vercel.`
+      : `Connected; authorisation valid until ${tiktokAuth.when}.${privateNote}`;
+  }
 
   return (
     <div style={{ maxWidth: 680 }}>
@@ -46,7 +72,7 @@ export default async function SocialSettingsPage() {
               <input type="checkbox" name={`${p}_enabled`} defaultChecked={settings.platforms[p]} style={{ marginTop: 3 }} />
               <span>
                 <span style={title}>{PLATFORM_LABELS[p]}</span>
-                <span style={note}>{realAdapter(p) ? "Connected." : "Not connected yet: real posts to this platform are logged as skipped."}</span>
+                <span style={note}>{connection(p)}</span>
               </span>
             </label>
           ))}

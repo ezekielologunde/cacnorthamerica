@@ -214,6 +214,19 @@ const nextConfig: NextConfig = {
           has: [{ type: "host" as const, value: "blog.cacnorthamerica.com" }],
           destination: "/blog",
         },
+        // TikTok's PULL_FROM_URL only fetches from a verified domain or URL
+        // prefix and follows no redirects, so social videos are also served
+        // from cacna.org: an external rewrite (a proxy, not a 3xx) to the
+        // same public Cloudinary file. Only the `social` folder, one path
+        // segment, so nothing else on Cloudinary is reachable this way.
+        // proxy.ts's matcher skips paths with a dot, so next-intl never sees
+        // these. lib/social/adapters/tiktok.ts builds the URLs.
+        ...(process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+          ? [{
+              source: "/social-video/:file([A-Za-z0-9_-]+\\.mp4|[A-Za-z0-9_-]+\\.mov)",
+              destination: `https://res.cloudinary.com/${encodeURIComponent(process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME)}/video/upload/social/:file`,
+            }]
+          : []),
       ],
       afterFiles: [],
       fallback: [],

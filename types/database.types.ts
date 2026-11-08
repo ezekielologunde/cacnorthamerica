@@ -799,6 +799,30 @@ export type Database = {
         }
         Relationships: []
       }
+      social_credentials: {
+        Row: {
+          access_expires_at: string
+          platform: string
+          refresh_expires_at: string
+          secret: string
+          updated_at: string
+        }
+        Insert: {
+          access_expires_at: string
+          platform: string
+          refresh_expires_at: string
+          secret: string
+          updated_at?: string
+        }
+        Update: {
+          access_expires_at?: string
+          platform?: string
+          refresh_expires_at?: string
+          secret?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       social_post_targets: {
         Row: {
           attempts: number

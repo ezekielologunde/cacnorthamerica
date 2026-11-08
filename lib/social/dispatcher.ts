@@ -224,7 +224,9 @@ async function attempt(
     await deps.store.transition(target.id, ["posting"], {
       status: "posted",
       platformPostId: sanitizePostId(result.id),
-      errorCode: null,
+      // A success notice (e.g. "posted as private") is shown beside the
+      // posted status; it passes the same identifier check as error codes.
+      errorCode: result.notice ? sanitizeErrorCode(result.notice) : null,
       retryable: false,
       finished: true,
     });
