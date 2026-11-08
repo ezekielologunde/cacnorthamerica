@@ -65,7 +65,9 @@ lie about size, format or URL.
   (default false), `updated_at`, `updated_by`.
 - `social_posts`: one per submitted video. Cloudinary `video_public_id` and `video_url`, the
   metadata read from Cloudinary (bytes, format, width, height, duration, frame rate, codec), `title`, `caption`,
-  `dry_run` (frozen at submit time), `submitted_by`, `created_at`. Unique
+  `dry_run` (frozen at submit time), `tiktok_choices` (the admin's per-post TikTok choices, see
+  "TikTok per-post choices" below; null when the form didn't offer TikTok), `submitted_by`,
+  `created_at`. Unique
   `(video_public_id, dry_run)`: the same upload can be dry-run once and posted for real once.
 - `social_post_targets`: one per (post, platform), unique `(post_id, platform)`. `status`,
   `caption_sent` (exactly what was or would be sent), `platform_post_id`, `platform_container_id`
@@ -223,6 +225,9 @@ silently truncated. A video that breaks one platform's rules skips only that pla
 | Caption too long, too many hashtags or tags | submit refused with the reason, nothing stored |
 | Rate limit hit | action refused (in-memory per-instance limiter, `lib/rateLimit.ts`) |
 | Upload abandoned before submit | orphaned Cloudinary asset in `social/`, never posted (e) |
+| TikTok choices not made (TikTok off at submit, or creator info unavailable) | TikTok `skipped / tiktok_choices_missing`, final (Post now can't add them); the others post |
+| TikTok choices incomplete or invalid at submit | submit refused with the reason, nothing stored |
+| Two requests refresh the TikTok token at once | only the lease holder refreshes; the other waits and uses its pair (`tiktok_token_refresh_busy` after 16 s) |
 
 ## Security notes
 
@@ -293,9 +298,18 @@ TikTok specifics:
   `SOCIAL_TOKEN_ENCRYPTION_KEY` (`lib/social/token-crypto.ts`, platform as AAD). A different
   env token (by fingerprint) restarts the chain. If the rotated pair can't be saved, the post
   stops (`tiktok_token_save_failed`).
-- Privacy: unaudited (`TIKTOK_APP_AUDITED` not `true`) sends `SELF_ONLY` and marks the target
-  `posted` with notice `tiktok_private_unaudited`. Audited sends `PUBLIC_TO_EVERYONE` (or
-  `FOLLOWER_OF_CREATOR` for a private account) if the creator info offers it.
+- Refreshes are serialised: every credential write is a compare-and-swap on the row's `version`.
+  A request first takes the refresh lease (`version + 1`, `refresh_lease_until = now + 15 s`; an
+  insert-if-absent when seeding), and only the lease holder calls TikTok and stores the rotated
+  pair (`version + 1`, lease cleared). A request that loses re-reads and, while the lease is live,
+  polls every second and uses the holder's pair when it lands (giving up with
+  `tiktok_token_refresh_busy`, retryable, after 16 s). A lease left by a request that died
+  expires. Dropping a rejected access token is skipped while a lease is live. Tests:
+  interleaved refreshes in `adapters.test.mjs`, the SQL filters in `supabase-store.test.mjs`.
+- Privacy and the other post settings are the admin's per-post choices (below). Unaudited
+  (`TIKTOK_APP_AUDITED` not `true`): the form offers only `SELF_ONLY`, anything else is refused
+  (`tiktok_unaudited_private_only`), and the target is `posted` with notice
+  `tiktok_private_unaudited`.
 - Video source: `TIKTOK_PULL_URL_PREFIX` + `<id>.<ext>`, which `next.config.ts` serves through an
   external rewrite (built by `lib/social/cloud-name.ts` from `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`,
   the single cloud-name source; without it there is no rewrite, no upload signing, and TikTok is
@@ -305,6 +319,33 @@ TikTok specifics:
 - `publish_id` may contain `~`; migration 0028 widens 0027's `platform_post_id` check to match the
   dispatcher.
 
+### TikTok per-post choices (Content Sharing Guidelines)
+
+TikTok's [Content Sharing Guidelines](https://developers.tiktok.com/doc/content-sharing-guidelines)
+("Required UX Implementation", Direct Post) make the poster choose, for every post: the privacy
+level from `creator_info`'s `privacy_level_options` with no default (2b); Comment, Duet and
+Stitch, none on by default and greyed out when the creator has turned them off (2c); a
+commercial content disclosure, off by default, needing "Your brand" and/or "Branded content"
+when on, and branded content never private (3a, 3b; we disable it, Option A); and the
+declaration "By posting, you agree to TikTok's Music Usage Confirmation" (plus the Branded
+Content Policy with branded content) before the publish button (2, 4). The page also shows the
+creator's nickname (1a), a preview of the video (5a) and the processing notice (5d).
+
+- `/admin/social` renders a TikTok section inside the one upload form when TikTok is switched on
+  (`tiktokComposer` in `lib/social/adapters.ts`), with creator info read fresh on every render
+  (1). A dry run with TikTok not connected gets stand-in options (`SELF_ONLY` only, labelled). If
+  creator info can't be read, the section says why and the video skips TikTok.
+- The choices go with the same single submit, are checked by `parseTikTokChoices`
+  (`lib/social/tiktok-choices.ts`, every field required, nothing defaulted), stored in
+  `social_posts.tiktok_choices` and passed to the adapter as `PublishContext.tiktok`. The
+  adapter refuses missing or malformed choices before any request, re-checks them against fresh
+  creator info before init (refused, never changed: `tiktok_privacy_level_unavailable`,
+  `tiktok_interaction_unavailable`, `tiktok_unaudited_private_only`), and sends exactly
+  `privacy_level`, `disable_comment`, `disable_duet`, `disable_stitch`, `brand_organic_toggle`,
+  `brand_content_toggle` as chosen.
+
 Still open: no cron sweep; an Instagram container still processing waits for an admin's Retry,
 and a deferred target for Post now. The rewrite's behaviour with a 100 MB file on Vercel, Facebook's acceptance of
-`.mov` via `file_url`, and every real request are unverified until credentials exist.
+`.mov` via `file_url`, and every real request are unverified until credentials exist. The TikTok section's
+compliance with the guidelines needs checking by eye against TikTok's audit before applying for
+it.
