@@ -9,25 +9,16 @@ import { InstagramIcon, TikTokIcon, XIcon, YoutubeIcon } from '@/components/ui/S
 import { haptic } from '@/lib/haptics';
 import { Phone, Mail, MapPin, ArrowUp, ArrowRight } from 'lucide-react';
 import { NewsletterForm } from '@/components/sections/NewsletterForm';
-import { currentOrNextConvention } from '@/lib/conventions';
+import { navGroups, linksFor, navText, isExternalHref, conventionCtaHref, FOOTER_LEGAL, type NavText } from '@/lib/nav';
 import { SITE } from '@/lib/site';
 import { CACNA_X_URL, youthSocialLinks, type SocialPlatform } from '@/lib/youthSocials';
 import '@/components/navigation/chrome-mobile.css';
 
-const isExternalHref = (href: string) => href.startsWith('http');
-
-// Whichever convention is current/next, same source Nav.tsx uses for its
-// own CTA -- the "Annual Convention" footer link used to hardcode an
-// external URL to the (now-retired) standalone Convention site; it points
-// here instead so it always resolves to whatever CACNA's own register/save-
-// the-date page for that year actually is.
-const nextConvention = currentOrNextConvention();
-const conventionHref = nextConvention.registrationUrl ?? nextConvention.href;
-// Same rule as the Youth page: the youth form lives at <register>/youth when
-// registration is on-site; until then, point at the Youth page's register
-// section, which says registration opens soon.
-const internalReg = nextConvention.registrationUrl?.startsWith('/') ? nextConvention.registrationUrl : undefined;
-const youthRegisterHref = internalReg ? `${internalReg}/youth` : '/youth#register';
+// The directory columns are the header's sections (lib/nav.ts), so a page
+// added to the site's navigation shows up in both places. No date-dependent
+// event links here: the footer is in the server render, where today's date
+// may differ from the visitor's.
+const groups = navGroups();
 
 // Contact details come only from SITE (lib/site.ts).
 const telDigits = SITE.telephone.replace(/[^\d+]/g, '');
@@ -77,72 +68,7 @@ export function FooterExperience() {
   const t = useTranslations('Footer');
   const tNav = useTranslations('Nav');
 
-  // Directory-style link columns. Contact/Visit is rendered separately since
-  // phone/email/address aren't plain page links.
-  const columns: { heading: string; links: readonly (readonly [string, string])[] }[] = [
-    {
-      heading: t('attendHeading'),
-      links: [
-        [conventionHref, t('register')],
-        [youthRegisterHref, t('youthRegister')],
-        ['/about#convention', t('aboutConvention')],
-        [`${nextConvention.href}/schedule`, t('schedule')],
-        ['/plan-your-visit', t('planYourVisit')],
-        ['/serve', t('serve')],
-      ],
-    },
-    {
-      heading: t('programsHeading'),
-      links: [
-        ['/youth', tNav('youth')],
-        ['/children', tNav('children')],
-        ['/good-women', tNav('goodWomen')],
-        ['/ministers-wives', tNav('ministersWives')],
-        ['/cacma', tNav('cacma')],
-        ['/christian-education', tNav('christianEducation')],
-        ['/business-group', tNav('businessGroup')],
-      ],
-    },
-    {
-      heading: t('connectHeading'),
-      links: [
-        ['/giving', tNav('give')],
-        ['/store', t('store')],
-        ['/online', t('watchOnline')],
-        ['/blog', t('news')],
-        ['/archive', t('archive')],
-        ['/watchwords', t('watchwords')],
-        ['/gallery', t('gallery')],
-        ['/calendar', t('calendarEvents')],
-      ],
-    },
-    {
-      heading: t('whoWeAre'),
-      links: [
-        ['/about', t('aboutCacna')],
-        ['/history', t('history')],
-        ['/leadership', t('leadership')],
-        ['/zones', t('zonesDccs')],
-        ['/bible-institute', t('bibleInstitute')],
-        // CAC North America is one region of the global Christ Apostolic
-        // Church movement headquartered in Nigeria -- linking out to the
-        // parent body's own site rather than just mentioning it in prose.
-        ['https://cacworld.org/', 'CAC World Headquarters'],
-      ],
-    },
-  ];
-
-  const legalLinks: [string, string][] = [
-    ['/about#tenets', t('ourTenets')],
-    ['/statement-of-faith', t('statementOfFaith')],
-    ['/faq', t('faq')],
-    ['/leadership/past', t('pastLeaders')],
-    ['/privacy', t('privacy')],
-    ['/terms', t('terms')],
-    ['/refunds', t('refunds')],
-    ['/accessibility', t('accessibility')],
-    ['/sitemap', t('sitemap')],
-  ];
+  const say = (text: NavText) => navText(tNav, text);
 
   const registerCta = (
     <>{t('registerNowCta')} <ArrowRight size={14} strokeWidth={2.5} aria-hidden /></>
@@ -167,10 +93,10 @@ export function FooterExperience() {
               <p className="ft-blurb">{t('blurb')}</p>
 
               <div className="ft-cta-row">
-                {isExternalHref(conventionHref) ? (
-                  <a href={conventionHref} target="_blank" rel="noopener noreferrer" onClick={() => haptic('medium')} className="press ft-cta ft-cta-gold">{registerCta}</a>
+                {isExternalHref(conventionCtaHref) ? (
+                  <a href={conventionCtaHref} target="_blank" rel="noopener noreferrer" onClick={() => haptic('medium')} className="press ft-cta ft-cta-gold">{registerCta}</a>
                 ) : (
-                  <Link href={conventionHref} onClick={() => haptic('medium')} className="press ft-cta ft-cta-gold">{registerCta}</Link>
+                  <Link href={conventionCtaHref} onClick={() => haptic('medium')} className="press ft-cta ft-cta-gold">{registerCta}</Link>
                 )}
                 <Link href="/contact#convention-committee" className="press ft-cta ft-cta-ghost">
                   {t('contactConventionCommittee')}
@@ -191,12 +117,12 @@ export function FooterExperience() {
 
           {/* Directory */}
           <nav aria-label={t('navLabel')} className="ft-grid">
-            {columns.map((col) => (
-              <div key={col.heading} className="ft-col">
-                <h2 className="ft-h">{col.heading}</h2>
+            {groups.map((g) => (
+              <div key={g.id} className="ft-col">
+                <h2 className="ft-h">{say(g.label)}</h2>
                 <ul className="ft-links">
-                  {col.links.map(([href, label]) => (
-                    <li key={href}><FooterLink href={href}>{label}</FooterLink></li>
+                  {linksFor(g, 'footer').map((l) => (
+                    <li key={l.href}><FooterLink href={l.href}>{say(l.label)}</FooterLink></li>
                   ))}
                 </ul>
               </div>
@@ -260,8 +186,8 @@ export function FooterExperience() {
           <div className="ft-bottom">
             <nav aria-label={t('legalNavLabel')}>
               <ul className="ft-legal">
-                {legalLinks.map(([href, label]) => (
-                  <li key={href}><Link href={href} className="ft-link">{label}</Link></li>
+                {FOOTER_LEGAL.map(({ href, labelKey }) => (
+                  <li key={href}><Link href={href} className="ft-link">{t(labelKey)}</Link></li>
                 ))}
               </ul>
             </nav>

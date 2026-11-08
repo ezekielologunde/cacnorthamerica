@@ -7,33 +7,29 @@ import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Search, CalendarDays } from 'lucide-react';
 import { haptic } from '@/lib/haptics';
-import { currentOrNextConvention, isConventionPast } from '@/lib/conventions';
+import { isConventionPast } from '@/lib/conventions';
+import {
+  navGroups, upcomingEventLinks, linksFor, navText, isExternalHref,
+  nextConvention, conventionCtaHref, NAV_CONTACT, NAV_GIVE,
+  type NavLink, type NavText,
+} from '@/lib/nav';
+import { activeGroupId, isCurrentPage, isWithin } from '@/lib/navMatch';
 import './chrome-mobile.css';
 
 // The search modal (and its index) only ships once someone opens it.
 const SearchModal = dynamic(() => import('@/components/ui/SearchModal').then(m => m.SearchModal), { ssr: false });
 
-interface NavItem {
-  label: string;
-  href?: string;
-  dropdown?: { href: string; label: string; desc: string; external?: boolean }[];
-  /** Renders the dropdown panel as a 2-column grid instead of a single
-   *  stack — for menus with enough items that one column would run long. */
-  layout?: 'grid';
-}
-
-const isExternalHref = (href: string) => href.startsWith('http');
-const menuId = (label: string) => `nav-menu-${label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+const menuId = (id: string) => `nav-menu-${id}`;
 const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])';
 const visibleFocusables = (root: HTMLElement | null) =>
   root ? Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(el => el.getClientRects().length > 0) : [];
 
-// Whichever convention is current/next — once this year's dates pass, the
-// nav's "Register" CTA automatically points at the next confirmed year.
-const nextConvention = currentOrNextConvention();
-const conventionCtaHref = nextConvention.registrationUrl ?? nextConvention.href;
+// Sections come from lib/nav.ts, the same list the footer renders. Built once
+// per page load: the upcoming-events links depend on today's date, and they
+// only ever render client-side (dropdowns and the mobile menu are closed in
+// the server render), so they can't cause a hydration mismatch.
+const groups = navGroups(upcomingEventLinks());
 const noopSubscribe = () => () => {};
-
 
 interface NavProps {
   dark?: boolean;
@@ -50,63 +46,10 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
   const focusFirstOnOpen = useRef(false);
   const pathname = usePathname();
   const t = useTranslations('Nav');
+  const say = (text: NavText) => navText(t, text);
   const conventionCtaLabel = t('conventionCta', { year: nextConvention.year });
-  const navItems: NavItem[] = [
-    {
-      label: t('eventsConvention'),
-      href: nextConvention.href,
-      dropdown: [
-        {
-          href: conventionCtaHref,
-          label: conventionCtaLabel,
-          desc: nextConvention.registrationUrl ? t('conventionCtaDescOpen') : t('conventionCtaDescComingSoon'),
-          external: isExternalHref(conventionCtaHref),
-        },
-        { href: '/calendar', label: t('calendarEvents'), desc: t('calendarEventsDesc') },
-        { href: '/archive', label: t('pastConventions'), desc: t('pastConventionsDesc') },
-        { href: '/serve', label: t('serveConvention'), desc: t('serveConventionDesc') },
-      ],
-    },
-    {
-      label: t('whoWeAre'),
-      href: '/about',
-      layout: 'grid',
-      dropdown: [
-        { href: '/about', label: t('aboutCacna'), desc: t('aboutCacnaDesc') },
-        { href: '/history', label: t('history'), desc: t('historyDesc') },
-        { href: '/leadership', label: t('leadership'), desc: t('leadershipDesc') },
-        { href: '/zones', label: t('zonesDccs'), desc: t('zonesDccsDesc') },
-        { href: '/bible-institute', label: t('bibleInstitute'), desc: t('bibleInstituteDesc') },
-        { href: '/faq', label: t('faq'), desc: t('faqDesc') },
-      ],
-    },
-    {
-      label: t('ministries'),
-      href: '/ministries',
-      layout: 'grid',
-      dropdown: [
-        { href: '/cacma', label: t('cacma'), desc: t('cacmaDesc') },
-        { href: '/youth', label: t('youth'), desc: t('youthDesc') },
-        { href: '/christian-education', label: t('christianEducation'), desc: t('christianEducationDesc') },
-        { href: '/good-women', label: t('goodWomen'), desc: t('goodWomenDesc') },
-        { href: '/ministers-wives', label: t('ministersWives'), desc: t('ministersWivesDesc') },
-        { href: '/business-group', label: t('businessGroup'), desc: t('businessGroupDesc') },
-        { href: '/children', label: t('children'), desc: t('childrenDesc') },
-        { href: '/ministries', label: t('seeAllMinistries'), desc: t('ministriesDesc') },
-      ],
-    },
-    {
-      label: t('media'),
-      href: '/blog',
-      dropdown: [
-        { href: '/online', label: t('watchOnline'), desc: t('watchOnlineDesc') },
-        { href: '/blog', label: t('blogNews'), desc: t('blogNewsDesc') },
-        { href: '/watchwords', label: t('watchwords'), desc: t('watchwordsDesc') },
-        { href: '/gallery', label: t('gallery'), desc: t('galleryDesc') },
-      ],
-    },
-    { label: t('contact'), href: '/contact' },
-  ];
+  const activeId = activeGroupId(pathname, groups);
+  const contactActive = isWithin(pathname, NAV_CONTACT.href);
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -209,19 +152,19 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
     panelRefs.current[openDropdown]?.querySelector<HTMLElement>('a')?.focus();
   }, [openDropdown]);
 
-  const closeDropdown = (label: string, returnFocus: boolean) => {
-    setOpenDropdown(cur => (cur === label ? null : cur));
-    if (returnFocus) triggerRefs.current[label]?.focus();
+  const closeDropdown = (id: string, returnFocus: boolean) => {
+    setOpenDropdown(cur => (cur === id ? null : cur));
+    if (returnFocus) triggerRefs.current[id]?.focus();
   };
 
-  const onDropdownKeyDown = (label: string) => (e: ReactKeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Escape' && openDropdown === label) {
+  const onDropdownKeyDown = (id: string) => (e: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Escape' && openDropdown === id) {
       e.preventDefault();
-      closeDropdown(label, true);
+      closeDropdown(id, true);
       return;
     }
     if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
-    const panel = panelRefs.current[label];
+    const panel = panelRefs.current[id];
     // Only arrow keys pressed on a panel item move between items; ArrowDown on
     // the trigger is handled there (it focuses the first item, which must not
     // then be skipped as this handler sees the already-moved focus).
@@ -233,18 +176,18 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
     links[next]?.focus();
   };
 
-  const onTriggerKeyDown = (label: string) => (e: ReactKeyboardEvent<HTMLButtonElement>) => {
+  const onTriggerKeyDown = (id: string) => (e: ReactKeyboardEvent<HTMLButtonElement>) => {
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       focusFirstOnOpen.current = true;
-      if (openDropdown === label) panelRefs.current[label]?.querySelector<HTMLElement>('a')?.focus();
-      else setOpenDropdown(label);
+      if (openDropdown === id) panelRefs.current[id]?.querySelector<HTMLElement>('a')?.focus();
+      else setOpenDropdown(id);
     }
   };
 
   // Close when focus leaves the trigger + panel group entirely.
-  const onDropdownBlur = (label: string) => (e: FocusEvent<HTMLDivElement>) => {
-    if (!e.currentTarget.contains(e.relatedTarget as Node | null)) closeDropdown(label, false);
+  const onDropdownBlur = (id: string) => (e: FocusEvent<HTMLDivElement>) => {
+    if (!e.currentTarget.contains(e.relatedTarget as Node | null)) closeDropdown(id, false);
   };
 
   const ink = dark ? 'var(--cream)' : 'var(--ink)';
@@ -260,7 +203,10 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
   // underline, which only makes sense once there's a bar to underline.
   const hasSolidBg = open || scrolled || !heroDark;
 
-  const pillLinks: [string, string][] = [['/giving', t('give')], ['/store', t('store')]];
+  // One quiet secondary action (Give) beside the one strong CTA (Convention);
+  // Store and the rest live in the Get Involved menu.
+  const giveLabel = say(NAV_GIVE.label);
+  const giveCurrent = isCurrentPage(pathname, NAV_GIVE.href);
   const ctaGradient = 'linear-gradient(135deg,var(--red-deep),var(--gold))';
   // Convention CTA: same props/content whether the href is internal (Link) or external (<a>).
   const deskCtaProps = {
@@ -270,7 +216,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
   };
   const deskCtaContent = <><CalendarDays size={14} strokeWidth={2.5} aria-hidden />{conventionCtaLabel} →</>;
   // Compact bar CTA for tablet widths where the desktop row is collapsed but
-  // there is still room beside the logo (shown by CSS only, 520–1200px).
+  // there is still room beside the logo (shown by CSS only, see chrome-mobile.css).
   const barCtaProps = {
     onClick: () => haptic('medium'),
     className: 'press nav-bar-cta',
@@ -288,10 +234,67 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
     fontSize: 14.5, fontWeight: active ? 700 : 600,
     color: active ? barAccent : barInk,
     textDecoration: 'none', transition: 'color .4s, border-color .4s',
-    padding: '0 10px', whiteSpace: 'nowrap',
+    // 8px, not 10: six sections must fit the row at the 1481px breakpoint
+    // (globals.css .nav-desktop) with the scrollbar showing.
+    padding: '0 8px', whiteSpace: 'nowrap',
     borderBottom: `2px solid ${active ? 'var(--red)' : 'transparent'}`,
     borderTop: '2px solid transparent',
   });
+
+  const openMenu = () => {
+    haptic('light');
+    // Opening the menu expands the section you're already in, so its sibling
+    // pages are one tap away.
+    if (!open) setOpenMobileSection(activeId);
+    setOpen(o => !o);
+  };
+
+  const ddItem = (d: NavLink) => {
+    const external = isExternalHref(d.href);
+    const current = isCurrentPage(pathname, d.href);
+    const className = `nav-dd-item${d.feature ? ' is-feature' : ''}${current ? ' is-current' : ''}`;
+    const content = (
+      <>
+        <span className="nav-dd-label">{say(d.label)}</span>
+        {d.desc && <span className="nav-dd-desc">{say(d.desc)}</span>}
+      </>
+    );
+    return external
+      ? <a key={d.href} href={d.href} target="_blank" rel="noopener noreferrer" className={className}>{content}</a>
+      : <Link key={d.href} href={d.href} className={className} aria-current={current ? 'page' : undefined}>{content}</Link>;
+  };
+
+  const mobileItem = (d: NavLink) => {
+    const external = isExternalHref(d.href);
+    const current = isCurrentPage(pathname, d.href);
+    const style: CSSProperties = {
+      display: 'block', padding: '12px 16px', borderRadius: 12, minHeight: 52,
+      textDecoration: 'none',
+      background: d.feature || current ? 'rgba(253,200,65,.22)' : (dark ? 'rgba(255,255,255,.06)' : 'var(--cream-2)'),
+      outline: current ? `1.5px solid ${accent}` : 'none', outlineOffset: -1.5,
+    };
+    const content = (
+      <>
+        <div style={{ fontWeight: d.feature ? 800 : 700, fontSize: 16, color: ink }}>{say(d.label)}</div>
+        {d.desc && <div style={{ fontSize: 13, color: dark ? 'rgba(245,246,250,.7)' : 'var(--ink-soft)', marginTop: 2 }}>{say(d.desc)}</div>}
+      </>
+    );
+    return external ? (
+      <a key={d.href} href={d.href} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)} style={style}>{content}</a>
+    ) : (
+      <Link key={d.href} href={d.href} onClick={() => setOpen(false)} style={style} aria-current={current ? 'page' : undefined}>{content}</Link>
+    );
+  };
+
+  const mobileTopStyle = (active: boolean): CSSProperties => ({
+    fontFamily: 'var(--font-display)', fontWeight: 800,
+    fontSize: 'clamp(24px,6.6vw,32px)',
+    color: active ? accent : ink,
+    textDecoration: 'none', letterSpacing: '-.5px',
+    padding: '12px 0', flex: 1, minHeight: 56,
+    display: 'flex', alignItems: 'center', gap: 10,
+  });
+  const mobileDivider = `1px solid ${dark ? 'rgba(245,246,250,.1)' : 'var(--line)'}`;
 
   return (
     <>
@@ -304,12 +307,10 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
           transition: 'background .4s, box-shadow .4s',
         }}
       >
-        {/* Content is centered to the same 1240px column as FooterExperience
-            and the page body, so the bar's logo/links align with the rest of
-            the site instead of hugging the viewport edges on wide screens --
-            the <nav> itself stays full-bleed for its background/border. */}
-        {/* 1340, not 1240: the full desktop row measures ~1318px, so a 1240
-            cap made it overflow at every width (see globals.css .nav-desktop). */}
+        {/* Content is centered to the same column as FooterExperience and the
+            page body, so the bar's logo/links align with the rest of the site
+            instead of hugging the viewport edges on wide screens -- the <nav>
+            itself stays full-bleed for its background/border. */}
         <div style={{ maxWidth: 1340, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         {/* Logo */}
         <Link href="/" className="nav-logo" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', color: barInk, flexShrink: 0, transition: 'color .4s' }}>
@@ -322,94 +323,78 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
 
         {/* Desktop nav */}
         <ul className="nav-desktop" style={{ alignItems: 'center', gap: 2, listStyle: 'none', margin: 0, padding: 0 }}>
-          {navItems.map((item) => {
-            const active = pathname === item.href || (item.dropdown?.some(d => pathname === d.href));
-            const isOpen = openDropdown === item.label;
-
-            if (item.dropdown) {
-              const id = menuId(item.label);
-              return (
-                <li
-                  key={item.label}
-                  style={{ position: 'relative', display: 'flex', alignItems: 'center' }}
-                  onMouseEnter={() => setOpenDropdown(item.label)}
-                  onMouseLeave={() => setOpenDropdown(null)}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center' }} onKeyDown={onDropdownKeyDown(item.label)} onBlur={onDropdownBlur(item.label)}>
-                    <Link href={item.href!} style={{ ...topLinkStyle(!!active), paddingRight: 2 }} aria-current={pathname === item.href ? 'page' : undefined}>
-                      {item.label}
-                    </Link>
-                    <button
-                      type="button"
-                      ref={el => { triggerRefs.current[item.label] = el; }}
-                      className="nav-dd-trigger"
-                      aria-expanded={isOpen}
-                      aria-haspopup="true"
-                      aria-controls={id}
-                      aria-label={t('showSubmenu', { section: item.label })}
-                      onClick={() => setOpenDropdown(isOpen ? null : item.label)}
-                      onKeyDown={onTriggerKeyDown(item.label)}
-                      style={{ color: active ? barAccent : barInk }}
-                    >
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden style={{ transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform .2s' }}>
-                        <polyline points="6 9 12 15 18 9" />
-                      </svg>
-                    </button>
-                    {isOpen && (
-                      // Outer wrapper is positioned flush to the trigger (top: 100%) and
-                      // uses paddingTop as a transparent "bridge" so the cursor never
-                      // crosses a dead zone on its way to the panel — which would fire
-                      // mouseleave and collapse the menu before a click could land.
-                      <div style={{
-                        position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)',
-                        paddingTop: 8, zIndex: 10,
-                      }}>
-                        <div
-                          id={id}
-                          ref={el => { panelRefs.current[item.label] = el; }}
-                          className={dark ? 'nav-dd nav-dd-dark' : 'nav-dd'}
-                          style={{
-                            minWidth: item.layout === 'grid' ? 440 : 220,
-                            ...(item.layout === 'grid'
-                              ? { display: 'grid' as const, gridTemplateColumns: '1fr 1fr', gap: 2 }
-                              : {}),
-                          }}
-                        >
-                          {item.dropdown.map(d => {
-                            const external = d.external || isExternalHref(d.href);
-                            const current = !external && pathname === d.href;
-                            const className = `nav-dd-item${d.external ? ' is-feature' : ''}${current ? ' is-current' : ''}`;
-                            const content = (
-                              <>
-                                <span className="nav-dd-label">{d.label}</span>
-                                <span className="nav-dd-desc">{d.desc}</span>
-                              </>
-                            );
-                            return external
-                              ? <a key={d.href} href={d.href} target="_blank" rel="noopener noreferrer" className={className}>{content}</a>
-                              : <Link key={d.href} href={d.href} className={className} aria-current={current ? 'page' : undefined}>{content}</Link>;
-                          })}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </li>
-              );
-            }
-
+          {groups.map((g) => {
+            const label = say(g.label);
+            const active = activeId === g.id;
+            const isOpen = openDropdown === g.id;
+            const id = menuId(g.id);
+            const links = linksFor(g, 'header');
             return (
-              <li key={item.label} style={{ display: 'flex' }}>
-                <Link href={item.href!} style={topLinkStyle(!!active)} aria-current={active ? 'page' : undefined}>
-                  {item.label}
-                </Link>
+              <li
+                key={g.id}
+                style={{ position: 'relative', display: 'flex', alignItems: 'center' }}
+                onMouseEnter={() => setOpenDropdown(g.id)}
+                onMouseLeave={() => setOpenDropdown(null)}
+              >
+                <div style={{ display: 'flex', alignItems: 'center' }} onKeyDown={onDropdownKeyDown(g.id)} onBlur={onDropdownBlur(g.id)}>
+                  <Link href={g.href} style={{ ...topLinkStyle(active), paddingRight: 2 }} aria-current={isCurrentPage(pathname, g.href) ? 'page' : undefined}>
+                    {label}
+                  </Link>
+                  <button
+                    type="button"
+                    ref={el => { triggerRefs.current[g.id] = el; }}
+                    className="nav-dd-trigger"
+                    aria-expanded={isOpen}
+                    aria-haspopup="true"
+                    aria-controls={id}
+                    aria-label={t('showSubmenu', { section: label })}
+                    onClick={() => setOpenDropdown(isOpen ? null : g.id)}
+                    onKeyDown={onTriggerKeyDown(g.id)}
+                    style={{ color: active ? barAccent : barInk }}
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden style={{ transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform .2s' }}>
+                      <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                  </button>
+                  {isOpen && (
+                    // Outer wrapper is positioned flush to the trigger (top: 100%) and
+                    // uses paddingTop as a transparent "bridge" so the cursor never
+                    // crosses a dead zone on its way to the panel — which would fire
+                    // mouseleave and collapse the menu before a click could land.
+                    <div style={{
+                      position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)',
+                      paddingTop: 8, zIndex: 10,
+                    }}>
+                      <div
+                        id={id}
+                        ref={el => { panelRefs.current[g.id] = el; }}
+                        className={dark ? 'nav-dd nav-dd-dark' : 'nav-dd'}
+                        style={{
+                          minWidth: g.layout === 'grid' ? 440 : 240,
+                          ...(g.layout === 'grid'
+                            ? { display: 'grid' as const, gridTemplateColumns: '1fr 1fr', gap: 2 }
+                            : {}),
+                        }}
+                      >
+                        {links.map(ddItem)}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </li>
             );
           })}
 
-          {/* Search, Give, Store, Register — spaced out as their own cluster
+          <li style={{ display: 'flex' }}>
+            <Link href={NAV_CONTACT.href} style={topLinkStyle(contactActive)} aria-current={isCurrentPage(pathname, NAV_CONTACT.href) ? 'page' : undefined}>
+              {say(NAV_CONTACT.label)}
+            </Link>
+          </li>
+
+          {/* Search, Give, Register — spaced out as their own cluster
               rather than packed tight, so each reads as its own control
               instead of a run-on row (matches the reference nav). */}
-          <li style={{ display: 'flex', alignItems: 'center', gap: 18, marginLeft: 16 }}>
+          <li style={{ display: 'flex', alignItems: 'center', gap: 14, marginLeft: 14 }}>
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
@@ -419,30 +404,19 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
             >
               <Search size={16} strokeWidth={2} aria-hidden />
             </button>
-            <span aria-hidden style={{ width: 1, height: 20, background: lightBar ? 'rgba(245,246,250,.25)' : 'var(--line)', flexShrink: 0 }} />
-            {/* Give and Store share one pill style -- previously Give was a
-                plain text link next to Store's outlined pill next to
-                Convention's gradient CTA, three different visual weights in
-                a row. Now there's exactly one strong CTA (Convention). */}
-            {pillLinks.map(([href, label]) => (
-              <Link
-                key={href}
-                href={href}
-                aria-current={pathname === href ? 'page' : undefined}
-                style={{
-                  display: 'inline-flex', alignItems: 'center', minHeight: 44,
-                  border: `1.5px solid ${pathname === href ? barAccent : lightBar ? 'rgba(245,246,250,.4)' : 'var(--ink)'}`,
-                  color: pathname === href ? barAccent : barInk, fontWeight: 700, fontSize: 13.5,
-                  padding: '0 16px', borderRadius: 999, textDecoration: 'none',
-                  transition: 'color .4s, border-color .4s', whiteSpace: 'nowrap',
-                }}
-              >
-                {label}
-              </Link>
-            ))}
-            {conventionOpen && (
-              <span aria-hidden style={{ width: 1, height: 20, background: lightBar ? 'rgba(245,246,250,.25)' : 'var(--line)', flexShrink: 0 }} />
-            )}
+            <Link
+              href={NAV_GIVE.href}
+              aria-current={giveCurrent ? 'page' : undefined}
+              style={{
+                display: 'inline-flex', alignItems: 'center', minHeight: 44,
+                border: `1.5px solid ${giveCurrent ? barAccent : lightBar ? 'rgba(245,246,250,.4)' : 'var(--ink)'}`,
+                color: giveCurrent ? barAccent : barInk, fontWeight: 700, fontSize: 13.5,
+                padding: '0 16px', borderRadius: 999, textDecoration: 'none',
+                transition: 'color .4s, border-color .4s', whiteSpace: 'nowrap',
+              }}
+            >
+              {giveLabel}
+            </Link>
             {conventionOpen && (
               isExternalHref(conventionCtaHref) ? (
                 <a href={conventionCtaHref} target="_blank" rel="noopener noreferrer" {...deskCtaProps}>{deskCtaContent}</a>
@@ -478,7 +452,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
           type="button"
           ref={hamburgerRef}
           className="nav-hbg nav-tap"
-          onClick={() => { haptic('light'); setOpen(o => !o); }}
+          onClick={openMenu}
           aria-label={open ? t('closeMenu') : t('openMenu')}
           aria-expanded={open}
           aria-controls="mobile-menu"
@@ -500,7 +474,8 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
         }} />
       </nav>
 
-      {/* Mobile overlay */}
+      {/* Mobile overlay: one accordion row per section, each section's name
+          still a link to its landing page. */}
       {open && (
         <div id="mobile-menu" ref={overlayRef} className="nav-m-overlay" style={{
           position: 'fixed', inset: 0, zIndex: 99,
@@ -510,93 +485,71 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
           overflowY: 'auto', overscrollBehavior: 'contain',
         }}>
           <nav aria-label={t('mobileNavLabel')} style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-            {navItems.map((item) => {
-              const active = pathname === item.href || (item.dropdown?.some(d => pathname === d.href));
-              const mobileOpen = openMobileSection === item.label;
-              const sectionId = `${menuId(item.label)}-m`;
-
+            {groups.map((g) => {
+              const label = say(g.label);
+              const active = activeId === g.id;
+              const mobileOpen = openMobileSection === g.id;
+              const sectionId = `${menuId(g.id)}-m`;
               return (
-                <div key={item.label} style={{ borderBottom: `1px solid ${dark ? 'rgba(245,246,250,.1)' : 'var(--line)'}` }}>
+                <div key={g.id} style={{ borderBottom: mobileDivider }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <Link
-                      href={item.href ?? (item.dropdown?.[0]?.href ?? '/')}
+                      href={g.href}
                       onClick={() => setOpen(false)}
-                      style={{
-                        fontFamily: 'var(--font-display)', fontWeight: 800,
-                        fontSize: 'clamp(24px,6.6vw,32px)',
-                        color: active ? accent : ink,
-                        textDecoration: 'none', letterSpacing: '-.5px',
-                        padding: '12px 0', flex: 1, minHeight: 56,
-                        display: 'flex', alignItems: 'center', gap: 10,
-                      }}
-                      aria-current={pathname === item.href ? 'page' : undefined}
+                      style={mobileTopStyle(active)}
+                      aria-current={isCurrentPage(pathname, g.href) ? 'page' : undefined}
                     >
                       {active && <span aria-hidden style={{ width: 8, height: 8, borderRadius: '50%', background: accent, flexShrink: 0 }} />}
-                      {item.label}
+                      {label}
                     </Link>
-                    {item.dropdown && (
-                      <button
-                        type="button"
-                        onClick={() => setOpenMobileSection(mobileOpen ? null : item.label)}
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: ink, width: 48, height: 48, display: 'grid', placeItems: 'center', flexShrink: 0 }}
-                        aria-expanded={mobileOpen}
-                        aria-controls={sectionId}
-                        aria-label={t('showSubmenu', { section: item.label })}
-                      >
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden style={{ transform: mobileOpen ? 'rotate(180deg)' : 'none', transition: 'transform .2s' }}>
-                          <polyline points="6 9 12 15 18 9" />
-                        </svg>
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      onClick={() => setOpenMobileSection(mobileOpen ? null : g.id)}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: ink, width: 48, height: 48, display: 'grid', placeItems: 'center', flexShrink: 0 }}
+                      aria-expanded={mobileOpen}
+                      aria-controls={sectionId}
+                      aria-label={t('showSubmenu', { section: label })}
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden style={{ transform: mobileOpen ? 'rotate(180deg)' : 'none', transition: 'transform .2s' }}>
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </button>
                   </div>
-                  {item.dropdown && mobileOpen && (
+                  {mobileOpen && (
                     <div id={sectionId} style={{ paddingBottom: 14, display: 'flex', flexDirection: 'column', gap: 4 }}>
-                      {item.dropdown.map(d => {
-                        const external = d.external || isExternalHref(d.href);
-                        const current = !external && pathname === d.href;
-                        const style: CSSProperties = {
-                          display: 'block', padding: '12px 16px', borderRadius: 12, minHeight: 52,
-                          textDecoration: 'none',
-                          background: d.external || current ? 'rgba(253,200,65,.22)' : (dark ? 'rgba(255,255,255,.06)' : 'var(--cream-2)'),
-                          outline: current ? `1.5px solid ${accent}` : 'none', outlineOffset: -1.5,
-                        };
-                        const content = (
-                          <>
-                            <div style={{ fontWeight: d.external ? 800 : 700, fontSize: 16, color: ink }}>{d.label}</div>
-                            <div style={{ fontSize: 13, color: dark ? 'rgba(245,246,250,.7)' : 'var(--ink-soft)', marginTop: 2 }}>{d.desc}</div>
-                          </>
-                        );
-                        return external ? (
-                          <a key={d.href} href={d.href} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)} style={style}>{content}</a>
-                        ) : (
-                          <Link key={d.href} href={d.href} onClick={() => setOpen(false)} style={style} aria-current={current ? 'page' : undefined}>{content}</Link>
-                        );
-                      })}
+                      {linksFor(g, 'header').map(mobileItem)}
                     </div>
                   )}
                 </div>
               );
             })}
+            <div style={{ borderBottom: mobileDivider }}>
+              <Link
+                href={NAV_CONTACT.href}
+                onClick={() => setOpen(false)}
+                style={mobileTopStyle(contactActive)}
+                aria-current={isCurrentPage(pathname, NAV_CONTACT.href) ? 'page' : undefined}
+              >
+                {contactActive && <span aria-hidden style={{ width: 8, height: 8, borderRadius: '50%', background: accent, flexShrink: 0 }} />}
+                {say(NAV_CONTACT.label)}
+              </Link>
+            </div>
           </nav>
 
-          <div className="nav-m-actions" style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 24, position: 'sticky', bottom: 0, padding: '12px 0 calc(14px + env(safe-area-inset-bottom))', background: dark ? 'rgb(12,14,19)' : 'rgb(255,255,255)', borderTop: `1px solid ${dark ? 'rgba(245,246,250,.1)' : 'var(--line)'}` }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, order: 2 }}>
-            {pillLinks.map(([href, label]) => (
-              <Link
-                key={href}
-                href={href}
-                onClick={() => setOpen(false)}
-                className="press"
-                style={{
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  border: `1.5px solid ${ink}`, color: ink, fontWeight: 700, fontSize: 16,
-                  padding: '12px 16px', minHeight: 48, borderRadius: 999, textDecoration: 'none',
-                }}
-              >
-                {label}
-              </Link>
-            ))}
-            </div>
+          <div className="nav-m-actions" style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 24, position: 'sticky', bottom: 0, padding: '12px 0 calc(14px + env(safe-area-inset-bottom))', background: dark ? 'rgb(12,14,19)' : 'rgb(255,255,255)', borderTop: mobileDivider }}>
+            <Link
+              href={NAV_GIVE.href}
+              onClick={() => setOpen(false)}
+              className="press"
+              aria-current={giveCurrent ? 'page' : undefined}
+              style={{
+                order: 2, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                border: `1.5px solid ${ink}`, color: ink, fontWeight: 700, fontSize: 16,
+                padding: '12px 16px', minHeight: 48, borderRadius: 999, textDecoration: 'none',
+              }}
+            >
+              {giveLabel}
+            </Link>
             {conventionOpen && (
               isExternalHref(conventionCtaHref) ? (
                 <a href={conventionCtaHref} target="_blank" rel="noopener noreferrer" {...mobileCtaProps}>{mobileCtaContent}</a>
