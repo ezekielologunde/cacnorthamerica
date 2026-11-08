@@ -5,7 +5,7 @@ import { requireAdmin } from "@/lib/supabase/require-admin";
 import { rateLimit } from "@/lib/rateLimit";
 import { dispatcherDeps } from "@/lib/social/adapters";
 import { fetchVideoMeta, signVideoUploadParams, type UploadSignature } from "@/lib/social/cloudinary";
-import { markNotPosted, retryTarget, submitPost } from "@/lib/social/dispatcher";
+import { markNotPosted, postNow, retryTarget, submitPost } from "@/lib/social/dispatcher";
 import { isSocialPublicId, TITLE_MAX, UPLOAD_MAX_BYTES } from "@/lib/social/limits";
 import { describeCode } from "@/lib/social/messages";
 import { PLATFORM_LABELS } from "@/lib/social/types";
@@ -68,6 +68,17 @@ export async function retrySocialTarget(targetId: string): Promise<void> {
     await retryTarget(dispatcherDeps(supabase), targetId);
   } catch (err) {
     console.error("[social] retry failed:", err instanceof Error ? err.message : "unknown");
+  }
+  revalidatePath("/admin/social");
+}
+
+export async function postSocialTargetNow(targetId: string): Promise<void> {
+  const { supabase, user } = await requireAdmin();
+  if (!UUID.test(targetId) || !rateLimit(`social-retry:${user.id}`, 20, 10 * MINUTE)) return;
+  try {
+    await postNow(dispatcherDeps(supabase), targetId);
+  } catch (err) {
+    console.error("[social] post-now failed:", err instanceof Error ? err.message : "unknown");
   }
   revalidatePath("/admin/social");
 }

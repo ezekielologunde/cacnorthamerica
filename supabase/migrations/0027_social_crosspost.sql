@@ -1,4 +1,4 @@
--- 0026: social cross-post (admin uploads one video; the site posts it to the
+-- 0027: social cross-post (admin uploads one video; the site posts it to the
 -- Facebook Page, Instagram Reels and TikTok). Design:
 -- docs/superpowers/specs/2026-11-08-social-crosspost-design.md
 --
@@ -41,6 +41,10 @@ create table cacna.social_posts (
   video_width integer,
   video_height integer,
   video_duration_s numeric,
+  -- From Cloudinary's media metadata (lib/social/cloudinary-meta.ts); null
+  -- when Cloudinary didn't report them.
+  video_frame_rate numeric,
+  video_codec text check (video_codec ~ '^[a-z0-9_.-]{1,32}$'),
   title text not null check (char_length(title) between 1 and 100),
   caption text not null default '' check (char_length(caption) <= 2200),
   -- Frozen at submit time: a dry-run post never becomes a real one.
@@ -65,6 +69,10 @@ create table cacna.social_post_targets (
   caption_title text not null default '',
   caption_sent text not null default '',
   platform_post_id text check (platform_post_id ~ '^[A-Za-z0-9_:.-]{1,128}$'),
+  -- The platform-side upload a publish is waiting on (an Instagram media
+  -- container). Saved while the target is `posting`, before any waiting, so a
+  -- retry polls this same container instead of creating a second one.
+  platform_container_id text check (platform_container_id ~ '^[A-Za-z0-9_:.~-]{1,128}$'),
   -- A sanitised identifier only: never a message, token or URL.
   error_code text check (error_code ~ '^[a-z0-9_]{1,64}$'),
   retryable boolean not null default false,

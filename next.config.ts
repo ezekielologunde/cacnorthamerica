@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import { socialVideoRewrite } from "./lib/social/cloud-name";
 
 const withNextIntl = createNextIntlPlugin();
 
@@ -220,13 +221,11 @@ const nextConfig: NextConfig = {
         // same public Cloudinary file. Only the `social` folder, one path
         // segment, so nothing else on Cloudinary is reachable this way.
         // proxy.ts's matcher skips paths with a dot, so next-intl never sees
-        // these. lib/social/adapters/tiktok.ts builds the URLs.
-        ...(process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
-          ? [{
-              source: "/social-video/:file([A-Za-z0-9_-]+\\.mp4|[A-Za-z0-9_-]+\\.mov)",
-              destination: `https://res.cloudinary.com/${encodeURIComponent(process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME)}/video/upload/social/:file`,
-            }]
-          : []),
+        // these. lib/social/adapters/tiktok.ts builds the URLs. The rule and
+        // the cloud name come from lib/social/cloud-name.ts, which TikTok's
+        // configuration also checks, so without a cloud name there is
+        // neither a rewrite nor a TikTok adapter.
+        ...[socialVideoRewrite()].filter((r) => r !== null),
       ],
       afterFiles: [],
       fallback: [],

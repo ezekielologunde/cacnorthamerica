@@ -833,6 +833,7 @@ export type Database = {
           finished_at: string | null
           id: string
           platform: string
+          platform_container_id: string | null
           platform_post_id: string | null
           post_id: string
           retryable: boolean
@@ -848,6 +849,7 @@ export type Database = {
           finished_at?: string | null
           id?: string
           platform: string
+          platform_container_id?: string | null
           platform_post_id?: string | null
           post_id: string
           retryable?: boolean
@@ -863,6 +865,7 @@ export type Database = {
           finished_at?: string | null
           id?: string
           platform?: string
+          platform_container_id?: string | null
           platform_post_id?: string | null
           post_id?: string
           retryable?: boolean
@@ -889,7 +892,9 @@ export type Database = {
           title: string
           video_bytes: number
           video_duration_s: number | null
+          video_codec: string | null
           video_format: string
+          video_frame_rate: number | null
           video_height: number | null
           video_public_id: string
           video_url: string
@@ -904,7 +909,9 @@ export type Database = {
           title: string
           video_bytes: number
           video_duration_s?: number | null
+          video_codec?: string | null
           video_format: string
+          video_frame_rate?: number | null
           video_height?: number | null
           video_public_id: string
           video_url: string
@@ -919,7 +926,9 @@ export type Database = {
           title?: string
           video_bytes?: number
           video_duration_s?: number | null
+          video_codec?: string | null
           video_format?: string
+          video_frame_rate?: number | null
           video_height?: number | null
           video_public_id?: string
           video_url?: string

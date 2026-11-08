@@ -116,8 +116,12 @@ export const CAPTION_RULES: Record<Platform, CaptionRules> = {
   tiktok: { maxText: 2200, maxHashtags: null, maxMentions: null, separateTitle: false },
 };
 
-/** Checks one video against one platform's rules. Values the metadata doesn't
- *  carry (null/undefined) pass: the platform's own check is the backstop. */
+/** Checks one video against one platform's rules. An unknown duration fails
+ *  on a platform with a duration rule (video_duration_unknown): Cloudinary is
+ *  asked for it (lib/social/cloudinary-meta.ts), so missing means something
+ *  is off, and the rule isn't silently skipped. Other values the metadata
+ *  doesn't carry (null/undefined) pass: the platform's own check is the
+ *  backstop. */
 export function validateVideo(platform: Platform, video: VideoMeta): ValidateResult {
   const r = VIDEO_RULES[platform];
   const fail = (code: string): ValidateResult => ({ ok: false, code });
@@ -126,7 +130,9 @@ export function validateVideo(platform: Platform, video: VideoMeta): ValidateRes
   if (r.maxBytes !== null && video.bytes > r.maxBytes) return fail("video_too_large");
 
   const d = video.durationSec;
-  if (d != null) {
+  if (d == null) {
+    if (r.minDurationSec !== null || r.maxDurationSec !== null) return fail("video_duration_unknown");
+  } else {
     if (r.minDurationSec !== null && d < r.minDurationSec) return fail("video_too_short");
     if (r.maxDurationSec !== null && d > r.maxDurationSec) return fail("video_too_long");
   }

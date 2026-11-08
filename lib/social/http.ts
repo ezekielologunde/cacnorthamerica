@@ -19,8 +19,10 @@ export type HttpResult =
 
 export const DEFAULT_TIMEOUT_MS = 10_000;
 
-export async function requestJson(deps: HttpDeps, url: string, init: RequestInit): Promise<HttpResult> {
-  const signal = AbortSignal.timeout(deps.timeoutMs ?? DEFAULT_TIMEOUT_MS);
+/** `timeoutMs` overrides the deps' per-request timeout for one request that
+ *  is known to take longer (Facebook's publish). */
+export async function requestJson(deps: HttpDeps, url: string, init: RequestInit, timeoutMs?: number): Promise<HttpResult> {
+  const signal = AbortSignal.timeout(timeoutMs ?? deps.timeoutMs ?? DEFAULT_TIMEOUT_MS);
   let res: Response;
   try {
     // redirect: "error" so a token-bearing request is never replayed to

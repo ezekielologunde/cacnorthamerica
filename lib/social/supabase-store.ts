@@ -13,7 +13,7 @@ import type {
   TargetStatus,
 } from "./types";
 
-// The SocialStore over cacna.social_* (migration 0026). Must be given the
+// The SocialStore over cacna.social_* (migration 0027). Must be given the
 // service-role client: the tables have RLS forced with no policies.
 //
 // claim/transition are single conditional UPDATEs (`... WHERE id = $1 AND
@@ -41,6 +41,8 @@ function toPost(r: PostRow): PostRecord {
       width: r.video_width,
       height: r.video_height,
       durationSec: r.video_duration_s,
+      frameRate: r.video_frame_rate,
+      videoCodec: r.video_codec,
     },
     title: r.title,
     caption: r.caption,
@@ -59,6 +61,7 @@ export function toTarget(r: TargetRow): TargetRecord {
     captionTitle: r.caption_title,
     captionSent: r.caption_sent,
     platformPostId: r.platform_post_id,
+    containerId: r.platform_container_id,
     errorCode: r.error_code,
     retryable: r.retryable,
     attempts: r.attempts,
@@ -112,6 +115,8 @@ export function supabaseSocialStore(db: Client): SocialStore {
         video_width: p.video.width,
         video_height: p.video.height,
         video_duration_s: p.video.durationSec,
+        video_frame_rate: p.video.frameRate ?? null,
+        video_codec: p.video.videoCodec ?? null,
         title: p.title,
         caption: p.caption,
         dry_run: p.dryRun,
@@ -186,6 +191,14 @@ export function supabaseSocialStore(db: Client): SocialStore {
       if (opts.olderThan) q = q.lte("claimed_at", opts.olderThan);
       const { data, error } = await q.select("id");
       if (error) fail("transition", error.code);
+      return (data ?? []).length === 1;
+    },
+
+    async setContainer(id, containerId) {
+      const { data, error } = await db.from("social_post_targets")
+        .update({ platform_container_id: containerId, updated_at: new Date().toISOString() })
+        .eq("id", id).eq("status", "posting").select("id");
+      if (error) fail("setContainer", error.code);
       return (data ?? []).length === 1;
     },
   };

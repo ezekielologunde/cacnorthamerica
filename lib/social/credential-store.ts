@@ -3,7 +3,7 @@ import type { ServiceClient } from "./supabase-store";
 import { decryptSecret, encryptSecret } from "./token-crypto";
 import type { CredentialStore, Platform, StoredCredential } from "./types";
 
-// CredentialStore over cacna.social_credentials (migration 0027). The token
+// CredentialStore over cacna.social_credentials (migration 0028). The token
 // pair is sealed with AES-256-GCM (token-crypto.ts) before it leaves the
 // server; only the expiry instants are stored in clear. Service-role client
 // only: the table has RLS forced with no policies.

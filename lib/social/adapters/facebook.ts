@@ -24,15 +24,25 @@ import { GRAPH_BASE, GRAPH_ID, bearer, graphFailure } from "./graph.ts";
 
 export type FacebookConfig = { pageId: string; pageAccessToken: string };
 
+/** Timeout of the publish request. The Page videos reference doesn't say how
+ *  long a `file_url` request takes to answer, and Facebook may fetch part or
+ *  all of the file (up to UPLOAD_MAX_BYTES, 100 MB) before it does. A timeout
+ *  here is an unknown outcome that an admin must check by hand, so it waits
+ *  well past the 10 s default; 60 s fits the dispatcher's
+ *  PLATFORM_START_MIN_MS (70 s) with room for the status write. */
+export const PUBLISH_TIMEOUT_MS = 60_000;
+
 export class FacebookAdapter implements PlatformAdapter {
   readonly platform = "facebook" as const;
   private readonly config: FacebookConfig;
   private readonly http: HttpDeps;
+  private readonly publishTimeoutMs: number;
 
-  constructor(config: FacebookConfig, http: HttpDeps) {
+  constructor(config: FacebookConfig, http: HttpDeps, timing: { publishTimeoutMs?: number } = {}) {
     if (!GRAPH_ID.test(config.pageId)) throw new Error("facebook: invalid page id");
     this.config = config;
     this.http = http;
+    this.publishTimeoutMs = timing.publishTimeoutMs ?? PUBLISH_TIMEOUT_MS;
   }
 
   validate(video: VideoMeta): ValidateResult {
@@ -53,7 +63,7 @@ export class FacebookAdapter implements PlatformAdapter {
       method: "POST",
       headers: { ...bearer(this.config.pageAccessToken), "Content-Type": "application/x-www-form-urlencoded" },
       body,
-    });
+    }, this.publishTimeoutMs);
     const id = res.kind === "response" && res.status < 300 ? field(res.body, "id") : undefined;
     if (typeof id === "string" && GRAPH_ID.test(id)) return { id };
     // This request is the one that publishes, so an unclear outcome is not

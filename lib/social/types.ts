@@ -43,10 +43,26 @@ export type ValidateResult = { ok: true } | { ok: false; code: string };
  *  error_code column and sanitised like any other code. */
 export type PublishResult = { id: string; notice?: string } | { error: string; retryable: boolean };
 
+/** What the dispatcher gives an adapter for one publish attempt. */
+export type PublishContext = {
+  /** Epoch ms by which the adapter must have finished, waiting included: the
+   *  dispatcher's time budget minus what it keeps for the platforms after this
+   *  one. */
+  deadline: number;
+  /** The platform-side upload an earlier attempt of this target saved (an
+   *  Instagram container), or null. An adapter resumes it rather than
+   *  creating another. */
+  containerId: string | null;
+  /** Saves (or with null, clears) the container id on the target. Called
+   *  before any waiting, so a function that dies mid-wait loses nothing.
+   *  Throws when it couldn't be saved. */
+  saveContainer(id: string | null): Promise<void>;
+};
+
 export interface PlatformAdapter {
   readonly platform: Platform;
   validate(video: VideoMeta): ValidateResult;
-  publish(video: VideoMeta, caption: PlatformCaption): Promise<PublishResult>;
+  publish(video: VideoMeta, caption: PlatformCaption, ctx?: PublishContext): Promise<PublishResult>;
 }
 
 /** A platform credential that rotates (TikTok's refresh token changes on
@@ -91,6 +107,8 @@ export type TargetRecord = {
   captionTitle: string;
   captionSent: string;
   platformPostId: string | null;
+  /** See PublishContext.containerId (column platform_container_id). */
+  containerId: string | null;
   errorCode: string | null;
   retryable: boolean;
   attempts: number;
@@ -143,4 +161,7 @@ export interface SocialStore {
     patch: TargetPatch,
     opts?: { olderThan?: string; requireRetryable?: boolean },
   ): Promise<boolean>;
+  /** Sets (or clears) the container id, only while the target is `posting`.
+   *  Returns true when the row was changed. */
+  setContainer(targetId: string, containerId: string | null): Promise<boolean>;
 }

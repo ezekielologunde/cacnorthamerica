@@ -1,8 +1,8 @@
--- 0027: encrypted platform credentials for social cross-post, plus a fix to
--- 0026's platform_post_id check. Design:
+-- 0028: encrypted platform credentials for social cross-post, plus a fix to
+-- 0027's platform_post_id check. Design:
 -- docs/superpowers/specs/2026-11-08-social-crosspost-design.md
 --
--- !!! Apply ONLY with the site owner's say-so, after 0026.
+-- !!! Apply ONLY with the site owner's say-so, after 0027.
 --
 -- TikTok's refresh token changes on every refresh (the old one stops
 -- working), so it can't live in an env var: the current access/refresh pair
@@ -29,7 +29,7 @@ revoke all on cacna.social_credentials from anon, authenticated;
 grant all on cacna.social_credentials to service_role;
 
 -- TikTok documents publish_id only as a string of up to 64 characters; the
--- dispatcher's id check allows "~", 0026's did not, so a publish id with one
+-- dispatcher's id check allows "~", 0027's did not, so a publish id with one
 -- would have failed the status update. Align the two.
 alter table cacna.social_post_targets
   drop constraint social_post_targets_platform_post_id_check;

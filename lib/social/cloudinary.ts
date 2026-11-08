@@ -1,5 +1,7 @@
 import "server-only";
 import { createHash } from "crypto";
+import { socialCloudName } from "./cloud-name";
+import { parseVideoResource, videoResourceUrl } from "./cloudinary-meta";
 import { UPLOAD_FOLDER, UPLOAD_FORMATS, UPLOAD_MAX_BYTES, isSocialPublicId } from "./limits";
 import type { VideoMeta } from "./types";
 
@@ -17,10 +19,9 @@ import type { VideoMeta } from "./types";
 //
 // Chunked upload (X-Unique-Upload-Id + Content-Range, every chunk but the last
 // over 5 MB): https://cloudinary.com/documentation/upload_images#chunked_asset_upload
-
-export function cloudName(): string {
-  return process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ?? "dkmn2rtbc";
-}
+//
+// The cloud name comes from lib/social/cloud-name.ts only (the same source
+// as next.config.ts's /social-video rewrite); without it nothing here runs.
 
 export type UploadSignature = {
   cloudName: string;
@@ -34,9 +35,10 @@ export type UploadSignature = {
 
 /** null when Cloudinary isn't configured. Never returns the secret. */
 export function signVideoUploadParams(nowSeconds: number): UploadSignature | null {
+  const cloudName = socialCloudName();
   const apiKey = process.env.CLOUDINARY_API_KEY;
   const apiSecret = process.env.CLOUDINARY_API_SECRET;
-  if (!apiKey || !apiSecret) return null;
+  if (!cloudName || !apiKey || !apiSecret) return null;
 
   const allowedFormats = UPLOAD_FORMATS.join(",");
   const params: Record<string, string> = {
@@ -47,7 +49,7 @@ export function signVideoUploadParams(nowSeconds: number): UploadSignature | nul
   const toSign = Object.keys(params).sort().map((k) => `${k}=${params[k]}`).join("&");
   const signature = createHash("sha1").update(toSign + apiSecret).digest("hex");
   return {
-    cloudName: cloudName(),
+    cloudName,
     apiKey,
     timestamp: nowSeconds,
     signature,
@@ -57,26 +59,19 @@ export function signVideoUploadParams(nowSeconds: number): UploadSignature | nul
   };
 }
 
-const num = (v: unknown): number | null => (typeof v === "number" && Number.isFinite(v) && v > 0 ? v : null);
-
-/** Reads an uploaded video's metadata with the Admin API
- *  (GET /resources/video/upload/<public_id>,
- *  https://cloudinary.com/documentation/admin_api#get_details_of_a_single_resource_by_public_id).
- *  bytes, format, width, height and secure_url are documented fields;
- *  duration isn't confirmed by the docs for this endpoint, so it is used when
- *  present and left unknown otherwise. Returns null for anything that isn't a
- *  real video of ours in the social folder. */
+/** Reads an uploaded video's metadata, duration, frame rate and codec
+ *  included (lib/social/cloudinary-meta.ts). Returns null for anything that
+ *  isn't a real video of ours in the social folder. */
 export async function fetchVideoMeta(publicId: string): Promise<VideoMeta | null> {
   if (!isSocialPublicId(publicId)) return null;
+  const cloud = socialCloudName();
   const apiKey = process.env.CLOUDINARY_API_KEY;
   const apiSecret = process.env.CLOUDINARY_API_SECRET;
-  if (!apiKey || !apiSecret) return null;
+  if (!cloud || !apiKey || !apiSecret) return null;
 
-  const cloud = cloudName();
-  const url = `https://api.cloudinary.com/v1_1/${encodeURIComponent(cloud)}/resources/video/upload/${publicId}`;
   let body: Record<string, unknown>;
   try {
-    const res = await fetch(url, {
+    const res = await fetch(videoResourceUrl(cloud, publicId), {
       headers: { Authorization: `Basic ${Buffer.from(`${apiKey}:${apiSecret}`).toString("base64")}` },
       cache: "no-store",
       signal: AbortSignal.timeout(10_000),
@@ -90,28 +85,5 @@ export async function fetchVideoMeta(publicId: string): Promise<VideoMeta | null
     console.error("[social] Cloudinary metadata lookup failed: network");
     return null;
   }
-
-  const secureUrl = body.secure_url;
-  const bytes = num(body.bytes);
-  const format = typeof body.format === "string" ? body.format.toLowerCase() : "";
-  if (
-    body.public_id !== publicId ||
-    body.resource_type !== "video" ||
-    typeof secureUrl !== "string" ||
-    !secureUrl.startsWith(`https://res.cloudinary.com/${cloud}/video/upload/`) ||
-    bytes === null ||
-    !/^[a-z0-9]{1,10}$/.test(format)
-  ) {
-    return null;
-  }
-
-  return {
-    publicId,
-    url: secureUrl,
-    bytes,
-    format,
-    width: num(body.width),
-    height: num(body.height),
-    durationSec: num(body.duration),
-  };
+  return parseVideoResource(body, publicId, cloud);
 }

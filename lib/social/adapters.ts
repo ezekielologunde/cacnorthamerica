@@ -1,6 +1,7 @@
 import "server-only";
 import { FacebookAdapter } from "./adapters/facebook";
 import { InstagramAdapter } from "./adapters/instagram";
+import { socialVideoRewrite } from "./cloud-name";
 import { TikTokAdapter } from "./adapters/tiktok";
 import { supabaseCredentialStore } from "./credential-store";
 import { FakeAdapter } from "./fake-adapter";
@@ -40,6 +41,9 @@ function build(platform: Platform, db: ServiceClient): PlatformAdapter | null {
   const pullUrlPrefix = env("TIKTOK_PULL_URL_PREFIX");
   const key = parseKey(env("SOCIAL_TOKEN_ENCRYPTION_KEY") ?? undefined);
   if (!clientKey || !clientSecret || !pullUrlPrefix || !key) return null;
+  // TikTok pulls through next.config.ts's /social-video rewrite; without a
+  // cloud name that rewrite doesn't exist, so TikTok isn't configured.
+  if (!socialVideoRewrite()) return null;
   return new TikTokAdapter(
     {
       clientKey,

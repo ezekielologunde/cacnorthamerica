@@ -12,7 +12,7 @@ const note: React.CSSProperties = { display: "block", fontSize: 12.5, color: "va
 
 /** When the stored TikTok refresh token lapses. Only the expiry instant is
  *  read (it is stored in clear); the tokens never are. Null before migration
- *  0027 or the first TikTok post. */
+ *  0028 or the first TikTok post. */
 async function readTikTokAuth(db: ServiceClient): Promise<{ when: string; expired: boolean } | null> {
   const { data } = await db.from("social_credentials")
     .select("refresh_expires_at").eq("platform", "tiktok").maybeSingle();
@@ -50,7 +50,7 @@ export default async function SocialSettingsPage() {
       </p>
 
       {!settings ? (
-        <p style={{ color: "#dc2626", fontSize: 13.5 }}>Social posting isn&apos;t set up yet (database migration 0026 not applied).</p>
+        <p style={{ color: "#dc2626", fontSize: 13.5 }}>Social posting isn&apos;t set up yet (database migration 0027 not applied).</p>
       ) : (
         <form action={saveSocialSettings} style={{ background: "white", borderRadius: 10, padding: "8px 24px 20px", boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}>
           <label style={row}>

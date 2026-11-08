@@ -1,16 +1,22 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/supabase/require-admin";
 import ActionButton from "@/components/admin/ActionButton";
-import { STALE_POSTING_MS } from "@/lib/social/dispatcher";
+import { canPostNow, STALE_POSTING_MS } from "@/lib/social/dispatcher";
 import { describeCode } from "@/lib/social/messages";
 import { readSocialSettings, toTarget, type ServiceClient } from "@/lib/social/supabase-store";
 import { PLATFORM_LABELS, PLATFORMS, type SocialSettings, type TargetRecord, type TargetStatus } from "@/lib/social/types";
-import { markSocialTargetNotPosted, retrySocialTarget } from "./actions";
+import { markSocialTargetNotPosted, postSocialTargetNow, retrySocialTarget } from "./actions";
 import UploadForm from "./UploadForm";
 
-// Server actions on this page publish to up to three platforms in one call;
-// give them the plan's maximum (Vercel Hobby: 60 s).
-export const maxDuration = 60;
+// Server actions on this page publish to up to three platforms in one call
+// (a page-level maxDuration applies to all of its Server Actions,
+// node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/02-route-segment-config/maxDuration.md).
+// 300 s is the Vercel Hobby maximum with Fluid compute, which is on by default
+// (https://vercel.com/docs/functions/configuring-functions/duration). The
+// dispatcher keeps its own budget inside this (ACTION_BUDGET_MS, 240 s) and
+// leaves platforms it can't finish queued. Must stay a literal: Next reads it
+// statically.
+export const maxDuration = 300;
 
 const STATUS_COLORS: Record<TargetStatus, string> = {
   queued: "#6b7280",
@@ -87,6 +93,11 @@ function TargetRow({ t }: { t: LogTarget }) {
             <ActionButton style={smallBtn}>Retry</ActionButton>
           </form>
         )}
+        {canPostNow(t) && (
+          <form action={postSocialTargetNow.bind(null, t.id)} style={{ display: "inline" }}>
+            <ActionButton style={smallBtn}>Post now</ActionButton>
+          </form>
+        )}
         {canRelease && (
           <form action={markSocialTargetNotPosted.bind(null, t.id)} style={{ display: "inline" }}>
             <ActionButton style={smallBtn}>Not posted, allow retry</ActionButton>
@@ -116,7 +127,7 @@ export default async function SocialPage() {
       {settings ? (
         <UploadForm modeNote={modeNote(settings)} />
       ) : (
-        <p style={{ color: "#dc2626", fontSize: 13.5 }}>Social posting isn&apos;t set up yet (database migration 0026 not applied).</p>
+        <p style={{ color: "#dc2626", fontSize: 13.5 }}>Social posting isn&apos;t set up yet (database migration 0027 not applied).</p>
       )}
 
       <h2 style={{ fontSize: 15, fontWeight: 600, color: "var(--ink)", margin: "36px 0 14px" }}>Post log</h2>

@@ -14,7 +14,7 @@ Because posting is fully automatic, these safeguards are part of the core, not e
 | | Safeguard | Where |
 |---|---|---|
 | a | Master kill switch (default OFF) and per-platform toggles (default OFF) | `social_settings`, re-read before every single publish |
-| b | Dry-run mode (default ON): the whole pipeline runs with `FakeAdapter`, and the post log records the exact caption and video that would have gone out | `social_settings.dry_run`, `social_posts.dry_run`, `social_post_targets.caption_sent` |
+| b | Dry-run mode (default ON): the whole pipeline runs with `FakeAdapter`, and the post log records the exact caption and video that would have gone out. Switching it back on also stops every real post, Retry and Post now included (`dry_run_on`) | `social_settings.dry_run`, `social_posts.dry_run`, `social_post_targets.caption_sent` |
 | c | Idempotency: one post per (video, platform); retries and double clicks never double-post | unique `(video_public_id, dry_run)` on posts, unique `(post_id, platform)` on targets, atomic status claim in the dispatcher |
 | d | Post log with per-platform status `queued / posting / posted / failed / skipped`, platform post id, sanitised error code | `social_post_targets`, shown on `/admin/social` |
 | e | Nothing posts unless an admin submitted that video | the only entry point that creates a post is the `submitVideo` server action; there is no cron, webhook or public route that creates or publishes posts |
@@ -50,7 +50,7 @@ lie about size, format or URL.
   (`validate(video)`, `publish(video, caption)` returning `{ id }` or `{ error, retryable }`), and
   the `SocialStore` interface the dispatcher talks to.
 - `limits.ts`: per-platform video rules and caption rules (pure, unit-tested).
-- `dispatcher.ts`: the state machine (`submitPost`, `runPost`, `retryTarget`, `markNotPosted`).
+- `dispatcher.ts`: the state machine (`submitPost`, `runPost`, `retryTarget`, `postNow`, `markNotPosted`).
   It takes the store and adapters as arguments, so tests run it against an in-memory store.
 - `fake-adapter.ts`: `FakeAdapter`, used for dry runs and tests. Never touches the network.
 - `adapters.ts`: the real-adapter registry. Task 1 has none, so a real (non-dry-run) post with a
@@ -58,17 +58,18 @@ lie about size, format or URL.
 - `supabase-store.ts`: the `SocialStore` over the `cacna` schema via the service-role client.
 - `cloudinary.ts`: signs the upload parameters and reads a video's metadata (server only).
 
-## Data model (migration `0026_social_crosspost.sql`, written, not applied)
+## Data model (migration `0027_social_crosspost.sql`, written, not applied)
 
 - `social_settings`: a single row (`id = 1`). `posting_enabled` (master kill switch, default
   false), `dry_run` (default true), `facebook_enabled`, `instagram_enabled`, `tiktok_enabled`
   (default false), `updated_at`, `updated_by`.
 - `social_posts`: one per submitted video. Cloudinary `video_public_id` and `video_url`, the
-  metadata read from Cloudinary (bytes, format, width, height, duration), `title`, `caption`,
+  metadata read from Cloudinary (bytes, format, width, height, duration, frame rate, codec), `title`, `caption`,
   `dry_run` (frozen at submit time), `submitted_by`, `created_at`. Unique
   `(video_public_id, dry_run)`: the same upload can be dry-run once and posted for real once.
 - `social_post_targets`: one per (post, platform), unique `(post_id, platform)`. `status`,
-  `caption_sent` (exactly what was or would be sent), `platform_post_id`, `error_code` (checked
+  `caption_sent` (exactly what was or would be sent), `platform_post_id`, `platform_container_id`
+  (the Instagram container a publish is waiting on, saved while `posting`), `error_code` (checked
   against `^[a-z0-9_]{1,64}$` so no free text, token or URL can land there), `retryable`,
   `attempts`, `claimed_at`, `finished_at`, `updated_at`.
 
@@ -152,22 +153,36 @@ How each platform gets the video (task 2):
 
 ### Function time
 
-Hobby functions get 10 to 60 s. Instagram containers need polling ("once per minute, for no more
-than 5 minutes") and TikTok publishing is asynchronous
-([status fetch](https://developers.tiktok.com/doc/content-posting-api-reference-get-video-status)).
-So task 2 must split a real publish into *start* (returns a container or publish id, stored on
-the target) and *check* (polls once); the `/admin/social` page polls *check* while it's open, and
-the daily cron can sweep what's left. Task 1 keeps the single-call `publish()` the fake needs;
-extending it with a pending result is task 2's first step. `maxDuration = 60` is set on the page
-so its server actions get the plan's maximum.
+With Fluid compute (on by default) a Hobby function may run up to 300 s
+([duration limits](https://vercel.com/docs/functions/configuring-functions/duration)), and a
+page-level `maxDuration` applies to every Server Action on the page (Next's `maxDuration` doc).
+`/admin/social` sets `maxDuration = 300`. Inside it the dispatcher keeps its own budget per action
+(`ACTION_BUDGET_MS` = 240 s, leaving room for the last request's timeout and the re-render):
+
+- A platform is only started with at least `PLATFORM_START_MIN_MS` (70 s) left: Facebook's publish
+  request may run to its 60 s timeout, TikTok's whole publish stays under 60 s. Otherwise the
+  target stays `queued` with `deferred_time_budget`, and the log offers **Post now**.
+- Each adapter gets a deadline (`PublishContext.deadline`): the action's deadline minus
+  `PLATFORM_RESERVE_MS` (80 s) for every platform still to come, so a long Instagram wait can't
+  starve TikTok.
+
+Instagram containers need polling ("once per minute, for no more than 5 minutes"). The container
+id is saved on the target (`platform_container_id`) before any waiting; a container still
+processing at the deadline fails as `instagram_processing_timeout` (retryable, nothing posted), and
+Retry polls that same container and publishes it once `FINISHED`. No second container is created
+for a target, except after Meta reports the first `EXPIRED` or `ERROR` (it can never be published,
+so a new one can't double-post). If an earlier `media_publish` went through with its answer lost,
+the resumed container reads `PUBLISHED` and is never published again. There is still no cron
+sweep: a processing container waits for an admin's Retry.
 
 ## Video and caption limits (validated before posting)
 
-Checks run on the metadata Cloudinary reports (bytes, format, width, height, duration). Codec and
-frame-rate rules are checked when the metadata carries them. Cloudinary's docs don't confirm that
-the Admin API returns `duration`, codec or frame rate for video, so unknown values pass and the
-platform's own check is the backstop (a rejected post becomes a `failed` row, never a silent
-loss).
+Checks run on the metadata Cloudinary reports. The Admin API resource request asks for
+`media_metadata=true`, which is what returns `duration`, `frame_rate` and `video.codec` for a video
+(`lib/social/cloudinary-meta.ts`); all are stored on the post. An unknown duration blocks Instagram
+and TikTok (`skipped / video_duration_unknown`) rather than skipping their duration rule; Facebook
+documents none. Unknown codec, frame rate or dimensions still pass, with the platform's own check
+as the backstop (a rejected post becomes a `failed` row, never a silent loss).
 
 | | Facebook Page | Instagram Reels | TikTok |
 |---|---|---|---|
@@ -200,6 +215,10 @@ silently truncated. A video that breaks one platform's rules skips only that pla
 | Kill switch off at submit or flipped mid-run | remaining targets `skipped / kill_switch_off` |
 | Platform toggle off | `skipped / platform_disabled` |
 | Real posting on, adapter not built or not configured | `skipped / not_configured` |
+| Dry run switched on after a real post was submitted | not sent; queued targets `skipped / dry_run_on`, Retry refused |
+| A setting-caused skip (platform off, kill switch, not configured, dry run) after the setting changes | **Post now** moves it `skipped -> queued` (conditional update) and posts it; a video-rule skip is final |
+| Not enough of the action's time budget left for a platform | stays `queued / deferred_time_budget`; **Post now** |
+| Instagram still processing at the deadline | `failed / instagram_processing_timeout`, retryable; Retry resumes the same container |
 | Cloudinary metadata unreachable, or public id outside `social/` | submit refused, nothing stored |
 | Caption too long, too many hashtags or tags | submit refused with the reason, nothing stored |
 | Rate limit hit | action refused (in-memory per-instance limiter, `lib/rateLimit.ts`) |
@@ -216,7 +235,7 @@ silently truncated. A video that breaks one platform's rules skips only that pla
 
 ## Owner setup checklist (before switching real posting on)
 
-1. Apply migration `0026_social_crosspost.sql` (default state: everything off, dry run on).
+1. Apply migration `0027_social_crosspost.sql` (default state: everything off, dry run on).
 2. Confirm the Cloudinary plan; if above Free, raise `UPLOAD_MAX_BYTES`.
 3. **Meta**: create a Meta developer app (Business type). The Instagram account must be a
    professional (Business or Creator) account linked to the church's Facebook Page; complete
@@ -232,7 +251,7 @@ silently truncated. A video that breaks one platform's rules skips only that pla
    restricted to private viewing mode"), so plan the audit before relying on TikTok. If using
    `PULL_FROM_URL`, verify the `cacna.org` domain or URL prefix in the portal.
 5. Put the tokens in Vercel env vars (names and lifetimes in `.env.example`), never in code or in
-   the database in clear. Apply migration 0027 and set `SOCIAL_TOKEN_ENCRYPTION_KEY` before TikTok.
+   the database in clear. Apply migration 0028 and set `SOCIAL_TOKEN_ENCRYPTION_KEY` before TikTok.
 6. Run a dry run from `/admin/social` and check the log; then switch on one platform at a time
    with dry run off.
 
@@ -246,7 +265,7 @@ deleting a published post, cleanup of orphaned uploads.
 `lib/social/adapters/{facebook,instagram,tiktok}.ts`, wired in `lib/social/adapters.ts` from
 server env vars only (names in `.env.example`). A platform with missing or malformed variables has
 no adapter and is logged `skipped / not_configured`. Every request goes through
-`lib/social/http.ts`: per-request timeout (10 s), `redirect: "error"`, and no error text is ever
+`lib/social/http.ts`: per-request timeout (10 s; 60 s for Facebook's publish), `redirect: "error"`, and no error text is ever
 passed on. Each adapter re-validates the video first, then maps every failure to a fixed
 identifier; only numeric Graph codes or documented TikTok `error.code` values are read, never
 `message`. Tokens travel only in the `Authorization` header (or the TikTok token request body),
@@ -258,7 +277,7 @@ never in a URL. Tests: `lib/social/adapters.test.mjs`, fake fetch only.
 | | Facebook Page | Instagram Reels | TikTok |
 |---|---|---|---|
 | Calls | `POST /{page}/videos` `file_url,title,description,published` | `POST /{ig}/media` (REELS) → poll `status_code` → `POST /{ig}/media_publish` | refresh token if needed → `creator_info/query` → `video/init` (PULL_FROM_URL) → poll `status/fetch` |
-| Polling | none (Facebook processes after accepting) | every 4 s, at most 28 s; unfinished → `instagram_processing_timeout`, retryable, nothing published | every 3 s, at most 12 s; unfinished → posted with notice `tiktok_processing[_private]` |
+| Polling | none (Facebook processes after accepting); the publish request has a 60 s timeout | every 30 s, until the dispatcher's deadline (at most 5 min); unfinished → `instagram_processing_timeout`, retryable, container kept for Retry | every 3 s, at most 12 s; unfinished → posted with notice `tiktok_processing[_private]` |
 | Token | long-lived Page token, no expiry date | same Page token (default) | access 2 h, refresh 180 days, refresh token rotates every refresh |
 | When it lapses | `facebook_reconnect_needed`: new `FACEBOOK_PAGE_ACCESS_TOKEN` | `instagram_reconnect_needed` | `tiktok_reconnect_needed`: new `TIKTOK_REFRESH_TOKEN` (restarts the chain); settings page shows the expiry date |
 
@@ -270,7 +289,7 @@ first). Graph 506 (duplicate post) is never retryable.
 TikTok specifics:
 
 - Rotating refresh token: `TIKTOK_REFRESH_TOKEN` seeds the chain; the current pair is then kept in
-  `cacna.social_credentials` (migration 0027), sealed with AES-256-GCM under
+  `cacna.social_credentials` (migration 0028), sealed with AES-256-GCM under
   `SOCIAL_TOKEN_ENCRYPTION_KEY` (`lib/social/token-crypto.ts`, platform as AAD). A different
   env token (by fingerprint) restarts the chain. If the rotated pair can't be saved, the post
   stops (`tiktok_token_save_failed`).
@@ -278,13 +297,14 @@ TikTok specifics:
   `posted` with notice `tiktok_private_unaudited`. Audited sends `PUBLIC_TO_EVERYONE` (or
   `FOLLOWER_OF_CREATOR` for a private account) if the creator info offers it.
 - Video source: `TIKTOK_PULL_URL_PREFIX` + `<id>.<ext>`, which `next.config.ts` serves through an
-  external rewrite `/social-video/:file` → `res.cloudinary.com/<cloud>/video/upload/social/:file`
+  external rewrite (built by `lib/social/cloud-name.ts` from `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`,
+  the single cloud-name source; without it there is no rewrite, no upload signing, and TikTok is
+  `not_configured`) `/social-video/:file` → `res.cloudinary.com/<cloud>/video/upload/social/:file`
   (mp4/mov, one path segment; `proxy.ts` skips dotted paths). The prefix must be verified in the
   TikTok portal.
-- `publish_id` may contain `~`; migration 0027 widens 0026's `platform_post_id` check to match the
+- `publish_id` may contain `~`; migration 0028 widens 0027's `platform_post_id` check to match the
   dispatcher.
 
-Still open: the start/check split (polling across requests, cron sweep) is not built: each
-publish is bounded inside one call, so a worst-case run of all three platforms can approach the
-60 s Hobby limit. The rewrite's behaviour with a 100 MB file on Vercel, Facebook's acceptance of
+Still open: no cron sweep; an Instagram container still processing waits for an admin's Retry,
+and a deferred target for Post now. The rewrite's behaviour with a 100 MB file on Vercel, Facebook's acceptance of
 `.mov` via `file_url`, and every real request are unverified until credentials exist.
