@@ -18,7 +18,7 @@ import {
 // in lib/childCare.ts and are re-checked on the server.
 //
 // Medical data: this state is never written to browser storage, analytics or
-// the URL. YouthRegisterForm's session draft leaves every field here out.
+// the URL.
 
 export type AllergyRow = { key: number; type: AllergyType | ""; name: string; severity: AllergySeverity | "" };
 export type YesNo = "" | "yes" | "no";

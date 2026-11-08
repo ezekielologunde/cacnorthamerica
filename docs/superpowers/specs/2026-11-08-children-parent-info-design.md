@@ -38,7 +38,7 @@ identifying than the ministry needs).
 
 Friction: one guardian block for all children, "Add another child", a progress
 indicator over the three steps, 16px inputs with the right `autocomplete` /
-`inputmode`, plain-language hints, and a session draft (below).
+`inputmode` and plain-language hints.
 
 ## Data handling (security first)
 
@@ -62,9 +62,8 @@ indicator over the three steps, 16px inputs with the right `autocomplete` /
   allergy note is replaced by the structured allergies and is dropped on the
   server, so no allergy text reaches those places either. Logs carry the
   registration ref and an error code only.
-- Browser draft: `sessionStorage` keeps only the fields the form had before
-  (names, ages, meals, contact, church). No care field, no allergy note.
-  Cleared on a successful submit.
+- No browser draft: the form writes nothing to `sessionStorage` or
+  `localStorage` (owner decision), so nothing typed outlives the page.
 
 ## Admin
 

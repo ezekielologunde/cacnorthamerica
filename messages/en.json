@@ -207,9 +207,7 @@
     "progressLabel": "Your progress",
     "progressDone": "done",
     "progressTodo": "to do",
-    "careConsent": "I am the parent or legal guardian of the children 12 and under in this registration. The details I have given are correct, and I allow the Children's Ministry team to care for my children during the program and to call emergency services if they need to.",
-    "draftRestored": "We kept what you typed earlier in this tab. Care and allergy details are never saved, so please fill those in again.",
-    "draftClear": "Start over"
+    "careConsent": "I am the parent or legal guardian of the children 12 and under in this registration. The details I have given are correct, and I allow the Children's Ministry team to care for my children during the program and to call emergency services if they need to."
   },
   "ChildCare": {
     "panelHeading": "Care details for {who}",

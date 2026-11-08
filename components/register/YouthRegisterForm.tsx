@@ -50,12 +50,11 @@ type PersonRow = {
   meals: MealSlot[];
   noMeals: boolean;
   allergies: string;
-  /** Children 12 and under only (lib/childCare.ts); never saved to the draft. */
+  /** Children 12 and under only (lib/childCare.ts). */
   care: ChildCareState;
 };
 
 type SharedField = "contactName" | "contactEmail" | "contactPhone" | "churchName" | "youthLeaderName" | "dccZone";
-const SHARED_FIELDS: SharedField[] = ["contactName", "contactEmail", "contactPhone", "churchName", "youthLeaderName", "dccZone"];
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -78,58 +77,6 @@ function parseAge(raw: string): number {
 
 function emptyPerson(key: number): PersonRow {
   return { key, firstName: "", lastName: "", age: "", meals: [], noMeals: false, allergies: "", care: emptyChildCare() };
-}
-
-// ---------- Session draft ----------
-// Only what the form asked before care details existed, minus the allergy
-// note: names, ages, meals, contact and church. Nothing medical, no pickup or
-// emergency contact. sessionStorage, so it dies with the tab; cleared once the
-// server accepts the registration.
-
-type DraftPerson = Pick<PersonRow, "firstName" | "lastName" | "age" | "meals" | "noMeals">;
-type Draft = { people: DraftPerson[]; shared: Record<SharedField, string> };
-
-const draftKey = (year: number) => `cacna:youth-register-draft:v1:${year}`;
-const str = (v: unknown, max = 254) => (typeof v === "string" ? v.slice(0, max) : "");
-
-function readDraft(year: number): Draft | null {
-  try {
-    const raw = window.sessionStorage.getItem(draftKey(year));
-    if (!raw) return null;
-    const d = JSON.parse(raw) as { people?: unknown; shared?: unknown };
-    if (!Array.isArray(d.people) || !d.shared || typeof d.shared !== "object") return null;
-    const shared = Object.fromEntries(SHARED_FIELDS.map((k) => [k, str((d.shared as Record<string, unknown>)[k])])) as Record<SharedField, string>;
-    const people = d.people.slice(0, MAX_PEOPLE).map((p) => {
-      const r = (p ?? {}) as Record<string, unknown>;
-      return {
-        firstName: str(r.firstName, 120),
-        lastName: str(r.lastName, 120),
-        age: str(r.age, 2).replace(/\D/g, ""),
-        meals: Array.isArray(r.meals) ? MEAL_SLOTS.filter((m) => (r.meals as unknown[]).includes(m)) : [],
-        noMeals: r.noMeals === true,
-      };
-    });
-    const hasContent = people.some((p) => p.firstName || p.lastName || p.age) || SHARED_FIELDS.some((k) => shared[k]);
-    return hasContent && people.length > 0 ? { people, shared } : null;
-  } catch {
-    return null;
-  }
-}
-
-function writeDraft(year: number, people: PersonRow[], shared: Record<SharedField, string>) {
-  try {
-    const draft: Draft = {
-      people: people.map(({ firstName, lastName, age, meals, noMeals }) => ({ firstName, lastName, age, meals, noMeals })),
-      shared,
-    };
-    window.sessionStorage.setItem(draftKey(year), JSON.stringify(draft));
-  } catch {
-    // Storage full or disabled (private mode): the draft is a convenience only.
-  }
-}
-
-function clearDraft(year: number) {
-  try { window.sessionStorage.removeItem(draftKey(year)); } catch { /* see writeDraft */ }
 }
 
 function StepHeading({ n, title }: { n: number; title: string }) {
@@ -176,28 +123,12 @@ export function YouthRegisterForm({
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [serverError, setServerError] = useState<string | null>(null);
-  const [draftState, setDraftState] = useState<"pending" | "restored" | "ready">("pending");
   const serverErrorRef = useRef<HTMLParagraphElement | null>(null);
   const focusKey = useRef<number | null>(null);
 
   /** DOM id for a logical field name, unique per form instance. */
   const fid = (name: string) => `${uid}-${name}`;
   const newKey = () => nextKey.current++;
-
-  // Restore this tab's draft once, after hydration (sessionStorage is
-  // browser-only, so the server render always starts empty).
-  useEffect(() => {
-    const draft = readDraft(year);
-    if (draft) {
-      setPeople(draft.people.map((p) => ({ ...emptyPerson(nextKey.current++), ...p })));
-      setShared(draft.shared);
-    }
-    setDraftState(draft ? "restored" : "ready");
-  }, [year]);
-
-  useEffect(() => {
-    if (draftState !== "pending") writeDraft(year, people, shared);
-  }, [draftState, people, shared, year]);
 
   // After "+ Add", jump straight into the new person's first-name field.
   useEffect(() => {
@@ -257,15 +188,6 @@ export function YouthRegisterForm({
 
   function removePerson(key: number) {
     setPeople((current) => current.filter((p) => p.key !== key));
-  }
-
-  function startOver() {
-    clearDraft(year);
-    setPeople([emptyPerson(nextKey.current++)]);
-    setShared({ contactName: "", contactEmail: "", contactPhone: "", churchName: "", youthLeaderName: "", dccZone: "" });
-    setFamily(emptyFamilyCare());
-    setErrors({});
-    setDraftState("ready");
   }
 
   function personLabel(index: number) {
@@ -368,7 +290,6 @@ export function YouthRegisterForm({
 
       const data = await response.json().catch(() => null);
       if (response.ok && typeof data?.clientSecret === "string") {
-        clearDraft(year);
         setClientSecret(data.clientSecret);
         setStatus("idle");
         return;
@@ -380,7 +301,6 @@ export function YouthRegisterForm({
         return;
       }
 
-      clearDraft(year);
       if (data.checkoutUrl.startsWith("http")) {
         window.location.href = data.checkoutUrl;
       } else {
@@ -452,13 +372,6 @@ export function YouthRegisterForm({
           ))}
         </ol>
       </nav>
-
-      {draftState === "restored" && (
-        <p role="status" style={{ margin: "16px 0 0", padding: "10px 14px", borderRadius: 12, background: "var(--cream)", border: "1px solid var(--line)", fontSize: 13.5, lineHeight: 1.5, color: "var(--ink)" }}>
-          {t("draftRestored")}{" "}
-          <button type="button" className="reg-linkbtn" onClick={startOver} style={{ color: "var(--red)", padding: "0 4px", minHeight: 32 }}>{t("draftClear")}</button>
-        </p>
-      )}
 
       <StepHeading n={1} title={t("stepPeople")} />
 
