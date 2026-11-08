@@ -2,6 +2,7 @@
 
 import { requireAdmin } from "@/lib/supabase/require-admin";
 import { revalidatePath } from "next/cache";
+import { revalidateEventContent } from "@/lib/contentRevalidation";
 import { redirect } from "next/navigation";
 
 function sanitizeUrl(raw: string | null): string | null {
@@ -33,7 +34,7 @@ export async function createEvent(formData: FormData) {
     throw new Error("Could not create event. Please try again.");
   }
   revalidatePath("/admin/events");
-  revalidatePath("/calendar");
+  revalidateEventContent();
   redirect(`/admin/events/${data.id}`);
 }
 
@@ -58,7 +59,7 @@ export async function updateEvent(id: string, formData: FormData) {
   }
   revalidatePath("/admin/events");
   revalidatePath(`/admin/events/${id}`);
-  revalidatePath("/calendar");
+  revalidateEventContent();
 }
 
 export async function deleteEvent(id: string) {
@@ -69,6 +70,6 @@ export async function deleteEvent(id: string) {
     throw new Error("Could not delete event. Please try again.");
   }
   revalidatePath("/admin/events");
-  revalidatePath("/calendar");
+  revalidateEventContent();
   redirect("/admin/events");
 }
