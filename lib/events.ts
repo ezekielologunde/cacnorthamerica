@@ -121,6 +121,15 @@ export const specialEvents: ChurchEvent[] = [
     navLabel: "Singles Game Night",
   },
   {
+    id: "operation-impact-brazil-2026",
+    title: "Operation Impact Brazil: Preparing the Ground",
+    desc: "A 3-day encounter and Zoom prayer meeting hosted by the CAC North America Empowerment Department. \"For a great and effective door has opened to me, and there are many adversaries\" (1 Corinthians 16:9). With Pastor Dr. T.A.O. Agbeja, Regional Superintendent, CAC Latunde Region; Pastor S.O. Oladele, President, CAC Nigeria & Overseas; and Pastor Z.O. Oloba, Regional Revivalist.",
+    dateLabel: "November 8–10, 2026", timeLabel: "8:00 PM ET · On Zoom", month: "NOV", day: "08",
+    startLocal: "20261108T200000", endLocal: "20261110T210000",
+    location: "Zoom Meeting ID 821 781 5665, Passcode CACNAED12",
+    navLabel: "Operation Impact Brazil",
+  },
+  {
     id: "business-group-fellowship-summit-2026-10",
     title: "CAC North America Business Group Fellowship — Quarterly Summit: \"Investment: Triple Net\"",
     desc: "The Business Group Fellowship's quarterly summit on the theme \"Investment: Triple Net.\" Speakers: Pastor (Dr) T.A.O. Agbeja, CACNA Latunde Regional Superintendent; Pastor Olubode Olatunji, Supervisor, Business Group Fellowship; Pastor Bolaji Oladunni, Chairman, Business Group Fellowship; and guest speaker Evangelist Bola Mustapha. On Zoom. Contact: 617-922-3033 or 813-458-2892.",

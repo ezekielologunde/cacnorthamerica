@@ -259,6 +259,7 @@ photo marquee (`6fb8cd8`).
   gallery, department pages (`dbf0f68`)
 - Added a dedicated Youth & Young Adult page (`9ca08d1`)
 - Added the CACNA Singles Ministry Virtual Game Night (Sat Oct 31, 2026, 6:00 PM ET, Zoom, link TBA) to `specialEvents` in `lib/events.ts`; text-only, no detail page or flyer yet; end time 8:00 PM is an assumption
+- Added Operation Impact Brazil: Preparing the Ground (Nov 8-10, 2026, 8:00 PM ET, Zoom prayer meeting, CAC North America Empowerment Department) to `specialEvents` in `lib/events.ts`; text-only; end time 9:00 PM on Nov 10 is an assumption; Zoom ID and passcode copied from the flier
 - Added Bible Study 31 "Offerings from the Tribal Leaders" (Numbers 7), Study 33 "Consequences of Complaints" (Numbers 10–11) and Study 34 "Miriam's Rebellion" (Numbers 12) as Reflection posts in `lib/blog.ts`
 - Added Bible Study 35 "The Twelve Spies" (Numbers 13), Study 36 "Israel's Fear and Rebellion" (Numbers 14) and Study 37 "Offerings' Ordinance in Canaan and Korah's Rebellion" (Numbers 15–16) as Reflection posts in `lib/blog.ts`
 - Added the Business Group Fellowship Quarterly Summit "Investment: Triple Net" (Mon Oct 26, 2026, 8:30 PM ET, Zoom) to `specialEvents`; already past, so it lists under Past events on /calendar; Zoom meeting ID/passcode deliberately not published; end time 10:00 PM is an assumption
