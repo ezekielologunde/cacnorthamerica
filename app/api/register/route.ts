@@ -16,6 +16,8 @@ import { TURNSTILE_ERROR, verifyTurnstile } from "@/lib/turnstile";
 import { processingFeeLineItem, processingFeeMetadata } from "@/lib/processingFee";
 import { giftLineItems, parseGiftCents } from "@/lib/registrationGift";
 import { adultSheetExtras, categoryForAge, EMAIL_RE, encodeMeals, parseMealsAndAllergies, parseYouthRegistration, youthSheetName, youthSheetRows } from "@/lib/youthRegistration";
+import { childCareRows, needsChildCare, parseRegistrationCare } from "@/lib/childCare";
+import { saveChildCare } from "@/lib/childCareStore";
 
 type RegisterRequestBody = {
   registrationType: "individual" | "group";
@@ -456,6 +458,15 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
     return NextResponse.json({ error: "paymentMethod must be 'zelle' or 'card'" }, { status: 400 });
   }
   const input = parsed.value;
+  // Children's Ministry care details for everyone 12 and under
+  // (lib/childCare.ts). Saved below, before anything else is written, and
+  // kept out of the summary so they never reach the URL token, Stripe, the
+  // sheet or the email.
+  const careParsed = parseRegistrationCare(rawBody, input.registrants.map((r) => r.age));
+  if (!careParsed.ok) {
+    return NextResponse.json({ error: careParsed.error }, { status: 400 });
+  }
+  const care = careParsed.value;
   const giftParsed = parseGiftCents((rawBody as Record<string, unknown>).donationCents);
   if (!giftParsed.ok) return NextResponse.json({ error: giftParsed.error }, { status: 400 });
   const gift = giftParsed.cents;
@@ -498,7 +509,9 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
         c: category,
         a: r.age,
         m: encodeMeals(r.meals),
-        ...(r.allergies ? { l: r.allergies } : {}),
+        // A child's allergies live in the care details instead; a free-text
+        // note sent for them anyway is dropped, never forwarded.
+        ...(r.allergies && !needsChildCare(r.age) ? { l: r.allergies } : {}),
       },
       priceCents: price,
     });
@@ -522,6 +535,26 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
     isComplimentary: false,
     youth: { leader: input.youthLeaderName, dcc: input.dccZone, guardian: input.guardianConfirmed },
   };
+
+  // Fail closed: a registration whose care details could not be stored is
+  // refused before any sheet row, check-in row, email or payment, so a parent
+  // never believes the ministry has their child's allergies when it does not.
+  // A row left by a card checkout that is then abandoned has no check-in row,
+  // and the admin pages only show care rows that do.
+  const careRows = childCareRows({
+    ref: summary.ref,
+    year: cy.year,
+    registrants: input.registrants.map((r) => ({ name: `${r.firstName} ${r.lastName}`, age: r.age })),
+    care,
+    guardian: { name: input.contactName, phone: input.contactPhone },
+    now: new Date(),
+  });
+  if (!(await saveChildCare(summary.ref, careRows))) {
+    return NextResponse.json(
+      { error: "We couldn't save your children's care details just now, so nothing was registered. Please try again in a minute." },
+      { status: 503 }
+    );
+  }
 
   // Everyone 19 or under: free -- one sheet row per person, straight to the
   // confirmation page, and a confirmation email to contactEmail. Nobody has
