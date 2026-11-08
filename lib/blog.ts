@@ -958,6 +958,10 @@ export const POSTS: BlogPost[] = RAW_POSTS.map((p) => ({
  *  strips like the homepage Latest News. */
 export const ARCHIVE_BEFORE = "2020-01-01";
 
+/** The convention closing-appreciation post: the hero shows it on its own
+ *  recap slide, so it is never also the hero's "Latest News" slide. */
+export const CONVENTION_RECAP_SLUG = "cacna-2026-closing-appreciation";
+
 export function isArchivePost(p: Pick<BlogPost, "dateIso">): boolean {
   return p.dateIso < ARCHIVE_BEFORE;
 }

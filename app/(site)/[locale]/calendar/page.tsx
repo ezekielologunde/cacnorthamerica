@@ -1,4 +1,3 @@
-import { createClient } from "@supabase/supabase-js";
 import "@/app/(site)/[locale]/mobile-events-media.css";
 import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
@@ -8,6 +7,7 @@ import { IconBadge } from "@/components/ui/IconBadge";
 import Link from "next/link";
 import { CalendarPlus, Download, Circle, ArrowDown, Users, BookOpen, GraduationCap, HeartHandshake } from "lucide-react";
 import { specialEvents, annualMoments, googleCalUrl, icsDataUri, splitByDate, type ChurchEvent } from "@/lib/events";
+import { getPublishedDbEvents } from "@/lib/dbEvents";
 import { SITE, SITE_URL } from "@/lib/site";
 import { conventionYears, currentOrNextConvention, dateRangeLabel, CONVENTION_VENUE_SHORT } from "@/lib/conventions";
 import { setRequestLocale } from "next-intl/server";
@@ -31,8 +31,6 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
-
 function toIso(s: string): string {
   const mo = parseInt(s.slice(4, 6), 10);
   const off = mo >= 3 && mo <= 10 ? "-04:00" : "-05:00";
@@ -51,32 +49,6 @@ function evOffers(id: string) {
   if (id === "holy-land-pilgrimage-2026")
     return { "@type": "Offer", price: "4549", priceCurrency: "USD", availability: "https://schema.org/InStock", url: `${SITE_URL}/events/pilgrimage-2026` };
   return { "@type": "Offer", price: "0", priceCurrency: "USD", availability: "https://schema.org/InStock" };
-}
-
-type DbEventRow = {
-  id: string; title: string; description: string | null;
-  event_date: string; end_date: string | null;
-  location: string | null; event_url: string | null;
-};
-
-function dbEventToChurchEvent(e: DbEventRow): ChurchEvent {
-  const start = new Date(e.event_date);
-  const end = e.end_date ? new Date(e.end_date) : start;
-  const pad = (n: number) => n.toString().padStart(2, "0");
-  const toLocal = (dt: Date) =>
-    `${dt.getUTCFullYear()}${pad(dt.getUTCMonth() + 1)}${pad(dt.getUTCDate())}T${pad(dt.getUTCHours())}${pad(dt.getUTCMinutes())}00`;
-  return {
-    id: e.id,
-    title: e.title,
-    desc: e.description ?? "",
-    dateLabel: start.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }),
-    timeLabel: start.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "America/New_York" }) + " ET",
-    month: MONTHS[start.getUTCMonth()],
-    day: pad(start.getUTCDate()),
-    startLocal: toLocal(start),
-    endLocal: toLocal(end),
-    href: e.event_url ?? undefined,
-  };
 }
 
 function AddToCalendar({ ev, dark = false }: { ev: ChurchEvent; dark?: boolean }) {
@@ -103,19 +75,7 @@ export default async function CalendarPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  // db.schema: "cacna" -- see lib/supabase/server.ts's comment; without it
-  // this silently hits cac-salvation-center's own project instead.
-  const { data: dbRows } = await createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { db: { schema: "cacna" } }
-  )
-    .from("events")
-    .select("id, title, description, event_date, end_date, location, event_url")
-    .eq("published", true)
-    .order("event_date");
-
-  const dynamicEvents = (dbRows ?? []).map(dbEventToChurchEvent);
+  const dynamicEvents = await getPublishedDbEvents();
   const allEvents = [...specialEvents, ...dynamicEvents];
   const { upcoming: upcomingSpecial, past } = splitByDate(allEvents);
 

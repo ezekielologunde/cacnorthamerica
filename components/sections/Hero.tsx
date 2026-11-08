@@ -8,7 +8,7 @@ import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { haptic } from "@/lib/haptics";
 import { conventionToFeature, currentOrNextConvention, dateRangeLabel, hasExternalRegistrationUrl, CONVENTION_VENUE_SHORT } from "@/lib/conventions";
 import { specialEvents, isEventPast, hasEventStarted } from "@/lib/events";
-import { POSTS } from "@/lib/blog";
+import { POSTS, CONVENTION_RECAP_SLUG, type BlogPost } from "@/lib/blog";
 import { GIVING_CAMPAIGNS } from "@/lib/giving";
 import "./home-mobile.css";
 
@@ -47,7 +47,11 @@ interface Slide {
  *  slide is real CACNA content: the adaptive convention state, real
  *  upcoming events, a real giving campaign, and the latest real post.
  *  Slides for events that have already passed simply don't get built. */
-function useSlides(): Slide[] {
+/** The newest post, picked on the server so posts published from
+ *  /admin/blog reach the hero too; only the fields the slide shows. */
+export type HeroPost = Pick<BlogPost, "slug" | "title" | "excerpt" | "href" | "image">;
+
+function useSlides(latestFromServer?: HeroPost): Slide[] {
   return useMemo(() => {
     const slides: Slide[] = [];
 
@@ -66,7 +70,7 @@ function useSlides(): Slide[] {
     const { cy: featuredCy, state } = conventionToFeature();
     const nextCy = currentOrNextConvention();
     const showRecap = state === "live" || state === "concluded-recent";
-    const recapPost = POSTS.find((p) => p.slug === "cacna-2026-closing-appreciation");
+    const recapPost = POSTS.find((p) => p.slug === CONVENTION_RECAP_SLUG);
     slides.push({
       key: "convention",
       eyebrow: showRecap ? (state === "live" ? "Live Now" : "Just Concluded") : nextCy.registrationUrl ? "Registration Open" : "Save the Date",
@@ -114,8 +118,8 @@ function useSlides(): Slide[] {
       });
     }
 
-    const latestPost = [...POSTS]
-      .filter((p) => p.slug !== "cacna-2026-closing-appreciation")
+    const latestPost: HeroPost | undefined = latestFromServer ?? [...POSTS]
+      .filter((p) => p.slug !== CONVENTION_RECAP_SLUG)
       .sort((a, b) => b.dateIso.localeCompare(a.dateIso))[0];
     if (latestPost) {
       // A portrait photo (e.g. a person's headshot) still works as the small
@@ -136,7 +140,7 @@ function useSlides(): Slide[] {
     }
 
     return slides;
-  }, []);
+  }, [latestFromServer]);
 }
 
 /** Mobile browsers apply much stricter iframe-autoplay policies than
@@ -160,11 +164,11 @@ function useIsNarrowViewport(breakpoint: number): boolean {
   );
 }
 
-export function Hero() {
+export function Hero({ latestPost }: { latestPost?: HeroPost } = {}) {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
   const narrow = useIsNarrowViewport(640);
-  const slides = useSlides();
+  const slides = useSlides(latestPost);
 
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
