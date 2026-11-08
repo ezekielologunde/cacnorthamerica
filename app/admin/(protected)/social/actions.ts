@@ -31,11 +31,14 @@ export async function signVideoUpload(): Promise<SignResult> {
 
 export type SubmitVideoResult = { ok: true; duplicate: boolean } | { ok: false; error: string };
 
-export async function submitVideo(input: { publicId: unknown; title: unknown; caption: unknown }): Promise<SubmitVideoResult> {
+/** `tiktok`: the admin's TikTok choices from the form, or absent when the form
+ *  didn't offer TikTok. Checked by the dispatcher (parseTikTokChoices); never
+ *  defaulted. */
+export async function submitVideo(input: { publicId: unknown; title: unknown; caption: unknown; tiktok?: unknown }): Promise<SubmitVideoResult> {
   const { supabase, user } = await requireAdmin();
   if (!rateLimit(`social-submit:${user.id}`, 10, 60 * MINUTE)) return { ok: false, error: SLOW_DOWN };
 
-  const { publicId, title, caption } = input ?? {};
+  const { publicId, title, caption, tiktok } = input ?? {};
   if (!isSocialPublicId(publicId)) return { ok: false, error: "Upload the video first." };
   if (typeof title !== "string" || typeof caption !== "string" || title.length > TITLE_MAX * 2 || caption.length > 10_000) {
     return { ok: false, error: "Check the title and caption." };
@@ -47,7 +50,7 @@ export async function submitVideo(input: { publicId: unknown; title: unknown; ca
 
   let result;
   try {
-    result = await submitPost(dispatcherDeps(supabase), { video, title, caption, submittedBy: user.id });
+    result = await submitPost(dispatcherDeps(supabase), { video, title, caption, tiktok, submittedBy: user.id });
   } catch (err) {
     console.error("[social] submit failed:", err instanceof Error ? err.message : "unknown");
     return { ok: false, error: "Something went wrong saving the post. Check the post log before trying again." };

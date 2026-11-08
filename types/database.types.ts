@@ -895,6 +895,7 @@ export type Database = {
           dry_run: boolean
           id: string
           submitted_by: string
+          tiktok_choices: Json | null
           title: string
           video_bytes: number
           video_duration_s: number | null
@@ -912,6 +913,7 @@ export type Database = {
           dry_run: boolean
           id?: string
           submitted_by: string
+          tiktok_choices?: Json | null
           title: string
           video_bytes: number
           video_duration_s?: number | null
@@ -929,6 +931,7 @@ export type Database = {
           dry_run?: boolean
           id?: string
           submitted_by?: string
+          tiktok_choices?: Json | null
           title?: string
           video_bytes?: number
           video_duration_s?: number | null

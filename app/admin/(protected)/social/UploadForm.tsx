@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { signVideoUpload, submitVideo } from "./actions";
 import type { UploadSignature } from "@/lib/social/cloudinary";
 import { TITLE_MAX, UPLOAD_FORMATS, UPLOAD_MAX_BYTES } from "@/lib/social/limits";
+import { describeCode } from "@/lib/social/messages";
+import { parseTikTokChoices, type TikTokComposer } from "@/lib/social/tiktok-choices";
+import TikTokFields, { draftBlocksPosting, draftToChoices, EMPTY_TIKTOK_DRAFT, type TikTokDraft } from "./TikTokFields";
 
 // The video goes straight from this browser to Cloudinary in 20 MB chunks
 // (Cloudinary requires every chunk but the last to be over 5 MB:
@@ -60,7 +63,10 @@ const hint: React.CSSProperties = { fontSize: 12.5, color: "var(--ink-soft)", ma
 
 type Phase = "idle" | "uploading" | "submitting";
 
-export default function UploadForm({ modeNote }: { modeNote: string }) {
+/** `tiktok`: the TikTok section (lib/social/adapters.ts tiktokComposer), or
+ *  null when TikTok isn't in play. Its choices go with the same single
+ *  submit as everything else. */
+export default function UploadForm({ modeNote, tiktok }: { modeNote: string; tiktok: TikTokComposer | null }) {
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState("");
@@ -72,6 +78,12 @@ export default function UploadForm({ modeNote }: { modeNote: string }) {
   const [publicId, setPublicId] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [done, setDone] = useState("");
+  const [tiktokDraft, setTiktokDraft] = useState<TikTokDraft>(EMPTY_TIKTOK_DRAFT);
+  // A local preview of the video about to be posted (TikTok's guidelines,
+  // section 5a); the file itself never leaves for our server.
+  const previewUrl = useMemo(() => (file ? URL.createObjectURL(file) : null), [file]);
+  useEffect(() => () => { if (previewUrl) URL.revokeObjectURL(previewUrl); }, [previewUrl]);
+  const tiktokReady = tiktok?.state === "ready";
 
   function pickFile(f: File | null) {
     setError("");
@@ -98,6 +110,13 @@ export default function UploadForm({ modeNote }: { modeNote: string }) {
     setDone("");
     if (!file && !publicId) return setError("Choose a video first.");
     if (!title.trim()) return setError("Add a title.");
+    // Checked here for a quick message; the server checks the same rules.
+    let tiktokChoices: unknown = undefined;
+    if (tiktokReady) {
+      tiktokChoices = draftToChoices(tiktokDraft);
+      const checked = parseTikTokChoices(tiktokChoices);
+      if (!checked.ok) return setError(describeCode(checked.code));
+    }
 
     try {
       let id = publicId;
@@ -109,13 +128,14 @@ export default function UploadForm({ modeNote }: { modeNote: string }) {
         setPublicId(id);
       }
       setPhase("submitting");
-      const res = await submitVideo({ publicId: id, title, caption });
+      const res = await submitVideo({ publicId: id, title, caption, tiktok: tiktokChoices });
       if (!res.ok) throw new Error(res.error);
       setDone(res.duplicate ? "This video was already submitted; its log entry is below." : "Submitted. See the post log below.");
       setFile(null);
       setPublicId(null);
       setTitle("");
       setCaption("");
+      setTiktokDraft(EMPTY_TIKTOK_DRAFT);
       setProgress(0);
       (e.target as HTMLFormElement).reset();
       router.refresh();
@@ -137,6 +157,10 @@ export default function UploadForm({ modeNote }: { modeNote: string }) {
         <input id="social-video" type="file" accept="video/mp4,video/quicktime,.mp4,.mov" disabled={busy}
           onChange={(e) => pickFile(e.target.files?.[0] ?? null)} />
         <p style={hint}>MP4 or MOV, up to {UPLOAD_MAX_BYTES / 1048576} MB. Vertical 9:16 works best on Reels and TikTok. Facebook takes MP4 only.</p>
+        {previewUrl && (
+          <video src={previewUrl} controls muted playsInline
+            style={{ display: "block", marginTop: 10, maxHeight: 280, maxWidth: "100%", borderRadius: 8, background: "#000" }} />
+        )}
       </div>
 
       <div>
@@ -153,11 +177,13 @@ export default function UploadForm({ modeNote }: { modeNote: string }) {
         <p style={hint}>{title.length + caption.length + (caption ? 2 : 0)} / 2200 characters with the title. Instagram allows 30 hashtags and 20 @ tags.</p>
       </div>
 
+      {tiktok && <TikTokFields composer={tiktok} draft={tiktokDraft} onChange={setTiktokDraft} disabled={busy} />}
+
       {error && <p role="alert" style={{ margin: 0, color: "#dc2626", fontSize: 13.5 }}>{error}</p>}
       {done && <p role="status" style={{ margin: 0, color: "#16a34a", fontSize: 13.5 }}>{done}</p>}
 
       <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-        <button type="submit" disabled={busy}
+        <button type="submit" disabled={busy || (tiktokReady && draftBlocksPosting(tiktokDraft))}
           style={{ background: "var(--red)", color: "white", border: "none", borderRadius: 8, padding: "10px 20px", fontSize: 14, fontWeight: 700, fontFamily: "inherit", cursor: busy ? "not-allowed" : "pointer", opacity: busy ? 0.65 : 1 }}>
           {phase === "uploading" ? `Uploading ${Math.round(progress * 100)}%` : phase === "submitting" ? "Posting..." : publicId ? "Submit again" : "Upload and post"}
         </button>

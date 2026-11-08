@@ -8,8 +8,9 @@ import { FakeAdapter } from "./fake-adapter";
 import type { DispatcherDeps } from "./dispatcher";
 import type { HttpDeps } from "./http";
 import { supabaseSocialStore, type ServiceClient } from "./supabase-store";
+import { offeredPrivacy, type TikTokComposer } from "./tiktok-choices";
 import { parseKey } from "./token-crypto";
-import type { Platform, PlatformAdapter } from "./types";
+import type { Platform, PlatformAdapter, SocialSettings } from "./types";
 
 // Real adapters, configured from server env vars only (names and lifetimes in
 // .env.example). A platform whose variables are missing or malformed has no
@@ -36,6 +37,10 @@ function build(platform: Platform, db: ServiceClient): PlatformAdapter | null {
     const accessToken = env("INSTAGRAM_ACCESS_TOKEN") ?? env("FACEBOOK_PAGE_ACCESS_TOKEN");
     return igUserId && accessToken ? new InstagramAdapter({ igUserId, accessToken }, http) : null;
   }
+  return buildTikTok(db);
+}
+
+function buildTikTok(db: ServiceClient): TikTokAdapter | null {
   const clientKey = env("TIKTOK_CLIENT_KEY");
   const clientSecret = env("TIKTOK_CLIENT_SECRET");
   const pullUrlPrefix = env("TIKTOK_PULL_URL_PREFIX");
@@ -67,6 +72,31 @@ export function realAdapterFor(db: ServiceClient): (platform: Platform) => Platf
       return null;
     }
   };
+}
+
+/** The TikTok section of the upload form, or null when TikTok isn't in play
+ *  (switched off, or a real post with TikTok not connected: it is skipped
+ *  either way). With a connection, creator info is read fresh on every
+ *  render, as TikTok's guidelines require; a dry run without one gets the
+ *  unaudited default (SELF_ONLY only) so the form can still be tried. */
+export async function tiktokComposer(db: ServiceClient, settings: SocialSettings): Promise<TikTokComposer | null> {
+  if (!settings.platforms.tiktok) return null;
+  let adapter: TikTokAdapter | null = null;
+  try {
+    adapter = buildTikTok(db);
+  } catch {
+    adapter = null;
+  }
+  if (!adapter) {
+    if (!settings.dryRun) return null;
+    return {
+      state: "ready", standIn: true, nickname: "", privacyOptions: ["SELF_ONLY"],
+      commentDisabled: false, duetDisabled: false, stitchDisabled: false, maxDurationSec: null,
+    };
+  }
+  const res = await adapter.creatorInfo();
+  if ("error" in res) return { state: "unavailable", code: res.error };
+  return { state: "ready", standIn: false, ...res.info, privacyOptions: offeredPrivacy(res.info, adapter.audited) };
 }
 
 /** Dispatcher wiring for server actions; `db` must be the service-role client. */

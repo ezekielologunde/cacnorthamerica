@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/supabase/require-admin";
 import ActionButton from "@/components/admin/ActionButton";
+import { tiktokComposer } from "@/lib/social/adapters";
 import { canPostNow, STALE_POSTING_MS } from "@/lib/social/dispatcher";
 import { describeCode } from "@/lib/social/messages";
 import { readSocialSettings, toTarget, type ServiceClient } from "@/lib/social/supabase-store";
@@ -112,6 +113,8 @@ export default async function SocialPage() {
   const { supabase } = await requireAdmin();
   const settings = await readSocialSettings(supabase).catch(() => null);
   const log = await loadLog(supabase);
+  // TikTok requires fresh creator info whenever the posting page renders.
+  const tiktok = settings ? await tiktokComposer(supabase, settings).catch(() => null) : null;
 
   return (
     <div style={{ maxWidth: 860 }}>
@@ -125,7 +128,7 @@ export default async function SocialPage() {
       </p>
 
       {settings ? (
-        <UploadForm modeNote={modeNote(settings)} />
+        <UploadForm modeNote={modeNote(settings)} tiktok={tiktok} />
       ) : (
         <p style={{ color: "#dc2626", fontSize: 13.5 }}>Social posting isn&apos;t set up yet (database migration 0027 not applied).</p>
       )}

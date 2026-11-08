@@ -16,12 +16,24 @@
 // so the video goes out as TIKTOK_PULL_URL_PREFIX + <id>.<format>: a cacna.org
 // path that next.config.ts rewrites (proxies, no redirect) to Cloudinary.
 //
-// Privacy: "All content posted by unaudited clients will be restricted to
-// private viewing mode", and an unaudited client asking for anything else is
-// refused with unaudited_client_can_only_post_to_private_accounts. Until the
-// owner sets TIKTOK_APP_AUDITED=true we send SELF_ONLY and mark the target
-// posted with the notice tiktok_private_unaudited, so the log says plainly
-// that the video is private rather than looking like a normal public post.
+// Per-post choices: TikTok's Content Sharing Guidelines make the poster
+// choose the privacy level (no default), the comment/duet/stitch settings
+// (off by default) and the commercial content disclosure, and consent, for
+// every post (lib/social/tiktok-choices.ts cites them). The admin makes
+// those choices on the upload form; they reach this adapter as
+// PublishContext.tiktok and are sent exactly as chosen. Without them
+// (missing or malformed) nothing is requested at all. They are re-checked
+// against fresh creator info before init: a privacy level the account no
+// longer offers, or an interaction the creator has since switched off, is
+// refused rather than changed.
+//
+// Privacy while unaudited: "All content posted by unaudited clients will be
+// restricted to private viewing mode", and an unaudited client asking for
+// anything else is refused with
+// unaudited_client_can_only_post_to_private_accounts. Until the owner sets
+// TIKTOK_APP_AUDITED=true the form offers only SELF_ONLY, anything else is
+// refused here (tiktok_unaudited_private_only), and the target is marked
+// posted with the notice tiktok_private_unaudited.
 //
 // Tokens (https://developers.tiktok.com/doc/oauth-user-access-token-management):
 // the access token lives 2 hours, the refresh token 180 days, and every
@@ -39,11 +51,20 @@
 import { createHash } from "node:crypto";
 import { UPLOAD_FOLDER, validateVideo } from "../limits.ts";
 import { requestJson, field, sleep, type HttpDeps, type HttpResult } from "../http.ts";
+import {
+  choicesRefusedBy,
+  parseTikTokChoices,
+  postInfoFields,
+  TIKTOK_PRIVACY_LEVELS,
+  type TikTokCreatorInfo,
+  type TikTokPrivacyLevel,
+} from "../tiktok-choices.ts";
 import type {
   CredentialRecord,
   CredentialStore,
   PlatformAdapter,
   PlatformCaption,
+  PublishContext,
   PublishResult,
   StoredCredential,
   ValidateResult,
@@ -140,6 +161,45 @@ export class TikTokAdapter implements PlatformAdapter {
 
   validate(video: VideoMeta): ValidateResult {
     return validateVideo("tiktok", video);
+  }
+
+  /** Whether TIKTOK_APP_AUDITED is set (the form offers only SELF_ONLY until then). */
+  get audited(): boolean {
+    return this.config.audited;
+  }
+
+  /** Fresh creator info for the upload form ("must retrieve the latest
+   *  creator info when rendering the Post to TikTok page"). Read-only: it
+   *  posts nothing, though it may refresh the token. */
+  async creatorInfo(): Promise<{ info: TikTokCreatorInfo } | Failure> {
+    const auth = await this.accessToken();
+    if ("error" in auth) return auth;
+    return this.queryCreator(auth.token);
+  }
+
+  private async queryCreator(token: string): Promise<{ info: TikTokCreatorInfo } | Failure> {
+    const res = await this.call(token, "post/publish/creator_info/query/");
+    if (res.kind !== "response" || field(res.body, "error", "code") !== "ok") {
+      const failure = tiktokFailure(res, false);
+      if (failure.error === "tiktok_token_rejected") await this.dropAccessToken();
+      return { ...failure, retryable: true };
+    }
+    const data = (k: string) => field(res.body, "data", k);
+    const options = data("privacy_level_options");
+    const nickname = data("creator_nickname");
+    const max = data("max_video_post_duration_sec");
+    return {
+      info: {
+        nickname: typeof nickname === "string" ? nickname.slice(0, 100) : "",
+        privacyOptions: Array.isArray(options)
+          ? TIKTOK_PRIVACY_LEVELS.filter((p: TikTokPrivacyLevel) => options.includes(p))
+          : [],
+        commentDisabled: data("comment_disabled") === true,
+        duetDisabled: data("duet_disabled") === true,
+        stitchDisabled: data("stitch_disabled") === true,
+        maxDurationSec: typeof max === "number" ? max : null,
+      },
+    };
   }
 
   /** The URL TikTok pulls the video from (under the verified prefix). */
@@ -277,34 +337,32 @@ export class TikTokAdapter implements PlatformAdapter {
     });
   }
 
-  async publish(video: VideoMeta, caption: PlatformCaption): Promise<PublishResult> {
+  async publish(video: VideoMeta, caption: PlatformCaption, ctx?: PublishContext): Promise<PublishResult> {
     const checked = this.validate(video);
     if (!checked.ok) return { error: checked.code, retryable: false };
+    // The admin's own choices, or nothing is sent. Not retryable: they are
+    // stored with the post, so a retry would be refused the same way.
+    const chosen = parseTikTokChoices(ctx?.tiktok);
+    if (!chosen.ok) return { error: chosen.code, retryable: false };
+    const choices = chosen.choices;
 
     const auth = await this.accessToken();
     if ("error" in auth) return auth;
 
-    // 1. Creator info: allowed privacy levels and the account's max duration.
-    const info = await this.call(auth.token, "post/publish/creator_info/query/");
-    if (info.kind !== "response" || field(info.body, "error", "code") !== "ok") {
-      const failure = tiktokFailure(info, false);
-      if (failure.error === "tiktok_token_rejected") await this.dropAccessToken();
-      return { ...failure, retryable: true };
-    }
-    const maxDuration = field(info.body, "data", "max_video_post_duration_sec");
-    if (typeof maxDuration === "number" && video.durationSec != null && video.durationSec > maxDuration) {
+    // 1. Creator info: allowed privacy levels, interaction settings and the
+    // account's max duration, checked against the admin's choices.
+    const creator = await this.queryCreator(auth.token);
+    if ("error" in creator) return creator;
+    const { info } = creator;
+    if (info.maxDurationSec !== null && video.durationSec != null && video.durationSec > info.maxDurationSec) {
       return { error: "video_too_long", retryable: false };
     }
-    const options = field(info.body, "data", "privacy_level_options");
-    const offered = Array.isArray(options) ? options.filter((o): o is string => typeof o === "string") : [];
-    const privacy = this.config.audited
-      ? ["PUBLIC_TO_EVERYONE", "FOLLOWER_OF_CREATOR"].find((p) => offered.includes(p))
-      : offered.includes("SELF_ONLY") ? "SELF_ONLY" : undefined;
-    if (!privacy) return { error: "tiktok_privacy_level_unavailable", retryable: true };
+    const refused = choicesRefusedBy(choices, info, this.config.audited);
+    if (refused) return { error: refused, retryable: true };
 
     // 2. Init. This is the request that posts.
     const init = await this.call(auth.token, "post/publish/video/init/", {
-      post_info: { title: caption.text, privacy_level: privacy },
+      post_info: { title: caption.text, ...postInfoFields(choices) },
       source_info: { source: "PULL_FROM_URL", video_url: this.pullUrl(video) },
     });
     const publishId = init.kind === "response" && field(init.body, "error", "code") === "ok"

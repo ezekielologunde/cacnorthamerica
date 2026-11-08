@@ -18,6 +18,7 @@
 // left queued for "Post now" instead of being started.
 
 import { buildCaption, cleanText, cleanTitle } from "./limits.ts";
+import { parseTikTokChoices, type TikTokChoices } from "./tiktok-choices.ts";
 import { PLATFORMS } from "./types.ts";
 import type {
   NewTarget,
@@ -42,7 +43,10 @@ export type DispatcherDeps = {
   now?: () => Date;
 };
 
-export type SubmitInput = { video: VideoMeta; title: string; caption: string; submittedBy: string };
+/** `tiktok`: the admin's TikTok choices (privacy, interactions, commercial
+ *  disclosure, consent), or null/absent when the form didn't offer TikTok.
+ *  Without them the TikTok target is skipped; invalid ones refuse the submit. */
+export type SubmitInput = { video: VideoMeta; title: string; caption: string; submittedBy: string; tiktok?: unknown };
 
 export type SubmitResult =
   | { ok: true; postId: string; duplicate: boolean }
@@ -119,6 +123,9 @@ function skipReason(deps: DispatcherDeps, settings: SocialSettings, post: PostRe
   if (blocked) return blocked;
   const adapter = adapterFor(deps, post.dryRun, platform);
   if (!adapter) return "not_configured";
+  // TikTok requires the poster's own choices for every post; they can't be
+  // filled in later, so this skip is final (not in REQUEUE_CODES).
+  if (platform === "tiktok" && !post.tiktok) return "tiktok_choices_missing";
   const checked = adapter.validate(post.video);
   return checked.ok ? null : sanitizeErrorCode(checked.code);
 }
@@ -143,6 +150,13 @@ export async function submitPost(deps: DispatcherDeps, input: SubmitInput): Prom
     if (!built.ok) return { ok: false, code: built.code, platform };
   }
 
+  let tiktok: TikTokChoices | null = null;
+  if (input.tiktok != null) {
+    const parsed = parseTikTokChoices(input.tiktok);
+    if (!parsed.ok) return { ok: false, code: parsed.code, platform: "tiktok" };
+    tiktok = parsed.choices;
+  }
+
   const settings = await deps.store.getSettings();
   const dryRun = settings.dryRun;
 
@@ -154,6 +168,7 @@ export async function submitPost(deps: DispatcherDeps, input: SubmitInput): Prom
       title,
       caption,
       dryRun,
+      tiktok,
       submittedBy: input.submittedBy,
     });
     if (inserted === "conflict") {
@@ -310,6 +325,7 @@ async function attempt(
       if (id !== null && value === null) throw new Error("container id rejected");
       if (!(await deps.store.setContainer(target.id, value))) throw new Error("container id not saved");
     },
+    tiktok: post.tiktok ?? null,
   };
 
   let result: PublishResult;

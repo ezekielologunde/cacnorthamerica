@@ -12,6 +12,7 @@ import type {
   TargetRecord,
   TargetStatus,
 } from "./types";
+import { parseTikTokChoices } from "./tiktok-choices";
 
 // The SocialStore over cacna.social_* (migration 0027). Must be given the
 // service-role client: the tables have RLS forced with no policies.
@@ -30,6 +31,13 @@ type TargetUpdate = Database["cacna"]["Tables"]["social_post_targets"]["Update"]
 
 const UNIQUE_VIOLATION = "23505";
 
+/** Stored choices are re-checked on the way out; anything malformed reads as
+ *  none, so TikTok is skipped rather than posted with a guess. */
+function tiktokChoices(v: unknown) {
+  const parsed = parseTikTokChoices(v);
+  return parsed.ok ? parsed.choices : null;
+}
+
 function toPost(r: PostRow): PostRecord {
   return {
     id: r.id,
@@ -47,6 +55,7 @@ function toPost(r: PostRow): PostRecord {
     title: r.title,
     caption: r.caption,
     dryRun: r.dry_run,
+    tiktok: tiktokChoices(r.tiktok_choices),
     submittedBy: r.submitted_by,
     createdAt: r.created_at,
   };
@@ -120,6 +129,7 @@ export function supabaseSocialStore(db: Client): SocialStore {
         title: p.title,
         caption: p.caption,
         dry_run: p.dryRun,
+        tiktok_choices: p.tiktok,
         submitted_by: p.submittedBy,
       }).select("*").single();
       if (error?.code === UNIQUE_VIOLATION) return "conflict";

@@ -5,6 +5,8 @@
 // other (with explicit .ts extensions), so `node --test` can load them
 // directly.
 
+import type { TikTokChoices } from "./tiktok-choices.ts";
+
 export const PLATFORMS = ["facebook", "instagram", "tiktok"] as const;
 export type Platform = (typeof PLATFORMS)[number];
 
@@ -57,6 +59,10 @@ export type PublishContext = {
    *  before any waiting, so a function that dies mid-wait loses nothing.
    *  Throws when it couldn't be saved. */
   saveContainer(id: string | null): Promise<void>;
+  /** The admin's TikTok choices for this post (lib/social/tiktok-choices.ts),
+   *  or null when none were made. The TikTok adapter refuses to post without
+   *  them; the others ignore them. */
+  tiktok: TikTokChoices | null;
 };
 
 export interface PlatformAdapter {
@@ -114,6 +120,8 @@ export type PostRecord = {
   title: string;
   caption: string;
   dryRun: boolean;
+  /** Required for TikTok: without them its target is skipped. */
+  tiktok: TikTokChoices | null;
   submittedBy: string;
   createdAt: string;
 };

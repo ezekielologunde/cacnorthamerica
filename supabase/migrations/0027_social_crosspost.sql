@@ -49,6 +49,12 @@ create table cacna.social_posts (
   caption text not null default '' check (char_length(caption) <= 2200),
   -- Frozen at submit time: a dry-run post never becomes a real one.
   dry_run boolean not null,
+  -- The admin's TikTok choices for this post (privacy, comment/duet/stitch,
+  -- commercial disclosure, consent; lib/social/tiktok-choices.ts), required
+  -- by TikTok's content sharing guidelines. Null: TikTok wasn't offered, so
+  -- its target is skipped. Validated by the server before insert and again
+  -- when read.
+  tiktok_choices jsonb check (tiktok_choices is null or jsonb_typeof(tiktok_choices) = 'object'),
   submitted_by uuid not null,
   created_at timestamptz not null default now(),
   -- Idempotency: one real post and one dry run per uploaded video.

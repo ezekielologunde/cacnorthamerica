@@ -95,6 +95,7 @@ export class InstagramAdapter implements PlatformAdapter {
       deadline: started + this.timing.pollBudgetMs,
       containerId: null,
       saveContainer: async () => {},
+      tiktok: null,
     };
 
     // 1. The container: the one an earlier attempt saved, or a new one.
