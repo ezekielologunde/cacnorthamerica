@@ -33,11 +33,14 @@
 // reconnects). When the refresh token is expired or refused, targets fail
 // with tiktok_reconnect_needed. Refresh:
 // https://developers.tiktok.com/docs/en/oauth-refresh-a-user-access-token
+// Concurrent refreshes are serialised by a compare-and-swap lease on the
+// credential row (accessToken below; migration 0028).
 
 import { createHash } from "node:crypto";
 import { UPLOAD_FOLDER, validateVideo } from "../limits.ts";
 import { requestJson, field, sleep, type HttpDeps, type HttpResult } from "../http.ts";
 import type {
+  CredentialRecord,
   CredentialStore,
   PlatformAdapter,
   PlatformCaption,
@@ -52,6 +55,11 @@ const JSON_HEADERS = { "Content-Type": "application/json; charset=UTF-8" };
 /** Refresh this long before the access token's stated expiry. */
 const REFRESH_MARGIN_MS = 5 * 60 * 1000;
 const PUBLISH_ID = /^[A-Za-z0-9_:.~-]{1,64}$/;
+/** How long a refresh lease lasts: the refresh request's own 10 s timeout
+ *  plus the store writes. A waiting request polls every LEASE_POLL_MS. */
+export const LEASE_MS = 15_000;
+export const LEASE_POLL_MS = 1_000;
+const MAX_CAS_LOSSES = 3;
 
 export const POLL_INTERVAL_MS = 3_000;
 export const POLL_BUDGET_MS = 12_000;
@@ -141,27 +149,64 @@ export class TikTokAdapter implements PlatformAdapter {
   }
 
   /** A usable access token, refreshing (and storing the rotated pair) when
-   *  the stored one is about to expire. */
+   *  the stored one is about to expire.
+   *
+   *  Refreshes are serialised: a refresh spends the refresh token, so two
+   *  requests refreshing at once would leave one of them holding a dead token
+   *  (and could void the other's). Only the request that wins the store's
+   *  compare-and-swap lease calls TikTok; one that loses re-reads, waits for
+   *  the holder's pair to land (at most LEASE_MS) and uses it. A lease left by
+   *  a request that died simply expires. */
   private async accessToken(): Promise<{ token: string } | Failure> {
-    const now = this.timing.now();
-    let stored: StoredCredential | null;
-    try {
-      stored = await this.config.credentials.get("tiktok");
-    } catch {
-      return { error: "tiktok_token_store_unavailable", retryable: true };
-    }
-
     const seed = this.config.bootstrapRefreshToken;
     const seedPrint = seed ? fingerprint(seed) : undefined;
-    // A newly pasted TIKTOK_REFRESH_TOKEN restarts the chain.
-    const chain = stored && (!seedPrint || stored.seed === seedPrint) ? stored : null;
+    const waitUntil = this.timing.now() + LEASE_MS + LEASE_POLL_MS;
+    let casLosses = 0;
 
-    if (chain && chain.accessExpiresAt - REFRESH_MARGIN_MS > now) return { token: chain.accessToken };
-    const refreshToken = chain ? chain.refreshToken : seed;
-    if (!refreshToken || (chain && chain.refreshExpiresAt <= now)) {
-      return { error: "tiktok_reconnect_needed", retryable: true };
+    for (;;) {
+      let record: CredentialRecord | null;
+      try {
+        record = await this.config.credentials.get("tiktok");
+      } catch {
+        return { error: "tiktok_token_store_unavailable", retryable: true };
+      }
+      const now = this.timing.now();
+      const stored = record?.credential ?? null;
+      // A newly pasted TIKTOK_REFRESH_TOKEN restarts the chain.
+      const chain = stored && (!seedPrint || stored.seed === seedPrint) ? stored : null;
+      if (chain && chain.accessExpiresAt - REFRESH_MARGIN_MS > now) return { token: chain.accessToken };
+
+      if (record?.leaseUntil != null && record.leaseUntil > now) {
+        // Another request is refreshing right now: wait for its pair rather
+        // than spend the same refresh token.
+        if (now + LEASE_POLL_MS > waitUntil) return { error: "tiktok_token_refresh_busy", retryable: true };
+        await this.timing.sleep(LEASE_POLL_MS);
+        continue;
+      }
+
+      const refreshToken = chain ? chain.refreshToken : seed;
+      if (!refreshToken || (chain && chain.refreshExpiresAt <= now)) {
+        return { error: "tiktok_reconnect_needed", retryable: true };
+      }
+
+      let leased: number | null;
+      try {
+        leased = await this.config.credentials.lease("tiktok", record?.version ?? null, now + LEASE_MS);
+      } catch {
+        return { error: "tiktok_token_store_unavailable", retryable: true };
+      }
+      if (leased === null) {
+        // Lost the compare-and-swap: someone else is refreshing (or just
+        // did). Re-read and use theirs.
+        if (++casLosses > MAX_CAS_LOSSES) return { error: "tiktok_token_refresh_busy", retryable: true };
+        continue;
+      }
+      return this.refresh(refreshToken, leased, now, chain?.seed ?? seedPrint);
     }
+  }
 
+  /** The refresh itself, by the lease holder only. */
+  private async refresh(refreshToken: string, version: number, now: number, seed: string | undefined): Promise<{ token: string } | Failure> {
     const res = await requestJson(this.http, `${API}/oauth/token/`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -195,24 +240,30 @@ export class TikTokAdapter implements PlatformAdapter {
       accessExpiresAt: now + expiresIn * 1000,
       refreshToken: refresh,
       refreshExpiresAt: now + refreshExpiresIn * 1000,
-      seed: chain?.seed ?? seedPrint,
+      seed,
     };
+    let saved = false;
     try {
-      await this.config.credentials.put("tiktok", next);
+      saved = await this.config.credentials.put("tiktok", next, version);
     } catch {
-      // The old refresh token is spent; without the new one stored, the next
-      // refresh would fail. Stop here rather than post with a chain we lose.
-      return { error: "tiktok_token_save_failed", retryable: true };
+      saved = false;
     }
+    // The old refresh token is spent; without the new one stored, the next
+    // refresh would fail. Stop here rather than post with a chain we lose.
+    if (!saved) return { error: "tiktok_token_save_failed", retryable: true };
     return { token: access };
   }
 
   /** After TikTok rejects the access token, forget it so the next attempt
-   *  refreshes instead of reusing it. */
+   *  refreshes instead of reusing it. Conditional on the version read, and
+   *  skipped while a refresh holds the lease (its pair replaces the token
+   *  anyway; overwriting would make the holder's save fail). */
   private async dropAccessToken(): Promise<void> {
     try {
-      const stored = await this.config.credentials.get("tiktok");
-      if (stored) await this.config.credentials.put("tiktok", { ...stored, accessExpiresAt: 0 });
+      const record = await this.config.credentials.get("tiktok");
+      if (!record?.credential) return;
+      if (record.leaseUntil != null && record.leaseUntil > this.timing.now()) return;
+      await this.config.credentials.put("tiktok", { ...record.credential, accessExpiresAt: 0 }, record.version);
     } catch {
       // Best effort: the stored token expires within 2 hours anyway.
     }

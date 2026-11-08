@@ -14,13 +14,25 @@
 -- Reader and writer: lib/social/credential-store.ts through the service-role
 -- client only. RLS forced, no policies, nothing granted to anon/authenticated.
 
+-- Refreshes are serialised so two requests never spend the same refresh
+-- token (the loser of such a race would store a dead token, or TikTok would
+-- void the winner's). Every write is a compare-and-swap on `version`: a
+-- request first takes the refresh lease (version + 1, refresh_lease_until =
+-- now + 15 s) and only the lease holder calls TikTok and stores the rotated
+-- pair (version + 1 again, lease cleared). Anyone else re-reads and uses the
+-- holder's token once it lands. A lease row may exist before the first pair
+-- does (seeding from TIKTOK_REFRESH_TOKEN), so secret and the expiries are
+-- null until then.
 create table cacna.social_credentials (
   platform text primary key check (platform in ('tiktok')),
   -- "v1:<iv>:<tag>:<ciphertext>" (base64 parts); never plaintext.
-  secret text not null check (secret ~ '^v1:[A-Za-z0-9+/=]+:[A-Za-z0-9+/=]+:[A-Za-z0-9+/=]+$'),
-  access_expires_at timestamptz not null,
-  refresh_expires_at timestamptz not null,
-  updated_at timestamptz not null default now()
+  secret text check (secret ~ '^v1:[A-Za-z0-9+/=]+:[A-Za-z0-9+/=]+:[A-Za-z0-9+/=]+$'),
+  access_expires_at timestamptz,
+  refresh_expires_at timestamptz,
+  version integer not null default 1 check (version >= 1),
+  refresh_lease_until timestamptz,
+  updated_at timestamptz not null default now(),
+  check ((secret is null) = (access_expires_at is null) and (secret is null) = (refresh_expires_at is null))
 );
 
 alter table cacna.social_credentials enable row level security;

@@ -16,7 +16,7 @@ const note: React.CSSProperties = { display: "block", fontSize: 12.5, color: "va
 async function readTikTokAuth(db: ServiceClient): Promise<{ when: string; expired: boolean } | null> {
   const { data } = await db.from("social_credentials")
     .select("refresh_expires_at").eq("platform", "tiktok").maybeSingle();
-  if (!data) return null;
+  if (!data?.refresh_expires_at) return null;
   const until = new Date(data.refresh_expires_at);
   return {
     when: until.toLocaleDateString("en-US", { dateStyle: "medium", timeZone: "America/New_York" }),

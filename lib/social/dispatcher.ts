@@ -63,8 +63,10 @@ export const ACTION_BUDGET_MS = 240_000;
 /** A platform is only started with at least this much budget left. The
  *  longest single platform without polling: Facebook's publish request may
  *  run to its 60 s timeout (facebook.ts); TikTok's whole publish stays under
- *  60 s (three 10 s requests, then 12 s of polling whose last request may
- *  itself take 10 s). Instagram waits only until its own deadline. */
+ *  70 s (at most 16 s waiting for another request's token refresh; refresh,
+ *  creator info and init at 10 s each; then 12 s of polling whose last
+ *  request may itself take 10 s: 68 s). Instagram waits only until its own
+ *  deadline. */
 export const PLATFORM_START_MIN_MS = 70_000;
 
 /** Kept back, per platform still to come, from the deadline an adapter is

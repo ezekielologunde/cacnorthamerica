@@ -801,25 +801,31 @@ export type Database = {
       }
       social_credentials: {
         Row: {
-          access_expires_at: string
+          access_expires_at: string | null
           platform: string
-          refresh_expires_at: string
-          secret: string
+          refresh_expires_at: string | null
+          refresh_lease_until: string | null
+          secret: string | null
           updated_at: string
+          version: number
         }
         Insert: {
-          access_expires_at: string
+          access_expires_at?: string | null
           platform: string
-          refresh_expires_at: string
-          secret: string
+          refresh_expires_at?: string | null
+          refresh_lease_until?: string | null
+          secret?: string | null
           updated_at?: string
+          version?: number
         }
         Update: {
-          access_expires_at?: string
+          access_expires_at?: string | null
           platform?: string
-          refresh_expires_at?: string
-          secret?: string
+          refresh_expires_at?: string | null
+          refresh_lease_until?: string | null
+          secret?: string | null
           updated_at?: string
+          version?: number
         }
         Relationships: []
       }

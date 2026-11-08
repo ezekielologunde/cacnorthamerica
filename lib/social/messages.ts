@@ -39,6 +39,7 @@ const MESSAGES: Record<string, string> = {
   tiktok_token_refresh_failed: "Couldn't refresh the TikTok connection (network or TikTok error). Nothing was posted; Retry later.",
   tiktok_token_save_failed: "TikTok was refreshed but the new token couldn't be saved. Nothing was posted; reconnect TikTok.",
   tiktok_token_store_unavailable: "Couldn't read the stored TikTok connection. Nothing was posted; Retry later.",
+  tiktok_token_refresh_busy: "Another request was refreshing the TikTok connection and didn't finish in time. Nothing was posted; Retry.",
   facebook_account_checkpoint: "Facebook needs the account owner to log in at facebook.com and resolve a security check.",
   instagram_account_checkpoint: "Facebook needs the account owner to log in at facebook.com and resolve a security check.",
   facebook_permission_missing: "The Facebook token is missing a permission (pages_manage_posts and friends). Reconnect with the right permissions.",

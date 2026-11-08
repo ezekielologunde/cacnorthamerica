@@ -78,9 +78,28 @@ export type StoredCredential = {
   seed?: string;
 };
 
+/** A credential row as read. `version` changes on every write, so every write
+ *  is a compare-and-swap on it; `leaseUntil` (epoch ms) is set while one
+ *  request holds the right to refresh. `credential` is null before the first
+ *  pair is stored, or when the row can't be decrypted. */
+export type CredentialRecord = {
+  credential: StoredCredential | null;
+  version: number;
+  leaseUntil: number | null;
+};
+
+/** Every write is conditional on the version last read, so two requests can
+ *  never both refresh (and spend) the same refresh token. */
 export interface CredentialStore {
-  get(platform: Platform): Promise<StoredCredential | null>;
-  put(platform: Platform, credential: StoredCredential): Promise<void>;
+  /** The row, or null when there is none yet. */
+  get(platform: Platform): Promise<CredentialRecord | null>;
+  /** Takes the refresh lease until `until` if the row is still at `version`
+   *  (null: no row yet, so one is created). Returns the leased version, or
+   *  null when another request changed the row first. */
+  lease(platform: Platform, version: number | null, until: number): Promise<number | null>;
+  /** Stores the pair and clears any lease, only if the row is still at
+   *  `version`. Returns false when it wasn't. */
+  put(platform: Platform, credential: StoredCredential, version: number): Promise<boolean>;
 }
 
 export type SocialSettings = {
