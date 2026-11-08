@@ -27,6 +27,7 @@ Related: [[Project]] · [[Architecture]] · [[Changelog]]
   message when the closest church is far away
 - Events + Calendar
 - Blog — categorized, each category has its own hero band; masthead redesign
+- Blog posts can carry a credited click-to-play YouTube video (`video` field in `lib/blog.ts`, rendered with `VideoFacade` on `blog/[slug]`); videos shown in the Featured stories band come from `lib/featuredStories.ts` (PR #156)
 - Gallery — Cloudinary-backed photo gallery, including real convention
   photos pulled from cacnaconvention.org
 - Giving/store — cart context (`CartContext.tsx`), products/orders tables
