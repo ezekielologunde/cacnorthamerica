@@ -224,16 +224,22 @@ export default async function CheckInPage({
   const care = new Map<string, ChildCareRecord>();
   let careFailed = false;
   if (children.length > 0) {
-    const { data, error } = await supabase
-      .from("child_care_details")
-      .select(CHILD_CARE_COLUMNS)
-      .eq("year", year)
-      .in("ref", [...new Set(children.map((r) => r.ref))]);
-    if (error) {
-      console.error("[check-in] care lookup failed:", error.code);
-      careFailed = true;
-    } else {
-      for (const c of (data ?? []) as ChildCareRecord[]) care.set(careKey(c.ref, c.idx), c);
+    // By refs in chunks of 30: a registration holds at most 30 people, so one
+    // chunk returns at most 900 rows, under PostgREST's 1,000-row cap. A single
+    // .in() over every displayed ref could be silently truncated.
+    const refs = [...new Set(children.map((r) => r.ref))];
+    for (let i = 0; i < refs.length && !careFailed; i += 30) {
+      const { data, error } = await supabase
+        .from("child_care_details")
+        .select(CHILD_CARE_COLUMNS)
+        .eq("year", year)
+        .in("ref", refs.slice(i, i + 30));
+      if (error) {
+        console.error("[check-in] care lookup failed:", error.code);
+        careFailed = true;
+      } else {
+        for (const c of (data ?? []) as ChildCareRecord[]) care.set(careKey(c.ref, c.idx), c);
+      }
     }
   }
   const careFor = (r: PersonRow): ChildCareRecord | null | "error" | undefined =>
