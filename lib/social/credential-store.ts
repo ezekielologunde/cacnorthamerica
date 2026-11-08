@@ -1,6 +1,6 @@
 import "server-only";
 import type { ServiceClient } from "./supabase-store";
-import { decryptSecret, encryptSecret } from "./token-crypto";
+import { decryptSecret, encryptSecret } from "./token-crypto.ts";
 import type { CredentialStore, Platform, StoredCredential } from "./types";
 
 // CredentialStore over cacna.social_credentials (migration 0028). The token

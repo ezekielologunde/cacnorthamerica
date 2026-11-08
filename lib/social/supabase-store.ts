@@ -12,7 +12,7 @@ import type {
   TargetRecord,
   TargetStatus,
 } from "./types";
-import { parseTikTokChoices } from "./tiktok-choices";
+import { parseTikTokChoices } from "./tiktok-choices.ts";
 
 // The SocialStore over cacna.social_* (migration 0027). Must be given the
 // service-role client: the tables have RLS forced with no policies.
