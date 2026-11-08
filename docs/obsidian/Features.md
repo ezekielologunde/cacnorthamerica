@@ -95,3 +95,4 @@ Implemented unless marked otherwise. Details in [[Payments]], [[Backend]].
   `app/(site)/[locale]/`)
 - **Partial (off until env set):** blog-only AdSense unit (PR #123)
 - **Partial (off until `NEXT_PUBLIC_ADSENSE_ID` is set):** AdSense auto-ads script on **blog pages only** (rule in `lib/adsense.ts`, owner decision 2026-11-06), public `/ads.txt` built from the same variable (404 while unset), and robots/sitemap tuned for AdSense's crawler. Owner steps in `docs/adsense-readiness.md` (PR #73)
+- **Partial (off until configured):** admin social cross-post (`/admin/social`, PR #161): upload once, post to a Facebook Page, Instagram Reels and TikTok, with a per-platform log, Retry and Post now. Needs migrations 0027/0028, Meta and TikTok developer apps, `SOCIAL_TOKEN_ENCRYPTION_KEY` and `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`. Design: `docs/superpowers/specs/2026-11-08-social-crosspost-design.md`. See [[Database]], [[Security]]

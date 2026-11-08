@@ -2,7 +2,7 @@
 project: cacnorthamerica
 type: database
 status: active
-last_updated: 2026-11-05
+last_updated: 2026-11-08
 tags: [project/cacnorthamerica]
 ---
 
@@ -74,3 +74,7 @@ admin-only select policy, `grant all` to `service_role` (writes are
 server-side only). Note 0010's default privileges grant `select` to anon on
 every new table, which is why each later migration revokes explicitly -- see
 [[Security]].
+
+## Social cross-post tables (migrations 0027, 0028; written, not applied)
+
+`cacna.social_settings` (kill switch, dry run, per-platform toggles), `cacna.social_posts`, `cacna.social_post_targets` (unique `(post_id, platform)`, one row per platform attempt) and `cacna.social_credentials` (encrypted, rotating TikTok tokens with a CAS lease). RLS is forced with no policies; access is service-role only, as with other sensitive tables. Must land after 0026 (PR #160). See [[Security]] and [[Features]].
