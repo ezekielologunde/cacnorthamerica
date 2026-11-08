@@ -36,3 +36,22 @@ export async function saveChildCare(ref: string, rows: ChildCareRow[]): Promise<
     return false;
   }
 }
+
+/** Removes a registration's care rows when the route saved them and then
+ *  failed (Stripe error, token error), so a retry leaves no orphan medical
+ *  rows behind. Best effort: never throws, and a failure is only logged (ref
+ *  and error code); the purge query in migration 0026 catches what remains. */
+export async function deleteChildCare(ref: string): Promise<void> {
+  const safeRef = typeof ref === "string" ? ref.slice(0, 100) : "?";
+  try {
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) return;
+    const { error } = await createServiceClient()
+      .from("child_care_details")
+      .delete()
+      .eq("ref", ref)
+      .abortSignal(AbortSignal.timeout(5000));
+    if (error) console.error(`[child-care] cleanup failed for ref ${safeRef}: ${error.code ?? "unknown"}`);
+  } catch (err) {
+    console.error(`[child-care] cleanup failed for ref ${safeRef}: ${err instanceof Error ? err.name : "error"}`);
+  }
+}

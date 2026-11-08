@@ -42,9 +42,11 @@ delete process.env.SHEETS_WEBHOOK_SECRET;
 delete process.env.STRIPE_SECRET_KEY;
 process.env.SUPABASE_SERVICE_ROLE_KEY = "check-script-only";
 
-// Fake service-role client: records every insert / upsert by table.
-// dbFailTable makes that table's writes fail with an error code.
+// Fake service-role client: records every insert / upsert by table, and
+// every delete with its filter. dbFailTable makes that table's writes fail
+// with an error code.
 const dbWrites = [];
+const dbDeletes = [];
 let dbFailTable = null;
 globalThis.__fakeSupabase = () => ({
   from: (table) => {
@@ -55,14 +57,21 @@ globalThis.__fakeSupabase = () => ({
         return { error: null };
       },
     });
-    return { insert: write, upsert: write };
+    const del = () => ({
+      eq: (col, val) => ({ abortSignal: async () => { dbDeletes.push({ table, col, val }); return { error: null }; } }),
+    });
+    return { insert: write, upsert: write, delete: del };
   },
 });
 const careRowsWritten = () => dbWrites.filter((w) => w.table === "child_care_details").flatMap((w) => w.rows);
 
 const created = [];
+let stripeDown = false; // true: sessions.create throws, like a Stripe outage
 globalThis.__fakeStripe = {
-  checkout: { sessions: { create: async (params) => { created.push(params); return { url: "https://checkout.invalid/s" }; } } },
+  checkout: { sessions: { create: async (params) => {
+    if (stripeDown) throw new Error("fake Stripe outage");
+    created.push(params); return { url: "https://checkout.invalid/s" };
+  } } },
 };
 const rows = [];
 const emails = []; // every Resend send attempt, failed ones included
@@ -453,6 +462,28 @@ delete process.env.SUPABASE_SERVICE_ROLE_KEY;
 check("without the service-role key a child's registration is refused (fail closed)",
   (await post(youth([kid(6)], { contactEmail: "no-key@example.com" }))).status === 503);
 process.env.SUPABASE_SERVICE_ROLE_KEY = "check-script-only";
+
+// Orphan care rows: a registration that fails after the care rows are saved
+// deletes them again, and one refused for its size never saves them.
+rows.length = 0; emails.length = 0; created.length = 0; dbWrites.length = 0; dbDeletes.length = 0;
+stripeDown = true;
+const stripeFailed = await post(youth([kid(6), kid(22)], { contactEmail: "stripe-down@example.com" }));
+stripeDown = false;
+const orphanRef = careRowsWritten()[0]?.ref;
+check("when the Stripe session cannot be created the saved care rows are deleted again (by ref)",
+  stripeFailed.status === 500 && !!orphanRef &&
+  dbDeletes.some((d) => d.table === "child_care_details" && d.col === "ref" && d.val === orphanRef));
+dbWrites.length = 0; dbDeletes.length = 0; created.length = 0;
+// Accented names: two UTF-8 bytes per letter, so 30 people overflow the 50 metadata keys.
+const NAMES = ["Élise", "Zoë", "Renée", "Andrés", "José", "Noémie", "Chloé", "Björn", "Inès", "Søren"];
+const longName = (i, salt) => Array.from({ length: 30 }, (_, j) => NAMES[(i * 7 + j * 3 + salt) % NAMES.length]).join(" ").slice(0, 120);
+const careBigGroup = [kid(6), ...Array.from({ length: 29 }, (_, i) => kid(22, {
+  firstName: longName(i, 1), lastName: longName(i, 5), allergies: `Allergy note ${longName(i, 2)} ${longName(i, 4)}`.slice(0, 200),
+}))];
+const tooBig = await post(youth(careBigGroup, { contactEmail: "too-big@example.com" }));
+check("a registration too large for Stripe metadata is refused before any care row is saved",
+  tooBig.status === 400 && /too many details/.test(tooBig.body.error ?? "") &&
+  dbWrites.every((w) => w.table !== "child_care_details") && dbDeletes.length === 0 && created.length === 0);
 
 console.log(failures ? `\n${failures} check(s) FAILED` : "\nAll checks passed");
 process.exit(failures ? 1 : 0);

@@ -23,6 +23,18 @@
 --
 -- Retention: rows are only needed for the convention they belong to. Purge a
 -- year once it is over (delete from cacna.child_care_details where year = N).
+--
+-- Orphans: the register route saves care rows before the payment step and
+-- deletes them again when that step fails, but a card checkout the parent
+-- abandons (Stripe sessions expire after 24 hours) leaves rows with no
+-- matching cacna.checkin_people row. Purge those periodically:
+--   delete from cacna.child_care_details c
+--   where c.created_at < now() - interval '2 days'
+--     and not exists (select 1 from cacna.checkin_people p
+--                     where p.ref = c.ref and p.idx = c.idx);
+-- Check-in rows are written best effort, so first look for "[checkin]"
+-- errors in the logs: a paid registration whose check-in row failed would
+-- match too (its people are still on the Google Sheet).
 
 create table cacna.child_care_details (
   id uuid primary key default gen_random_uuid(),

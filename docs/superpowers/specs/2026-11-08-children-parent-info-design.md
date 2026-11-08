@@ -81,4 +81,8 @@ indicator over the three steps, 16px inputs with the right `autocomplete` /
 ## Not in scope
 
 - Retention: purge `child_care_details` after each convention (owner decision).
+  Care rows are saved before the payment step and deleted again if that step
+  fails (Stripe error, token error); rows left by an abandoned card checkout
+  have no `checkin_people` row and are removed by the purge query in
+  migration 0026's header.
 - Editing care details after submitting (parents contact the ministry).
