@@ -54,6 +54,7 @@ export const ROUTES: { path: string; priority: number }[] = [
   { path: "/bible-institute", priority: 0.6 },
   { path: "/statement-of-faith", priority: 0.5 },
   { path: "/faq", priority: 0.5 },
+  { path: "/forms", priority: 0.6 },
   { path: "/online", priority: 0.9 },
   { path: "/giving", priority: 0.8 },
   { path: "/store", priority: 0.5 },
