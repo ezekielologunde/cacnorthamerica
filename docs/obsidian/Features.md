@@ -2,7 +2,7 @@
 project: cacnorthamerica
 type: features
 status: active
-last_updated: 2026-11-05
+last_updated: 2026-11-08
 tags: [project/cacnorthamerica]
 ---
 
@@ -44,6 +44,8 @@ Related: [[Project]] · [[Architecture]] · [[Changelog]]
 ## Admin console (`/admin`, Supabase-Auth gated)
 
 - Announcements, blog, events, gallery, newsletter, orders, admin users
+- Forms overview `/admin/forms`: every site form, where its submissions go, and
+  live row counts for the ones stored in the database
 - Login page at `/admin/login`; all other `/admin/*` routes protected by
   `proxy.ts` middleware
 
@@ -70,6 +72,10 @@ Related: [[Project]] · [[Architecture]] · [[Changelog]]
 
 Implemented unless marked otherwise. Details in [[Payments]], [[Backend]].
 
+- Forms directory: public `/forms` page grouping every form (contact, newsletter,
+  convention and youth registration, serve, give, cancel a recurring gift, store)
+  with what each is for and a link; admin `/admin/forms` adds where submissions
+  go and row counts. Both read `lib/siteForms.ts`. See [[Frontend]].
 - Convention registration with per-person 4-character check-in codes, adult
   fields, QR dropped (PR #82); Youth & Child registration (PR #80)
 - Staff check-in lookup `/admin/check-in` (PR #83); pay registration by Zelle
