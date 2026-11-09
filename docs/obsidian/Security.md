@@ -147,3 +147,7 @@ and `docs/cron-refresh-content.md`.
   dashboard settings are outside the repo: **Unverified**.
 - Analytics stripping runs at page load. A client-side jump onto a secret-bearing page would not be re-stripped for GA4's automatic history-change page views; every link to these pages is absolute so they load fresh, and the GA4 setting above closes it. Whether that setting is off in the property: **Unverified**.
 - `gtag('config', {page_location})` persists for the life of the page, so a later soft navigation can be reported under the stripped URL (misreports, does not leak).
+
+## Social cross-post credentials (PR #161)
+
+Platform tokens are encrypted at rest with `SOCIAL_TOKEN_ENCRYPTION_KEY` (`lib/social/token-crypto.ts`). TikTok refresh tokens rotate, so refresh is serialised by a compare-and-swap lease. Posting is idempotent per `(post_id, platform)`, and a kill switch, dry run and per-platform toggles default to off. Cloudinary uploads are signed server-side and sent direct from the browser (CSP `connect-src` adds `api.cloudinary.com`; `media-src` allows `blob:` for the admin preview). Never run against real Meta or TikTok yet: **Unverified**.

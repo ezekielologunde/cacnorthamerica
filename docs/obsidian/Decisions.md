@@ -246,3 +246,7 @@ offering is "given as the donor is led, not on a schedule" (code comment).
 
 Embedded checkout was added (PRs #103, #105), then hosted made the default;
 embedded is behind `NEXT_PUBLIC_STRIPE_EMBEDDED`.
+
+## Social cross-post lives in the CACNA admin (PR #161)
+
+Chosen over a third-party scheduler: upload once in admin, fully automatic fan-out to Facebook Page, Instagram Reels and TikTok (X dropped). Cloudinary holds the source because YouTube does not release the original; TikTok pulls through a `/social-video` rewrite. Idempotent per platform, with a kill switch and dry run. TikTok unaudited posts stay private until audit.

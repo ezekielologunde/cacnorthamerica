@@ -115,3 +115,4 @@ Implemented unless marked otherwise. Details in [[Payments]], [[Backend]].
 - **Scheduled content refresh (2026-11-08):** a daily Vercel Cron job refreshes
   the CAC World News feed and public pages; admin saves refresh immediately.
   Needs `CRON_SECRET` set. See [[Backend]], [[Architecture]].
+- **Partial (off until configured):** admin social cross-post (`/admin/social`, PR #161): upload once, post to a Facebook Page, Instagram Reels and TikTok, with a per-platform log, Retry and Post now. Needs migrations 0027/0028, Meta and TikTok developer apps, `SOCIAL_TOKEN_ENCRYPTION_KEY` and `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`. Design: `docs/superpowers/specs/2026-11-08-social-crosspost-design.md`. See [[Database]], [[Security]]
