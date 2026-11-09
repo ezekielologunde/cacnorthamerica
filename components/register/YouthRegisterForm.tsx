@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useId, useMemo, useRef, useState, type CSSProperties, type FormEvent } from "react";
+import { Check } from "lucide-react";
 import { EmbeddedCheckoutScreen } from "@/components/checkout/EmbeddedStripeCheckout";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -11,6 +12,20 @@ import { FeeBreakdown } from "@/components/checkout/FeeBreakdown";
 import { GiftChoice } from "@/components/register/GiftChoice";
 import { GIFT_LINE_LABEL } from "@/lib/registrationGift";
 import { DEFAULT_PAYMENT_METHOD, PaymentMethodChoice, ZelleTotal, paidSubmitLabel, type PaymentMethod } from "@/components/register/PaymentMethodChoice";
+import {
+  ChildCarePanel,
+  FamilyCareFields,
+  childCarePayload,
+  emptyChildCare,
+  emptyFamilyCare,
+  familyCarePayload,
+  validateChildCare,
+  validateFamilyCare,
+  type ChildCareState,
+  type FamilyCareState,
+  type FieldKit,
+} from "@/components/register/ChildCareFields";
+import { needsChildCare } from "@/lib/childCare";
 import {
   ADULT_AGE,
   AGE_GROUP_LABEL,
@@ -35,6 +50,8 @@ type PersonRow = {
   meals: MealSlot[];
   noMeals: boolean;
   allergies: string;
+  /** Children 12 and under only (lib/childCare.ts). */
+  care: ChildCareState;
 };
 
 type SharedField = "contactName" | "contactEmail" | "contactPhone" | "churchName" | "youthLeaderName" | "dccZone";
@@ -59,7 +76,7 @@ function parseAge(raw: string): number {
 }
 
 function emptyPerson(key: number): PersonRow {
-  return { key, firstName: "", lastName: "", age: "", meals: [], noMeals: false, allergies: "" };
+  return { key, firstName: "", lastName: "", age: "", meals: [], noMeals: false, allergies: "", care: emptyChildCare() };
 }
 
 function StepHeading({ n, title }: { n: number; title: string }) {
@@ -90,6 +107,7 @@ export function YouthRegisterForm({
   youngAdultPriceCents?: number;
 }) {
   const t = useTranslations("YouthRegister");
+  const tc = useTranslations("ChildCare");
   const router = useRouter();
   const uid = useId();
   const nextKey = useRef(1);
@@ -97,6 +115,7 @@ export function YouthRegisterForm({
   const [shared, setShared] = useState<Record<SharedField, string>>({
     contactName: "", contactEmail: "", contactPhone: "", churchName: "", youthLeaderName: "", dccZone: "",
   });
+  const [family, setFamily] = useState<FamilyCareState>(emptyFamilyCare);
   const [guardianConfirmed, setGuardianConfirmed] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(DEFAULT_PAYMENT_METHOD);
   const [giftCents, setGiftCents] = useState(0);
@@ -109,6 +128,7 @@ export function YouthRegisterForm({
 
   /** DOM id for a logical field name, unique per form instance. */
   const fid = (name: string) => `${uid}-${name}`;
+  const newKey = () => nextKey.current++;
 
   // After "+ Add", jump straight into the new person's first-name field.
   useEffect(() => {
@@ -124,6 +144,7 @@ export function YouthRegisterForm({
 
   const ages = people.map((p) => parseAge(p.age));
   const anyMinor = ages.some((a) => isValidYouthAge(a) && a < ADULT_AGE);
+  const anyChild = ages.some((a) => needsChildCare(a));
   const total = useMemo(
     () =>
       people.reduce((sum, p) => {
@@ -137,6 +158,10 @@ export function YouthRegisterForm({
 
   function updatePerson(key: number, patch: Partial<PersonRow>) {
     setPeople((current) => current.map((p) => (p.key === key ? { ...p, ...patch } : p)));
+  }
+
+  function updateCare(key: number, patch: Partial<ChildCareState>) {
+    setPeople((current) => current.map((p) => (p.key === key ? { ...p, care: { ...p.care, ...patch } } : p)));
   }
 
   function toggleMeal(key: number, slot: MealSlot) {
@@ -169,10 +194,10 @@ export function YouthRegisterForm({
     return people.length > 1 ? t("personN", { n: index + 1 }) : t("personSingle");
   }
 
-  /** Mirrors parseYouthRegistration so most mistakes are caught before the
-   *  round trip. Keys are logical field names; the first key in insertion
-   *  order is the first invalid field on the page. */
-  function validate(): Record<string, string> {
+  // Mirror parseYouthRegistration / lib/childCare.ts so most mistakes are
+  // caught before the round trip. Keys are logical field names; the first key
+  // in insertion order is the first invalid field on the page.
+  function validatePeople(): Record<string, string> {
     const found: Record<string, string> = {};
     people.forEach((p) => {
       if (!p.firstName.trim()) found[`p${p.key}-first`] = t("errFirstName");
@@ -180,8 +205,14 @@ export function YouthRegisterForm({
       const age = parseAge(p.age);
       if (!isValidYouthAge(age)) found[`p${p.key}-age`] = age > MAX_YOUTH_AGE ? t("errAgeAdult") : t("errAge");
       if (!p.noMeals && p.meals.length === 0) found[`p${p.key}-meals`] = t("errMeals");
-      if (p.allergies.trim().length > MAX_ALLERGIES_LENGTH) found[`p${p.key}-allergies`] = t("errAllergies", { max: MAX_ALLERGIES_LENGTH });
+      if (needsChildCare(age)) Object.assign(found, validateChildCare(`p${p.key}-care`, p.care, tc));
+      else if (p.allergies.trim().length > MAX_ALLERGIES_LENGTH) found[`p${p.key}-allergies`] = t("errAllergies", { max: MAX_ALLERGIES_LENGTH });
     });
+    return found;
+  }
+
+  function validateContact(): Record<string, string> {
+    const found: Record<string, string> = {};
     if (!shared.contactName.trim()) found.contactName = t("errContactName");
     if (!EMAIL_RE.test(shared.contactEmail.trim())) found.contactEmail = t("errEmail");
     if ((shared.contactPhone.match(/\d/g) ?? []).length < 7) found.contactPhone = t("errPhone");
@@ -191,16 +222,26 @@ export function YouthRegisterForm({
     return found;
   }
 
+  const peopleErrors = validatePeople();
+  const contactErrors = validateContact();
+  const familyErrors = anyChild ? validateFamilyCare(family, tc) : {};
+  const steps = [
+    { title: t("stepPeople"), done: Object.keys(peopleErrors).length === 0 },
+    { title: t("stepContact"), done: Object.keys(contactErrors).length === 0 },
+    ...(anyChild ? [{ title: t("stepCare"), done: Object.keys(familyErrors).length === 0 }] : []),
+  ];
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const found = validate();
+    const found = { ...peopleErrors, ...contactErrors, ...familyErrors };
     setErrors(found);
     const first = Object.keys(found)[0];
     if (first) {
       setStatus("idle");
       setServerError(null);
-      // Meals are a group: send focus to its first checkbox.
-      const el = document.getElementById(fid(first.endsWith("-meals") ? `${first}-0` : first));
+      // A choice group (meals, yes / no, severity) has no element of its own:
+      // send focus to its first option.
+      const el = document.getElementById(fid(first)) ?? document.getElementById(fid(`${first}-0`));
       el?.scrollIntoView({ block: "center", behavior: "smooth" });
       el?.focus({ preventScroll: true });
       return;
@@ -230,14 +271,20 @@ export function YouthRegisterForm({
           youthLeaderName: shared.youthLeaderName.trim(),
           dccZone: shared.dccZone.trim(),
           guardianConfirmed: anyMinor ? guardianConfirmed : false,
-          registrants: people.map((p) => ({
-            firstName: p.firstName.trim(),
-            lastName: p.lastName.trim(),
-            age: parseAge(p.age),
-            meals: MEAL_SLOTS.filter((m) => p.meals.includes(m)),
-            noMeals: p.noMeals,
-            allergies: p.allergies.trim(),
-          })),
+          registrants: people.map((p) => {
+            const child = needsChildCare(parseAge(p.age));
+            return {
+              firstName: p.firstName.trim(),
+              lastName: p.lastName.trim(),
+              age: parseAge(p.age),
+              meals: MEAL_SLOTS.filter((m) => p.meals.includes(m)),
+              noMeals: p.noMeals,
+              // A child's allergies travel in `care`, never as the free-text note.
+              allergies: child ? "" : p.allergies.trim(),
+              ...(child ? { care: childCarePayload(p.care) } : {}),
+            };
+          }),
+          ...(anyChild ? { childCare: familyCarePayload(family) } : {}),
         }),
       });
 
@@ -284,6 +331,8 @@ export function YouthRegisterForm({
     if (errors[name]) setErrors((current) => { const next = { ...current }; delete next[name]; return next; });
   }
 
+  const kit: FieldKit = { errors, fid, clearError, a11y, fieldError, labelStyle, hintStyle, required, newKey };
+
   const sharedFields: { name: SharedField; label: string; type?: string; autoComplete: string; inputMode?: "email" | "tel"; hint?: string; optional?: boolean }[] = [
     { name: "contactName", label: t("contactName"), autoComplete: "name" },
     { name: "contactEmail", label: t("contactEmail"), type: "email", inputMode: "email", autoComplete: "email", hint: t("contactEmailHint") },
@@ -304,11 +353,32 @@ export function YouthRegisterForm({
     <form onSubmit={handleSubmit} noValidate>
       <input type="text" name={HONEYPOT_FIELD} tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }} />
 
+      {/* Progress: one pill per step, ticked once that step has nothing missing. */}
+      <nav aria-label={t("progressLabel")}>
+        <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: `repeat(${steps.length}, minmax(0, 1fr))`, gap: 6 }}>
+          {steps.map((s, i) => (
+            <li key={s.title} style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 0 }}>
+              <span aria-hidden style={{ height: 5, borderRadius: 999, background: s.done ? "var(--red)" : "var(--line)", transition: "background .25s" }} />
+              <span style={{ display: "flex", alignItems: "flex-start", gap: 5, fontSize: 12.5, lineHeight: 1.3, fontWeight: 700, color: s.done ? "var(--ink)" : "var(--ink-soft)" }}>
+                {s.done ? <Check size={14} strokeWidth={3} color="var(--red)" aria-hidden style={{ flexShrink: 0, marginTop: 1 }} /> : <span aria-hidden style={{ flexShrink: 0 }}>{i + 1}.</span>}
+                <span>
+                  {s.title}
+                  <span style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap" }}>
+                    {`, ${s.done ? t("progressDone") : t("progressTodo")}`}
+                  </span>
+                </span>
+              </span>
+            </li>
+          ))}
+        </ol>
+      </nav>
+
       <StepHeading n={1} title={t("stepPeople")} />
 
       {people.map((p, i) => {
         const age = parseAge(p.age);
         const validAge = isValidYouthAge(age);
+        const child = needsChildCare(age);
         const who = p.firstName.trim() || personLabel(i);
         const ageHintId = fid(`p${p.key}-age-hint`);
         const allergiesHintId = fid(`p${p.key}-allergies-hint`);
@@ -422,21 +492,25 @@ export function YouthRegisterForm({
               {fieldError(`p${p.key}-meals`)}
             </fieldset>
 
-            <div style={{ marginTop: 14 }}>
-              <label htmlFor={fid(`p${p.key}-allergies`)} style={labelStyle}>{t("allergies")}</label>
-              <textarea
-                {...a11y(`p${p.key}-allergies`, allergiesHintId)}
-                className="field-input reg-input"
-                style={{ minHeight: 72, resize: "vertical" }}
-                maxLength={MAX_ALLERGIES_LENGTH}
-                value={p.allergies}
-                onChange={(e) => { updatePerson(p.key, { allergies: e.target.value }); clearError(`p${p.key}-allergies`); }}
-              />
-              <span id={allergiesHintId} style={hintStyle}>
-                {t("allergiesHint", { count: p.allergies.length, max: MAX_ALLERGIES_LENGTH })}
-              </span>
-              {fieldError(`p${p.key}-allergies`)}
-            </div>
+            {child ? (
+              <ChildCarePanel prefix={`p${p.key}-care`} who={who} value={p.care} onChange={(patch) => updateCare(p.key, patch)} kit={kit} />
+            ) : validAge ? (
+              <div style={{ marginTop: 14 }}>
+                <label htmlFor={fid(`p${p.key}-allergies`)} style={labelStyle}>{t("allergies")}</label>
+                <textarea
+                  {...a11y(`p${p.key}-allergies`, allergiesHintId)}
+                  className="field-input reg-input"
+                  style={{ minHeight: 72, resize: "vertical" }}
+                  maxLength={MAX_ALLERGIES_LENGTH}
+                  value={p.allergies}
+                  onChange={(e) => { updatePerson(p.key, { allergies: e.target.value }); clearError(`p${p.key}-allergies`); }}
+                />
+                <span id={allergiesHintId} style={hintStyle}>
+                  {t("allergiesHint", { count: p.allergies.length, max: MAX_ALLERGIES_LENGTH })}
+                </span>
+                {fieldError(`p${p.key}-allergies`)}
+              </div>
+            ) : null}
           </div>
         );
       })}
@@ -491,6 +565,14 @@ export function YouthRegisterForm({
           </label>
           {fieldError("guardian")}
         </div>
+      )}
+
+      {anyChild && (
+        <>
+          <StepHeading n={3} title={t("stepCare")} />
+          <p style={{ margin: "-6px 0 14px", fontSize: 13.5, color: "var(--ink-soft)", lineHeight: 1.5 }}>{t("stepCareBody")}</p>
+          <FamilyCareFields value={family} onChange={(patch) => setFamily((f) => ({ ...f, ...patch }))} kit={kit} consentText={t("careConsent")} />
+        </>
       )}
 
       {/* Only when someone is 20+ (the young-adult rate); 19 and under is free. */}

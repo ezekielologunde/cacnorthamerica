@@ -10,6 +10,36 @@ tags: [project/cacnorthamerica]
 
 Related: [[Project]] · [[Architecture]] · [[Features]]
 
+## Children's care details extend the Youth & Child registration (2026-11-08)
+
+One form, one submission: the existing parent/guardian block is the guardian for
+every child, and anyone 12 or under (`CHILD_CARE_MAX_AGE`) gets a care panel;
+siblings share one family block. A separate children's system was not built.
+Care data is stored in its own service-role-only table, fails closed, and is kept
+out of the sheet, email, Stripe and URL token. Retention is a purge after each
+convention (owner decision). See [[Security]], [[Database]].
+
+## No browser draft for the registration form (2026-11-08)
+
+The form writes nothing to `sessionStorage` or `localStorage` (owner decision),
+so a child's medical details typed into it never outlive the page. The cost is
+that a reload loses what was typed. See [[Security]].
+
+## Daily cron, not sub-daily (2026-11-08)
+
+The content refresh runs once a day (`0 9 * * *`) because the project is on
+Vercel Hobby, which rejects sub-daily cron schedules (per
+`docs/cron-refresh-content.md`, confirmed by a failed deploy). Admin saves
+refresh at once and timers cover the rest. Revisit if the plan changes. See
+[[Architecture]], [[Backend]].
+
+## Keep a single English locale with Yoruba-friendly content (2026-11-08)
+
+The site stays single-locale English (see [[Architecture]]); Yoruba appears only
+as short inline phrases (`lib/yoruba.ts`) marked `lang="yo"`, limited to
+standard phrases. No translation is added that a native speaker has not
+confirmed. See [[Frontend]].
+
 ## Convention registration gift: its own line, fee not passed on (2026-11-06)
 
 A card registration can add an optional gift. It is a separate Stripe line item

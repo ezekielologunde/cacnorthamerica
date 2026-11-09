@@ -60,8 +60,10 @@ function NewsCard({ p, delay, featured }: { p: BlogPost; delay: number; featured
   );
 }
 
-export function LatestNews() {
-  const posts = pickDiverse(POSTS.filter((p) => !isArchivePost(p)), 6);
+/** `posts` is every published post (static + /admin/blog, see
+ *  lib/blogPosts.ts); the static POSTS alone are the fallback. */
+export function LatestNews({ posts: allPosts = POSTS }: { posts?: readonly BlogPost[] } = {}) {
+  const posts = pickDiverse(allPosts.filter((p) => !isArchivePost(p)), 6);
   const [featured, rest] = [posts.slice(0, 2), posts.slice(2)];
 
   return (

@@ -59,7 +59,8 @@
 .ft-news-p { font-size: 15px; margin: 0 0 18px; color: rgba(245,246,250,.72); }
 
 .ft-grid {
-  display: grid; grid-template-columns: repeat(4, minmax(0,1fr)) minmax(0,1.25fr);
+  /* One column per nav section (lib/nav.ts) plus Contact. */
+  display: grid; grid-template-columns: repeat(5, minmax(0,1fr)) minmax(0,1.25fr);
   gap: 32px clamp(20px,3vw,40px);
   padding: clamp(40px,5vw,56px) 0;
 }

@@ -87,6 +87,53 @@ Required GA4 setting (outside the repo): turn off **Page changes based on
 browser history events** under Enhanced measurement. See [[Features]] for the
 AdSense pieces and [[Changelog]] for when this landed.
 
+## Children's medical data (2026-11-08)
+
+Youth & Child registrations collect Children's Ministry care details for every
+child 12 or under (allergies, medical notes, medications, dietary and special
+needs, photo consent, emergency contact, authorized pickups, guardian consent).
+This is the most sensitive data on the site.
+
+- **Storage:** `cacna.child_care_details` (migration 0026): RLS enabled and
+  forced with no policies, all privileges revoked from `public`/`anon`/
+  `authenticated`, `service_role` only. Details in [[Database]].
+- **Fail closed:** `lib/childCareStore.ts` `saveChildCare` returns false if
+  `SUPABASE_SERVICE_ROLE_KEY` is unset (it refuses rather than fall back to the
+  anon key, which has no privileges on the table) or the insert fails or times
+  out (5 s). The register route then answers **503** and nothing is registered
+  (no sheet row, check-in row, email or payment), so a parent never believes the
+  ministry has allergy details it does not. See [[Backend]].
+- **No care data elsewhere:** care details are kept out of the registration
+  summary, so they never reach the sealed URL token, Stripe metadata, the Google
+  Sheet, the confirmation email or the confirmation page. For children 12 or
+  under the old free-text allergy note is dropped server-side. Logs carry the
+  registration ref and an error code only, never a name or a medical detail
+  (a database error message can echo row values).
+- **No browser copy:** the form writes nothing to `sessionStorage` or
+  `localStorage`, and the care state is not sent to analytics or the URL. A
+  draft-saving feature was deliberately not built (owner decision; see
+  [[Decisions]]).
+- **Admin reads:** `/admin/check-in` and the printable `/admin/check-in/children`
+  sheet read with the service client after `requireAdmin()` and render on the
+  server only. Only children with a `checkin_people` row appear, so an abandoned
+  card checkout never shows.
+- **Server validation:** `lib/childCare.ts` re-checks every field (enums,
+  explicit choices, length limits, at most 6 allergies and 4 pickups).
+- **Retention:** purge a convention's rows once it is over; see [[Database]] and
+  [[Tasks]].
+
+## Cron endpoint authentication (2026-11-08)
+
+`GET /api/cron/refresh-content` requires `Authorization: Bearer ${CRON_SECRET}`
+(Vercel Cron sends it itself once `CRON_SECRET` is set on the project).
+`lib/cronAuth.ts` `isAuthorizedCronRequest` fails closed: an unset secret or one
+shorter than 16 characters (`CRON_SECRET_MIN_LENGTH`) rejects every request, and
+the comparison hashes both sides with SHA-256 and uses `timingSafeEqual`, so it
+takes the same time whatever the header holds and leaks no length. Refusals
+return 401 with `Cache-Control: no-store`; a missing secret is logged. The secret
+must not go in any `NEXT_PUBLIC_` variable. See [[Backend]], [[Architecture]]
+and `docs/cron-refresh-content.md`.
+
 ## Known risks
 
 - `script-src` and `style-src` allow `'unsafe-inline'`.

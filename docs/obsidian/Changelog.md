@@ -10,6 +10,15 @@ tags: [project/cacnorthamerica]
 
 Related: [[Project]] · [[Decisions]] · [[Features]] · [[Payments]] · [[Security]]
 
+## 2026-11-08 -- round 2: children's care details, shared nav, content refresh (PR 160)
+
+- **Children's care details:** Youth & Child registration now collects allergies, medical notes, medications, dietary/special needs, photo consent, emergency contact, pickups and guardian consent for each child 12 or under (`lib/childCare.ts`, `components/register/ChildCareFields.tsx`). Stored in new `cacna.child_care_details` (migration 0026; RLS forced, no policies, service role only), saved by `app/api/register/route.ts` before anything else and deleted if a later step fails; refuses with 503 if it cannot save. Admin allergy flag on `/admin/check-in` and a printable `/admin/check-in/children` sheet. **Apply 0026 before deploying.** See [[Database]], [[Security]], [[Backend]].
+- **Content freshness:** `lib/contentRevalidation.ts` revalidates by route-file pattern (the old `revalidatePath("/blog")` never matched under next-intl); daily cron `GET /api/cron/refresh-content` (`0 9 * * *`, bearer `CRON_SECRET`, constant-time check in `lib/cronAuth.ts`). See [[Architecture]].
+- **Home:** Latest News, hero and Upcoming Programs now include posts/events published in the admin (`lib/blogPosts.ts`, `lib/dbEvents.ts`, `lib/blogMerge.ts`).
+- **Navigation:** header and footer render one list, `lib/nav.ts`, with current-page highlighting (`lib/navMatch.ts`). See [[Frontend]].
+- **Yoruba-friendly touches:** `lib/yoruba.ts` inline phrases. See [[Decisions]].
+- Open owner items in [[Tasks]].
+
 ## 2026-11-08 -- video blog posts, Pastor Agbeja interview (PR 156)
 
 - Blog posts can now carry an optional `video` (YouTube id, title, channel, channel link), shown click-to-play above the text with a credit line. Rendered by `VideoFacade` in `app/(site)/[locale]/blog/[slug]/page.tsx`. The field exists only in `lib/blog.ts`; posts created in the admin console cannot set it.
