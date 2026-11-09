@@ -3,6 +3,7 @@
 import { requireAdmin } from "@/lib/supabase/require-admin";
 import { fetchCacWorldCandidates } from "@/lib/cacWorldNews";
 import { revalidatePath } from "next/cache";
+import { revalidateCacWorldNewsContent } from "@/lib/contentRevalidation";
 
 export async function fetchLatestCandidates(): Promise<{ ok: boolean; added: number; error?: string }> {
   const { supabase } = await requireAdmin();
@@ -23,6 +24,10 @@ export async function fetchLatestCandidates(): Promise<{ ok: boolean; added: num
 
   const known = new Set((existing ?? []).map((r) => r.source_url));
   const fresh = candidates.filter((c) => !known.has(c.sourceUrl));
+
+  // The admin has just looked at the live feed: drop the public pages'
+  // cached copy too, so they show the same stories.
+  revalidateCacWorldNewsContent({ refetchFeed: true });
 
   if (fresh.length === 0) {
     revalidatePath("/admin/cac-world-news");
@@ -60,7 +65,7 @@ export async function approveNews(id: string) {
     throw new Error("Could not approve article. Please try again.");
   }
   revalidatePath("/admin/cac-world-news");
-  revalidatePath("/blog");
+  revalidateCacWorldNewsContent();
 }
 
 export async function rejectNews(id: string) {
@@ -74,6 +79,9 @@ export async function rejectNews(id: string) {
     throw new Error("Could not reject article. Please try again.");
   }
   revalidatePath("/admin/cac-world-news");
+  // The public pages show feed stories without approval, so a rejection
+  // has to reach them too.
+  revalidateCacWorldNewsContent();
 }
 
 export async function unpublishNews(id: string) {
@@ -87,5 +95,5 @@ export async function unpublishNews(id: string) {
     throw new Error("Could not unpublish article. Please try again.");
   }
   revalidatePath("/admin/cac-world-news");
-  revalidatePath("/blog");
+  revalidateCacWorldNewsContent();
 }

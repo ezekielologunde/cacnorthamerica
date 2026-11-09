@@ -47,8 +47,13 @@ globalThis.__fakeStripe = {
 };
 const stored = [];
 globalThis.__fakeSupabase = {
-  from: (table) => ({ upsert: (rows) => { stored.push({ table, rows }); return { abortSignal: async () => ({ error: null }) }; } }),
+  from: (table) => {
+    const write = (rows) => { stored.push({ table, rows }); return { abortSignal: async () => ({ error: null }) }; };
+    // insert: the Children's Ministry care rows (lib/childCareStore.ts).
+    return { upsert: write, insert: write };
+  },
 };
+const checkinStored = () => stored.find((w) => w.table === "checkin_people");
 const rows = [];
 const emails = [];
 globalThis.fetch = async (url, init = {}) => {
@@ -92,9 +97,12 @@ const adultBody = (extra = {}) => ({
 });
 const youth = (registrants, extra = {}) => ({
   track: "youth", contactName: "Parent Name", contactEmail: "zelle-parent@example.com", contactPhone: "(443) 555-0100",
-  churchName: "CAC Example", youthLeaderName: "Leader", dccZone: "Zone 1", guardianConfirmed: true, registrants, ...extra,
+  churchName: "CAC Example", youthLeaderName: "Leader", dccZone: "Zone 1", guardianConfirmed: true, registrants,
+  childCare: { emergencyName: "Aunt", emergencyPhone: "443-555-0199", pickups: [], consent: true }, ...extra,
 });
-const kid = (age, extra = {}) => ({ firstName: "Kid", lastName: `Age${age}`, age, meals: ["tue_lunch"], ...extra });
+// Children 12 and under also send Children's Ministry care details (lib/childCare.ts).
+const care = { hasAllergies: false, allergies: [], photoConsent: true };
+const kid = (age, extra = {}) => ({ firstName: "Kid", lastName: `Age${age}`, age, meals: ["tue_lunch"], ...(age <= 12 ? { care } : {}), ...extra });
 const confirmationPrefix = `${SITE_URL}/events/cacna-2027/register/confirmation?t=`;
 
 // ---------- Reference helper ----------
@@ -167,7 +175,7 @@ check("youth Zelle rows carry the Zelle Reference before Check-in Code, which st
 check("youth Zelle token is pay zelle with the subtotal and no allergies",
   yzOpened?.pay === "zelle" && yzOpened.totalAmountCents === 10000 && yzOpened.registrants.every((r) => !("l" in r)));
 check("youth Zelle check-in rows are awaiting_zelle",
-  stored[0]?.rows.length === 2 && stored[0].rows.every((r) => r.payment_status === "awaiting_zelle" && r.zelle_ref === yzOpened?.zelleRef));
+  checkinStored()?.rows.length === 2 && checkinStored().rows.every((r) => r.payment_status === "awaiting_zelle" && r.zelle_ref === yzOpened?.zelleRef));
 check("youth Zelle token opens as awaiting_zelle",
   (await resolveRegistrationConfirmation({ year: 2027, token: tokenOf(yz), retrieveSession: noSession }))?.payment === "awaiting_zelle");
 
@@ -180,7 +188,7 @@ check("$0 youth with paymentMethod zelle: free path (free status, no Zelle colum
   free.body.checkoutUrl?.startsWith(confirmationPrefix) && created.length === 0 && rows.length === 1 &&
   rows[0].Status === "free (email unverified)" && !("Zelle Reference" in rows[0]) && !("Processing Fee" in rows[0]) &&
   freeOpened && !("pay" in freeOpened) && !("zelleRef" in freeOpened) &&
-  stored[0]?.rows.every((r) => r.payment_status === "free" && !("zelle_ref" in r)));
+  checkinStored()?.rows.every((r) => r.payment_status === "free" && !("zelle_ref" in r)));
 const freeConf = await resolveRegistrationConfirmation({ year: 2027, token: tokenOf(free), retrieveSession: noSession });
 check("$0 youth token still opens as free", freeConf?.payment === "free" && freeConf.isFree === true);
 

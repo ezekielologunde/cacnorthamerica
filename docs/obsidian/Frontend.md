@@ -33,3 +33,33 @@ Related: [[Architecture]] · [[Features]] · [[Backend]]
 - Images: `images.unoptimized: true` (Vercel Image Optimization quota
   exhausted, per `next.config.ts` comment); Cloudinary loader.
 - Forms show a Cloudflare Turnstile widget below the fields (PRs #111, #115).
+
+## Round 2 additions (2026-11-08)
+
+- **Shared navigation IA:** `lib/nav.ts` is the single list of sections and
+  links; the header (`components/navigation/Nav.tsx`) and the footer
+  (`components/sections/FooterExperience.tsx`) both render it so they cannot
+  drift. Labels are keys in the `Nav` namespace of `messages/en.json` (links
+  built from site data, such as upcoming events, carry their own text); a link
+  can be limited to header or footer. Current-page highlighting uses
+  `lib/navMatch.ts` (tested in `lib/navMatch.test.mjs`). The convention links
+  follow `currentOrNextConvention()`.
+- **`ChildCareFields`** (`components/register/ChildCareFields.tsx`): the
+  Children's Ministry care panel inside `YouthRegisterForm.tsx`, one per child
+  12 or under plus one family block (emergency contact, up to 4 pickups, care
+  consent). Rules live in `lib/childCare.ts` and are re-checked on the server.
+  Its state is never written to browser storage, analytics or the URL. Data
+  handling: [[Security]].
+- **Admin care views:** `components/admin/ChildCareSummary.tsx` (allergy flag
+  and care summary on `/admin/check-in`) and the printable
+  `/admin/check-in/children` sheet with `PrintButton`. See [[Backend]].
+- **Yoruba-friendly touches:** `lib/yoruba.ts` holds a short list of standard
+  Yoruba phrases shown inline on the English-only site (used by the pastor
+  welcome, plan-your-visit and the search index), each rendered in an element
+  with `lang="yo"`. Strings must stay NFC with tone marks
+  (`lib/yoruba.test.mjs`). The site stays single-locale English; see
+  [[Decisions]].
+- **Home reads merged content:** the home page, hero, Latest News and Upcoming
+  Programs read static posts/events merged with those published from the admin
+  (`lib/blogPosts.ts`, `lib/blogMerge.ts`, `lib/dbEvents.ts`), the same data as
+  `/blog` and `/calendar`. Freshness: [[Architecture]].

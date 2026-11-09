@@ -2,6 +2,7 @@
 
 import { requireAdmin } from "@/lib/supabase/require-admin";
 import { revalidatePath } from "next/cache";
+import { revalidateBlogContent } from "@/lib/contentRevalidation";
 import { redirect } from "next/navigation";
 import { parseAuthors } from "@/lib/blog-authors";
 import type { Json } from "@/types/database.types";
@@ -48,7 +49,7 @@ export async function createPost(formData: FormData) {
     throw new Error("Could not create post. Please try again.");
   }
   revalidatePath("/admin/blog");
-  revalidatePath("/blog");
+  revalidateBlogContent();
   redirect(`/admin/blog/${data.id}`);
 }
 
@@ -79,7 +80,7 @@ export async function updatePost(id: string, formData: FormData) {
   }
   revalidatePath("/admin/blog");
   revalidatePath(`/admin/blog/${id}`);
-  revalidatePath("/blog");
+  revalidateBlogContent();
 }
 
 export async function deletePost(id: string) {
@@ -90,6 +91,6 @@ export async function deletePost(id: string) {
     throw new Error("Could not delete post. Please try again.");
   }
   revalidatePath("/admin/blog");
-  revalidatePath("/blog");
+  revalidateBlogContent();
   redirect("/admin/blog");
 }
