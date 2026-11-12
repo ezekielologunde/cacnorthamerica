@@ -2,7 +2,7 @@
 project: cacnorthamerica
 type: security
 status: active
-last_updated: 2026-11-08
+last_updated: 2026-11-11
 tags: [project/cacnorthamerica]
 ---
 
@@ -82,6 +82,29 @@ analytics (`lib/analytics.ts`, `scripts/check-adsense.mjs`):
   `google-adsense-account` meta tag.
 - `npm test` runs `scripts/check-adsense.mjs`, which executes the real inline
   script and asserts each call site uses these helpers.
+
+### Google consent (Consent Mode v2, 2026-11-11)
+
+`gtagInitScript()` sets `gtag('consent','default', ...)` before `gtag('js')`
+and every `config` call. For visitors in the EEA, the UK and Switzerland
+(`CONSENT_DENIED_REGIONS` in `lib/analytics.ts`, matched by Google's `region`
+option) `ad_storage`, `ad_user_data`, `ad_personalization` and
+`analytics_storage` start **denied**, with `wait_for_update: 500`: no Google
+cookies and only cookieless pings. Everyone else keeps Google's default
+(granted).
+
+- **Implemented (in the repo):** the regional defaults above, checked by
+  `scripts/check-adsense.mjs` (order before config, four signals denied,
+  region-scoped, EEA/UK/CH covered, US and Canada untouched).
+- **Blog only:** the site has no consent banner of its own. Google's certified
+  message, once published, is loaded by the AdSense script, which loads on
+  `/blog` pages only, and it upgrades the signals there. On every other page
+  in those regions Analytics stays cookieless.
+- **Pending configuration (outside the repo):** the European regulations
+  message under AdSense, Privacy and messaging, for cacna.org. Until it is
+  published, nothing upgrades consent in those regions, so Analytics stays
+  cookieless there and AdSense should not be treated as consent-ready. See
+  [[Tasks]].
 
 Required GA4 setting (outside the repo): turn off **Page changes based on
 browser history events** under Enhanced measurement. See [[Features]] for the
