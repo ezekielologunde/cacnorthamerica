@@ -2,7 +2,7 @@
 project: cacnorthamerica
 type: tasks
 status: active
-last_updated: 2026-11-08
+last_updated: 2026-11-11
 tags: [project/cacnorthamerica]
 ---
 
@@ -49,6 +49,10 @@ Related: [[Project]] · [[Features]] · [[Architecture]] · [[Decisions]] · [[B
 - Four Ontario/Quebec branches: "zone to confirm" (PR #120 title).
 - AdSense blog unit is off until `NEXT_PUBLIC_ADSENSE_ID` /
   `NEXT_PUBLIC_ADSENSE_BLOG_SLOT` are set (PR #123).
+- AdSense consent: publish the European regulations message in AdSense,
+  Privacy and messaging, for cacna.org (account `ca-pub-1672033318309677`).
+  Until then, EEA/UK/CH visitors get cookieless Analytics only (Consent Mode
+  default, see [[Security]]). Not yet confirmed as published: **Unverified**.
 - Complimentary registration tab: `STAFF_PASSCODE` is no longer referenced
   in `app/`, `lib/` or `components/`; how that tab is gated now is
   **Unverified** -- check `app/api/register/route.ts`.

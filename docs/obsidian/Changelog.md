@@ -24,6 +24,12 @@ Related: [[Project]] · [[Decisions]] · [[Features]] · [[Payments]] · [[Secur
   authorized the feature (2026-11-11). The data is a hand-copied excerpt of the
   salvation-center repo's `lib/ilorinSermons.ts`; refresh when new ones post.
 
+## 2026-11-11 -- Google Consent Mode v2 for Analytics and ads (PR 163)
+
+- `gtagInitScript()` now sets consent defaults before any `config` call: all four Google storage signals denied for the EEA, UK and Switzerland, granted elsewhere; `wait_for_update: 500`.
+- On `/blog`, Google's AdSense consent message (once published in the AdSense console) upgrades consent; other pages in those regions stay cookieless. The console step is still open: [[Tasks]]. Details: [[Security]].
+- Six checks added to `scripts/check-adsense.mjs`.
+
 ## 2026-11-08 -- round 2: children's care details, shared nav, content refresh (PR 160)
 
 - **Children's care details:** Youth & Child registration now collects allergies, medical notes, medications, dietary/special needs, photo consent, emergency contact, pickups and guardian consent for each child 12 or under (`lib/childCare.ts`, `components/register/ChildCareFields.tsx`). Stored in new `cacna.child_care_details` (migration 0026; RLS forced, no policies, service role only), saved by `app/api/register/route.ts` before anything else and deleted if a later step fails; refuses with 503 if it cannot save. Admin allergy flag on `/admin/check-in` and a printable `/admin/check-in/children` sheet. **Apply 0026 before deploying.** See [[Database]], [[Security]], [[Backend]].

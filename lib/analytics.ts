@@ -18,12 +18,30 @@ export function isSecretUrlPath(pathname: string): boolean {
   return SECRET_URL_PATH.test(pathname);
 }
 
-/** The inline gtag bootstrap: loads dataLayer and configures every ID, passing a
- *  query-free page_location on secret-bearing pages. Returned as a string so a
- *  check can run exactly what the browser runs. */
+// Google Consent Mode v2. Visitors in the EEA, the UK and Switzerland start with
+// every Google storage signal denied, so Analytics and ads set no cookies and
+// send only cookieless pings until consent is granted. Google's certified
+// consent message (AdSense, Privacy and messaging) updates these signals
+// itself, but only where the AdSense script loads: the blog. Elsewhere in
+// those regions Analytics stays cookieless. Everyone else keeps Google's
+// default (granted). Keep this ISO 3166-1 list in step with Google's docs.
+export const CONSENT_DENIED_REGIONS = [
+  "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU",
+  "IS", "IE", "IT", "LV", "LI", "LT", "LU", "MT", "NL", "NO", "PL", "PT", "RO",
+  "SK", "SI", "ES", "SE", "GB", "CH",
+] as const;
+
+/** The inline gtag bootstrap: loads dataLayer, sets the consent defaults, and
+ *  configures every ID, passing a query-free page_location on secret-bearing
+ *  pages. Returned as a string so a check can run exactly what the browser
+ *  runs. The consent default must run before any config call. */
 export function gtagInitScript(ids: string[]): string {
+  const regions = JSON.stringify([...CONSENT_DENIED_REGIONS]);
   return (
     "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}" +
+    "gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied'," +
+    "ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500," +
+    `region:${regions}});` +
     "gtag('js',new Date());" +
     `var gc=/${SECRET_URL_PATH.source}/.test(location.pathname)` +
     "?{page_location:location.origin+location.pathname}:{};" +

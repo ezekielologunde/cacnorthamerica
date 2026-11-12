@@ -1,0 +1,102 @@
+{
+  "_comment": "Source of truth for the CAC web family. Canonical copy lives in the cacnorthamerica repo (lib/network.json); it is copied unchanged into cac-salvation-center and yyam. Edit it in ONE place, copy it everywhere, then run: node scripts/check-network.mjs <path to another copy>. Only facts already stated on the sites belong here; use null where a fact is not confirmed yet.",
+  "version": 2,
+  "updated": "2026-11-11",
+  "sites": [
+    {
+      "id": "cacna",
+      "name": "Christ Apostolic Church North America",
+      "shortName": "CACNA",
+      "url": "https://cacna.org",
+      "role": "The regional body for CAC in the United States, Canada and South America: churches, leaders, events, giving and the Annual Convention.",
+      "covers": ["CACNA region (US, Canada, South America)", "regional leaders and zones", "events and calendar", "giving"],
+      "doesNotCover": ["CAC outside the Americas (see cacworld)", "individual congregation pages (see their own sites)"]
+    },
+    {
+      "id": "yyam",
+      "name": "CACNA YYAM",
+      "shortName": "YYAM",
+      "url": "https://yyam.cacna.org",
+      "role": "The Youth & Young Adult Ministry site of CACNA, part of cacna.org.",
+      "covers": ["Youth & Young Adult Ministry"],
+      "doesNotCover": ["regional news and giving (see cacna)"]
+    },
+    {
+      "id": "salvation-center",
+      "name": "Christ Apostolic Church Salvation Center",
+      "shortName": "CAC Salvation Center",
+      "url": "https://www.cacsalvationcenter.org",
+      "role": "The Salvation Center congregation in Randallstown, Maryland: services, online church, Hope for Today devotional and podcast, events and giving.",
+      "covers": ["Randallstown MD congregation", "online church", "Hope for Today devotional and podcast"],
+      "doesNotCover": ["CACNA regional business (see cacna)"]
+    },
+    {
+      "id": "ilorin",
+      "name": "Christ Apostolic Church Salvation Centre, Ilorin",
+      "shortName": "CAC Ilorin HQ",
+      "url": "https://ilorin.cacsalvationcenter.org",
+      "role": "The District Headquarters and parent assembly in Ilorin, Kwara State, Nigeria, led by Pastor R.T. Owoseni.",
+      "covers": ["Ilorin district headquarters", "services and daily words", "Pastor Owoseni's messages"],
+      "doesNotCover": ["Baltimore-area services (see salvation-center)"]
+    },
+    {
+      "id": "city",
+      "name": "CAC Salvation City",
+      "shortName": "Salvation City",
+      "url": "https://city.cacsalvationcenter.org",
+      "role": "Salvation City, the sister assembly of the Salvation Center in Rosedale, Maryland.",
+      "covers": ["Salvation City assembly"],
+      "doesNotCover": ["Randallstown services (see salvation-center)"]
+    },
+    {
+      "id": "cacworld",
+      "name": "Christ Apostolic Church Worldwide",
+      "shortName": "CAC Worldwide",
+      "url": "https://cacworld.org",
+      "role": "The worldwide body of Christ Apostolic Church, headquartered in Nigeria. External site, not ours.",
+      "external": true
+    }
+  ],
+  "relationships": [
+    { "from": "salvation-center", "type": "memberOf", "to": "cacna" },
+    { "from": "salvation-center", "type": "parentOrganization", "to": "ilorin" },
+    { "from": "city", "type": "siblingOf", "to": "salvation-center" },
+    { "from": "yyam", "type": "partOf", "to": "cacna" },
+    { "from": "cacna", "type": "memberOf", "to": "cacworld" }
+  ],
+  "people": [
+    {
+      "id": "owoseni",
+      "name": "Pastor R.T. Owoseni",
+      "jobTitle": "District Superintendent",
+      "worksFor": "ilorin",
+      "photo": "/images/pastor-owoseni.jpg",
+      "bio": null,
+      "sameAs": []
+    }
+  ],
+  "media": [
+    {
+      "id": "ilorin-spotify",
+      "type": "PodcastSeries",
+      "name": "Pastor Owoseni's messages (Ilorin)",
+      "url": "https://open.spotify.com/show/2VBBGHUo6nMITGmGGrEUoM",
+      "host": "owoseni",
+      "site": "ilorin"
+    },
+    {
+      "id": "hope-for-today",
+      "type": "PodcastSeries",
+      "name": "Hope for Today",
+      "url": "https://open.spotify.com/show/0wFUgSZq4CuVuM0M9gRFUw",
+      "site": "salvation-center"
+    },
+    {
+      "id": "salvation-center-youtube",
+      "type": "YouTubeChannel",
+      "name": "CAC Salvation Center on YouTube",
+      "url": "https://www.youtube.com/channel/UCoogH4HuVXSn4okSpRlsDQA",
+      "site": "salvation-center"
+    }
+  ]
+}
