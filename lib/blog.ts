@@ -35,6 +35,8 @@ export interface BlogPost {
   authors?: BlogAuthor[];
   /** A YouTube video shown above the text (click-to-play), with its credit. */
   video?: { id: string; title: string; channel: string; channelUrl: string };
+  /** A Spotify episode shown as an embedded player above the text. */
+  spotify?: { episodeUrl: string; title: string };
   body: string[];
 }
 
@@ -940,6 +942,7 @@ const RAW_POSTS: Omit<BlogPost, "categoryColor" | "accent">[] = [
     dateIso: "2026-09-06",
     category: "Reflection",
     readTime: "2 min read",
+    spotify: { episodeUrl: "https://open.spotify.com/episode/05sccGbnpxx4N4okmm6nvo", title: "Dealing with Anger — Pastor R.T. Owoseni" },
     body: [
       "_\"Be not hasty in thy spirit to be angry: for anger resteth in the bosom of fools.\"_ — Ecclesiastes 7:9",
       "This Sunday message comes from Pastor R.T. Owoseni, District Superintendent of Christ Apostolic Church Salvation Centre, Ilorin, Nigeria. His text was Ecclesiastes 7:9, with Proverbs 14:17 and 14:29 and 1 Samuel 9:18.",
@@ -949,6 +952,105 @@ const RAW_POSTS: Omit<BlogPost, "categoryColor" | "accent">[] = [
       "**As children of God, we are not expected to act while we are angry.** Feeling the emotion is one thing. Acting on it is another. Pastor Owoseni's point is that we are called to pause before we say or do anything.",
       "**When anger takes control, it is impossible to act godly.** That is why it has to be dealt with, and not excused.",
       "**Listen to the full message** on Spotify: [Dealing with Anger, by Pastor R.T. Owoseni](https://open.spotify.com/episode/05sccGbnpxx4N4okmm6nvo). The message and its notes are also on the CAC Salvation Centre Ilorin site: [read it there](https://www.cacsalvationcenter.org/ilorin/blog/2026-09-06-dealing-with-anger). More of his messages are on his [Spotify show](https://open.spotify.com/show/2VBBGHUo6nMITGmGGrEUoM).",
+    ],
+  },
+  {
+    slug: "the-unchanging-god-pastor-owoseni",
+    title: "The Unchanging God",
+    excerpt:
+      "A Sunday message from Pastor R.T. Owoseni of CAC Salvation Centre, Ilorin, on Jeremiah 31:3 — God's love does not shift with circumstance, and it cannot be bought.",
+    date: "August 30, 2026",
+    dateIso: "2026-08-30",
+    category: "Reflection",
+    readTime: "2 min read",
+    spotify: { episodeUrl: "https://open.spotify.com/episode/5qTbD7IAv0o3zJ6K3FRUfg", title: "The Unchanging God — Pastor R.T. Owoseni" },
+    body: [
+      "_\"Yea, I have loved thee with an everlasting love: therefore with lovingkindness have I drawn thee.\"_ — Jeremiah 31:3",
+      "This Sunday message comes from Pastor R.T. Owoseni, District Superintendent of Christ Apostolic Church Salvation Centre, Ilorin, Nigeria. His text was Jeremiah 31:3.",
+      "**God is unchanging in His love, and that is one of the things that sets Him apart from man.** People shift with circumstance. God does not.",
+      "**His love is unconditional.** It is not based on who you are or what you can offer Him. There is no condition attached to being loved by God.",
+      "**His love is priceless.** No amount of money could ever purchase what He gives freely and everlastingly (John 3:16).",
+      "**The level of the Word of God you know determines the amount of God you will enjoy.** And one of the simplest ways to repay a love like this is through thanksgiving.",
+      "**Listen to the full message** on Spotify: [The Unchanging God, by Pastor R.T. Owoseni](https://open.spotify.com/episode/5qTbD7IAv0o3zJ6K3FRUfg). The message and its notes are also on the CAC Salvation Centre Ilorin site: [read it there](https://www.cacsalvationcenter.org/ilorin/blog/2026-08-30-the-unchanging-god). More of his messages are on his [Spotify show](https://open.spotify.com/show/2VBBGHUo6nMITGmGGrEUoM).",
+    ],
+  },
+  {
+    slug: "confronting-your-giants-pastor-owoseni",
+    title: "Confronting Your Giants",
+    excerpt:
+      "A Sunday message from Pastor R.T. Owoseni of CAC Salvation Centre, Ilorin, on 1 Samuel 17:41, James 4:7 and Psalm 18:32 — giants are real, but they are meant to be confronted and they can be conquered.",
+    date: "August 2, 2026",
+    dateIso: "2026-08-02",
+    category: "Reflection",
+    readTime: "2 min read",
+    spotify: { episodeUrl: "https://open.spotify.com/episode/68vQ1zxIMWc5zzQwpVvDbG", title: "Confronting Your Giants — Pastor R.T. Owoseni" },
+    body: [
+      "_\"Submit yourselves therefore to God. Resist the devil, and he will flee from you.\"_ — James 4:7",
+      "This Sunday message comes from Pastor R.T. Owoseni, District Superintendent of Christ Apostolic Church Salvation Centre, Ilorin, Nigeria. His text was 1 Samuel 17:41, James 4:7 and Psalm 18:32.",
+      "**Giants are real.** A giant can be seen as a spiritual terrorist sent by the devil to harass and torment the people of God. It helps to remember that, like Goliath, they are from the lineage of men. Whatever towers over your life right now is not beyond the reach of God.",
+      "**Giants are meant to be confronted.** Not negotiated with, and not quietly endured. The moment we become children of God, we are spiritually empowered to confront them. That power is not something we work up. It is something we already carry.",
+      "**Giants can be conquered.** The power given to you as a child of God is enough to enable you to conquer any giant, no matter how great it may be.",
+      "**Listen to the full message** on Spotify: [Confronting Your Giants, by Pastor R.T. Owoseni](https://open.spotify.com/episode/68vQ1zxIMWc5zzQwpVvDbG). The message and its notes are also on the CAC Salvation Centre Ilorin site: [read it there](https://www.cacsalvationcenter.org/ilorin/blog/2026-08-02-confronting-your-giants). More of his messages are on his [Spotify show](https://open.spotify.com/show/2VBBGHUo6nMITGmGGrEUoM).",
+    ],
+  },
+  {
+    slug: "attracting-great-mercy-pastor-owoseni",
+    title: "Attracting Great Mercy",
+    excerpt:
+      "A Sunday message from Pastor R.T. Owoseni of CAC Salvation Centre, Ilorin, on Luke 1:57–58 — God's mercy is open to everyone, and believers are expected to know how to attract it.",
+    date: "July 5, 2026",
+    dateIso: "2026-07-05",
+    category: "Reflection",
+    readTime: "2 min read",
+    spotify: { episodeUrl: "https://open.spotify.com/episode/0jHY9hoAM8bkw4NdXWKYxD", title: "Attracting Great Mercy — Pastor R.T. Owoseni" },
+    body: [
+      "_\"And her neighbours and her cousins heard how the Lord had shewed great mercy upon her; and they rejoiced with her.\"_ — Luke 1:58",
+      "This Sunday message comes from Pastor R.T. Owoseni, District Superintendent of Christ Apostolic Church Salvation Centre, Ilorin, Nigeria. His text was Luke 1:57–58.",
+      "**God can show an individual great mercy without the individual's input.** Mercy is His to give.",
+      "**God's mercy is available to everyone, but as believers we are expected to know how to attract His great mercy.** When we play our part, God will also play His part by granting us His great mercy.",
+      "**One of the ways to attract it is by serving Him selflessly and sacrificially.** That is not easy, but it is worth it in the end.",
+      "**We should not serve God because of what we can get from Him.** We should serve Him selflessly.",
+      "**Listen to the full message** on Spotify: [Attracting Great Mercy, by Pastor R.T. Owoseni](https://open.spotify.com/episode/0jHY9hoAM8bkw4NdXWKYxD). The message and its notes are also on the CAC Salvation Centre Ilorin site: [read it there](https://www.cacsalvationcenter.org/ilorin/blog/2026-07-05-attracting-great-mercy). More of his messages are on his [Spotify show](https://open.spotify.com/show/2VBBGHUo6nMITGmGGrEUoM).",
+    ],
+  },
+  {
+    slug: "obtaining-gods-promises-by-faith-pastor-owoseni",
+    title: "Obtaining God's Promises by Faith",
+    excerpt:
+      "A Sunday message from Pastor R.T. Owoseni of CAC Salvation Centre, Ilorin, on Hebrews 11:33 — whatever affects your faith affects your relationship with God, so do not compromise it.",
+    date: "June 21, 2026",
+    dateIso: "2026-06-21",
+    category: "Reflection",
+    readTime: "2 min read",
+    spotify: { episodeUrl: "https://open.spotify.com/episode/5Fhlc8OAUBo3lgpM5QkIgq", title: "Obtaining God's Promises by Faith — Pastor R.T. Owoseni" },
+    body: [
+      "_\"Who through faith subdued kingdoms, wrought righteousness, obtained promises, stopped the mouths of lions.\"_ — Hebrews 11:33",
+      "This Sunday message comes from Pastor R.T. Owoseni, District Superintendent of Christ Apostolic Church Salvation Centre, Ilorin, Nigeria. His text was Hebrews 11:33.",
+      "**Whatever affects your faith affects your relationship with God.** One of the major differences between Christianity and other religions is faith in God. What makes you a believer is faith in Christ.",
+      "**Don't compromise your faith for anything.**",
+      "**Faith gives strength for the Christian journey.** Man can only run the race of life by divine strength. Without it, you become stranded, seeking help elsewhere.",
+      "**Faith restores lost virtues** (Hebrews 11:11–12).",
+      "**As long as you hold on to your faith in Him, there will always be life.**",
+      "**Listen to the full message** on Spotify: [Obtaining God's Promises by Faith, by Pastor R.T. Owoseni](https://open.spotify.com/episode/5Fhlc8OAUBo3lgpM5QkIgq). The message and its notes are also on the CAC Salvation Centre Ilorin site: [read it there](https://www.cacsalvationcenter.org/ilorin/blog/2026-06-21-obtaining-god-s-promises-by-faith). More of his messages are on his [Spotify show](https://open.spotify.com/show/2VBBGHUo6nMITGmGGrEUoM).",
+    ],
+  },
+  {
+    slug: "growing-in-faith-pastor-owoseni",
+    title: "Growing in Faith",
+    excerpt:
+      "A Sunday message from Pastor R.T. Owoseni of CAC Salvation Centre, Ilorin, on Matthew 14:24–32 and Hebrews 11:33 — faith is a seed that must be nurtured, and here is how to grow it.",
+    date: "June 7, 2026",
+    dateIso: "2026-06-07",
+    category: "Reflection",
+    readTime: "2 min read",
+    spotify: { episodeUrl: "https://open.spotify.com/episode/5woQm4NCKPJvnCrJ340hX3", title: "Growing in Faith — Pastor R.T. Owoseni" },
+    body: [
+      "_\"Looking unto Jesus the author and finisher of our faith.\"_ — Hebrews 12:2",
+      "This Sunday message comes from Pastor R.T. Owoseni, District Superintendent of Christ Apostolic Church Salvation Centre, Ilorin, Nigeria. His text was Matthew 14:24–32 and Hebrews 11:33.",
+      "**Faith is like a seed, a spiritual seed. For a seed to grow, it must be nurtured.** One of the ways to enjoy divine favour from God is by growing in faith.",
+      "**In the Christian journey there are waters we need to walk on, and we can only walk on them by faith.**",
+      "**How do I grow in faith?** By regularly reading the Word of God (1 Peter 2:2). By meditating on the Word of God regularly (Joshua 1:8). By being positive in all your confessions. By always looking unto Jesus (Hebrews 12:2).",
+      "**Listen to the full message** on Spotify: [Growing in Faith, by Pastor R.T. Owoseni](https://open.spotify.com/episode/5woQm4NCKPJvnCrJ340hX3). The message and its notes are also on the CAC Salvation Centre Ilorin site: [read it there](https://www.cacsalvationcenter.org/ilorin/blog/2026-06-07-growing-in-faith). More of his messages are on his [Spotify show](https://open.spotify.com/show/2VBBGHUo6nMITGmGGrEUoM).",
     ],
   },
 ];

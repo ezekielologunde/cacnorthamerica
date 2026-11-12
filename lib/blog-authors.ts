@@ -39,10 +39,17 @@ const OLADELE: BlogAuthor = { name: "Pastor Samuel Olusegun Oladele", role: "Pre
 const AGBEJA: BlogAuthor = { name: "Pastor Dr. T.A.O. Agbeja", role: "Regional Superintendent, CACNA (Latunde Region)", photo: "/images/pastor-agbeja-portrait.jpg" };
 const ADENODI: BlogAuthor = { name: "Pastor David Olusegun Adenodi, Ph.D.", role: "Chairman, Convention & Conference Planning Committee", photo: "/images/pastor-adenodi-portrait.jpg" };
 
+const OWOSENI: BlogAuthor = { name: "Pastor R.T. Owoseni", role: "District Superintendent, CAC Salvation Centre, Ilorin" };
+
 /** Publishers for the posts written in code, by slug. Only people the post itself
  *  names as its speaker or signatory; anything else falls back to "CACNA". */
 export const POST_AUTHORS: Record<string, BlogAuthor[]> = {
-  "dealing-with-anger-pastor-owoseni": [{ name: "Pastor R.T. Owoseni", role: "District Superintendent, CAC Salvation Centre, Ilorin" }],
+  "dealing-with-anger-pastor-owoseni": [OWOSENI],
+  "the-unchanging-god-pastor-owoseni": [OWOSENI],
+  "confronting-your-giants-pastor-owoseni": [OWOSENI],
+  "attracting-great-mercy-pastor-owoseni": [OWOSENI],
+  "obtaining-gods-promises-by-faith-pastor-owoseni": [OWOSENI],
+  "growing-in-faith-pastor-owoseni": [OWOSENI],
   "tribute-to-late-pastor-abraham-adegoke-oyedeji": [{ name: "The Oyedeji Family", role: "With CAC First in the Americas" }],
   "golden-jubilee-message-from-the-president": [OLADELE],
   "cacna-2026-presidents-message": [OLADELE],

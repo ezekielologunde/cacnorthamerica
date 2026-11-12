@@ -44,7 +44,7 @@ const nextConfig: NextConfig = {
       "media-src 'self' blob:",
       "font-src 'self' https://unpkg.com",
       "connect-src 'self' https://*.supabase.co https://api.cloudinary.com https://www.google-analytics.com https://analytics.google.com https://www.google.com https://vitals.vercel-insights.com https://*.tile.openstreetmap.org https://api.stripe.com https://checkout.stripe.com https://pagead2.googlesyndication.com https://*.g.doubleclick.net https://*.adtrafficquality.google",
-      "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://maps.google.com https://www.google.com https://js.stripe.com https://hooks.stripe.com https://checkout.stripe.com https://challenges.cloudflare.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://*.safeframe.googlesyndication.com https://*.adtrafficquality.google",
+      "frame-src 'self' https://open.spotify.com https://www.youtube.com https://www.youtube-nocookie.com https://maps.google.com https://www.google.com https://js.stripe.com https://hooks.stripe.com https://checkout.stripe.com https://challenges.cloudflare.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://*.safeframe.googlesyndication.com https://*.adtrafficquality.google",
       "object-src 'none'",
       "base-uri 'self'",
     ].join("; ");
