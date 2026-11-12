@@ -10,6 +10,20 @@ tags: [project/cacnorthamerica]
 
 Related: [[Project]] · [[Decisions]] · [[Features]] · [[Payments]] · [[Security]]
 
+## 2026-11-11 -- slimmer header nav + Messages from Ilorin
+
+- Header: Who We Are, Ministries, Convention, Events & Media, Store, Contact,
+  plus the Give pill and the convention CTA. Events & Media = Calendar & Events,
+  Golden Jubilee, Watch Online, Blog & News, Gallery. Watchwords, Holy Land
+  Pilgrimage, Ministers Retreat, Hope For All Summit, Serve and Forms are no
+  longer header items (footer / own pages only). `NavGroup.footerOnly` added
+  (Get Involved is footer-only); `upcomingEventLinks` removed.
+- Blog sidebar: "Messages from Ilorin" (`components/blog/IlorinMessagesWidget.tsx`,
+  data in `lib/ilorinMessages.ts`): Pastor R.T. Owoseni's latest Spotify-matched
+  messages, link-out only (canonical stays on the Ilorin site). Pastor Owoseni
+  authorized the feature (2026-11-11). The data is a hand-copied excerpt of the
+  salvation-center repo's `lib/ilorinSermons.ts`; refresh when new ones post.
+
 ## 2026-11-11 -- Google Consent Mode v2 for Analytics and ads (PR 163)
 
 - `gtagInitScript()` now sets consent defaults before any `config` call: all four Google storage signals denied for the EEA, UK and Switzerland, granted elsewhere; `wait_for_update: 500`.

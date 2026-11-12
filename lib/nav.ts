@@ -7,7 +7,6 @@
 // links built from site data (events), which carry their own text.
 
 import { currentOrNextConvention } from "@/lib/conventions";
-import { specialEvents, splitByDate } from "@/lib/events";
 import type { MatchableGroup } from "@/lib/navMatch";
 
 export type NavText =
@@ -32,6 +31,8 @@ export interface NavGroup extends MatchableGroup {
   links: NavLink[];
   /** Two-column header dropdown, for sections with many links. */
   layout?: "grid";
+  /** Listed in the footer directory only, not in the header bar. */
+  footerOnly?: boolean;
 }
 
 type Translate = (key: string, values?: Record<string, string | number>) => string;
@@ -52,27 +53,16 @@ export const conventionCtaHref = nextConvention.registrationUrl ?? nextConventio
 const internalReg = nextConvention.registrationUrl?.startsWith("/") ? nextConvention.registrationUrl : undefined;
 export const youthRegisterHref = internalReg ? `${internalReg}/youth` : "/youth#register";
 
-/** Upcoming one-off events that have their own page, soonest first, as nav
- *  links (the convention is left out: it has its own section). Date-dependent,
- *  so call it where the result is only ever rendered client-side. */
-export function upcomingEventLinks(limit = 2): NavLink[] {
-  return splitByDate(specialEvents.filter((ev) => ev.href && !ev.id.startsWith("cacna-convention-")))
-    .upcoming.slice(0, limit)
-    .map((ev) => ({
-      href: ev.href as string,
-      label: { literal: ev.navLabel ?? ev.title },
-      desc: { literal: ev.dateLabel },
-      only: "header" as const,
-    }));
-}
-
-/** Past years' convention pages (/events/cacna-2026) belong to the Convention
- *  section; other /events/* pages to Events & Media. */
+/** Past years' convention pages (/events/cacna-2026) belong to Convention;
+ *  every other /events/* page (Golden Jubilee-era gatherings, the pilgrimage,
+ *  ministers' retreat, summits) belongs to Events & Media. */
 const isConventionPage = (p: string) => /^\/events\/cacna-\d{4}(\/|$)/.test(p);
 
-/** Every section, in menu order. Pass `events` (from upcomingEventLinks) to
- *  list coming events under Events & Media. */
-export function navGroups(events: NavLink[] = []): NavGroup[] {
+/** Every section, in menu order. The header shows Who We Are, Ministries,
+ *  Convention, Events & Media, then Store and Contact as plain links and Give
+ *  as a pill. Watchwords, the Holy Land Pilgrimage and other one-off events,
+ *  and Forms live on their own pages and in the footer only. */
+export function navGroups(): NavGroup[] {
   return [
     {
       id: "about",
@@ -87,7 +77,6 @@ export function navGroups(events: NavLink[] = []): NavGroup[] {
         { href: "/statement-of-faith", label: key("statementOfFaith"), desc: key("statementOfFaithDesc") },
         { href: "/zones", label: key("zonesDccs"), desc: key("zonesDccsDesc") },
         { href: "/bible-institute", label: key("bibleInstitute"), desc: key("bibleInstituteDesc") },
-        { href: "/golden-jubilee", label: key("goldenJubilee"), desc: key("goldenJubileeDesc") },
         { href: "/faq", label: key("faq"), desc: key("faqDesc") },
         // CAC North America is one region of the global Christ Apostolic
         // Church, headquartered in Nigeria.
@@ -114,7 +103,7 @@ export function navGroups(events: NavLink[] = []): NavGroup[] {
       id: "convention",
       label: key("convention"),
       href: nextConvention.href,
-      match: (p) => isConventionPage(p),
+      match: isConventionPage,
       links: [
         {
           href: conventionCtaHref,
@@ -124,34 +113,39 @@ export function navGroups(events: NavLink[] = []): NavGroup[] {
         },
         { href: youthRegisterHref, label: key("youthRegister"), desc: key("youthRegisterDesc") },
         { href: `${nextConvention.href}/schedule`, label: key("schedule"), desc: key("scheduleDesc") },
-        { href: "/about#convention", label: key("aboutConvention"), only: "footer" },
         { href: "/plan-your-visit", label: key("planYourVisit"), desc: key("planYourVisitDesc") },
         { href: "/archive", label: key("pastConventions"), desc: key("pastConventionsDesc") },
+        { href: "/about#convention", label: key("aboutConvention"), only: "footer" },
       ],
     },
     {
       id: "events-media",
       label: key("eventsMedia"),
       href: "/calendar",
-      // One column: the event links read in date order right under Calendar.
       match: (p) => p.startsWith("/events/"),
       links: [
         { href: "/calendar", label: key("calendarEvents"), desc: key("calendarEventsDesc") },
-        ...events,
+        { href: "/golden-jubilee", label: key("goldenJubilee"), desc: key("goldenJubileeDesc") },
         { href: "/online", label: key("watchOnline"), desc: key("watchOnlineDesc") },
         { href: "/blog", label: key("blogNews"), desc: key("blogNewsDesc") },
-        { href: "/watchwords", label: key("watchwords"), desc: key("watchwordsDesc") },
         { href: "/gallery", label: key("gallery"), desc: key("galleryDesc") },
+        { href: "/watchwords", label: key("watchwords"), only: "footer" },
+        { href: "/events/pilgrimage-2026", label: { literal: "Holy Land Pilgrimage" }, only: "footer" },
+        { href: "/events/ministers-retreat-2027", label: { literal: "Ministers Retreat" }, only: "footer" },
+        { href: "/events/hope-for-all-summit-2026", label: { literal: "Hope For All Summit" }, only: "footer" },
       ],
     },
     {
+      // Give and Store are header items on their own; Serve and Forms are
+      // reachable from the footer.
       id: "get-involved",
       label: key("getInvolved"),
-      href: "/forms",
+      href: "/giving",
+      footerOnly: true,
       links: [
         { href: "/giving", label: key("give"), desc: key("giveDesc") },
-        { href: "/serve", label: key("serveConvention"), desc: key("serveConventionDesc") },
         { href: "/store", label: key("store"), desc: key("storeDesc") },
+        { href: "/serve", label: key("serveConvention"), desc: key("serveConventionDesc") },
         { href: "/forms", label: key("allForms"), desc: key("allFormsDesc") },
       ],
     },
@@ -159,10 +153,11 @@ export function navGroups(events: NavLink[] = []): NavGroup[] {
 }
 
 /** Top-level header links that have no dropdown. */
+export const NAV_STORE: NavLink = { href: "/store", label: key("store") };
 export const NAV_CONTACT: NavLink = { href: "/contact", label: key("contact") };
 
 /** The one secondary action that stays on the header bar beside the
- *  convention CTA (also in Get Involved). */
+ *  convention CTA (also in the footer's Get Involved). */
 export const NAV_GIVE: NavLink = { href: "/giving", label: key("give") };
 
 /** Footer bottom row. Labels are keys in the "Footer" namespace. */

@@ -9,8 +9,8 @@ import { Search, CalendarDays } from 'lucide-react';
 import { haptic } from '@/lib/haptics';
 import { isConventionPast } from '@/lib/conventions';
 import {
-  navGroups, upcomingEventLinks, linksFor, navText, isExternalHref,
-  nextConvention, conventionCtaHref, NAV_CONTACT, NAV_GIVE,
+  navGroups, linksFor, navText, isExternalHref,
+  nextConvention, conventionCtaHref, NAV_CONTACT, NAV_STORE, NAV_GIVE,
   type NavLink, type NavText,
 } from '@/lib/nav';
 import { activeGroupId, isCurrentPage, isWithin } from '@/lib/navMatch';
@@ -24,11 +24,9 @@ const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), [tabi
 const visibleFocusables = (root: HTMLElement | null) =>
   root ? Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(el => el.getClientRects().length > 0) : [];
 
-// Sections come from lib/nav.ts, the same list the footer renders. Built once
-// per page load: the upcoming-events links depend on today's date, and they
-// only ever render client-side (dropdowns and the mobile menu are closed in
-// the server render), so they can't cause a hydration mismatch.
-const groups = navGroups(upcomingEventLinks());
+// Sections come from lib/nav.ts, the same list the footer renders; the
+// footer-only sections (Get Involved) are left out of the header.
+const groups = navGroups().filter(g => !g.footerOnly);
 const noopSubscribe = () => () => {};
 
 interface NavProps {
@@ -50,6 +48,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
   const conventionCtaLabel = t('conventionCta', { year: nextConvention.year });
   const activeId = activeGroupId(pathname, groups);
   const contactActive = isWithin(pathname, NAV_CONTACT.href);
+  const storeActive = isWithin(pathname, NAV_STORE.href);
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -386,6 +385,12 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
           })}
 
           <li style={{ display: 'flex' }}>
+            <Link href={NAV_STORE.href} style={topLinkStyle(storeActive)} aria-current={isCurrentPage(pathname, NAV_STORE.href) ? 'page' : undefined}>
+              {say(NAV_STORE.label)}
+            </Link>
+          </li>
+
+          <li style={{ display: 'flex' }}>
             <Link href={NAV_CONTACT.href} style={topLinkStyle(contactActive)} aria-current={isCurrentPage(pathname, NAV_CONTACT.href) ? 'page' : undefined}>
               {say(NAV_CONTACT.label)}
             </Link>
@@ -523,6 +528,17 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                 </div>
               );
             })}
+            <div style={{ borderBottom: mobileDivider }}>
+              <Link
+                href={NAV_STORE.href}
+                onClick={() => setOpen(false)}
+                style={mobileTopStyle(storeActive)}
+                aria-current={isCurrentPage(pathname, NAV_STORE.href) ? 'page' : undefined}
+              >
+                {storeActive && <span aria-hidden style={{ width: 8, height: 8, borderRadius: '50%', background: accent, flexShrink: 0 }} />}
+                {say(NAV_STORE.label)}
+              </Link>
+            </div>
             <div style={{ borderBottom: mobileDivider }}>
               <Link
                 href={NAV_CONTACT.href}

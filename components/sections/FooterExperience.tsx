@@ -15,9 +15,8 @@ import { CACNA_X_URL, youthSocialLinks, type SocialPlatform } from '@/lib/youthS
 import '@/components/navigation/chrome-mobile.css';
 
 // The directory columns are the header's sections (lib/nav.ts), so a page
-// added to the site's navigation shows up in both places. No date-dependent
-// event links here: the footer is in the server render, where today's date
-// may differ from the visitor's.
+// added to the site's navigation shows up in both places. The footer also
+// lists the sections and one-off events the header leaves out.
 const groups = navGroups();
 
 // Contact details come only from SITE (lib/site.ts).
