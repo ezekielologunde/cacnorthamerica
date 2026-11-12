@@ -9,7 +9,7 @@ import { Search, CalendarDays } from 'lucide-react';
 import { haptic } from '@/lib/haptics';
 import { isConventionPast } from '@/lib/conventions';
 import {
-  navGroups, upcomingEventLinks, linksFor, navText, isExternalHref,
+  navGroups, linksFor, navText, isExternalHref,
   nextConvention, conventionCtaHref, NAV_CONTACT, NAV_GIVE,
   type NavLink, type NavText,
 } from '@/lib/nav';
@@ -24,11 +24,9 @@ const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), [tabi
 const visibleFocusables = (root: HTMLElement | null) =>
   root ? Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(el => el.getClientRects().length > 0) : [];
 
-// Sections come from lib/nav.ts, the same list the footer renders. Built once
-// per page load: the upcoming-events links depend on today's date, and they
-// only ever render client-side (dropdowns and the mobile menu are closed in
-// the server render), so they can't cause a hydration mismatch.
-const groups = navGroups(upcomingEventLinks());
+// Sections come from lib/nav.ts, the same list the footer renders; the
+// footer-only sections (Get Involved) are left out of the header.
+const groups = navGroups().filter(g => !g.footerOnly);
 const noopSubscribe = () => () => {};
 
 interface NavProps {

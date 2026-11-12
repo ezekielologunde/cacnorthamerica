@@ -40,8 +40,10 @@ Related: [[Architecture]] · [[Features]] · [[Backend]]
   links; the header (`components/navigation/Nav.tsx`) and the footer
   (`components/sections/FooterExperience.tsx`) both render it so they cannot
   drift. Labels are keys in the `Nav` namespace of `messages/en.json` (links
-  built from site data, such as upcoming events, carry their own text); a link
-  can be limited to header or footer. Current-page highlighting uses
+  built from site data carry their own text); a link can be limited to header or
+  footer, and a whole section can be footer-only (`footerOnly`). The header
+  shows Who We Are, Ministries, Events, Media; one-off events are on the
+  Calendar and in the footer. Current-page highlighting uses
   `lib/navMatch.ts` (tested in `lib/navMatch.test.mjs`). The convention links
   follow `currentOrNextConvention()`.
 - **`ChildCareFields`** (`components/register/ChildCareFields.tsx`): the
