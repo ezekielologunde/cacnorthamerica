@@ -6,7 +6,8 @@
 // Exits 1 if any check fails. Plain Node script, no framework.
 import { readFileSync } from "node:fs";
 
-const raw = readFileSync(new URL("../lib/network.json", import.meta.url), "utf8");
+const norm = (s) => s.split("\r\n").join("\n"); // Git may convert line endings on Windows
+const raw = norm(readFileSync(new URL("../lib/network.json", import.meta.url), "utf8"));
 const net = JSON.parse(raw);
 
 let failures = 0;
@@ -38,8 +39,8 @@ check("no placeholder text left in values", !/TODO|TBD|lorem/i.test(raw));
 
 for (const other of process.argv.slice(2)) {
   let theirs = null;
-  try { theirs = readFileSync(other, "utf8"); } catch { /* reported below */ }
-  check(`copy is identical: ${other}`, theirs !== null && theirs === raw);
+  try { theirs = norm(readFileSync(other, "utf8")); } catch { /* reported below */ }
+  check(`copy is identical (ignoring line endings): ${other}`, theirs !== null && theirs === raw);
 }
 
 if (failures) {
