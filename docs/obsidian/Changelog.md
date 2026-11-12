@@ -12,13 +12,12 @@ Related: [[Project]] · [[Decisions]] · [[Features]] · [[Payments]] · [[Secur
 
 ## 2026-11-11 -- slimmer header nav + Messages from Ilorin
 
-- Header is now Who We Are, Ministries, Events, Media, Contact + Give pill +
-  convention CTA. Convention and Events & Media merged into Events (convention
-  register/schedule/visit, calendar, past conventions); Media is Watch Online,
-  Blog, Watchwords, Gallery. Golden Jubilee, Holy Land Pilgrimage, Ministers
-  Retreat and Hope For All Summit left the header (still on the Calendar; listed
-  in the footer only). Get Involved is footer-only (Give stays as the pill).
-  `NavGroup.footerOnly` added; `upcomingEventLinks` removed.
+- Header: Who We Are, Ministries, Convention, Events & Media, Store, Contact,
+  plus the Give pill and the convention CTA. Events & Media = Calendar & Events,
+  Golden Jubilee, Watch Online, Blog & News, Gallery. Watchwords, Holy Land
+  Pilgrimage, Ministers Retreat, Hope For All Summit, Serve and Forms are no
+  longer header items (footer / own pages only). `NavGroup.footerOnly` added
+  (Get Involved is footer-only); `upcomingEventLinks` removed.
 - Blog sidebar: "Messages from Ilorin" (`components/blog/IlorinMessagesWidget.tsx`,
   data in `lib/ilorinMessages.ts`): Pastor R.T. Owoseni's latest Spotify-matched
   messages, link-out only (canonical stays on the Ilorin site). Pastor Owoseni

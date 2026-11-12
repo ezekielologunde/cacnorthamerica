@@ -53,14 +53,15 @@ export const conventionCtaHref = nextConvention.registrationUrl ?? nextConventio
 const internalReg = nextConvention.registrationUrl?.startsWith("/") ? nextConvention.registrationUrl : undefined;
 export const youthRegisterHref = internalReg ? `${internalReg}/youth` : "/youth#register";
 
-/** Every /events/* page (the current and past conventions, Golden Jubilee-era
- *  gatherings, the pilgrimage, ministers' retreat, summits) is part of Events. */
-const isEventPage = (p: string) => p.startsWith("/events/");
+/** Past years' convention pages (/events/cacna-2026) belong to Convention;
+ *  every other /events/* page (Golden Jubilee-era gatherings, the pilgrimage,
+ *  ministers' retreat, summits) belongs to Events & Media. */
+const isConventionPage = (p: string) => /^\/events\/cacna-\d{4}(\/|$)/.test(p);
 
 /** Every section, in menu order. The header shows Who We Are, Ministries,
- *  Events and Media; one-off events (Golden Jubilee, Holy Land Pilgrimage,
- *  Ministers Retreat, Hope For All Summit) live on the Calendar and are
- *  listed individually in the footer only. */
+ *  Convention, Events & Media, then Store and Contact as plain links and Give
+ *  as a pill. Watchwords, the Holy Land Pilgrimage and other one-off events,
+ *  and Forms live on their own pages and in the footer only. */
 export function navGroups(): NavGroup[] {
   return [
     {
@@ -99,10 +100,10 @@ export function navGroups(): NavGroup[] {
       ],
     },
     {
-      id: "events",
-      label: key("events"),
-      href: "/calendar",
-      match: isEventPage,
+      id: "convention",
+      label: key("convention"),
+      href: nextConvention.href,
+      match: isConventionPage,
       links: [
         {
           href: conventionCtaHref,
@@ -113,36 +114,38 @@ export function navGroups(): NavGroup[] {
         { href: youthRegisterHref, label: key("youthRegister"), desc: key("youthRegisterDesc") },
         { href: `${nextConvention.href}/schedule`, label: key("schedule"), desc: key("scheduleDesc") },
         { href: "/plan-your-visit", label: key("planYourVisit"), desc: key("planYourVisitDesc") },
-        { href: "/calendar", label: key("calendarEvents"), desc: key("calendarEventsDesc") },
         { href: "/archive", label: key("pastConventions"), desc: key("pastConventionsDesc") },
         { href: "/about#convention", label: key("aboutConvention"), only: "footer" },
-        { href: "/golden-jubilee", label: key("goldenJubilee"), only: "footer" },
+      ],
+    },
+    {
+      id: "events-media",
+      label: key("eventsMedia"),
+      href: "/calendar",
+      match: (p) => p.startsWith("/events/"),
+      links: [
+        { href: "/calendar", label: key("calendarEvents"), desc: key("calendarEventsDesc") },
+        { href: "/golden-jubilee", label: key("goldenJubilee"), desc: key("goldenJubileeDesc") },
+        { href: "/online", label: key("watchOnline"), desc: key("watchOnlineDesc") },
+        { href: "/blog", label: key("blogNews"), desc: key("blogNewsDesc") },
+        { href: "/gallery", label: key("gallery"), desc: key("galleryDesc") },
+        { href: "/watchwords", label: key("watchwords"), only: "footer" },
         { href: "/events/pilgrimage-2026", label: { literal: "Holy Land Pilgrimage" }, only: "footer" },
         { href: "/events/ministers-retreat-2027", label: { literal: "Ministers Retreat" }, only: "footer" },
         { href: "/events/hope-for-all-summit-2026", label: { literal: "Hope For All Summit" }, only: "footer" },
       ],
     },
     {
-      id: "media",
-      label: key("media"),
-      href: "/online",
-      links: [
-        { href: "/online", label: key("watchOnline"), desc: key("watchOnlineDesc") },
-        { href: "/blog", label: key("blogNews"), desc: key("blogNewsDesc") },
-        { href: "/watchwords", label: key("watchwords"), desc: key("watchwordsDesc") },
-        { href: "/gallery", label: key("gallery"), desc: key("galleryDesc") },
-      ],
-    },
-    {
-      // Give has its own pill in the header; the rest live in the footer.
+      // Give and Store are header items on their own; Serve and Forms are
+      // reachable from the footer.
       id: "get-involved",
       label: key("getInvolved"),
-      href: "/forms",
+      href: "/giving",
       footerOnly: true,
       links: [
         { href: "/giving", label: key("give"), desc: key("giveDesc") },
-        { href: "/serve", label: key("serveConvention"), desc: key("serveConventionDesc") },
         { href: "/store", label: key("store"), desc: key("storeDesc") },
+        { href: "/serve", label: key("serveConvention"), desc: key("serveConventionDesc") },
         { href: "/forms", label: key("allForms"), desc: key("allFormsDesc") },
       ],
     },
@@ -150,6 +153,7 @@ export function navGroups(): NavGroup[] {
 }
 
 /** Top-level header links that have no dropdown. */
+export const NAV_STORE: NavLink = { href: "/store", label: key("store") };
 export const NAV_CONTACT: NavLink = { href: "/contact", label: key("contact") };
 
 /** The one secondary action that stays on the header bar beside the

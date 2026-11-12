@@ -10,7 +10,7 @@ import { haptic } from '@/lib/haptics';
 import { isConventionPast } from '@/lib/conventions';
 import {
   navGroups, linksFor, navText, isExternalHref,
-  nextConvention, conventionCtaHref, NAV_CONTACT, NAV_GIVE,
+  nextConvention, conventionCtaHref, NAV_CONTACT, NAV_STORE, NAV_GIVE,
   type NavLink, type NavText,
 } from '@/lib/nav';
 import { activeGroupId, isCurrentPage, isWithin } from '@/lib/navMatch';
@@ -48,6 +48,7 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
   const conventionCtaLabel = t('conventionCta', { year: nextConvention.year });
   const activeId = activeGroupId(pathname, groups);
   const contactActive = isWithin(pathname, NAV_CONTACT.href);
+  const storeActive = isWithin(pathname, NAV_STORE.href);
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -384,6 +385,12 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
           })}
 
           <li style={{ display: 'flex' }}>
+            <Link href={NAV_STORE.href} style={topLinkStyle(storeActive)} aria-current={isCurrentPage(pathname, NAV_STORE.href) ? 'page' : undefined}>
+              {say(NAV_STORE.label)}
+            </Link>
+          </li>
+
+          <li style={{ display: 'flex' }}>
             <Link href={NAV_CONTACT.href} style={topLinkStyle(contactActive)} aria-current={isCurrentPage(pathname, NAV_CONTACT.href) ? 'page' : undefined}>
               {say(NAV_CONTACT.label)}
             </Link>
@@ -521,6 +528,17 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
                 </div>
               );
             })}
+            <div style={{ borderBottom: mobileDivider }}>
+              <Link
+                href={NAV_STORE.href}
+                onClick={() => setOpen(false)}
+                style={mobileTopStyle(storeActive)}
+                aria-current={isCurrentPage(pathname, NAV_STORE.href) ? 'page' : undefined}
+              >
+                {storeActive && <span aria-hidden style={{ width: 8, height: 8, borderRadius: '50%', background: accent, flexShrink: 0 }} />}
+                {say(NAV_STORE.label)}
+              </Link>
+            </div>
             <div style={{ borderBottom: mobileDivider }}>
               <Link
                 href={NAV_CONTACT.href}
