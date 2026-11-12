@@ -42,6 +42,7 @@ const ADENODI: BlogAuthor = { name: "Pastor David Olusegun Adenodi, Ph.D.", role
 /** Publishers for the posts written in code, by slug. Only people the post itself
  *  names as its speaker or signatory; anything else falls back to "CACNA". */
 export const POST_AUTHORS: Record<string, BlogAuthor[]> = {
+  "dealing-with-anger-pastor-owoseni": [{ name: "Pastor R.T. Owoseni", role: "District Superintendent, CAC Salvation Centre, Ilorin" }],
   "tribute-to-late-pastor-abraham-adegoke-oyedeji": [{ name: "The Oyedeji Family", role: "With CAC First in the Americas" }],
   "golden-jubilee-message-from-the-president": [OLADELE],
   "cacna-2026-presidents-message": [OLADELE],

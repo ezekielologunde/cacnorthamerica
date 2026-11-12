@@ -111,12 +111,13 @@ function renderBody(text: string): ReactNode[] {
   function parseInline(raw: string): ReactNode[] {
     const nodes: ReactNode[] = [];
     let cursor = 0;
-    const combined = /\*\*(.+?)\*\*|_(.+?)_/g;
+    const combined = /\*\*(.+?)\*\*|_(.+?)_|\[([^\]]+)\]\((https:\/\/[^)\s]+)\)/g;
     let m: RegExpExecArray | null;
     while ((m = combined.exec(raw)) !== null) {
       if (m.index > cursor) nodes.push(raw.slice(cursor, m.index));
       if (m[1] !== undefined) nodes.push(<strong key={m.index}>{m[1]}</strong>);
       else if (m[2] !== undefined) nodes.push(<em key={m.index}>{m[2]}</em>);
+      else if (m[3] !== undefined) nodes.push(<a key={m.index} href={m[4]} target="_blank" rel="noopener noreferrer">{m[3]}</a>);
       cursor = m.index + m[0].length;
     }
     if (cursor < raw.length) nodes.push(raw.slice(cursor));

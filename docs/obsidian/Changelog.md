@@ -10,6 +10,16 @@ tags: [project/cacnorthamerica]
 
 Related: [[Project]] · [[Decisions]] · [[Features]] · [[Payments]] · [[Security]]
 
+## 2026-11-12 -- one Ilorin message as a full blog story
+
+- New post "Dealing with Anger" (`dealing-with-anger-pastor-owoseni`): one of
+  Pastor R.T. Owoseni's Sunday messages (CAC Salvation Centre, Ilorin), written
+  from the message's own notes, bylined to him, linking to the episode on
+  Spotify, his Spotify show, and the full message on the Ilorin site (the
+  canonical home of the text). He authorized the feature.
+- Removed the "Messages from Ilorin" sidebar card and `lib/ilorinMessages.ts`.
+- Blog bodies now render `[text](https://...)` links (https only, new tab).
+
 ## 2026-11-11 -- slimmer header nav + Messages from Ilorin
 
 - Header: Who We Are, Ministries, Convention, Events & Media, Store, Contact,
@@ -18,11 +28,8 @@ Related: [[Project]] · [[Decisions]] · [[Features]] · [[Payments]] · [[Secur
   Pilgrimage, Ministers Retreat, Hope For All Summit, Serve and Forms are no
   longer header items (footer / own pages only). `NavGroup.footerOnly` added
   (Get Involved is footer-only); `upcomingEventLinks` removed.
-- Blog sidebar: "Messages from Ilorin" (`components/blog/IlorinMessagesWidget.tsx`,
-  data in `lib/ilorinMessages.ts`): Pastor R.T. Owoseni's latest Spotify-matched
-  messages, link-out only (canonical stays on the Ilorin site). Pastor Owoseni
-  authorized the feature (2026-11-11). The data is a hand-copied excerpt of the
-  salvation-center repo's `lib/ilorinSermons.ts`; refresh when new ones post.
+- Pastor R.T. Owoseni's Ilorin messages are featured as a normal blog story
+  (see 2026-11-12 below), not as a sidebar card.
 
 ## 2026-11-11 -- Google Consent Mode v2 for Analytics and ads (PR 163)
 

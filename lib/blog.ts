@@ -931,6 +931,26 @@ const RAW_POSTS: Omit<BlogPost, "categoryColor" | "accent">[] = [
       "Glory Be to God!"
     ]
   },
+  {
+    slug: "dealing-with-anger-pastor-owoseni",
+    title: "Dealing with Anger",
+    excerpt:
+      "A Sunday message from Pastor R.T. Owoseni of CAC Salvation Centre, Ilorin, on Ecclesiastes 7:9 and Proverbs 14 — why anger has to be dealt with, and why a child of God does not act while angry.",
+    date: "September 6, 2026",
+    dateIso: "2026-09-06",
+    category: "Reflection",
+    readTime: "2 min read",
+    body: [
+      "_\"Be not hasty in thy spirit to be angry: for anger resteth in the bosom of fools.\"_ — Ecclesiastes 7:9",
+      "This Sunday message comes from Pastor R.T. Owoseni, District Superintendent of Christ Apostolic Church Salvation Centre, Ilorin, Nigeria. His text was Ecclesiastes 7:9, with Proverbs 14:17 and 14:29 and 1 Samuel 9:18.",
+      "**Anger is an emotion, and God placed it in man for a reason.** It was given to show displeasure toward the things of the devil. Anger is not in itself a sin. The trouble begins when it is aimed at the wrong target or left to run.",
+      "**Anger has to be dealt with, because anger itself is a destructive spirit.** Left alone, it grows. Solomon is blunt about where it settles: \"anger resteth in the bosom of fools\" (Ecclesiastes 7:9). He also says, \"He that is soon angry dealeth foolishly\" (Proverbs 14:17), and \"He that is slow to wrath is of great understanding: but he that is hasty of spirit exalteth folly\" (Proverbs 14:29).",
+      "**Anger has the power to destroy a person's relationship with God.** What starts as a flash of temper can put distance between us and the Lord.",
+      "**As children of God, we are not expected to act while we are angry.** Feeling the emotion is one thing. Acting on it is another. Pastor Owoseni's point is that we are called to pause before we say or do anything.",
+      "**When anger takes control, it is impossible to act godly.** That is why it has to be dealt with, and not excused.",
+      "**Listen to the full message** on Spotify: [Dealing with Anger, by Pastor R.T. Owoseni](https://open.spotify.com/episode/05sccGbnpxx4N4okmm6nvo). The message and its notes are also on the CAC Salvation Centre Ilorin site: [read it there](https://www.cacsalvationcenter.org/ilorin/blog/2026-09-06-dealing-with-anger). More of his messages are on his [Spotify show](https://open.spotify.com/show/2VBBGHUo6nMITGmGGrEUoM).",
+    ],
+  },
 ];
 
 export const CATEGORY_COLOR: Record<PostCategory, string> = {
