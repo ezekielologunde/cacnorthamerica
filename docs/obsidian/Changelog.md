@@ -10,6 +10,15 @@ tags: [project/cacnorthamerica]
 
 Related: [[Project]] · [[Decisions]] · [[Features]] · [[Payments]] · [[Security]]
 
+## 2026-11-12 -- more Owoseni messages with embedded Spotify players
+
+- Five more posts from Pastor R.T. Owoseni's Sunday messages (The Unchanging
+  God, Confronting Your Giants, Attracting Great Mercy, Obtaining God's
+  Promises by Faith, Growing in Faith), same pattern as "Dealing with Anger".
+- New `BlogPost.spotify` field: renders Spotify's embedded player above the
+  text (only open.spotify.com episode URLs). CSP `frame-src` now allows
+  https://open.spotify.com.
+
 ## 2026-11-12 -- one Ilorin message as a full blog story
 
 - New post "Dealing with Anger" (`dealing-with-anger-pastor-owoseni`): one of

@@ -128,6 +128,26 @@ function renderBody(text: string): ReactNode[] {
   return parts;
 }
 
+/** Spotify's own embedded player for one episode. Only open.spotify.com
+ *  episode URLs are accepted; anything else renders nothing. */
+function SpotifyEmbed({ episodeUrl, title }: { episodeUrl: string; title: string }) {
+  const id = /^https:\/\/open\.spotify\.com\/episode\/([A-Za-z0-9]+)/.exec(episodeUrl)?.[1];
+  if (!id) return null;
+  return (
+    <div className="ed-post-col" style={{ marginBottom: 28 }}>
+      <iframe
+        src={`https://open.spotify.com/embed/episode/${id}`}
+        title={title}
+        width="100%"
+        height="152"
+        style={{ border: 0, borderRadius: 12 }}
+        allow="encrypted-media"
+        loading="lazy"
+      />
+    </div>
+  );
+}
+
 function BodyParagraph({ text, first }: { text: string; first?: boolean }) {
   return <p className={first ? "ed-post-p ed-post-lead" : "ed-post-p"}>{renderBody(text)}</p>;
 }
@@ -264,6 +284,8 @@ export default async function BlogSlugPage({
           </p>
         </div>
       )}
+
+      {post.spotify && <SpotifyEmbed episodeUrl={post.spotify.episodeUrl} title={post.spotify.title} />}
 
       <div className="ed-post-col ed-post-body">
         <article>
