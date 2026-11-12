@@ -1,0 +1,84 @@
+{
+  "_comment": "Source of truth for the CAC web family. Copied byte-for-byte into each site repo (cacnorthamerica, cac-salvation-center, yyam). Edit it in ONE place, copy it everywhere, then run: node scripts/check-network.mjs <path to another copy>. Only facts already stated on the sites belong here; use null where a fact is not confirmed yet.",
+  "version": 1,
+  "updated": "2026-11-11",
+  "sites": [
+    {
+      "id": "cacna",
+      "name": "Christ Apostolic Church North America",
+      "shortName": "CACNA",
+      "url": "https://cacna.org",
+      "role": "The regional hub for CAC in the United States, Canada and South America: churches, leaders, events, giving and the Annual Convention.",
+      "covers": ["CACNA region (US, Canada, South America)", "regional leaders", "events and calendar", "giving"],
+      "doesNotCover": ["CAC outside the Americas (see cacworld)", "individual congregation pages (see their own sites)"]
+    },
+    {
+      "id": "yyam",
+      "name": "CACNA YYAM",
+      "shortName": "YYAM",
+      "url": "https://yyam.cacna.org",
+      "role": "The Youth & Young Adult Ministry site of CACNA, part of cacna.org.",
+      "covers": ["Youth & Young Adult Ministry"],
+      "doesNotCover": ["regional news and giving (see cacna)"]
+    },
+    {
+      "id": "salvation-center",
+      "name": "Christ Apostolic Church Salvation Center",
+      "shortName": "CAC Salvation Center",
+      "url": "https://www.cacsalvationcenter.org",
+      "role": "The Salvation Center congregation: services, devotionals, messages, blog, and its Ilorin and Salvation City pages.",
+      "covers": ["Salvation Center services and online church", "Hope for Today devotional and podcast", "Ilorin district and Pastor Owoseni", "Salvation City"],
+      "doesNotCover": ["CACNA regional business (see cacna)"]
+    },
+    {
+      "id": "cacworld",
+      "name": "Christ Apostolic Church Worldwide",
+      "shortName": "CAC Worldwide",
+      "url": "https://cacworld.org",
+      "role": "The worldwide body of Christ Apostolic Church. External site, not ours.",
+      "external": true
+    }
+  ],
+  "pages": [
+    { "id": "ilorin", "site": "salvation-center", "path": "/ilorin", "name": "C.A.C Salvation Centre Ilorin" },
+    { "id": "salvation-city", "site": "salvation-center", "path": "/salvationcity", "name": "Salvation City" },
+    { "id": "devotional", "site": "salvation-center", "path": "/devotional", "name": "Hope for Today devotional" },
+    { "id": "online", "site": "salvation-center", "path": "/online", "name": "Watch and listen online" }
+  ],
+  "people": [
+    {
+      "id": "owoseni",
+      "name": "Pastor R.T. Owoseni",
+      "jobTitle": "District Superintendent",
+      "worksFor": "C.A.C Salvation Centre, Ilorin",
+      "profilePage": "ilorin",
+      "photo": "/images/pastor-owoseni.jpg",
+      "bio": null,
+      "sameAs": ["https://open.spotify.com/show/2VBBGHUo6nMITGmGGrEUoM"]
+    }
+  ],
+  "media": [
+    {
+      "id": "ilorin-spotify",
+      "type": "PodcastSeries",
+      "name": "Pastor Owoseni's messages (Ilorin)",
+      "url": "https://open.spotify.com/show/2VBBGHUo6nMITGmGGrEUoM",
+      "host": "owoseni",
+      "site": "salvation-center"
+    },
+    {
+      "id": "hope-for-today",
+      "type": "PodcastSeries",
+      "name": "Hope for Today",
+      "url": "https://open.spotify.com/show/0wFUgSZq4CuVuM0M9gRFUw",
+      "site": "salvation-center"
+    },
+    {
+      "id": "salvation-center-youtube",
+      "type": "YouTubeChannel",
+      "name": "CAC Salvation Center on YouTube",
+      "url": "https://www.youtube.com/channel/UCoogH4HuVXSn4okSpRlsDQA",
+      "site": "salvation-center"
+    }
+  ]
+}
