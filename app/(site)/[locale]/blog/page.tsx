@@ -9,7 +9,6 @@ import { getLatestCacWorldNews, type CacWorldNewsItem } from "@/lib/cacWorldNews
 import { GIVING_CAMPAIGNS, type GivingCampaign } from "@/lib/giving";
 import { BylineCompact } from "@/components/blog/Byline";
 import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
-import { IlorinMessagesWidget } from "@/components/blog/IlorinMessagesWidget";
 import Link from "next/link";
 import { Clock, ArrowRight, Globe2, Landmark } from "lucide-react";
 import type { Metadata } from "next";
@@ -375,7 +374,6 @@ export default async function BlogPage({
         <aside className="ed-side" aria-label="Also from CACNA">
           <UpcomingEventWidget />
           <ConventionAdWidget />
-          <IlorinMessagesWidget />
           {cacWorldNews[0] && <CacWorldTeaserWidget item={cacWorldNews[0]} />}
           <GivingAdWidget campaign={givingCampaign} />
         </aside>
