@@ -68,6 +68,24 @@ for (const p of ["/blog/confirmation", "/confirmation", "/blog/giving/cancel-pol
   check(`query kept on ${p}`, !isSecretUrlPath(p));
 }
 
+// Consent Mode: denied by default in the EEA/UK/CH only, and set before any config.
+{
+  const dl = [];
+  new Function("window", "location", "dataLayer", gtagInitScript(["G-TEST"]))({}, { pathname: "/", origin: "https://cacna.org" }, dl);
+  const calls = dl.map((a) => [...a]);
+  const first = calls.findIndex((c) => c[0] === "consent" && c[1] === "default");
+  const cfg = calls.findIndex((c) => c[0] === "config");
+  const d = calls[first]?.[2] ?? {};
+  check("consent default is set before the first config", first >= 0 && cfg > first);
+  check("consent default denies all four signals",
+    ["ad_storage", "ad_user_data", "ad_personalization", "analytics_storage"].every((k) => d[k] === "denied"));
+  check("consent default is scoped to regions, not global", Array.isArray(d.region) && d.region.length > 0);
+  check("consent default covers EEA, UK and Switzerland",
+    ["DE", "FR", "IE", "GB", "CH", "NO", "IS", "LI"].every((r) => d.region?.includes(r)));
+  check("consent default leaves the US and Canada alone", !["US", "CA", "NG", "BR"].some((r) => d.region?.includes(r)));
+  check("consent default waits briefly for Google's message to update", d.wait_for_update === 500);
+}
+
 // Vercel Analytics / Speed Insights beforeSend.
 const scrub = (url) => scrubTelemetryUrl({ type: "pageview", url }).url;
 check("telemetry drops ?t= on registration confirmation",

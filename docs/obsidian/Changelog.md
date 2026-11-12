@@ -2,13 +2,19 @@
 project: cacnorthamerica
 type: changelog
 status: active
-last_updated: 2026-11-08
+last_updated: 2026-11-11
 tags: [project/cacnorthamerica]
 ---
 
 # Changelog
 
 Related: [[Project]] · [[Decisions]] · [[Features]] · [[Payments]] · [[Security]]
+
+## 2026-11-11 -- Google Consent Mode v2 for Analytics and ads (PR 163)
+
+- `gtagInitScript()` now sets consent defaults before any `config` call: all four Google storage signals denied for the EEA, UK and Switzerland, granted elsewhere; `wait_for_update: 500`.
+- On `/blog`, Google's AdSense consent message (once published in the AdSense console) upgrades consent; other pages in those regions stay cookieless. The console step is still open: [[Tasks]]. Details: [[Security]].
+- Six checks added to `scripts/check-adsense.mjs`.
 
 ## 2026-11-08 -- round 2: children's care details, shared nav, content refresh (PR 160)
 
