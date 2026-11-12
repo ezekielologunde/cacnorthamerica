@@ -20,7 +20,8 @@ const isHttps = (u) => { try { return new URL(u).protocol === "https:"; } catch 
 
 check("version is a positive integer", Number.isInteger(net.version) && net.version > 0);
 check("site ids are unique", unique(net.sites.map((s) => s.id)));
-check("page ids are unique", unique(net.pages.map((p) => p.id)));
+check("all five network sites are present",
+  ["cacna", "yyam", "salvation-center", "ilorin", "city"].every((id) => net.sites.some((s) => s.id === id)));
 check("every URL is https", [...net.sites, ...net.media].every((x) => isHttps(x.url)));
 check("no preview-host (vercel.app) URLs", ![...net.sites, ...net.media].some((x) => /vercel\.app/.test(x.url)));
 check("site URLs have no trailing slash", net.sites.every((s) => !s.url.endsWith("/")));
@@ -28,10 +29,9 @@ check("cacna is on cacna.org and yyam under it",
   net.sites.find((s) => s.id === "cacna")?.url === "https://cacna.org" &&
   net.sites.find((s) => s.id === "yyam")?.url === "https://yyam.cacna.org");
 check("every site has a name and a role", net.sites.every((s) => s.name && s.role));
-check("every page belongs to a known site and has a leading-slash path",
-  net.pages.every((p) => net.sites.some((s) => s.id === p.site) && p.path.startsWith("/")));
-check("every person's profile page exists",
-  net.people.every((p) => !p.profilePage || net.pages.some((g) => g.id === p.profilePage)));
+const known = (id) => net.sites.some((s) => s.id === id);
+check("every relationship joins two known sites", net.relationships.every((r) => known(r.from) && known(r.to) && r.from !== r.to));
+check("every person works for a known site", net.people.every((p) => known(p.worksFor)));
 check("every media host is a known person",
   net.media.every((m) => !m.host || net.people.some((p) => p.id === m.host)));
 check("every media item belongs to a known site", net.media.every((m) => net.sites.some((s) => s.id === m.site)));
