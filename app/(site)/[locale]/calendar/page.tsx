@@ -47,7 +47,7 @@ function evPlace(id: string) {
 
 function evOffers(id: string) {
   if (id === "holy-land-pilgrimage-2026")
-    return { "@type": "Offer", price: "4549", priceCurrency: "USD", availability: "https://schema.org/InStock", url: `${SITE_URL}/events/pilgrimage-2026` };
+    return undefined; // price unconfirmed after postponement — no Offer until it is
   return { "@type": "Offer", price: "0", priceCurrency: "USD", availability: "https://schema.org/InStock" };
 }
 
@@ -82,9 +82,9 @@ export default async function CalendarPage({
   const activeYear = currentOrNextConvention().year;
   const futureConventions = conventionYears.filter((cy) => cy.year !== activeYear);
 
-  const eventsJsonLd = upcomingSpecial.length > 0 ? {
+  const eventsJsonLd = upcomingSpecial.filter((e) => e.id !== "holy-land-pilgrimage-2026").length > 0 ? {
     "@context": "https://schema.org",
-    "@graph": upcomingSpecial.map((ev) => ({
+    "@graph": upcomingSpecial.filter((e) => e.id !== "holy-land-pilgrimage-2026").map((ev) => ({
       "@type": "Event",
       name: ev.title,
       description: ev.desc,
