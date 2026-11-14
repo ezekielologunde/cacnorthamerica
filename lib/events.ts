@@ -141,7 +141,7 @@ export const specialEvents: ChurchEvent[] = [
   {
     id: "holy-land-pilgrimage-2026",
     title: "Holy Land Pilgrimage (Postponed to May 2027)",
-    desc: "CACNA Latunde Region Pilgrimage to Israel & Egypt, originally planned for November 2–12, 2026, has been postponed to sometime in May 2027. Exact dates and the final price are still to be confirmed. Contact: info@cacnapilgrimage.org | @cacnapilgrimage",
+    desc: "CACNA Latunde Region Pilgrimage to Israel & Egypt, originally planned for November 2–12, 2026, has been postponed to sometime in May 2027. Exact dates and the final price are still to be confirmed. Contact: cacnapilgrimage@gmail.com | @cacnapilgrimage",
     dateLabel: "May 2027 (exact dates to be confirmed)", timeLabel: "Postponed · Departing JFK", month: "MAY", day: "TBA",
     // Placeholder: 1 May 2027 stands in for "sometime in May" until dates are confirmed.
     startLocal: "20270501T060000", endLocal: "20270501T230000",

@@ -7,7 +7,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, Flame, Waves, Landmark, Eye, ArrowLeft, Phone, Mail } from "lucide-react";
+import { MapPin, Flame, Waves, Landmark, Eye, ArrowLeft, Phone } from "lucide-react";
 import { specialEvents, isEventPast } from "@/lib/events";
 import { SITE, SITE_URL, breadcrumbJsonLd } from "@/lib/site";
 import { setRequestLocale } from "next-intl/server";
@@ -151,7 +151,7 @@ export default async function PilgrimagePage({
             {!isPast && (
             <Reveal delay={280}>
               <div className="mm-actions" style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
-                <a href="mailto:info@cacnapilgrimage.org?subject=Holy Land Pilgrimage — Update request" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(253,200,65,.4)" }}>
+                <a href="mailto:cacnapilgrimage@gmail.com?subject=Holy Land Pilgrimage — Update request" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(253,200,65,.4)" }}>
                   Contact the Team for Updates →
                 </a>
               </div>
@@ -294,11 +294,8 @@ export default async function PilgrimagePage({
             </p>
 
             <div style={{ display: "flex", flexWrap: "wrap", gap: 14, justifyContent: "center", marginBottom: 44 }}>
-              <a href="mailto:info@cacnapilgrimage.org?subject=Holy Land Pilgrimage — Update request" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "17px 32px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(253,200,65,.4)" }}>
+              <a href="mailto:cacnapilgrimage@gmail.com?subject=Holy Land Pilgrimage — Update request" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "17px 32px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(253,200,65,.4)" }}>
                 Email for Updates →
-              </a>
-              <a href="mailto:cacnapilgrimage@gmail.com" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(245,246,250,.08)", color: "var(--cream)", fontWeight: 700, fontSize: 15, padding: "17px 28px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(245,246,250,.18)" }}>
-                <Mail size={16} strokeWidth={2} aria-hidden /> Gmail
               </a>
             </div>
 
@@ -326,7 +323,7 @@ export default async function PilgrimagePage({
       )}
 
       <FooterExperience />
-      {!isPast && <MobileStickyCta href="mailto:info@cacnapilgrimage.org?subject=Holy Land Pilgrimage — Update request" label="Contact for updates" external={false} />}
+      {!isPast && <MobileStickyCta href="mailto:cacnapilgrimage@gmail.com?subject=Holy Land Pilgrimage — Update request" label="Contact for updates" external={false} />}
     </main>
   );
 }
