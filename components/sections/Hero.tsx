@@ -101,9 +101,9 @@ function useSlides(latestFromServer?: HeroPost): Slide[] {
       slides.push({
         key: "pilgrimage",
         eyebrow: "Holy Land Pilgrimage",
-        title: `Israel & Egypt, ${pilgrimage.dateLabel}`,
-        desc: "Flights, hotels & a private guide included · $4,549 · $500 deposit to register.",
-        cta: { label: "Reserve Your Spot", href: pilgrimage.href ?? "/calendar" },
+        title: "Israel & Egypt, postponed to May 2027",
+        desc: "New dates and final price to be confirmed. Contact the pilgrimage team for updates.",
+        cta: { label: "See the Update", href: pilgrimage.href ?? "/calendar" },
       });
     }
 

@@ -7,8 +7,8 @@ import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, Flame, Waves, Landmark, Eye, ArrowLeft, CalendarPlus, Download, Phone, Mail, CreditCard } from "lucide-react";
-import { specialEvents, googleCalUrl, icsDataUri, isEventPast } from "@/lib/events";
+import { MapPin, Flame, Waves, Landmark, Eye, ArrowLeft, Phone, Mail } from "lucide-react";
+import { specialEvents, isEventPast } from "@/lib/events";
 import { SITE, SITE_URL, breadcrumbJsonLd } from "@/lib/site";
 import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
@@ -17,9 +17,9 @@ export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "Holy Land Pilgrimage 2026 — CACNA Latunde Region",
+    title: "Holy Land Pilgrimage — Postponed to May 2027 | CACNA Latunde Region",
     description:
-      "CACNA Latunde Region Pilgrimage to Israel & Egypt, November 2–12, 2026. Led by Pastor Dr. H.O. Ilufoye & L/Evang. Bola Mustapha. From JFK, $4,549.",
+      "CACNA Latunde Region Pilgrimage to Israel & Egypt, postponed to May 2027. Exact dates and price to be confirmed. Led by Pastor Dr. H.O. Ilufoye & L/Evang. Bola Mustapha.",
     alternates: { canonical: `${SITE_URL}/events/pilgrimage-2026` },
   };
 }
@@ -81,16 +81,15 @@ export default async function PilgrimagePage({
     "@type": "Event",
     name: ev.title,
     description: ev.desc,
-    startDate: "2026-11-02T06:00:00-05:00",
-    endDate: "2026-11-12T23:00:00+02:00",
-    eventStatus: "https://schema.org/EventScheduled",
+    startDate: "2027-05",
+    previousStartDate: "2026-11-02",
+    eventStatus: "https://schema.org/EventPostponed",
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
     image: `${SITE_URL}/images/pilgrimage-2026-flyer.jpg`,
     url: `${SITE_URL}/events/pilgrimage-2026`,
     location: { "@type": "Place", name: "Israel & Egypt (departing JFK)", address: { "@type": "PostalAddress", addressCountry: "IL" } },
     organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },
     performer: { "@type": "Church", name: SITE.name, url: SITE_URL },
-    offers: { "@type": "Offer", price: "4549", priceCurrency: "USD", availability: "https://schema.org/InStock", url: `${SITE_URL}/events/pilgrimage-2026` },
   };
   return (
     <main id="main-content">
@@ -125,12 +124,12 @@ export default async function PilgrimagePage({
             <Reveal>
               <div style={{ display: "inline-flex", alignItems: "center", gap: 12, marginBottom: 28 }}>
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: 80, height: 80, borderRadius: 20, background: "linear-gradient(150deg,var(--gold),#B8860B)", boxShadow: "0 20px 44px rgba(253,200,65,.4)" }}>
-                  <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 12, color: "#fff", letterSpacing: 1 }}>NOV</span>
-                  <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 24, color: "#fff", lineHeight: 1 }}>2</span>
+                  <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 12, color: "#fff", letterSpacing: 1 }}>MAY</span>
+                  <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 24, color: "#fff", lineHeight: 1 }}>TBA</span>
                 </div>
                 <div>
-                  <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 44, color: "#fff", lineHeight: 1 }}>–12, 2026</div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "var(--gold)", letterSpacing: 1 }}>ISRAEL & EGYPT · DEPARTING JFK</div>
+                  <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 44, color: "#fff", lineHeight: 1 }}>2027</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "var(--gold)", letterSpacing: 1 }}>POSTPONED · DATES TO BE CONFIRMED</div>
                 </div>
               </div>
             </Reveal>
@@ -139,32 +138,22 @@ export default async function PilgrimagePage({
               <RevealText immediate>Holy Land</RevealText>
               <br />
               <RevealText immediate delay={0.12} style={{ color: "var(--red)" }}>
-                Pilgrimage 2026
+                Pilgrimage
               </RevealText>
             </h1>
 
             <Reveal delay={200}>
               <p style={{ fontSize: "clamp(16px,1.9vw,20px)", color: "rgba(245,246,250,.72)", lineHeight: 1.72, maxWidth: 600, margin: "0 0 44px", textWrap: "pretty" }}>
-                Walk where Jesus walked. Stand where Moses stood. Ten days in Israel and Egypt with your CAC family.
+                Walk where Jesus walked. Stand where Moses stood. The pilgrimage to Israel and Egypt has been postponed to sometime in May 2027. Exact dates and the final price are still to be confirmed.
               </p>
             </Reveal>
 
             {!isPast && (
             <Reveal delay={280}>
               <div className="mm-actions" style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
-                <a href="mailto:info@cacnapilgrimage.org?subject=Holy Land Pilgrimage 2026 — Registration" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(253,200,65,.4)" }}>
-                  Register — $500 Deposit →
+                <a href="mailto:info@cacnapilgrimage.org?subject=Holy Land Pilgrimage — Update request" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(253,200,65,.4)" }}>
+                  Contact the Team for Updates →
                 </a>
-                {ev && (
-                  <>
-                    <a href={googleCalUrl(ev)} target="_blank" rel="noopener noreferrer" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(245,246,250,.09)", color: "var(--cream)", fontWeight: 700, fontSize: 15, padding: "16px 28px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(245,246,250,.2)" }}>
-                      <CalendarPlus size={17} strokeWidth={2} aria-hidden /> Add to Calendar
-                    </a>
-                    <a href={icsDataUri(ev)} download="holy-land-pilgrimage-2026.ics" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(245,246,250,.06)", color: "rgba(245,246,250,.7)", fontWeight: 700, fontSize: 14, padding: "16px 22px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(245,246,250,.14)" }}>
-                      <Download size={16} strokeWidth={2} aria-hidden /> Apple / Outlook
-                    </a>
-                  </>
-                )}
               </div>
             </Reveal>
             )}
@@ -174,7 +163,7 @@ export default async function PilgrimagePage({
             <div style={{ position: "relative", borderRadius: 24, overflow: "hidden", boxShadow: "0 30px 70px rgba(0,0,0,.45)", border: "1px solid rgba(245,246,250,.12)" }}>
               <Image
                 src="/images/pilgrimage-2026-flyer.jpg"
-                alt="Christ Apostolic Church North America Latunde Region Pilgrimage — 2026 Special Pilgrimage to Israel and Egypt, November 2nd–12th, 2026"
+                alt="Christ Apostolic Church North America Latunde Region Pilgrimage — original 2026 flyer for the Special Pilgrimage to Israel and Egypt. Dates and price on this flyer have changed: the pilgrimage is postponed to May 2027"
                 width={1600}
                 height={1035}
                 style={{ width: "100%", height: "auto", display: "block" }}
@@ -270,47 +259,20 @@ export default async function PilgrimagePage({
           <Reveal delay={120}>
             <div>
               <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.5vw,42px)", letterSpacing: "-.6px", color: "var(--ink)", margin: "0 0 24px" }}>
-                Pricing &amp; payment
+                Price &amp; payment
               </h2>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 28 }}>
-                <div style={{ background: "var(--ink)", borderRadius: 18, padding: "22px 24px" }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "rgba(245,246,250,.5)", marginBottom: 6 }}>Total trip price</div>
-                  <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 48, color: "#fff", letterSpacing: "-1px", lineHeight: 1 }}>$4,549</div>
-                </div>
-                <div style={{ display: "flex", gap: 10 }}>
-                  <div style={{ flex: 1, background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 16, padding: "18px 20px" }}>
-                    <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 6 }}>Deposit to register</div>
-                    <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 28, color: "var(--ink)" }}>$500</div>
-                  </div>
-                  <div style={{ flex: 1, background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 16, padding: "18px 20px" }}>
-                    <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--red)", marginBottom: 4 }}>2nd payment</div>
-                    <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 28, color: "var(--ink)" }}>$2,000</div>
-                    <div style={{ fontSize: 12, color: "var(--ink-soft)", marginTop: 3 }}>Due by October 31</div>
-                  </div>
-                </div>
+              <div style={{ background: "var(--ink)", borderRadius: 18, padding: "22px 24px", marginBottom: 28 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "rgba(245,246,250,.5)", marginBottom: 6 }}>Total trip price</div>
+                <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 32, color: "#fff", letterSpacing: "-.5px", lineHeight: 1.1 }}>To be confirmed</div>
+                <p style={{ fontSize: 14, color: "rgba(245,246,250,.65)", margin: "10px 0 0", lineHeight: 1.6 }}>
+                  The pilgrimage is postponed to May 2027. The price and payment schedule on the original flyer no longer apply and will be announced once confirmed. Please do not send any payment until then.
+                </p>
               </div>
 
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 16, padding: "18px 20px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-                    <CreditCard size={18} color="var(--red)" strokeWidth={2} aria-hidden />
-                    <div style={{ fontWeight: 800, fontSize: 15, color: "var(--ink)" }}>Zelle Transfer</div>
-                  </div>
-                  <div style={{ fontSize: 14, color: "var(--ink-soft)", fontFamily: "monospace" }}>cacnapilgrimage@gmail.com</div>
-                </div>
-                <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 16, padding: "18px 20px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-                    <Landmark size={18} color="var(--red)" strokeWidth={2} aria-hidden />
-                    <div style={{ fontWeight: 800, fontSize: 15, color: "var(--ink)" }}>Truist Bank — Wire / Transfer</div>
-                  </div>
-                  <div style={{ fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.7 }}>
-                    Routing: <strong style={{ color: "var(--ink)", fontFamily: "monospace" }}>055003308</strong><br />
-                    Account: <strong style={{ color: "var(--ink)", fontFamily: "monospace" }}>1210006673307</strong>
-                  </div>
-                </div>
                 <p style={{ fontSize: 13, color: "var(--ink-soft)", margin: 0, lineHeight: 1.6 }}>
-                  Send all payment confirmations to L/Evang. Bola Mustapha or Pastor Dr. H.O. Ilufoye (contacts below).
+                  Questions about the postponement? Contact L/Evang. Bola Mustapha or Pastor Dr. H.O. Ilufoye (contacts below).
                 </p>
               </div>
             </div>
@@ -325,15 +287,15 @@ export default async function PilgrimagePage({
           <Reveal>
             <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 20 }}>Reserve your space</div>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(32px,5vw,68px)", letterSpacing: "-1.2px", color: "#fff", margin: "0 0 20px", lineHeight: 0.96 }}>
-              Seats are limited.
+              Stay in the loop.
             </h2>
             <p style={{ fontSize: "clamp(15px,1.8vw,18px)", color: "rgba(245,246,250,.65)", lineHeight: 1.72, marginBottom: 40 }}>
-              Send your $500 deposit and reach out to one of the contacts below to confirm your registration.
+              The pilgrimage has been postponed to May 2027 and the final price is not yet confirmed. Reach out to one of the contacts below for the latest update before sending any payment.
             </p>
 
             <div style={{ display: "flex", flexWrap: "wrap", gap: 14, justifyContent: "center", marginBottom: 44 }}>
-              <a href="mailto:info@cacnapilgrimage.org?subject=Holy Land Pilgrimage 2026 — Registration" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "17px 32px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(253,200,65,.4)" }}>
-                Email to Register →
+              <a href="mailto:info@cacnapilgrimage.org?subject=Holy Land Pilgrimage — Update request" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "17px 32px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(253,200,65,.4)" }}>
+                Email for Updates →
               </a>
               <a href="mailto:cacnapilgrimage@gmail.com" className="press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(245,246,250,.08)", color: "var(--cream)", fontWeight: 700, fontSize: 15, padding: "17px 28px", borderRadius: 999, textDecoration: "none", border: "1px solid rgba(245,246,250,.18)" }}>
                 <Mail size={16} strokeWidth={2} aria-hidden /> Gmail
@@ -364,7 +326,7 @@ export default async function PilgrimagePage({
       )}
 
       <FooterExperience />
-      {!isPast && <MobileStickyCta href="mailto:info@cacnapilgrimage.org?subject=Holy Land Pilgrimage 2026 — Registration" label="Register — $500 deposit" external={false} />}
+      {!isPast && <MobileStickyCta href="mailto:info@cacnapilgrimage.org?subject=Holy Land Pilgrimage — Update request" label="Contact for updates" external={false} />}
     </main>
   );
 }
