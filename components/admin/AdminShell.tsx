@@ -15,9 +15,12 @@ export default function AdminShell({
   const pathname = usePathname();
 
   // Close sidebar on route change (nav tap on mobile)
-  useEffect(() => {
+  // (adjust state during render rather than in an effect)
+  const [prevPath, setPrevPath] = useState(pathname);
+  if (prevPath !== pathname) {
+    setPrevPath(pathname);
     setOpen(false);
-  }, [pathname]);
+  }
 
   // Close sidebar when viewport grows past mobile breakpoint
   useEffect(() => {

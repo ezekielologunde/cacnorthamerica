@@ -22,6 +22,8 @@ export function SiteOverlays({ bannerAnn }: { bannerAnn?: BannerAnn | null }) {
 
     // 1a. DB banner announcement — takes priority over CACNA bar
     if (bannerAnn && !localStorage.getItem(`ann-db-${bannerAnn.id}`)) {
+      // Reading localStorage must wait until mount (SSR-safe), so this one-time sync is an effect.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDbBar(true);
       document.documentElement.style.setProperty('--bar-h', '64px');
     } else {
