@@ -81,7 +81,7 @@ function useSlides(latestFromServer?: HeroPost): Slide[] {
       desc: showRecap
         ? "The Convention Chairman's closing message of thanks to every speaker, volunteer, and family."
         : `${nextCy.theme ? `“${nextCy.theme}” · ` : ""}${dateRangeLabel(nextCy)} · ${CONVENTION_VENUE_SHORT}`,
-      flyer: !showRecap && nextCy.flyers ? { src: nextCy.flyers.programme, alt: nextCy.flyers.alt.programme, href: nextCy.href } : undefined,
+      flyer: !showRecap && nextCy.flyers ? { src: nextCy.flyers.leaders, alt: nextCy.flyers.alt.leaders, href: nextCy.href } : undefined,
       cta: showRecap
         ? { label: "Read the Closing Message", href: recapPost ? (recapPost.href ?? `/blog/${recapPost.slug}`) : featuredCy.href }
         : nextCy.registrationUrl && !hasExternalRegistrationUrl(nextCy)
@@ -260,8 +260,8 @@ export function Hero({ latestPost }: { latestPost?: HeroPost } = {}) {
             transition={{ duration: 0.5, ease: "easeOut" }}
           >
             {slide.flyer && (
-              <Link href={slide.flyer.href} aria-label="Open the convention page" style={{ display: "block", width: 96, margin: "0 auto 18px", borderRadius: 10, overflow: "hidden", border: "2px solid rgba(255,255,255,.35)", boxShadow: "0 10px 26px rgba(0,0,0,.45)" }}>
-                <Image src={slide.flyer.src} alt={slide.flyer.alt} width={96} height={120} sizes="96px" style={{ width: "100%", height: "auto", display: "block" }} />
+              <Link href={slide.flyer.href} aria-hidden="true" tabIndex={-1} style={{ display: "block", width: 96, margin: "0 auto 18px", borderRadius: 10, overflow: "hidden", border: "2px solid rgba(255,255,255,.35)", boxShadow: "0 10px 26px rgba(0,0,0,.45)" }}>
+                <Image src={slide.flyer.src} alt="" width={96} height={120} sizes="96px" style={{ width: "100%", height: "auto", display: "block" }} />
               </Link>
             )}
             {slide.inlineImage && (

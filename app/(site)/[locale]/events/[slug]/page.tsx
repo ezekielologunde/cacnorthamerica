@@ -46,11 +46,21 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { slug } = await params;
   const cy = findYear(slug);
   if (!cy) return {};
+  const title = `CACNA ${cy.year} Annual Convention — Christ Apostolic Church North America`;
+  const description = `${cy.theme ? `Theme: “${cy.theme}.” ` : "Save the date: "}The CACNA ${cy.year} National Convention runs ${dateRangeLabel(cy)} at ${CONVENTION_VENUE}. ${cy.registrationUrl ? "Registration is open." : "Full schedule and registration details are announced closer to the date."}`;
+  const url = `${SITE_URL}/events/cacna-${cy.year}`;
   return {
-    title: `CACNA ${cy.year} Annual Convention — Christ Apostolic Church North America`,
-    description: `${cy.theme ? `Theme: “${cy.theme}.” ` : "Save the date: "}The CACNA ${cy.year} National Convention runs ${dateRangeLabel(cy)} at ${CONVENTION_VENUE}. ${cy.registrationUrl ? "Registration is open." : "Full schedule and registration details are announced closer to the date."}`,
-    alternates: { canonical: `${SITE_URL}/events/cacna-${cy.year}` },
-    ...(cy.flyers ? { openGraph: { images: [{ url: cy.flyers.programme, width: 1122, height: 1402, alt: cy.flyers.alt.programme }] }, twitter: { card: "summary_large_image" as const, images: [cy.flyers.programme] } } : {}),
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      title, description, url, type: "website", siteName: SITE.name,
+      ...(cy.flyers ? { images: [{ url: cy.flyers.leaders, width: 1122, height: 1402, alt: cy.flyers.alt.leaders }] } : {}),
+    },
+    twitter: {
+      card: "summary_large_image" as const, title, description,
+      ...(cy.flyers ? { images: [cy.flyers.leaders] } : {}),
+    },
   };
 }
 
@@ -80,15 +90,13 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
     endDate: `${cy.endIso}T22:00:00-04:00`,
     eventStatus: "https://schema.org/EventScheduled",
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-    image: `${SITE_URL}${cy.flyers?.programme ?? "/images/logo.png"}`,
+    image: `${SITE_URL}${cy.flyers?.leaders ?? "/images/logo.png"}`,
     url: `${SITE_URL}${ev.href}`,
     location: { "@type": "Place", name: "CAC Village", address: { "@type": "PostalAddress", streetAddress: "14051 Stahley Rd", addressLocality: "Blue Ridge Summit", addressRegion: "PA", postalCode: "17214", addressCountry: "US" } },
     organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },
-    performer: cy.guests?.length
-      ? cy.guests.map((g) => ({ "@type": "Person", name: g.name, jobTitle: g.title }))
-      : { "@type": "Church", name: SITE.name, url: SITE_URL },
+    performer: { "@type": "Church", name: SITE.name, url: SITE_URL },
     ...(nowTiers.length
-      ? { offers: nowTiers.map((t) => ({ "@type": "Offer", name: CATEGORY_LABEL[t.category] ?? t.category, price: (t.priceCents / 100).toFixed(2), priceCurrency: "USD", availability: "https://schema.org/InStock", validThrough: t.endsOn, url: `${SITE_URL}${cy.registrationUrl ?? ev.href}` })) }
+      ? { offers: nowTiers.map((t) => ({ "@type": "Offer", name: CATEGORY_LABEL[t.category] ?? t.category, price: (t.priceCents / 100).toFixed(2), priceCurrency: "USD", availability: "https://schema.org/InStock", validThrough: t.endsOn, url: cy.registrationUrl ? (hasExternalRegistrationUrl(cy) ? cy.registrationUrl : `${SITE_URL}${cy.registrationUrl}`) : `${SITE_URL}${ev.href}` })) }
       : {}),
   };
 
@@ -114,7 +122,7 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
           </Reveal>
 
           <Reveal>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>{cy.registrationUrl ? "Registration open" : "Save the date"}</span>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>{cy.registrationUrl && !isPast ? "Registration open" : "Save the date"}</span>
           </Reveal>
 
           <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(40px,6vw,80px)", letterSpacing: "-0.03em", color: "#fff", margin: "16px 0 22px", lineHeight: 0.98, textWrap: "balance" }}>
@@ -171,8 +179,8 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
          </div>
           {cy.flyers && (
             <Reveal delay={160}>
-              <a href={cy.flyers.programme} target="_blank" rel="noopener noreferrer" aria-label="Open the full flyer in a new tab" style={{ display: "block", position: "relative", borderRadius: 24, overflow: "hidden", boxShadow: "0 30px 70px rgba(0,0,0,.45)", border: "1px solid rgba(245,246,250,.12)" }}>
-                <Image src={cy.flyers.programme} alt={cy.flyers.alt.programme} width={1122} height={1402} sizes="(max-width: 900px) 100vw, 520px" style={{ width: "100%", height: "auto", display: "block" }} preload />
+              <a href={cy.flyers.leaders} target="_blank" rel="noopener noreferrer" style={{ display: "block", position: "relative", borderRadius: 24, overflow: "hidden", boxShadow: "0 30px 70px rgba(0,0,0,.45)", border: "1px solid rgba(245,246,250,.12)" }}>
+                <Image src={cy.flyers.leaders} alt={cy.flyers.alt.leaders} width={1122} height={1402} sizes="(max-width: 900px) 100vw, 520px" style={{ width: "100%", height: "auto", display: "block" }} preload />
               </a>
             </Reveal>
           )}
@@ -213,9 +221,15 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
             {cy.registrationUrl && !isPast && (
               <Reveal delay={120}>
                 <div style={{ marginTop: 28 }}>
-                  <Link href={cy.registrationUrl} className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--ink)", color: "#fff", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none" }}>
-                    Register now →
-                  </Link>
+                  {hasExternalRegistrationUrl(cy) ? (
+                    <a href={cy.registrationUrl} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--ink)", color: "#fff", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none" }}>
+                      Register now →
+                    </a>
+                  ) : (
+                    <Link href={cy.registrationUrl} className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--ink)", color: "#fff", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none" }}>
+                      Register now →
+                    </Link>
+                  )}
                 </div>
               </Reveal>
             )}
@@ -304,21 +318,17 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
         </div>
       </section>
 
-      {/* Guest ministers */}
-      {cy.guests && cy.flyers && (
+      {/* Church leadership featured on the flyer */}
+      {cy.leaders && cy.flyers && (
         <section className="mm-sec" style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
           <div style={{ maxWidth: 1040, margin: "0 auto" }}>
             <Reveal style={{ marginBottom: 32 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--flame)" }}>Ministers</span>
-              <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.6vw,44px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 0" }}>Who will minister</h2>
-            </Reveal>
-            <Reveal>
-              <a href={cy.flyers.speakers} target="_blank" rel="noopener noreferrer" aria-label="Open the ministers flyer in a new tab" style={{ display: "block", maxWidth: 560, margin: "0 auto 36px", borderRadius: 24, overflow: "hidden", boxShadow: "0 24px 56px rgba(18,20,30,.22)" }}>
-                <Image src={cy.flyers.speakers} alt={cy.flyers.alt.speakers} width={1122} height={1402} sizes="(max-width: 600px) 100vw, 560px" style={{ width: "100%", height: "auto", display: "block" }} />
-              </a>
+              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--flame)" }}>Leadership</span>
+              <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.6vw,44px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 10px" }}>Convention leadership</h2>
+              <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.7, maxWidth: 640, margin: 0 }}>The church leaders featured on this year’s flyer.</p>
             </Reveal>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 16 }}>
-              {cy.guests.map((g, i) => (
+              {cy.leaders.map((g, i) => (
                 <Reveal key={g.name} delay={i * 60}>
                   <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, overflow: "hidden", height: "100%" }}>
                     <div style={{ position: "relative", aspectRatio: "1 / 1", background: "var(--line)" }}>
@@ -332,6 +342,19 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
                 </Reveal>
               ))}
             </div>
+            <Reveal>
+              <div style={{ marginTop: 44, display: "flex", flexWrap: "wrap", gap: 24, alignItems: "center", justifyContent: "center", background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 24, padding: "20px 22px" }}>
+                <a href={cy.flyers.programme} target="_blank" rel="noopener noreferrer" style={{ display: "block", width: "min(100%, 220px)", borderRadius: 14, overflow: "hidden", boxShadow: "0 14px 34px rgba(18,20,30,.2)" }}>
+                  <Image src={cy.flyers.programme} alt={cy.flyers.alt.programme} width={1122} height={1402} sizes="220px" style={{ width: "100%", height: "auto", display: "block" }} />
+                </a>
+                <div style={{ flex: "1 1 240px", maxWidth: 420 }}>
+                  <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20, color: "var(--ink)", marginBottom: 8 }}>The full flyer</div>
+                  <p style={{ fontSize: 14.5, color: "var(--ink-soft)", lineHeight: 1.65, margin: 0 }}>
+                    Registration fees, the daily programme and the convention contacts, as printed. Tap the flyer to open it full size, save it or share it.
+                  </p>
+                </div>
+              </div>
+            </Reveal>
           </div>
         </section>
       )}

@@ -39,12 +39,13 @@ export interface ConventionYear {
   /** Theme scripture shown beside the theme. */
   scripture?: { reference: string; text: string };
   /** The official flyers (web address already points at cacna.org). */
-  flyers?: { programme: string; speakers: string; alt: { programme: string; speakers: string } };
+  flyers?: { programme: string; leaders: string; alt: { programme: string; leaders: string } };
   /** The real printed day-by-day programme, Monday to Saturday in order. When
    *  set it replaces the generic recurring pattern in sessionsFor(). */
   programme?: { label: string; desc: string }[];
-  /** Guest ministers and officers named on the flyer. */
-  guests?: { name: string; title: string; photo: string }[];
+  /** Church leadership featured on the flyer. Flyers push the officials as
+   *  the main picture; that does not mean each of them ministers. */
+  leaders?: { name: string; title: string; photo: string }[];
   /** Convention officers to call for information. */
   officers?: { name: string; role: string; phone: string }[];
   /** Short notes printed on the flyer (free food, hotels, nightly revival). */
@@ -148,10 +149,10 @@ export const conventionYears: ConventionYear[] = [
     },
     flyers: {
       programme: "/images/cacna-2027-flyer-programme.jpg",
-      speakers: "/images/cacna-2027-flyer-speakers.jpg",
+      leaders: "/images/cacna-2027-flyer-leadership.jpg",
       alt: {
         programme: "CACNA 2027 Annual Convention flyer: theme Lessons from Israel’s History, registration fees, the daily programme for July 12–17, 2027, and the convention contacts.",
-        speakers: "CACNA 2027 Annual Convention flyer showing the guest ministers: Pastor T.A.O. Agbeja, Pastor E.O. Odejobi, Pastor S.O. Oladele, Prophet T.H.O. Oladeji and Pastor Dr. Oluwagbemiga Famojuro. July 12–17, 2027, CAC Village.",
+        leaders: "CACNA 2027 Annual Convention flyer featuring church leadership: Pastor T.A.O. Agbeja, Regional Superintendent; Pastor E.O. Odejobi; Pastor S.O. Oladele, President; Prophet T.H.O. Oladeji; and Pastor Dr. Oluwagbemiga Famojuro, Chairman of the Convention Committee. July 12–17, 2027, CAC Village.",
       },
     },
     programme: [
@@ -162,7 +163,7 @@ export const conventionYears: ConventionYear[] = [
       { label: "Convention Day & Empowerment Night", desc: "The Convention Day Program, followed by Empowerment Night." },
       { label: "Holy Communion & Departure", desc: "The Holy Communion Service, then departure." },
     ],
-    guests: [
+    leaders: [
       { name: "Pastor T.A.O. Agbeja", title: "Regional Superintendent, CAC North America", photo: "/images/pastor-agbeja-portrait.jpg" },
       { name: "Pastor E.O. Odejobi", title: "General Superintendent, CAC (Nigeria & Overseas)", photo: "/images/pastor-odejobi-portrait.jpg" },
       { name: "Pastor S.O. Oladele", title: "President, CAC (Nigeria & Overseas)", photo: "/images/pastor-oladele-portrait.jpg" },
