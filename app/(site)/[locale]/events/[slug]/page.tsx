@@ -46,8 +46,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { slug } = await params;
   const cy = findYear(slug);
   if (!cy) return {};
-  const title = `CACNA ${cy.year} Annual Convention — Christ Apostolic Church North America`;
-  const description = `${cy.theme ? `Theme: “${cy.theme}.” ` : "Save the date: "}The CACNA ${cy.year} National Convention runs ${dateRangeLabel(cy)} at ${CONVENTION_VENUE}. ${cy.registrationUrl ? "Registration is open." : "Full schedule and registration details are announced closer to the date."}`;
+  // Short enough to show in full in a result (under ~60 characters): brand + year, dates, place.
+  const title = `CACNA ${cy.year} Convention | ${dateRangeLabel(cy).replace(`, ${cy.year}`, "")} | Blue Ridge Summit, PA`;
+  // Key facts first (a result shows ~155 characters): who, when, where, registration; theme and address after.
+  const description = `The CACNA ${cy.year} National Convention of Christ Apostolic Church North America: ${dateRangeLabel(cy)} at CAC Village, Blue Ridge Summit, PA. ${cy.registrationUrl ? "Registration is open." : "Registration details are announced closer to the date."}${cy.theme ? ` Theme: “${cy.theme}.”` : ""} ${CONVENTION_VENUE}.`;
   const url = `${SITE_URL}/events/cacna-${cy.year}`;
   return {
     title,
@@ -90,7 +92,9 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
     endDate: `${cy.endIso}T22:00:00-04:00`,
     eventStatus: "https://schema.org/EventScheduled",
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-    image: `${SITE_URL}${cy.flyers?.leaders ?? "/images/logo.png"}`,
+    "@id": `${SITE_URL}${ev.href}#event`,
+    inLanguage: "en",
+    image: [`${SITE_URL}${cy.flyers?.leaders ?? "/images/logo.png"}`, `${SITE_URL}/images/logo.png`],
     url: `${SITE_URL}${ev.href}`,
     location: { "@type": "Place", name: "CAC Village", address: { "@type": "PostalAddress", streetAddress: "14051 Stahley Rd", addressLocality: "Blue Ridge Summit", addressRegion: "PA", postalCode: "17214", addressCountry: "US" } },
     organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },

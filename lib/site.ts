@@ -38,6 +38,7 @@ export const SITE = {
   sameAs: [
     "https://youtube.com/@cacnorthamericalatunderegi1330",
     "https://instagram.com/cacnorthamericalatunderegion",
+    "https://x.com/christ_north",
   ],
 } as const;
 
