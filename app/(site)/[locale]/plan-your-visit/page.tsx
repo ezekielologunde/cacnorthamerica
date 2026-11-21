@@ -9,6 +9,7 @@ import {
   groundTransportNote, budgetLodgingNote, remotenessNote, weather, packingChecklist, conventionDay, onTheGrounds,
   nearbyEssentials, remember, rules, rulesAttribution, type NearbyEssential,
 } from "@/lib/planYourVisit";
+import Link from "next/link";
 import { Navigation } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
@@ -68,7 +69,7 @@ export default async function PlanYourVisitPage({
           </h1>
           <Reveal delay={200}>
             <p style={{ fontSize: "clamp(16px,1.8vw,19px)", color: "rgba(245,246,250,.72)", lineHeight: 1.7, maxWidth: 620, margin: "0 auto" }}>
-              Getting to {CONVENTION_VENUE}, where to stay, and what to bring.
+              Getting to {CONVENTION_VENUE}, where to stay, and what to bring. Coming for the <Link href="/events/cacna-2027" style={{ color: "inherit", textDecoration: "underline" }}>CACNA 2027 Annual Convention</Link>?
             </p>
           </Reveal>
           <nav aria-label="On this page" className="ap-chips">
@@ -131,7 +132,7 @@ export default async function PlanYourVisitPage({
           <Reveal style={{ marginBottom: 28 }}>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.5vw,40px)", color: "var(--ink)", margin: "10px 0 8px" }}>{t("hotelsHeading")}</h2>
             <p style={{ fontSize: 14.5, color: "var(--ink-soft)" }}>
-              Mention the group code <strong style={{ color: "var(--ink)" }}>&ldquo;{HOTEL_GROUP_CODE}&rdquo;</strong> for the rates below. {budgetLodgingNote}
+              Mention the group code <strong style={{ color: "var(--ink)" }}>&ldquo;{HOTEL_GROUP_CODE}&rdquo;</strong> for the rates below. {budgetLodgingNote} Dates and registration for the 2027 convention are on the <Link href="/events/cacna-2027" style={{ color: "var(--red)", fontWeight: 700 }}>convention page</Link>.
             </p>
           </Reveal>
           <div style={{ borderRadius: 18, border: "1px solid var(--line)", overflow: "hidden" }}>

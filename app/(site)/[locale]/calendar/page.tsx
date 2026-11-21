@@ -314,7 +314,7 @@ export default async function CalendarPage({
         <Reveal style={{ maxWidth: 900, margin: "0 auto", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
           <div>
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,38px)", letterSpacing: "-.6px", color: "var(--cream)", margin: "0 0 8px" }}>The Annual Convention streams live.</h2>
-            <p style={{ fontSize: 15, color: "rgba(245,246,250,.6)", margin: 0 }}>On YouTube and Zoom.</p>
+            <p style={{ fontSize: 15, color: "rgba(245,246,250,.6)", margin: 0 }}>On YouTube and Zoom. Dates and registration for <Link href="/events/cacna-2027" style={{ color: "var(--gold)", textDecoration: "underline" }}>CACNA 2027</Link> are on the convention page.</p>
           </div>
           <Link href="/online" className="press btn-sheen" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 15, padding: "15px 28px", borderRadius: 999, textDecoration: "none", whiteSpace: "nowrap", flexShrink: 0, boxShadow: "0 10px 24px rgba(200,30,58,.35)" }}>
             Watch online →
