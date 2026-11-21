@@ -57,11 +57,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     alternates: { canonical: url },
     openGraph: {
       title, description, url, type: "website", siteName: SITE.name,
-      ...(cy.flyers ? { images: [{ url: cy.flyers.leaders, width: 1122, height: 1402, alt: cy.flyers.alt.leaders }] } : {}),
     },
     twitter: {
       card: "summary_large_image" as const, title, description,
-      ...(cy.flyers ? { images: [cy.flyers.leaders] } : {}),
     },
   };
 }
