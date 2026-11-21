@@ -13,7 +13,7 @@ export function PlanVisit() {
             Visit CAC Village.
           </h2>
           <p style={{ fontSize: 16, lineHeight: 1.7, opacity: .8, maxWidth: 440 }}>
-            CACNA&apos;s administrative office sits at CAC Village, also home to our Annual Convention. For Sunday worship and pastoral care, connect with a member church in your zone.
+            CACNA&apos;s administrative office sits at CAC Village, also home to our <Link href="/events/cacna-2027" style={{ color: 'inherit', textDecoration: 'underline' }}>Annual Convention</Link>. For Sunday worship and pastoral care, connect with a member church in your zone.
           </p>
           <Link href="/contact" className="hm-btn-block" style={{
             display: 'inline-flex', alignItems: 'center', gap: 10,

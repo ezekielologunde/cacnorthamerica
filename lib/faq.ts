@@ -7,7 +7,13 @@
 // `local` notes are CACNA's own pointers for readers in North America and
 // link only to internal routes.
 
+import { CONVENTION_VENUE, conventionYears, dateRangeLabel } from "@/lib/conventions";
+
 export const FAQ_SOURCE_URL = "https://cacworld.org/";
+
+// The 2027 convention entry in lib/conventions.ts. Dates and venue below are
+// read from it so these answers cannot drift from the event page.
+const CONVENTION_2027 = conventionYears.find((cy) => cy.year === 2027)!;
 
 export type FaqBlock =
   | { kind: "p"; text: string }
@@ -99,6 +105,88 @@ export const FAQ_GROUPS: FaqGroup[] = [
         answer: [
           { kind: "p", text: "Its research and development (R&D) department draws on technology and figures from the 2024 census when planning outreach. That lets the church direct resources efficiently: toward areas where membership has fallen, or toward places that most need a new church." },
         ],
+      },
+    ],
+  },
+  {
+    title: "The 2027 Annual Convention",
+    items: [
+      {
+        id: "convention-2027-dates",
+        question: "When is the CACNA 2027 Annual Convention?",
+        answer: [
+          // Source: lib/conventions.ts, conventionYears entry year 2027, fields startIso "2027-07-12" and
+          // endIso "2027-07-17" (via dateRangeLabel); six days Monday to Saturday per the same entry's
+          // `programme` array (six items) and the "always a Monday/Saturday" note on startIso/endIso.
+          { kind: "p", text: `The CACNA 2027 Annual Convention runs ${dateRangeLabel(CONVENTION_2027)}, six days from Monday to Saturday.` },
+        ],
+        local: {
+          text: "Details for the year are on the convention page.",
+          links: [{ label: "CACNA 2027 Convention", href: "/events/cacna-2027" }],
+        },
+      },
+      {
+        id: "convention-2027-venue",
+        question: "Where is the CACNA 2027 Annual Convention held?",
+        answer: [
+          // Source: lib/conventions.ts, CONVENTION_VENUE ("always held at the same village"); the 2027
+          // entry sets no `venue` override, so the default applies.
+          { kind: "p", text: `It is held at ${CONVENTION_VENUE}.` },
+        ],
+        local: {
+          text: "Travel, hotels and what to pack are covered in Plan Your Visit.",
+          links: [{ label: "Plan Your Visit", href: "/plan-your-visit" }],
+        },
+      },
+      {
+        id: "convention-2027-who",
+        question: "Who is the CACNA 2027 Annual Convention for?",
+        answer: [
+          // Source: lib/events.ts, annualMoments entry id "cacna-convention", field `desc` ("across every
+          // CACNA member church"; "onsite and online"); age groups from CATEGORY_LABEL in
+          // app/(site)/[locale]/events/[slug]/page.tsx (Adults 30 and over, Young adults 20-29,
+          // Children ages 1-19), matching RegistrantCategory in lib/conventions.ts.
+          { kind: "p", text: "It is CACNA’s flagship gathering, open to every member church and the whole family, onsite and online. Registration has three groups: adults (30 and over), young adults (20–29), and children and youth (ages 1–19)." },
+        ],
+        local: {
+          text: "You can also watch the convention online.",
+          links: [{ label: "Watch Online", href: "/online" }],
+        },
+      },
+      {
+        id: "convention-2027-register",
+        question: "How do I register for the CACNA 2027 Annual Convention?",
+        answer: [
+          // Source: lib/conventions.ts, 2027 entry field `registrationUrl` ("/events/cacna-2027/register",
+          // an on-site path, not an external link). Under-30 routing from messages/en.json
+          // YouthRegister.heroBody ("Everyone under 30 registers here ... submit once").
+          { kind: "p", text: "Register online on this site, on the 2027 convention registration page. Anyone under 30 registers on the separate youth and child form." },
+        ],
+        local: {
+          text: "Start here:",
+          links: [
+            { label: "Register for 2027", href: "/events/cacna-2027/register" },
+            { label: "Convention page", href: "/events/cacna-2027" },
+          ],
+        },
+      },
+      {
+        id: "convention-2027-youth",
+        question: "How do children, youth and young adults register for the 2027 convention?",
+        answer: [
+          // Source: messages/en.json YouthRegister.heroBody and Youth.registerBody ("Everyone under 30
+          // registers ... on one form: add each child, youth or young adult and choose their meals in the
+          // same step"); age bands "1-10", "11-19", "20-29" from the `ages` array in
+          // app/(site)/[locale]/youth/page.tsx; route app/(site)/[locale]/events/[slug]/register/youth.
+          { kind: "p", text: "Everyone under 30 registers on one form: add each child (ages 1–10), youth (11–19) or young adult (20–29), choose their convention meals, and submit once." },
+        ],
+        local: {
+          text: "The youth registration form and the Youth & Young Adult Ministry page:",
+          links: [
+            { label: "Youth registration", href: "/events/cacna-2027/register/youth" },
+            { label: "Youth & Young Adults", href: "/youth" },
+          ],
+        },
       },
     ],
   },
