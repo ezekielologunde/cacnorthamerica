@@ -23,6 +23,8 @@ export function HomepageAnnouncements({ announcements }: { announcements: Homepa
     for (const ann of announcements) {
       if (localStorage.getItem(`ann-home-${ann.id}`)) stored.add(ann.id);
     }
+    // Reading localStorage must wait until mount (SSR-safe), so this one-time sync is an effect.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDismissed(stored);
     setReady(true);
   }, [announcements]);

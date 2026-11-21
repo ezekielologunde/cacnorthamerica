@@ -37,6 +37,8 @@ export default function AdminError({ error, reset }: { error: Error & { digest?:
         >
           Try again
         </button>
+        {/* Plain anchor on purpose: a full reload resets the errored route segment. */}
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
         <a
           href="/admin"
           style={{

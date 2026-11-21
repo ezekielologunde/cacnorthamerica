@@ -51,11 +51,11 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const results = runSearch(query);
+  const updateQuery = (q: string) => { setQuery(q); setActive(0); };
 
   useEffect(() => {
     if (open) {
-      setQuery('');
-      setActive(0);
+      // The modal is only mounted while open, so query/active already start at their reset values.
       const t = setTimeout(() => inputRef.current?.focus(), 60);
       return () => clearTimeout(t);
     }
@@ -72,8 +72,6 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, [open, results, active, onClose, router]);
-
-  useEffect(() => { setActive(0); }, [query]);
 
   if (!open) return null;
 
@@ -116,7 +114,7 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
           <input
             ref={inputRef}
             value={query}
-            onChange={e => setQuery(e.target.value)}
+            onChange={e => updateQuery(e.target.value)}
             placeholder="Search pages, events, store…"
             aria-label="Search the site"
             style={{
@@ -127,7 +125,7 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
           />
           {query ? (
             <button
-              onClick={() => setQuery('')}
+              onClick={() => updateQuery('')}
               aria-label="Clear search"
               style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, color: 'var(--ink-soft)', display: 'flex' }}
             >
@@ -251,7 +249,7 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
             {HINTS.map(hint => (
               <button
                 key={hint}
-                onClick={() => setQuery(hint)}
+                onClick={() => updateQuery(hint)}
                 style={{
                   fontSize: 13, fontWeight: 700, color: 'var(--ink-soft)',
                   background: 'var(--cream-2)', border: '1px solid var(--line)',
