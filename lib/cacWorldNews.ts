@@ -105,14 +105,17 @@ function parseFeed(json: { feed?: { entry?: unknown[] } } | null): CacWorldNewsC
 // Live public feed: getLatestCacWorldNews
 //
 // The public site no longer waits on an admin to approve each story: the
-// Blogger feed is read server-side through Next's data cache (refreshed about
-// every 30 minutes) and merged with any admin-approved rows. Anything an admin
+// Blogger feed is read server-side through Next's data cache (refreshed at
+// least every 10 minutes, and on demand through CAC_WORLD_NEWS_TAG) and merged with any admin-approved rows. Anything an admin
 // rejected or unpublished stays hidden even while it is still in the feed.
 // Feed text and URLs are third-party input, so every item is re-checked here
 // before it can reach a page.
 // ---------------------------------------------------------------------------
 
-const FEED_REVALIDATE_SECONDS = 1800;
+const FEED_REVALIDATE_SECONDS = 600;
+/** Cache tag on the feed fetch; lib/contentRevalidation.ts expires it from
+ *  admin actions and the scheduled refresh (app/api/cron/refresh-content). */
+export const CAC_WORLD_NEWS_TAG = "cac-world-news";
 const EXCERPT_MAX = 160;
 
 function hostMatches(hostname: string, domain: string): boolean {
@@ -197,12 +200,12 @@ function sanitize(item: CacWorldNewsItem): CacWorldNewsItem | null {
 }
 
 async function fetchFeedItems(): Promise<CacWorldNewsItem[]> {
-  const res = await fetch(FEED_URL, { next: { revalidate: FEED_REVALIDATE_SECONDS } });
+  const res = await fetch(FEED_URL, { next: { revalidate: FEED_REVALIDATE_SECONDS, tags: [CAC_WORLD_NEWS_TAG] } });
   if (!res.ok) throw new Error(`CAC World feed request failed: ${res.status}`);
   return parseFeed(await res.json()).map((c) => ({ id: c.sourceUrl, ...c }));
 }
 
-// NOTE: hiding rejected stories only works if SUPABASE_SERVICE_ROLE_KEY is set in production, and takes effect after the page's revalidate window (60s on the home page).
+// NOTE: hiding rejected stories only works if SUPABASE_SERVICE_ROLE_KEY is set in production, and takes effect as soon as the reject/unpublish action revalidates the pages.
 /** Source URLs an admin rejected or unpublished (the newest few hundred is
  *  plenty: the feed only carries its latest 25 posts). Rejected rows are
  *  hidden from the anon key by RLS, so this needs the service-role key;

@@ -2,6 +2,7 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
+import { GoogleTags } from "@/components/analytics/GoogleTags";
 
 // Nested under the root `app/layout.tsx`, which already provides
 // <html>/<body>, fonts, analytics, and the live announcement banner fetch --
@@ -28,7 +29,12 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
 
   return (
-    <NextIntlClientProvider locale={locale}>{children}</NextIntlClientProvider>
+    <NextIntlClientProvider locale={locale}>
+      {children}
+      {/* Google tags load on public pages only; /admin sits outside this
+          layout so registrant search terms never reach Google. */}
+      <GoogleTags />
+    </NextIntlClientProvider>
   );
 }
 

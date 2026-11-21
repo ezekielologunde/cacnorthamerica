@@ -2,7 +2,7 @@
 project: cacnorthamerica
 type: tasks
 status: active
-last_updated: 2026-11-05
+last_updated: 2026-11-11
 tags: [project/cacnorthamerica]
 ---
 
@@ -22,6 +22,20 @@ Related: [[Project]] · [[Features]] · [[Architecture]] · [[Decisions]] · [[B
   runs them is **Unverified**.
 - Check-in QR -- dropped (PR #82); the 4-character code is the only method.
 
+**Open after round 2 (PR 160, 2026-11-08):**
+- Set `CRON_SECRET` (at least 16 characters, ideally 32+) on the Vercel project
+  for Production and redeploy; until then `/api/cron/refresh-content` answers 401
+  to every request. Steps in `docs/cron-refresh-content.md`.
+- Apply migration `0026_child_care_details.sql` **before** deploying the code
+  that writes it, with the site owner's say-so; until then every Youth & Child
+  registration that includes a child 12 or under is refused. See [[Database]].
+- Legal review of the care-consent and privacy wording for children's medical
+  data.
+- Native-Yoruba review of the phrases in `lib/yoruba.ts`.
+- After each convention, purge that year's care rows
+  (`delete from cacna.child_care_details where year = N`), and periodically the
+  orphan rows from abandoned card checkouts (query in the 0026 header).
+
 **Open (owner / dashboard; state Unverified from the repo):**
 - Apply migrations 0015, 0016, 0018, 0019 "only with the site owner's say-so"
   (each file's header); 0016 before the Zelle code, 0018 before turning on
@@ -35,6 +49,10 @@ Related: [[Project]] · [[Features]] · [[Architecture]] · [[Decisions]] · [[B
 - Four Ontario/Quebec branches: "zone to confirm" (PR #120 title).
 - AdSense blog unit is off until `NEXT_PUBLIC_ADSENSE_ID` /
   `NEXT_PUBLIC_ADSENSE_BLOG_SLOT` are set (PR #123).
+- AdSense consent: publish the European regulations message in AdSense,
+  Privacy and messaging, for cacna.org (account `ca-pub-1672033318309677`).
+  Until then, EEA/UK/CH visitors get cookieless Analytics only (Consent Mode
+  default, see [[Security]]). Not yet confirmed as published: **Unverified**.
 - Complimentary registration tab: `STAFF_PASSCODE` is no longer referenced
   in `app/`, `lib/` or `components/`; how that tab is gated now is
   **Unverified** -- check `app/api/register/route.ts`.

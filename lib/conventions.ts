@@ -36,6 +36,20 @@ export interface ConventionYear {
   pricingTiers?: PricingTier[];
   /** Detail page for this year. */
   href: string;
+  /** Theme scripture shown beside the theme. */
+  scripture?: { reference: string; text: string };
+  /** The official flyers (web address already points at cacna.org). */
+  flyers?: { programme: string; leaders: string; alt: { programme: string; leaders: string } };
+  /** The real printed day-by-day programme, Monday to Saturday in order. When
+   *  set it replaces the generic recurring pattern in sessionsFor(). */
+  programme?: { label: string; desc: string }[];
+  /** Church leadership featured on the flyer. Flyers push the officials as
+   *  the main picture; that does not mean each of them ministers. */
+  leaders?: { name: string; title: string; photo: string }[];
+  /** Convention officers to call for information. */
+  officers?: { name: string; role: string; phone: string }[];
+  /** Short notes printed on the flyer (free food, hotels, nightly revival). */
+  highlights?: string[];
 }
 
 /** Every confirmed convention date, current and future. Add a new year here
@@ -128,6 +142,39 @@ export const conventionYears: ConventionYear[] = [
       { category: "child", priceCents: 0, startsOn: "2026-07-23", endsOn: "2027-07-17" },
     ],
     href: "/events/cacna-2027",
+    theme: "Lessons from Israel’s History",
+    scripture: {
+      reference: "1 Corinthians 10:11 (NKJV)",
+      text: "Now all these things happened to them as examples, and they were written for our admonition, upon whom the ends of the ages have come.",
+    },
+    flyers: {
+      programme: "/images/cacna-2027-flyer-programme.jpg",
+      leaders: "/images/cacna-2027-flyer-leadership.jpg",
+      alt: {
+        programme: "CACNA 2027 Annual Convention flyer: theme Lessons from Israel’s History, registration fees, the daily programme for July 12–17, 2027, and the convention contacts.",
+        leaders: "CACNA 2027 Annual Convention flyer featuring church leadership: Pastor T.A.O. Agbeja, Regional Superintendent; Pastor E.O. Odejobi; Pastor S.O. Oladele, President; Prophet T.H.O. Oladeji; and Pastor Dr. Oluwagbemiga Famojuro, Chairman of the Convention Committee. July 12–17, 2027, CAC Village.",
+      },
+    },
+    programme: [
+      { label: "Registration & Ministers’ Prayers", desc: "Registration opens and the convention begins with the Ministers’ Prayers." },
+      { label: "Ministers’ Conference", desc: "A full day for the Ministers’ Conference." },
+      { label: "Departmental programmes", desc: "CACMA, Ministers’ Wives, Good Women, Youth & Young Adults and Children’s programmes." },
+      { label: "Picnic, games & Worship Night", desc: "Picnic, games and sports, Sunday School and the Business Group, closing with Worship Night." },
+      { label: "Convention Day & Empowerment Night", desc: "The Convention Day Program, followed by Empowerment Night." },
+      { label: "Holy Communion & Departure", desc: "The Holy Communion Service, then departure." },
+    ],
+    leaders: [
+      { name: "Pastor T.A.O. Agbeja", title: "Regional Superintendent, CAC North America", photo: "/images/pastor-agbeja-portrait.jpg" },
+      { name: "Pastor E.O. Odejobi", title: "General Superintendent, CAC (Nigeria & Overseas)", photo: "/images/pastor-odejobi-portrait.jpg" },
+      { name: "Pastor S.O. Oladele", title: "President, CAC (Nigeria & Overseas)", photo: "/images/pastor-oladele-portrait.jpg" },
+      { name: "Prophet T.H.O. Oladeji", title: "General Evangelist (Nigeria & Overseas)", photo: "/images/prophet-oladeji-portrait.jpg" },
+      { name: "Pastor Dr. Oluwagbemiga Famojuro", title: "Chairman, Convention Committee", photo: "/images/pastor-famojuro-portrait.jpg" },
+    ],
+    officers: [
+      { name: "Pastor Dr. Oluwagbemiga Famojuro", role: "Chairman", phone: "917-709-1892" },
+      { name: "Pastor Damilare Oyewusi", role: "Secretary", phone: "646-316-1043" },
+    ],
+    highlights: ["Combined revival for all, every night", "Free food for all", "Book your hotel early"],
   },
   { year: 2028, startIso: "2028-07-10", endIso: "2028-07-15", href: "/events/cacna-2028" },
   { year: 2029, startIso: "2029-07-09", endIso: "2029-07-14", href: "/events/cacna-2029" },
@@ -161,7 +208,8 @@ const MONTH_FULL = ["January","February","March","April","May","June","July","Au
  *  recurring pattern with that year's actual calendar dates. */
 export function sessionsFor(cy: ConventionYear) {
   const [y, m, d] = cy.startIso.split("-").map(Number);
-  return RECURRING_SESSION_PATTERN.map((s, i) => {
+  const pattern: readonly { label: string; desc: string }[] = cy.programme ?? RECURRING_SESSION_PATTERN;
+  return pattern.map((s, i) => {
     const date = new Date(Date.UTC(y, m - 1, d + i));
     const day = `${DAY_ABBR[i]} · ${MONTH_ABBR[date.getUTCMonth()]} ${date.getUTCDate()}`;
     return { day, ...s };

@@ -6,6 +6,7 @@ import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { getLeaders } from "@/lib/leaders";
 import "./home-mobile.css";
 import { initials } from "@/lib/initials";
+import { YORUBA_WELCOME } from "@/lib/yoruba";
 
 export async function PastorWelcome() {
   const regional = await getLeaders(["cacna_regional"]);
@@ -60,6 +61,7 @@ export async function PastorWelcome() {
           </Reveal>
           <Reveal delay={160}>
             <p style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4.4vw,52px)", letterSpacing: "-1px", lineHeight: 1.05, margin: "8px 0 14px", color: "#fff", textWrap: "balance" }}>
+              <span lang="yo" style={{ display: "block", fontSize: "0.5em", letterSpacing: 0, color: "var(--gold)", marginBottom: 8 }}>{YORUBA_WELCOME}!</span>
               Welcome home!
             </p>
           </Reveal>

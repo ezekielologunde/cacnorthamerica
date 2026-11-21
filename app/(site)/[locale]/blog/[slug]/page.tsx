@@ -10,13 +10,14 @@ import { Nav } from "@/components/navigation/Nav";
 import { FooterExperience } from "@/components/sections/FooterExperience";
 import { POSTS, getPost } from "@/lib/blog";
 import type { BlogPost } from "@/lib/blog";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, breadcrumbJsonLd } from "@/lib/site";
 import { BylineCompact, BylineFull } from "@/components/blog/Byline";
 import { parseAuthors } from "@/lib/blog-authors";
 import { ConventionAdWidget } from "@/components/blog/ConventionAdWidget";
 import { BlogAd } from "@/components/blog/BlogAd";
 import { ServeCallout } from "@/components/ServeCallout";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
+import { VideoFacade } from "@/components/ui/VideoFacade";
 import { setRequestLocale } from "next-intl/server";
 
 // db.schema: "cacna" -- see lib/supabase/server.ts's comment; without it
@@ -110,12 +111,13 @@ function renderBody(text: string): ReactNode[] {
   function parseInline(raw: string): ReactNode[] {
     const nodes: ReactNode[] = [];
     let cursor = 0;
-    const combined = /\*\*(.+?)\*\*|_(.+?)_/g;
+    const combined = /\*\*(.+?)\*\*|_(.+?)_|\[([^\]]+)\]\((https:\/\/[^)\s]+)\)/g;
     let m: RegExpExecArray | null;
     while ((m = combined.exec(raw)) !== null) {
       if (m.index > cursor) nodes.push(raw.slice(cursor, m.index));
       if (m[1] !== undefined) nodes.push(<strong key={m.index}>{m[1]}</strong>);
       else if (m[2] !== undefined) nodes.push(<em key={m.index}>{m[2]}</em>);
+      else if (m[3] !== undefined) nodes.push(<a key={m.index} href={m[4]} target="_blank" rel="noopener noreferrer">{m[3]}</a>);
       cursor = m.index + m[0].length;
     }
     if (cursor < raw.length) nodes.push(raw.slice(cursor));
@@ -124,6 +126,26 @@ function renderBody(text: string): ReactNode[] {
 
   parts.push(...parseInline(text));
   return parts;
+}
+
+/** Spotify's own embedded player for one episode. Only open.spotify.com
+ *  episode URLs are accepted; anything else renders nothing. */
+function SpotifyEmbed({ episodeUrl, title }: { episodeUrl: string; title: string }) {
+  const id = /^https:\/\/open\.spotify\.com\/episode\/([A-Za-z0-9]+)/.exec(episodeUrl)?.[1];
+  if (!id) return null;
+  return (
+    <div className="ed-post-col" style={{ marginBottom: 28 }}>
+      <iframe
+        src={`https://open.spotify.com/embed/episode/${id}`}
+        title={title}
+        width="100%"
+        height="152"
+        style={{ border: 0, borderRadius: 12 }}
+        allow="encrypted-media"
+        loading="lazy"
+      />
+    </div>
+  );
 }
 
 function BodyParagraph({ text, first }: { text: string; first?: boolean }) {
@@ -199,8 +221,15 @@ export default async function BlogSlugPage({
   const shareText = encodeURIComponent(`${post.title} — ${shareUrl}`);
   const whatsappUrl = `https://wa.me/?text=${shareText}`;
 
+  const breadcrumbs = breadcrumbJsonLd([
+    { name: "Home", path: "/" },
+    { name: "Blog", path: "/blog" },
+    { name: post.title, path: `/blog/${post.slug}` },
+  ]);
+
   return (
     <main id="main-content" className="ed-page">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs).replace(/</g, "\\u003c") }} />
       <Nav />
 
       <header className="ed-post-head">
@@ -217,7 +246,7 @@ export default async function BlogSlugPage({
               <span>{post.date}</span>
               <span>{post.readTime}</span>
             </p>
-            <a className="ed-share" href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+            <a className="ed-share ed-share-wa" href={whatsappUrl} target="_blank" rel="noopener noreferrer">
               <Share2 size={14} strokeWidth={2.5} aria-hidden /> Share on WhatsApp
             </a>
             {post.href && (
@@ -239,6 +268,24 @@ export default async function BlogSlugPage({
           </div>
         </figure>
       )}
+
+      {post.video && (
+        <div className="ed-post-col" style={{ marginBottom: 28 }}>
+          <VideoFacade videoId={post.video.id} title={post.video.title} showTitle={false} />
+          <p style={{ fontSize: 14, lineHeight: 1.6, margin: "12px 0 0" }}>
+            Credit:{" "}
+            <a href={post.video.channelUrl} target="_blank" rel="noopener noreferrer" style={{ fontWeight: 700 }}>
+              {post.video.channel} (YouTube)
+            </a>
+            <span aria-hidden> · </span>
+            <a href={`https://www.youtube.com/watch?v=${post.video.id}`} target="_blank" rel="noopener noreferrer" style={{ fontWeight: 700 }}>
+              Watch on YouTube →
+            </a>
+          </p>
+        </div>
+      )}
+
+      {post.spotify && <SpotifyEmbed episodeUrl={post.spotify.episodeUrl} title={post.spotify.title} />}
 
       <div className="ed-post-col ed-post-body">
         <article>

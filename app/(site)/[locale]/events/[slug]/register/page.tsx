@@ -9,6 +9,7 @@ import { RegisterForm } from "@/components/register/RegisterForm";
 import { CONVENTION_VENUE, conventionYears, dateRangeLabel, activePricing, type ConventionYear } from "@/lib/conventions";
 import { registrationGuidelines } from "@/lib/registrationInfo";
 import { PaymentOptions } from "@/components/register/PaymentOptions";
+import { QuickHelp } from "@/components/register/QuickHelp";
 import { ServeCallout } from "@/components/ServeCallout";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { SITE_URL } from "@/lib/site";
@@ -256,6 +257,9 @@ export default async function RegisterPage({ params }: { params: Promise<{ local
             <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,30px)", color: "var(--ink)", margin: "0 0 16px" }}>{t("paymentOptionsHeading")}</h2>
             <PaymentOptions />
           </div>
+        </div>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <QuickHelp />
         </div>
       </section>
 

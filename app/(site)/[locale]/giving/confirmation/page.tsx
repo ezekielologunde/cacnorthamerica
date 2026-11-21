@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { Nav } from "@/components/navigation/Nav";
@@ -8,6 +9,17 @@ import { splitCheckoutAmount } from "@/lib/processingFee";
 import { cadencePhrase, splitRecurringCheckout } from "@/lib/givingRecurring";
 import { isRecurring } from "@/lib/givingRequest";
 import { setRequestLocale } from "next-intl/server";
+
+// A per-person receipt reached from Stripe: never indexed, and no inherited
+// canonical pointing at the home page.
+export const metadata: Metadata = {
+  title: "Giving Receipt — CACNA",
+  robots: { index: false, follow: false },
+  // The URL carries a session id or sealed token: never send it as a Referer
+  // (same-origin included) or into analytics page_referrer.
+  referrer: "no-referrer",
+  alternates: { canonical: null },
+};
 
 export default async function GivingConfirmationPage({
   params,

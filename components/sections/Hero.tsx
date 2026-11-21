@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useRef, useState, useEffect, useMemo, useSyncExternalStore } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -8,7 +9,7 @@ import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { haptic } from "@/lib/haptics";
 import { conventionToFeature, currentOrNextConvention, dateRangeLabel, hasExternalRegistrationUrl, CONVENTION_VENUE_SHORT } from "@/lib/conventions";
 import { specialEvents, isEventPast, hasEventStarted } from "@/lib/events";
-import { POSTS } from "@/lib/blog";
+import { POSTS, CONVENTION_RECAP_SLUG, type BlogPost } from "@/lib/blog";
 import { GIVING_CAMPAIGNS } from "@/lib/giving";
 import "./home-mobile.css";
 
@@ -37,6 +38,8 @@ interface Slide {
    *  to the text, since the hero background is now the one persistent video
    *  rather than a per-slide image a portrait could substitute for. */
   inlineImage?: { src: string; alt: string };
+  /** A small portrait flyer card that links to the event page. */
+  flyer?: { src: string; alt: string; href: string };
   /** Extra navigation for the Welcome slide only — points visitors to the
    *  site's other important sections instead of a single CTA. */
   quickLinks?: { label: string; href: string }[];
@@ -47,7 +50,11 @@ interface Slide {
  *  slide is real CACNA content: the adaptive convention state, real
  *  upcoming events, a real giving campaign, and the latest real post.
  *  Slides for events that have already passed simply don't get built. */
-function useSlides(): Slide[] {
+/** The newest post, picked on the server so posts published from
+ *  /admin/blog reach the hero too; only the fields the slide shows. */
+export type HeroPost = Pick<BlogPost, "slug" | "title" | "excerpt" | "href" | "image">;
+
+function useSlides(latestFromServer?: HeroPost): Slide[] {
   return useMemo(() => {
     const slides: Slide[] = [];
 
@@ -66,14 +73,15 @@ function useSlides(): Slide[] {
     const { cy: featuredCy, state } = conventionToFeature();
     const nextCy = currentOrNextConvention();
     const showRecap = state === "live" || state === "concluded-recent";
-    const recapPost = POSTS.find((p) => p.slug === "cacna-2026-closing-appreciation");
+    const recapPost = POSTS.find((p) => p.slug === CONVENTION_RECAP_SLUG);
     slides.push({
       key: "convention",
       eyebrow: showRecap ? (state === "live" ? "Live Now" : "Just Concluded") : nextCy.registrationUrl ? "Registration Open" : "Save the Date",
       title: showRecap ? `CACNA ${featuredCy.year} Convention` : `CACNA ${nextCy.year} National Convention`,
       desc: showRecap
         ? "The Convention Chairman's closing message of thanks to every speaker, volunteer, and family."
-        : `${dateRangeLabel(nextCy)} · ${CONVENTION_VENUE_SHORT}`,
+        : `${nextCy.theme ? `“${nextCy.theme}” · ` : ""}${dateRangeLabel(nextCy)} · ${CONVENTION_VENUE_SHORT}`,
+      flyer: !showRecap && nextCy.flyers ? { src: nextCy.flyers.leaders, alt: nextCy.flyers.alt.leaders, href: nextCy.href } : undefined,
       cta: showRecap
         ? { label: "Read the Closing Message", href: recapPost ? (recapPost.href ?? `/blog/${recapPost.slug}`) : featuredCy.href }
         : nextCy.registrationUrl && !hasExternalRegistrationUrl(nextCy)
@@ -97,9 +105,9 @@ function useSlides(): Slide[] {
       slides.push({
         key: "pilgrimage",
         eyebrow: "Holy Land Pilgrimage",
-        title: `Israel & Egypt, ${pilgrimage.dateLabel}`,
-        desc: "Flights, hotels & a private guide included · $4,549 · $500 deposit to register.",
-        cta: { label: "Reserve Your Spot", href: pilgrimage.href ?? "/calendar" },
+        title: "Israel & Egypt, postponed to May 2027",
+        desc: "New dates and final price to be confirmed. Contact the pilgrimage team for updates.",
+        cta: { label: "See the Update", href: pilgrimage.href ?? "/calendar" },
       });
     }
 
@@ -114,8 +122,8 @@ function useSlides(): Slide[] {
       });
     }
 
-    const latestPost = [...POSTS]
-      .filter((p) => p.slug !== "cacna-2026-closing-appreciation")
+    const latestPost: HeroPost | undefined = latestFromServer ?? [...POSTS]
+      .filter((p) => p.slug !== CONVENTION_RECAP_SLUG)
       .sort((a, b) => b.dateIso.localeCompare(a.dateIso))[0];
     if (latestPost) {
       // A portrait photo (e.g. a person's headshot) still works as the small
@@ -136,7 +144,7 @@ function useSlides(): Slide[] {
     }
 
     return slides;
-  }, []);
+  }, [latestFromServer]);
 }
 
 /** Mobile browsers apply much stricter iframe-autoplay policies than
@@ -160,11 +168,11 @@ function useIsNarrowViewport(breakpoint: number): boolean {
   );
 }
 
-export function Hero() {
+export function Hero({ latestPost }: { latestPost?: HeroPost } = {}) {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
   const narrow = useIsNarrowViewport(640);
-  const slides = useSlides();
+  const slides = useSlides(latestPost);
 
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -251,6 +259,11 @@ export function Hero() {
             exit={{ opacity: 0, y: reduce ? 0 : -18 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
           >
+            {slide.flyer && (
+              <Link href={slide.flyer.href} aria-hidden="true" tabIndex={-1} style={{ display: "block", width: 96, margin: "0 auto 18px", borderRadius: 10, overflow: "hidden", border: "2px solid rgba(255,255,255,.35)", boxShadow: "0 10px 26px rgba(0,0,0,.45)" }}>
+                <Image src={slide.flyer.src} alt="" width={96} height={120} sizes="96px" style={{ width: "100%", height: "auto", display: "block" }} />
+              </Link>
+            )}
             {slide.inlineImage && (
               <div style={{ width: 92, height: 92, borderRadius: "50%", overflow: "hidden", margin: "0 auto 18px", position: "relative", border: "3px solid rgba(255,255,255,.25)", boxShadow: "0 10px 26px rgba(0,0,0,.35)" }}>
                 <ImageLightbox src={slide.inlineImage.src} alt={slide.inlineImage.alt} objectPosition="center 15%" />

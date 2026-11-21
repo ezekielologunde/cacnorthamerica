@@ -7,6 +7,7 @@ import { sendStoreOrderConfirmationEmail } from "@/lib/storeOrderEmail";
 import { sendGivingConfirmationEmail } from "@/lib/givingEmail";
 import { SITE_URL } from "@/lib/site";
 import { splitCheckoutAmount, isProcessingFeeLine } from "@/lib/processingFee";
+import { giftOf, isGiftLine } from "@/lib/registrationGift";
 import { conventionYears } from "@/lib/conventions";
 import { adultSheetExtras, youthSheetName, youthSheetRows } from "@/lib/youthRegistration";
 import { checkinCodesFor, checkinCodeSheetCell } from "@/lib/checkinCode";
@@ -51,7 +52,7 @@ const inFlightSessions = new Map<string, Promise<void>>();
 // A Youth & Child registration writes one row per person, each its own step
 // (`sheet-${i}`), so a retry after a partial failure appends only the rows
 // that are still missing.
-type RecordStep = "sheet" | "email" | `sheet-${number}`;
+type RecordStep = "sheet" | "email" | "gift-sheet" | "gift-email" | `sheet-${number}`;
 const completedSteps = new Map<string, Set<RecordStep>>();
 const MAX_TRACKED_SESSIONS = 1000;
 
@@ -340,7 +341,7 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
     const totalDollars = dollars(subtotalCents);
     const feeColumns = { "Processing Fee": dollars(processingFeeCents), "Amount Charged": dollars(totalCents) };
     const feeLabels = processingFeeCents > 0 ? { feeLabel: dollars(processingFeeCents), chargedLabel: dollars(totalCents) } : {};
-    const realLines = (full.line_items?.data ?? []).filter((li) => !isProcessingFeeLine(li.description));
+    const realLines = (full.line_items?.data ?? []).filter((li) => !isProcessingFeeLine(li.description) && !isGiftLine(li.description));
     const lineDescriptions = realLines.map((li) => li.description ?? "");
 
     if (kind === "registration") {
@@ -351,11 +352,16 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
       // somehow missing, so a log row still gets written.
       const encoded = unchunkFromMetadata(metadata, "d");
       const summary: RegistrationSummary | null = encoded ? decodeSummary(encoded) : null;
+      // A gift added at checkout is its own line: the registration rows below
+      // exclude it, and it gets its own Giving row and receipt after them.
+      const gift = summary ? giftOf(summary) : 0;
+      const regTotalDollars = dollars(subtotalCents - gift);
+      const regFeeColumns = { "Processing Fee": dollars(processingFeeCents), "Amount Charged": dollars(totalCents - gift) };
 
       if (summary?.youth) {
         // In order, stopping at the first failure so a retry resumes there.
         const startIso = conventionYears.find((cy) => cy.year === summary.year)?.startIso;
-        const rows = youthSheetRows(summary, { stripeSession: sessionId, status: "paid", startIso, contactEmail, feeColumns, checkinCodes: checkinCodesFor(summary) });
+        const rows = youthSheetRows(summary, { stripeSession: sessionId, status: "paid", startIso, contactEmail, feeColumns: regFeeColumns, checkinCodes: checkinCodesFor(summary) });
         for (const [i, row] of rows.entries()) {
           sheetOk = await runStep(sessionId, `sheet-${i}`, () => logToSheetChecked(youthSheetName(summary.year), row));
           if (!sheetOk) break;
@@ -369,8 +375,8 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
         "Registrants": summary
           ? summary.registrants.map((r) => `${r.n} (${r.c})`).join("; ")
           : lineDescriptions.join("; "),
-        "Total": totalDollars,
-        ...feeColumns,
+        "Total": regTotalDollars,
+        ...regFeeColumns,
         "Stripe Session": sessionId,
         // New columns go before "Check-in Code" so it stays last; blank in
         // the no-summary fallback.
@@ -401,6 +407,34 @@ async function recordCheckout(stripe: ReturnType<typeof getStripeClient>, sessio
           const confirmationUrl = `${SITE_URL}/events/cacna-${summary.year}/register/confirmation?session_id=${sessionId}`;
           emailOk = await runStep(sessionId, "email", () =>
             sendRegistrationConfirmationEmail({ ...summary, contactEmail: emailTo }, confirmationUrl, true, idempotencyKey, processingFeeCents));
+        }
+      }
+
+      // The gift: its own Giving row and receipt, so it is counted and
+      // receipted as a donation (the registration fee is not). Each step is
+      // retried on its own, like the two above.
+      if (summary && gift > 0) {
+        const giftEmailTo = contactEmail || summary.contactEmail;
+        const campaignTitle = `CACNA ${summary.year} Convention gift`;
+        const giftSheetOk = await runStep(sessionId, "gift-sheet", () => logToSheetChecked("Giving", {
+          "Campaign": campaignTitle,
+          "Contact Name": summary.contactName,
+          "Contact Email": giftEmailTo,
+          "Total": dollars(gift),
+          "Processing Fee": dollars(0),
+          "Amount Charged": dollars(gift),
+          "Stripe Session": sessionId,
+        }));
+        sheetOk = sheetOk && giftSheetOk;
+        if (giftEmailTo) {
+          const giftEmailOk = await runStep(sessionId, "gift-email", () => sendGivingConfirmationEmail({
+            contactName: summary.contactName,
+            contactEmail: giftEmailTo,
+            campaignTitle,
+            totalLabel: dollars(gift),
+            idempotencyKey: `${idempotencyKey}/gift`,
+          }));
+          emailOk = emailOk && giftEmailOk;
         }
       }
     } else if (kind === "store_order") {

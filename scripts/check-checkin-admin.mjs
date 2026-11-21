@@ -51,7 +51,8 @@ check("a failed lookup shows the setup notice and logs the error code only",
   page.includes("Couldn&apos;t load the check-in list. Check your connection and try again; the Google Sheet has the same list.") &&
   page.includes("Registered recently? Check the Google Sheet, which lists everyone the moment they register.") &&
   (page.match(/=== "42P01" \|\| failed(\.error)?\.code === "PGRST205"/g) ?? []).length === 2 &&
-  (page.match(/console\.error\(/g) ?? []).length === 2 &&
+  (page.match(/console\.error\(/g) ?? []).length === 3 &&
+  /console\.error\("\[check-in\] care lookup failed:", error\.code\);/.test(page) &&
   /console\.error\("\[check-in\] lookup failed:", failed\.error\.code\);/.test(page) &&
   /console\.error\("\[check-in\] count failed:", failed\.code\);/.test(page));
 check("page shows the codes-are-not-unique warning",

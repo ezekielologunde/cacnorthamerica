@@ -9,7 +9,7 @@
 // any check fails. Never calls Stripe.
 import { registerHooks } from "node:module";
 import { pathToFileURL } from "node:url";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(import.meta.dirname, "..");
@@ -106,6 +106,13 @@ for (const n of [10, 29]) {
     keys > STRIPE_METADATA_MAX_KEYS && !fitsStripeMetadata(encoded, 4));
 }
 check("an oversized value is reported as not fitting", !fitsStripeMetadata("x".repeat(450 * 49), 2));
+
+// The Youth & Child form keeps no browser draft (owner decision): neither it
+// nor the care fields may touch sessionStorage or localStorage.
+for (const rel of ["components/register/YouthRegisterForm.tsx", "components/register/ChildCareFields.tsx"]) {
+  const src = readFileSync(path.join(root, rel), "utf8");
+  check(`${rel} never touches sessionStorage or localStorage`, !/(sessionStorage|localStorage)/.test(src) && !/youth-register-draft/.test(src));
+}
 
 console.log(failures ? `\n${failures} check(s) FAILED` : "\nAll checks passed");
 process.exit(failures ? 1 : 0);

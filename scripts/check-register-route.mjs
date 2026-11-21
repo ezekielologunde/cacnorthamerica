@@ -14,9 +14,11 @@ import path from "node:path";
 
 const root = path.resolve(import.meta.dirname, "..");
 const FAKE_STRIPE_MODULE = "data:text/javascript,export const getStripeClient = () => globalThis.__fakeStripe;";
+const FAKE_SUPABASE_MODULE = "data:text/javascript,export const createServiceClient = () => globalThis.__fakeSupabase();";
 registerHooks({
   resolve(specifier, context, next) {
     if (specifier === "@/lib/stripe") return { url: FAKE_STRIPE_MODULE, shortCircuit: true };
+    if (specifier === "@/lib/supabase/server") return { url: FAKE_SUPABASE_MODULE, shortCircuit: true };
     if (specifier === "next/server" || specifier === "next/headers") return next(`${specifier}.js`, context);
     // Next's bundler provides "server-only"; plain Node has no such package.
     if (specifier === "server-only") return { url: "data:text/javascript,", shortCircuit: true };
@@ -38,10 +40,38 @@ process.env.RESEND_API_KEY = "re_check_script_only";
 process.env.REGISTRATION_SIGNING_SECRET = "check-script-only-secret";
 delete process.env.SHEETS_WEBHOOK_SECRET;
 delete process.env.STRIPE_SECRET_KEY;
+process.env.SUPABASE_SERVICE_ROLE_KEY = "check-script-only";
+
+// Fake service-role client: records every insert / upsert by table, and
+// every delete with its filter. dbFailTable makes that table's writes fail
+// with an error code.
+const dbWrites = [];
+const dbDeletes = [];
+let dbFailTable = null;
+globalThis.__fakeSupabase = () => ({
+  from: (table) => {
+    const write = (rows) => ({
+      abortSignal: async () => {
+        if (table === dbFailTable) return { error: { code: "42P01", message: "would echo values" } };
+        dbWrites.push({ table, rows });
+        return { error: null };
+      },
+    });
+    const del = () => ({
+      eq: (col, val) => ({ abortSignal: async () => { dbDeletes.push({ table, col, val }); return { error: null }; } }),
+    });
+    return { insert: write, upsert: write, delete: del };
+  },
+});
+const careRowsWritten = () => dbWrites.filter((w) => w.table === "child_care_details").flatMap((w) => w.rows);
 
 const created = [];
+let stripeDown = false; // true: sessions.create throws, like a Stripe outage
 globalThis.__fakeStripe = {
-  checkout: { sessions: { create: async (params) => { created.push(params); return { url: "https://checkout.invalid/s" }; } } },
+  checkout: { sessions: { create: async (params) => {
+    if (stripeDown) throw new Error("fake Stripe outage");
+    created.push(params); return { url: "https://checkout.invalid/s" };
+  } } },
 };
 const rows = [];
 const emails = []; // every Resend send attempt, failed ones included
@@ -102,9 +132,24 @@ const adultBody = (registrants, extra = {}) => ({
 });
 const youth = (registrants, extra = {}) => ({
   track: "youth", contactName: "Parent Name", contactEmail: "parent@example.com", contactPhone: "(443) 555-0100",
-  churchName: "CAC Example", youthLeaderName: "Leader", dccZone: "Zone 1", guardianConfirmed: true, registrants, ...extra,
+  churchName: "CAC Example", youthLeaderName: "Leader", dccZone: "Zone 1", guardianConfirmed: true, registrants,
+  childCare: familyCare(), ...extra,
 });
-const kid = (age, extra = {}) => ({ firstName: "Kid", lastName: `Age${age}`, age, meals: ["tue_lunch", "fri_dinner"], ...extra });
+// Children 12 and under carry care details (lib/childCare.ts). The marker
+// strings must never reach a sheet row, an email, Stripe or the URL token.
+const CARE_MARKERS = ["SesameCARE", "AsthmaCARE", "InhalerCARE", "AuntieCARE", "PickupCARE"];
+const childCare = (extra = {}) => ({
+  hasAllergies: true, allergies: [{ type: "food", name: "SesameCARE", severity: "severe" }],
+  medicalNotes: "AsthmaCARE", medications: "InhalerCARE", dietaryNeeds: "", specialNeeds: "", photoConsent: true, ...extra,
+});
+function familyCare(extra = {}) {
+  return { emergencyName: "AuntieCARE", emergencyPhone: "443-555-0199", emergencyRelationship: "Aunt",
+    pickups: [{ name: "PickupCARE", phone: "443-555-0123" }], consent: true, ...extra };
+}
+const kid = (age, extra = {}) => ({
+  firstName: "Kid", lastName: `Age${age}`, age, meals: ["tue_lunch", "fri_dinner"],
+  ...(typeof age === "number" && age >= 1 && age <= 12 ? { care: childCare() } : {}), ...extra,
+});
 
 // Adult track accepts category "adult" only.
 for (const c of ["child", "young_adult"]) {
@@ -204,7 +249,8 @@ check("bot-guarded youth posts log no rows", rows.length === 0);
 
 // Free path: everyone 19 or under.
 rows.length = 0; emails.length = 0; created.length = 0;
-const free = await post(youth([kid(5, { allergies: "Peanuts" }), kid(14, { meals: [], noMeals: true })]));
+dbWrites.length = 0;
+const free = await post(youth([kid(5, { allergies: "Peanuts5" }), kid(14, { meals: [], noMeals: true, allergies: "Peanuts" })]));
 await settleEmail();
 const token = new URL(free.body.checkoutUrl ?? "http://x/").searchParams.get("t");
 check("free youth registration succeeds with a sealed confirmation link", free.status === 200 && !!token && /\/register\/confirmation\?t=/.test(free.body.checkoutUrl));
@@ -214,7 +260,7 @@ const r5 = rows.find((r) => r.Name === "Kid Age5");
 const r14 = rows.find((r) => r.Name === "Kid Age14");
 check("youth rows carry age, group, fee category, meals and allergies",
   r5?.Age === "5" && r5["Age Group"] === "Child (1–10)" && r5["Fee Category"] === "child" &&
-  r5.Meals === "Tuesday Lunch — 7/13; Friday Dinner — 7/16" && r5.Allergies === "Peanuts" &&
+  r5.Meals === "Tuesday Lunch — 7/13; Friday Dinner — 7/16" && r5.Allergies === "" && r14.Allergies === "Peanuts" &&
   r14?.["Age Group"] === "Youth (11–19)" && r14.Meals === "None" && r14["Guardian Confirmed"] === "Yes" &&
   r14["Youth Leader"] === "Leader" && r14["DCC / Zone"] === "Zone 1" && r14.Status === "free (email unverified)" &&
   r5.Ref && r5.Ref === r14.Ref);
@@ -227,6 +273,16 @@ check("free youth email names each person with their meals and allergies, and no
   freeHtml0.includes("Kid Age5") && freeHtml0.includes("Kid Age14") &&
   freeHtml0.includes("Meals: Tuesday Lunch — 7/13, Friday Dinner — 7/16") && freeHtml0.includes("Meals: None") &&
   freeHtml0.includes("Allergies: Peanuts") && !freeHtml0.includes("Payment Options"));
+check("a child's free-text allergy note (12 and under) is dropped from the sheet, email and check-in rows",
+  rows.every((r) => !JSON.stringify(r).includes("Peanuts5")) && !freeHtml0.includes("Peanuts5") &&
+  !JSON.stringify(dbWrites.filter((w) => w.table === "checkin_people")).includes("Peanuts5"));
+const careFree = careRowsWritten();
+check("free youth registration stores one care row, for the child 12 and under only, under the registration's ref",
+  careFree.length === 1 && careFree[0].idx === 0 && careFree[0].age === 5 && careFree[0].child_name === "Kid Age5" &&
+  careFree[0].ref === r5?.Ref && careFree[0].max_allergy_severity === "severe" && careFree[0].emergency_name === "AuntieCARE" &&
+  careFree[0].pickups[0].name === "PickupCARE" && careFree[0].guardian_name === "Parent Name" && careFree[0].photo_consent === true);
+check("care details reach no sheet row, email or URL token",
+  CARE_MARKERS.every((m) => !JSON.stringify(rows).includes(m) && !JSON.stringify(emails).includes(m) && !(free.body.checkoutUrl ?? "").includes(m)));
 const opened = openRegistrationToken(token ?? "");
 check("free youth token records that an email was attempted", opened?.emailed === true);
 check("sealed token keeps age and meals but leaves allergies out",
@@ -323,6 +379,7 @@ check("paid youth metadata carries the full summary, allergies included",
   meta?.youth?.leader === "Leader" && meta.registrants[0].l === "Shellfish" && meta.registrants[0].c === "young_adult" &&
   meta.registrants[1].c === "child" && meta.totalAmountCents === 10000);
 check("paid youth path logs no rows before payment", rows.length === 0);
+check("care details never ride in the Stripe session", CARE_MARKERS.every((m) => !JSON.stringify(params ?? {}).includes(m)));
 const paidConfirmation = await resolveRegistrationConfirmation({
   year: 2027, sessionId: "cs_test_paidyouth",
   retrieveSession: async () => ({ metadata: params?.metadata, payment_status: "paid", amount_total: 10330 }),
@@ -382,6 +439,51 @@ check("paid youth email shows Subtotal, Processing fee and the charged total, an
   feeHtml.includes("Subtotal") && feeHtml.includes("$100.00") && feeHtml.includes("Processing fee") && feeHtml.includes("$3.30") &&
   feeHtml.includes("$103.30") && feeHtml.includes("Young Adult (20–29)") && feeHtml.includes("Tuesday Lunch — 7/13"));
 check("free youth email has no processing fee row", !freeHtml?.includes("Processing fee"));
+
+// Children's Ministry care details: required for 12 and under, fail closed.
+const careErr = async (body) => (await post(body)).body.error ?? "";
+check("a child 12 and under without care details is refused with 400",
+  /care details/.test(await careErr(youth([kid(7, { care: undefined })]))));
+check("a child's registration without the family emergency contact is refused",
+  /emergency contact/i.test(await careErr(youth([kid(7)], { childCare: undefined }))));
+check("a child's registration without the guardian's care consent is refused",
+  /consent/i.test(await careErr(youth([kid(7)], { childCare: familyCare({ consent: false }) }))));
+check("a 13-year-old needs no care details or family block",
+  (await post(youth([kid(13)], { childCare: undefined }))).status === 200);
+rows.length = 0; emails.length = 0; created.length = 0; dbWrites.length = 0;
+dbFailTable = "child_care_details";
+const careDown = await post(youth([kid(6), kid(22)], { contactEmail: "care-down@example.com" }));
+await settleEmail();
+check("when care details cannot be saved the registration is refused with 503 and nothing else happens",
+  careDown.status === 503 && /nothing was registered/.test(careDown.body.error ?? "") &&
+  rows.length === 0 && emails.length === 0 && created.length === 0 && dbWrites.length === 0);
+dbFailTable = null;
+delete process.env.SUPABASE_SERVICE_ROLE_KEY;
+check("without the service-role key a child's registration is refused (fail closed)",
+  (await post(youth([kid(6)], { contactEmail: "no-key@example.com" }))).status === 503);
+process.env.SUPABASE_SERVICE_ROLE_KEY = "check-script-only";
+
+// Orphan care rows: a registration that fails after the care rows are saved
+// deletes them again, and one refused for its size never saves them.
+rows.length = 0; emails.length = 0; created.length = 0; dbWrites.length = 0; dbDeletes.length = 0;
+stripeDown = true;
+const stripeFailed = await post(youth([kid(6), kid(22)], { contactEmail: "stripe-down@example.com" }));
+stripeDown = false;
+const orphanRef = careRowsWritten()[0]?.ref;
+check("when the Stripe session cannot be created the saved care rows are deleted again (by ref)",
+  stripeFailed.status === 500 && !!orphanRef &&
+  dbDeletes.some((d) => d.table === "child_care_details" && d.col === "ref" && d.val === orphanRef));
+dbWrites.length = 0; dbDeletes.length = 0; created.length = 0;
+// Accented names: two UTF-8 bytes per letter, so 30 people overflow the 50 metadata keys.
+const NAMES = ["Élise", "Zoë", "Renée", "Andrés", "José", "Noémie", "Chloé", "Björn", "Inès", "Søren"];
+const longName = (i, salt) => Array.from({ length: 30 }, (_, j) => NAMES[(i * 7 + j * 3 + salt) % NAMES.length]).join(" ").slice(0, 120);
+const careBigGroup = [kid(6), ...Array.from({ length: 29 }, (_, i) => kid(22, {
+  firstName: longName(i, 1), lastName: longName(i, 5), allergies: `Allergy note ${longName(i, 2)} ${longName(i, 4)}`.slice(0, 200),
+}))];
+const tooBig = await post(youth(careBigGroup, { contactEmail: "too-big@example.com" }));
+check("a registration too large for Stripe metadata is refused before any care row is saved",
+  tooBig.status === 400 && /too many details/.test(tooBig.body.error ?? "") &&
+  dbWrites.every((w) => w.table !== "child_care_details") && dbDeletes.length === 0 && created.length === 0);
 
 console.log(failures ? `\n${failures} check(s) FAILED` : "\nAll checks passed");
 process.exit(failures ? 1 : 0);

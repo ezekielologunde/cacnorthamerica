@@ -2,13 +2,53 @@
 project: cacnorthamerica
 type: decisions
 status: active
-last_updated: 2026-11-05
+last_updated: 2026-11-08
 tags: [project/cacnorthamerica]
 ---
 
 # Decisions
 
 Related: [[Project]] · [[Architecture]] · [[Features]]
+
+## Children's care details extend the Youth & Child registration (2026-11-08)
+
+One form, one submission: the existing parent/guardian block is the guardian for
+every child, and anyone 12 or under (`CHILD_CARE_MAX_AGE`) gets a care panel;
+siblings share one family block. A separate children's system was not built.
+Care data is stored in its own service-role-only table, fails closed, and is kept
+out of the sheet, email, Stripe and URL token. Retention is a purge after each
+convention (owner decision). See [[Security]], [[Database]].
+
+## No browser draft for the registration form (2026-11-08)
+
+The form writes nothing to `sessionStorage` or `localStorage` (owner decision),
+so a child's medical details typed into it never outlive the page. The cost is
+that a reload loses what was typed. See [[Security]].
+
+## Daily cron, not sub-daily (2026-11-08)
+
+The content refresh runs once a day (`0 9 * * *`) because the project is on
+Vercel Hobby, which rejects sub-daily cron schedules (per
+`docs/cron-refresh-content.md`, confirmed by a failed deploy). Admin saves
+refresh at once and timers cover the rest. Revisit if the plan changes. See
+[[Architecture]], [[Backend]].
+
+## Keep a single English locale with Yoruba-friendly content (2026-11-08)
+
+The site stays single-locale English (see [[Architecture]]); Yoruba appears only
+as short inline phrases (`lib/yoruba.ts`) marked `lang="yo"`, limited to
+standard phrases. No translation is added that a native speaker has not
+confirmed. See [[Frontend]].
+
+## Convention registration gift: its own line, fee not passed on (2026-11-06)
+
+A card registration can add an optional gift. It is a separate Stripe line item
+and a separate `Giving` row with a giving receipt, so it is receipted as a
+donation and the registration fee is not. The processing fee stays sized on the
+registration only, so the church absorbs Stripe's percentage on the gift and the
+donor's receipt equals what they chose. Zelle and free registrations are not
+offered it (no Stripe session to carry it). Charging the fee on the gift too is
+a small change if the church prefers. See [[Payments]].
 
 ## Merge the Convention site into CACNA, in phases (2026-09)
 
@@ -206,3 +246,7 @@ offering is "given as the donor is led, not on a schedule" (code comment).
 
 Embedded checkout was added (PRs #103, #105), then hosted made the default;
 embedded is behind `NEXT_PUBLIC_STRIPE_EMBEDDED`.
+
+## Social cross-post lives in the CACNA admin (PR #161)
+
+Chosen over a third-party scheduler: upload once in admin, fully automatic fan-out to Facebook Page, Instagram Reels and TikTok (X dropped). Cloudinary holds the source because YouTube does not release the original; TikTok pulls through a `/social-video` rewrite. Idempotent per platform, with a kill switch and dry run. TikTok unaudited posts stay private until audit.

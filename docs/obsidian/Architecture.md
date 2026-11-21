@@ -2,7 +2,7 @@
 project: cacnorthamerica
 type: architecture
 status: active
-last_updated: 2026-11-05
+last_updated: 2026-11-08
 tags: [project/cacnorthamerica]
 ---
 
@@ -262,3 +262,38 @@ and no confirmation goes out (the notice and sheet row still do).
 `components/ServeCallout.tsx` promotes `/serve` at the end of every blog post
 and under both convention registration forms (`SERVE_CALLOUT_ENABLED` turns
 it off). Pinned by `node scripts/check-serve.mjs`.
+
+## Content freshness and the scheduled refresh (2026-11-08)
+
+Public pages are cached (ISR). They refresh three ways:
+
+1. **Admin saves**: publishing, editing or deleting a blog post, event,
+   announcement or CAC World story calls `lib/contentRevalidation.ts`, which
+   revalidates the affected pages immediately by route-file pattern (not URL;
+   next-intl rewrites `/blog` to `/en/blog`, which is why the old
+   `revalidatePath("/blog")` never matched). Details in [[Backend]].
+2. **Daily cron**: `vercel.json` runs `GET /api/cron/refresh-content` at
+   `0 9 * * *` (09:00 UTC, once a day, because the project is on Vercel Hobby,
+   which rejects sub-daily schedules; a more frequent schedule failed a deploy,
+   per `docs/cron-refresh-content.md`). It needs
+   `Authorization: Bearer ${CRON_SECRET}` ([[Security]]). It marks the CAC World
+   feed tag stale (stale-while-revalidate) and the home, `/blog`,
+   `/blog/[slug]`, `/calendar` and `/events/[slug]` pages, so new CAC World
+   stories appear without anyone touching the admin.
+3. **Timers as a fallback**: the home page rebuilds at most every 60 s and the
+   CAC World feed is re-fetched at least every 10 minutes
+   (`docs/cron-refresh-content.md`).
+
+The home page, hero, Latest News and Upcoming Programs read the same merged data
+as `/blog` and `/calendar`: static posts/events (`lib/blog.ts`, `lib/events.ts`)
+plus those published from the admin (`lib/blogPosts.ts`, `lib/dbEvents.ts`,
+merged by `lib/blogMerge.ts`).
+
+## Children's care details data flow (2026-11-08)
+
+Youth & Child form (`ChildCareFields`) -> `POST /api/register` ->
+`parseRegistrationCare` -> `saveChildCare` -> `cacna.child_care_details`
+(service role only), before any sheet row, check-in row, email or Stripe
+session; admin reads it server-side on `/admin/check-in` and
+`/admin/check-in/children`. It never enters the registration summary. See
+[[Database]], [[Security]], [[Backend]].

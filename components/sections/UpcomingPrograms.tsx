@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { Reveal } from "@/components/ui/Reveal";
-import { specialEvents, splitByDate, hasEventStarted } from "@/lib/events";
+import { specialEvents, splitByDate, hasEventStarted, type ChurchEvent } from "@/lib/events";
 import "./home-mobile.css";
 
-export function UpcomingPrograms() {
-  const { upcoming } = splitByDate(specialEvents);
+/** `events` is the static events plus those published from /admin/events;
+ *  the static list alone is the fallback. */
+export function UpcomingPrograms({ events: allEvents = specialEvents }: { events?: ChurchEvent[] } = {}) {
+  const { upcoming } = splitByDate(allEvents);
   const events = upcoming.filter((e) => !hasEventStarted(e)).slice(0, 4);
 
   if (events.length === 0) return null;

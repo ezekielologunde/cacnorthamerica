@@ -2,7 +2,7 @@
 project: cacnorthamerica
 type: changelog
 status: active
-last_updated: 2026-11-05
+last_updated: 2026-11-11
 tags: [project/cacnorthamerica]
 ---
 
@@ -10,11 +10,81 @@ tags: [project/cacnorthamerica]
 
 Related: [[Project]] · [[Decisions]] · [[Features]] · [[Payments]] · [[Security]]
 
+## 2026-11-12 -- more Owoseni messages with embedded Spotify players
+
+- Five more posts from Pastor R.T. Owoseni's Sunday messages (The Unchanging
+  God, Confronting Your Giants, Attracting Great Mercy, Obtaining God's
+  Promises by Faith, Growing in Faith), same pattern as "Dealing with Anger".
+- New `BlogPost.spotify` field: renders Spotify's embedded player above the
+  text (only open.spotify.com episode URLs). CSP `frame-src` now allows
+  https://open.spotify.com.
+
+## 2026-11-12 -- one Ilorin message as a full blog story
+
+- New post "Dealing with Anger" (`dealing-with-anger-pastor-owoseni`): one of
+  Pastor R.T. Owoseni's Sunday messages (CAC Salvation Centre, Ilorin), written
+  from the message's own notes, bylined to him, linking to the episode on
+  Spotify, his Spotify show, and the full message on the Ilorin site (the
+  canonical home of the text). He authorized the feature.
+- Removed the "Messages from Ilorin" sidebar card and `lib/ilorinMessages.ts`.
+- Blog bodies now render `[text](https://...)` links (https only, new tab).
+
+## 2026-11-11 -- slimmer header nav + Messages from Ilorin
+
+- Header: Who We Are, Ministries, Convention, Events & Media, Store, Contact,
+  plus the Give pill and the convention CTA. Events & Media = Calendar & Events,
+  Golden Jubilee, Watch Online, Blog & News, Gallery. Watchwords, Holy Land
+  Pilgrimage, Ministers Retreat, Hope For All Summit, Serve and Forms are no
+  longer header items (footer / own pages only). `NavGroup.footerOnly` added
+  (Get Involved is footer-only); `upcomingEventLinks` removed.
+- Pastor R.T. Owoseni's Ilorin messages are featured as a normal blog story
+  (see 2026-11-12 below), not as a sidebar card.
+
+## 2026-11-11 -- Google Consent Mode v2 for Analytics and ads (PR 163)
+
+- `gtagInitScript()` now sets consent defaults before any `config` call: all four Google storage signals denied for the EEA, UK and Switzerland, granted elsewhere; `wait_for_update: 500`.
+- On `/blog`, Google's AdSense consent message (once published in the AdSense console) upgrades consent; other pages in those regions stay cookieless. The console step is still open: [[Tasks]]. Details: [[Security]].
+- Six checks added to `scripts/check-adsense.mjs`.
+
+## 2026-11-08 -- round 2: children's care details, shared nav, content refresh (PR 160)
+
+- **Children's care details:** Youth & Child registration now collects allergies, medical notes, medications, dietary/special needs, photo consent, emergency contact, pickups and guardian consent for each child 12 or under (`lib/childCare.ts`, `components/register/ChildCareFields.tsx`). Stored in new `cacna.child_care_details` (migration 0026; RLS forced, no policies, service role only), saved by `app/api/register/route.ts` before anything else and deleted if a later step fails; refuses with 503 if it cannot save. Admin allergy flag on `/admin/check-in` and a printable `/admin/check-in/children` sheet. **Apply 0026 before deploying.** See [[Database]], [[Security]], [[Backend]].
+- **Content freshness:** `lib/contentRevalidation.ts` revalidates by route-file pattern (the old `revalidatePath("/blog")` never matched under next-intl); daily cron `GET /api/cron/refresh-content` (`0 9 * * *`, bearer `CRON_SECRET`, constant-time check in `lib/cronAuth.ts`). See [[Architecture]].
+- **Home:** Latest News, hero and Upcoming Programs now include posts/events published in the admin (`lib/blogPosts.ts`, `lib/dbEvents.ts`, `lib/blogMerge.ts`).
+- **Navigation:** header and footer render one list, `lib/nav.ts`, with current-page highlighting (`lib/navMatch.ts`). See [[Frontend]].
+- **Yoruba-friendly touches:** `lib/yoruba.ts` inline phrases. See [[Decisions]].
+- Open owner items in [[Tasks]].
+
+## 2026-11-08 -- video blog posts, Pastor Agbeja interview (PR 156)
+
+- Blog posts can now carry an optional `video` (YouTube id, title, channel, channel link), shown click-to-play above the text with a credit line. Rendered by `VideoFacade` in `app/(site)/[locale]/blog/[slug]/page.tsx`. The field exists only in `lib/blog.ts`; posts created in the admin console cannot set it.
+- Added the Ancient Alters #0001 interview with Regional Superintendent Pastor Dr. T.A.O. Agbeja as a Featured story (`lib/featuredStories.ts`) and as the blog post `pastor-agbeja-ancient-alters-interview`. The write-up uses only the video's published description.
+
+## 2026-11-07 -- secrets kept out of analytics, one AdSense ID (PR 155)
+
+- Mergestorm review of #73: a padded AdSense ID gave `ads.txt` a valid line but a bad script URL, and only `/register/confirmation` was stripped from GA `page_location`. Both fixed.
+- `adsenseClientId()` is now the single normalizer (`ads.txt`, `AdSenseScript`, `BlogAd`, `GoogleTags`, `google-adsense-account` meta). `BlogAd` no longer loads `adsbygoogle.js` itself.
+- Query stripped from GA `page_location` and from Vercel Analytics / Speed Insights URLs on the three confirmation pages and `/giving/cancel` (and `/admin` for Vercel); confirmation pages send `no-referrer`. Google tags moved out of the root layout so `/admin` never loads them. Details and the GA4 setting to change: [[Security]].
+- `scripts/check-adsense.mjs` now runs in `npm test`.
+
+## 2026-11-06 -- registration contact fields and Quick help
+
+- Adult form: one required **DCC / Zone / Church** field (people who do not know their zone enter their church). Youth form: DCC / Zone is optional (church name is already required).
+- **Phone is required** on both forms (client and server, at least 7 digits).
+- New **Quick help** panel (`components/register/QuickHelp.tsx`) on both registration pages: how to register, unknown DCC/zone, confirmation email, Zelle and card help, contact links. Support wording only; no refund text.
+
+## 2026-11-06 -- optional gift on convention registration
+- Card payments on both registration forms can add an optional gift ($1 to $5,000). It is its own Stripe line item, recorded in the session summary (`gift`), logged as a separate `Giving` row and receipted with the giving email. The registration row's Total and Amount Charged exclude it. The processing fee is still sized on the registration only, so the church absorbs Stripe's percentage on the gift. Zelle and free registrations are not offered it. See `lib/registrationGift.ts`.
+
 ## 2026-09-10 to 2026-11-05 -- summary from `git log origin/master --first-parent`
 
 PR titles are the source; details in the linked notes.
 
 - 2026-09-16 #36 Yoruba locale removed; single-locale English, plain URLs
+- 2026-11-06 AdSense limited to blog pages only (`/blog`, `/blog/*`).
+- 2026-11-05 #73 AdSense readiness: env-gated site-wide script, `/ads.txt`,
+  robots/sitemap updates, breadcrumb JSON-LD on blog posts, owner checklist in
+  `docs/adsense-readiness.md`
 - 2026-11-01 #38 canonical host `cacnorthamerica.com`; #44/#46 form spam
   guards and contact honeypot; #45 purpose email addresses
 - 2026-11-02 #71 disclosed processing-fee line on every Stripe Checkout; #80
@@ -234,8 +304,11 @@ photo marquee (`6fb8cd8`).
   gallery, department pages (`dbf0f68`)
 - Added a dedicated Youth & Young Adult page (`9ca08d1`)
 - Added the CACNA Singles Ministry Virtual Game Night (Sat Oct 31, 2026, 6:00 PM ET, Zoom, link TBA) to `specialEvents` in `lib/events.ts`; text-only, no detail page or flyer yet; end time 8:00 PM is an assumption
+- Added Operation Impact Brazil: Preparing the Ground (Nov 8-10, 2026, 8:00 PM ET, Zoom prayer meeting, CAC North America Empowerment Department) to `specialEvents` in `lib/events.ts`; text-only; end time 9:00 PM on Nov 10 is an assumption; Zoom ID and passcode copied from the flier
 - Added Bible Study 31 "Offerings from the Tribal Leaders" (Numbers 7), Study 33 "Consequences of Complaints" (Numbers 10–11) and Study 34 "Miriam's Rebellion" (Numbers 12) as Reflection posts in `lib/blog.ts`
 - Added Bible Study 35 "The Twelve Spies" (Numbers 13), Study 36 "Israel's Fear and Rebellion" (Numbers 14) and Study 37 "Offerings' Ordinance in Canaan and Korah's Rebellion" (Numbers 15–16) as Reflection posts in `lib/blog.ts`
 - Added the Business Group Fellowship Quarterly Summit "Investment: Triple Net" (Mon Oct 26, 2026, 8:30 PM ET, Zoom) to `specialEvents`; already past, so it lists under Past events on /calendar; Zoom meeting ID/passcode deliberately not published; end time 10:00 PM is an assumption
 - Added a Golden Jubilee look-back page (`/golden-jubilee`) for the 50th anniversary celebrated Oct 10, 2026 at CAC Village; facts only from the printed programme (no photos, adverts or giving details); listed in the sitemap and search, linked from /history and /about
 - Updated `cacna.leaders` from the Golden Jubilee brochure p12 (migration 0020, applied to the live project 2026-11-05 at the owner's instruction): replaced the superintendents of Bethel DCC (Olowomeye), Western DCC (Adeleke), South Florida DCC (Olukitibi) and Philadelphia Zone (Ademoye) with their old photos and bios cleared; added zones Staten Island, Ontario and Winnipeg; added Agbeja's Chancellor (Bible Institute) role; appended regional roles to seven superintendents; spellings Aroniyi and Zaccheaus. `zone_name` values were not renamed (the brochure says "Vineyard of Comfort" where the table says "Agbala Itura"; lib/churches.ts matches names exactly, so that rename needs a coordinated code change)
+- Added a Forms directory: public `/forms` page and admin `/admin/forms` overview (admin sidebar link, sitemap entry), both driven by `lib/siteForms.ts`; admin counts read `contact_submissions`, `newsletter_subscribers`, `serve_signups`, `checkin_people` (current convention year) and `giving_invoices`; admin page not yet checked while signed in
+- Added the admin social cross-post tool (`/admin/social`, `lib/social/*`, migrations 0027/0028 not applied; PR #161); CSP `media-src 'self' blob:` for the video preview

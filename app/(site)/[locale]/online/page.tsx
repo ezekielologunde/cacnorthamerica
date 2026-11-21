@@ -4,7 +4,7 @@ import { FooterExperience } from "@/components/sections/FooterExperience";
 import { FeaturedStories } from "@/components/sections/FeaturedStories";
 import { Reveal } from "@/components/ui/Reveal";
 import Image from "next/image";
-import { getSermons, getLiveStream, formatSermonDate } from "@/lib/sermons";
+import { getSermons, getLiveStream, formatSermonDate, videoListJsonLd } from "@/lib/sermons";
 import { PRAYER_LINE } from "@/lib/prayerLine";
 import { Video } from "lucide-react";
 import { archiveEntries } from "@/lib/archive";
@@ -12,7 +12,7 @@ import { ArchiveBrowser } from "@/components/media/ArchiveBrowser";
 import { currentOrNextConvention, getConventionState } from "@/lib/conventions";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, breadcrumbJsonLd } from "@/lib/site";
 
 const YOUTUBE_URL = "https://youtube.com/@cacnorthamericalatunderegi1330";
 const YOUTUBE_LIVE_URL = "https://www.youtube.com/@cacnorthamericalatunderegi1330/live";
@@ -70,8 +70,13 @@ export default async function OnlinePage({
   const featured = live ?? pastSermons[0];
   const cy = currentOrNextConvention();
   const conventionIsLive = getConventionState(cy) === "live";
+  const videosJsonLd = videoListJsonLd(pastSermons, `${SITE_URL}/online`);
   return (
     <main id="main-content" style={{ background: "#0C0E13", minHeight: "100vh" }}>
+      {videosJsonLd && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(videosJsonLd).replace(/</g, "\\u003c") }} />
+      )}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Watch Online", path: "/online" }])).replace(/</g, "\\u003c") }} />
       <Nav dark />
 
       {/* Hero */}

@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import { socialVideoRewrite } from "./lib/social/cloud-name";
 
 const withNextIntl = createNextIntlPlugin();
 
@@ -40,9 +41,10 @@ const nextConfig: NextConfig = {
       "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://pagead2.googlesyndication.com https://partner.googleadservices.com https://tpc.googlesyndication.com https://www.google-analytics.com https://unpkg.com https://js.stripe.com https://challenges.cloudflare.com",
       "style-src 'self' 'unsafe-inline' https://unpkg.com",
       "img-src 'self' data: blob: https://img.youtube.com https://i.ytimg.com https://res.cloudinary.com https://*.cdninstagram.com https://cacnorthamerica.com https://blogger.googleusercontent.com https://*.bp.blogspot.com https://www.googletagmanager.com https://www.google-analytics.com https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.g.doubleclick.net https://unpkg.com https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com",
+      "media-src 'self' blob:",
       "font-src 'self' https://unpkg.com",
-      "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://analytics.google.com https://www.google.com https://vitals.vercel-insights.com https://*.tile.openstreetmap.org https://api.stripe.com https://checkout.stripe.com https://pagead2.googlesyndication.com https://*.g.doubleclick.net https://*.adtrafficquality.google",
-      "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://maps.google.com https://www.google.com https://js.stripe.com https://hooks.stripe.com https://checkout.stripe.com https://challenges.cloudflare.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://*.safeframe.googlesyndication.com https://*.adtrafficquality.google",
+      "connect-src 'self' https://*.supabase.co https://api.cloudinary.com https://www.google-analytics.com https://analytics.google.com https://www.google.com https://vitals.vercel-insights.com https://*.tile.openstreetmap.org https://api.stripe.com https://checkout.stripe.com https://pagead2.googlesyndication.com https://*.g.doubleclick.net https://*.adtrafficquality.google",
+      "frame-src 'self' https://open.spotify.com https://www.youtube.com https://www.youtube-nocookie.com https://maps.google.com https://www.google.com https://js.stripe.com https://hooks.stripe.com https://checkout.stripe.com https://challenges.cloudflare.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://*.safeframe.googlesyndication.com https://*.adtrafficquality.google",
       "object-src 'none'",
       "base-uri 'self'",
     ].join("; ");
@@ -74,6 +76,10 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
+      // Printed on the 2027 convention flyers (www.cacna.org/convention). Kept
+      // temporary (307) so it can point at a new year's page later.
+      { source: "/convention", destination: "/events/cacna-2027", permanent: false },
+      { source: "/convention/register", destination: "/events/cacna-2027/register", permanent: false },
       // One canonical host: cacna.org. The *.vercel.app project
       // domain and the retired cacna.cacsalvationcenter.org subdomain are both
       // indexed by Google, so send every page to the canonical host. API routes
@@ -214,6 +220,17 @@ const nextConfig: NextConfig = {
           has: [{ type: "host" as const, value: "blog.cacnorthamerica.com" }],
           destination: "/blog",
         },
+        // TikTok's PULL_FROM_URL only fetches from a verified domain or URL
+        // prefix and follows no redirects, so social videos are also served
+        // from cacna.org: an external rewrite (a proxy, not a 3xx) to the
+        // same public Cloudinary file. Only the `social` folder, one path
+        // segment, so nothing else on Cloudinary is reachable this way.
+        // proxy.ts's matcher skips paths with a dot, so next-intl never sees
+        // these. lib/social/adapters/tiktok.ts builds the URLs. The rule and
+        // the cloud name come from lib/social/cloud-name.ts, which TikTok's
+        // configuration also checks, so without a cloud name there is
+        // neither a rewrite nor a TikTok adapter.
+        ...[socialVideoRewrite()].filter((r) => r !== null),
       ],
       afterFiles: [],
       fallback: [],

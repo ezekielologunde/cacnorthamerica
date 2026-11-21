@@ -1,3 +1,4 @@
+import { GIFT_LINE_LABEL, giftOf } from "@/lib/registrationGift";
 import { Resend } from "resend";
 import { escapeHtml } from "@/lib/html";
 import { emailShell, emailCard, sender } from "@/lib/email";
@@ -16,10 +17,12 @@ const CATEGORY_LABEL: Record<RegistrantCategory, string> = {
 function buildHtml(summary: RegistrationSummary, confirmationUrl: string, isPaid: boolean, processingFeeCents: number, zelleRef?: string): string {
   const statusLabel = zelleRef ? "Awaiting payment" : summary.isComplimentary ? "Complimentary" : isPaid ? "Paid" : "Pending";
   const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
-  const totalLabel = dollars(summary.totalAmountCents + processingFeeCents);
-  const feeRows = processingFeeCents > 0
+  const gift = giftOf(summary);
+  const totalLabel = dollars(summary.totalAmountCents + processingFeeCents + gift);
+  const feeRows = processingFeeCents > 0 || gift > 0
     ? `<tr><td style="padding:0 0 6px;font-size:13.5px;color:#5f5e5a">Subtotal</td><td style="padding:0 0 6px;font-size:13.5px;color:#5f5e5a;text-align:right">${dollars(summary.totalAmountCents)}</td></tr>
-        <tr><td style="padding:0 0 10px;font-size:13.5px;color:#5f5e5a">Processing fee</td><td style="padding:0 0 10px;font-size:13.5px;color:#5f5e5a;text-align:right">${dollars(processingFeeCents)}</td></tr>`
+        ${processingFeeCents > 0 ? `<tr><td style="padding:0 0 ${gift > 0 ? 6 : 10}px;font-size:13.5px;color:#5f5e5a">Processing fee</td><td style="padding:0 0 ${gift > 0 ? 6 : 10}px;font-size:13.5px;color:#5f5e5a;text-align:right">${dollars(processingFeeCents)}</td></tr>` : ""}
+        ${gift > 0 ? `<tr><td style="padding:0 0 10px;font-size:13.5px;color:#5f5e5a">${GIFT_LINE_LABEL}</td><td style="padding:0 0 10px;font-size:13.5px;color:#5f5e5a;text-align:right">${dollars(gift)}</td></tr>` : ""}`
     : "";
 
   const startIso = conventionYears.find((cy) => cy.year === summary.year)?.startIso;

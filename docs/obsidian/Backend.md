@@ -2,7 +2,7 @@
 project: cacnorthamerica
 type: backend
 status: active
-last_updated: 2026-11-05
+last_updated: 2026-11-08
 tags: [project/cacnorthamerica]
 ---
 
@@ -19,7 +19,8 @@ actions. Supabase is the data store ([[Database]]).
 |---|---|
 | `contact` | Contact form |
 | `serve` | `/serve` volunteer sign-up (PR #136) |
-| `register` | Convention registration: free, Zelle, card ([[Payments]]) |
+| `register` | Convention registration: free, Zelle, card ([[Payments]]); Youth & Child track also saves care details (below) |
+| `cron/refresh-content` | Scheduled content refresh (GET, bearer `CRON_SECRET`); see below |
 | `store/checkout` | Store Stripe Checkout |
 | `giving/checkout` | Giving Stripe Checkout (one-time; recurring behind flag) |
 | `giving/zelle` | Zelle giving pledge |
@@ -30,6 +31,50 @@ actions. Supabase is the data store ([[Database]]).
 | `approx-location` | Approximate location for the church finder (PR #48 branch name) |
 
 Server action: `app/newsletter/actions.ts`.
+
+## Children's care details in `api/register` (2026-11-08)
+
+In the youth track of `app/api/register/route.ts`, order matters:
+
+1. `parseRegistrationCare` (`lib/childCare.ts`) validates the care details for
+   everyone 12 or under; failure is a 400.
+2. The encoded summary is checked to fit Stripe metadata (card path) **before**
+   anything is saved, so that refusal leaves no care rows behind.
+3. `childCareRows` builds the rows and `saveChildCare` (`lib/childCareStore.ts`)
+   inserts them into `cacna.child_care_details`. If this fails the route returns
+   **503** and nothing else is written: no sheet row, check-in row, email or
+   payment (fail closed; see [[Security]]).
+4. Every later failure (free-path token error, Zelle not ok, Stripe session
+   error) calls `discardCare()` -> `deleteChildCare(ref)`, a best-effort delete
+   by `ref`, so a retry leaves no orphans. Rows left by an abandoned card
+   checkout are removed by the purge query in migration 0026 ([[Database]]).
+
+Care data is never added to the summary, so it is not in the URL token, Stripe
+metadata, sheet or email. `saveChildCare` / `deleteChildCare` log the ref and an
+error code only.
+
+## Scheduled content refresh and revalidation (2026-11-08)
+
+- `app/api/cron/refresh-content/route.ts`: `GET`, authorised by
+  `isAuthorizedCronRequest` (`lib/cronAuth.ts`, see [[Security]]); runs
+  `refreshAllPublicContent()` and returns `{ ok, revalidated, at }` with
+  `no-store`. `vercel.json` schedules it `0 9 * * *` (see [[Architecture]]).
+- `lib/contentRevalidation.ts` is the one place that revalidates public pages.
+  Admin server actions (blog, events, announcements, CAC World news) call
+  `revalidateBlogContent`, `revalidateEventContent`, `revalidateAnnouncements`,
+  `revalidateCacWorldNewsContent`. It revalidates by **route-file pattern** plus
+  `"page"` (for example `/(site)/[locale]/blog`), not by URL. Why: next-intl
+  rewrites every public URL to its locale route (`/blog` is served from
+  `/en/blog`) and `revalidatePath` matches the rewritten path, so the earlier
+  literal `revalidatePath("/blog")` and `revalidatePath("/")` never matched a
+  cached page and the home page only caught up on its 60 s timer and `/blog` on
+  its hourly one. The scheduled run marks the CAC World feed tag stale
+  (`revalidateTag(tag, "max")`, stale-while-revalidate) and the home, blog,
+  blog post, calendar and event pages.
+- `lib/blogPosts.ts` (`getPublishedBlogPosts`) and `lib/dbEvents.ts`
+  (`getPublishedDbEvents`) read published admin blog posts and events from the
+  `cacna` schema with the anon client and return empty on failure;
+  `lib/blogMerge.ts` merges them with the static posts. See [[Frontend]].
 
 ## Stripe webhook
 

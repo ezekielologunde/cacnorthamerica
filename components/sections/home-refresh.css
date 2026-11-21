@@ -19,7 +19,7 @@
 }
 
 @media (max-width: 640px) {
-  .hm-conv-photo { aspect-ratio: 16 / 10 !important; border-radius: 22px !important; }
+  .hm-conv-photo:not(.hm-conv-photo--flyer) { aspect-ratio: 16 / 10 !important; border-radius: 22px !important; }
   .hm-reg-row { padding: 16px 14px 16px 18px !important; }
 }
 

@@ -7,6 +7,7 @@ import Link from "next/link";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
+import { currentOrNextConvention, hasExternalRegistrationUrl } from "@/lib/conventions";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -69,6 +70,10 @@ export default async function ChildrenPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("Children");
+  // Children register through the Youth & Child form, which also takes the
+  // Children's Ministry care details (allergies, pickup, emergency contact).
+  const cy = currentOrNextConvention();
+  const registerHref = cy.registrationUrl && !hasExternalRegistrationUrl(cy) ? `/events/cacna-${cy.year}/register/youth` : null;
 
   return (
     <main id="main-content">
@@ -89,6 +94,18 @@ export default async function ChildrenPage({
               The children&apos;s program at the CACNA Annual Convention.
             </p>
           </Reveal>
+          {registerHref && (
+            <Reveal delay={340}>
+              <Link
+                href={registerHref}
+                className="press-lg"
+                style={{ display: "inline-flex", alignItems: "center", minHeight: 52, marginTop: 28, background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "0 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(200,30,58,.4)" }}
+              >
+                {t("registerCta")} →
+              </Link>
+              <p style={{ fontSize: 14, color: "rgba(245,246,250,.6)", margin: "14px auto 0", maxWidth: 440, lineHeight: 1.55 }}>{t("registerNote")}</p>
+            </Reveal>
+          )}
         </div>
       </section>
 
@@ -193,16 +210,29 @@ export default async function ChildrenPage({
           <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(30px,4.5vw,54px)", letterSpacing: "-1.2px", color: "var(--cream)", margin: "0 0 16px", lineHeight: 0.98 }}>
             Bring the whole family.
           </h2>
-          <p style={{ fontSize: 16, color: "rgba(245,246,250,.6)", margin: "0 0 32px" }}>
-            Questions about the children&apos;s program?
+          <p style={{ fontSize: 16, color: "rgba(245,246,250,.6)", margin: "0 auto 32px", maxWidth: 520, lineHeight: 1.6 }}>
+            {registerHref ? t("ctaBodyRegister") : "Questions about the children’s program?"}
           </p>
-          <Link
-            href="/contact"
-            className="press-lg"
-            style={{ display: "inline-block", background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 34px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(200,30,58,.4)" }}
-          >
-            Contact Us →
-          </Link>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center" }}>
+            {registerHref && (
+              <Link
+                href={registerHref}
+                className="press-lg"
+                style={{ display: "inline-block", background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 34px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(200,30,58,.4)" }}
+              >
+                {t("registerCta")} →
+              </Link>
+            )}
+            <Link
+              href="/contact"
+              className="press-lg"
+              style={registerHref
+                ? { display: "inline-block", color: "var(--cream)", fontWeight: 700, fontSize: 16, padding: "15px 32px", borderRadius: 999, textDecoration: "none", border: "2px solid rgba(245,246,250,.35)" }
+                : { display: "inline-block", background: "var(--red)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "17px 34px", borderRadius: 999, textDecoration: "none", boxShadow: "0 14px 30px rgba(200,30,58,.4)" }}
+            >
+              Contact Us →
+            </Link>
+          </div>
         </Reveal>
       </section>
 

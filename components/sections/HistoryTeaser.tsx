@@ -49,11 +49,11 @@ export function HistoryTeaser() {
 
         <figure className="hm-history-photo" style={{ margin: 0, position: "relative", aspectRatio: "4 / 3", borderRadius: 28, overflow: "hidden", boxShadow: "0 28px 60px rgba(18,20,30,.22)", background: "var(--ink)" }}>
           <Image
-            src="/photos/gallery-archive/dsc-8508-1569.jpg"
-            alt="A congregation in colorful attire and head wraps seated on red chairs in a fellowship hall"
+            src="/photos/gallery-archive/whatsapp-image-2018-07-23-at-10-11-01-pm-1524.jpg"
+            alt="Worshipers in matching light-blue shirts raising their hands in praise in a crowded hall, with a speaker at a clear pulpit in the foreground"
             fill
             sizes="(max-width: 860px) 100vw, 580px"
-            style={{ objectFit: "cover" }}
+            style={{ objectFit: "cover", objectPosition: "center 55%" }}
           />
         </figure>
       </div>

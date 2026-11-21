@@ -2,7 +2,7 @@
 project: cacnorthamerica
 type: features
 status: active
-last_updated: 2026-11-05
+last_updated: 2026-11-08
 tags: [project/cacnorthamerica]
 ---
 
@@ -27,6 +27,7 @@ Related: [[Project]] · [[Architecture]] · [[Changelog]]
   message when the closest church is far away
 - Events + Calendar
 - Blog — categorized, each category has its own hero band; masthead redesign
+- Blog posts can carry a credited click-to-play YouTube video (`video` field in `lib/blog.ts`, rendered with `VideoFacade` on `blog/[slug]`); videos shown in the Featured stories band come from `lib/featuredStories.ts` (PR #156)
 - Gallery — Cloudinary-backed photo gallery, including real convention
   photos pulled from cacnaconvention.org
 - Giving/store — cart context (`CartContext.tsx`), products/orders tables
@@ -43,6 +44,8 @@ Related: [[Project]] · [[Architecture]] · [[Changelog]]
 ## Admin console (`/admin`, Supabase-Auth gated)
 
 - Announcements, blog, events, gallery, newsletter, orders, admin users
+- Forms overview `/admin/forms`: every site form, where its submissions go, and
+  live row counts for the ones stored in the database
 - Login page at `/admin/login`; all other `/admin/*` routes protected by
   `proxy.ts` middleware
 
@@ -69,6 +72,10 @@ Related: [[Project]] · [[Architecture]] · [[Changelog]]
 
 Implemented unless marked otherwise. Details in [[Payments]], [[Backend]].
 
+- Forms directory: public `/forms` page grouping every form (contact, newsletter,
+  convention and youth registration, serve, give, cancel a recurring gift, store)
+  with what each is for and a link; admin `/admin/forms` adds where submissions
+  go and row counts. Both read `lib/siteForms.ts`. See [[Frontend]].
 - Convention registration with per-person 4-character check-in codes, adult
   fields, QR dropped (PR #82); Youth & Child registration (PR #80)
 - Staff check-in lookup `/admin/check-in` (PR #83); pay registration by Zelle
@@ -87,3 +94,25 @@ Implemented unless marked otherwise. Details in [[Payments]], [[Backend]].
 - Pages: accessibility, faq, history, privacy, refunds, terms (present under
   `app/(site)/[locale]/`)
 - **Partial (off until env set):** blog-only AdSense unit (PR #123)
+- **Partial (off until `NEXT_PUBLIC_ADSENSE_ID` is set):** AdSense auto-ads script on **blog pages only** (rule in `lib/adsense.ts`, owner decision 2026-11-06), public `/ads.txt` built from the same variable (404 while unset), and robots/sitemap tuned for AdSense's crawler. Owner steps in `docs/adsense-readiness.md` (PR #73)
+- **Children's Ministry care details (2026-11-08):** the Youth & Child
+  registration collects, for each child 12 or under, allergies (type and
+  severity), medical notes, medications, dietary and special needs and photo
+  consent, plus a shared family block (emergency contact, up to 4 authorized
+  pickups, guardian consent). Stored in `cacna.child_care_details`
+  ([[Database]]); check-in staff see an allergy flag and care summary on
+  `/admin/check-in` and a printable sheet at `/admin/check-in/children`.
+  **Needs migration 0026 applied before deploy**; legal wording not yet
+  reviewed. See [[Security]], [[Tasks]].
+- **Shared navigation (2026-11-08):** header and footer render one list
+  (`lib/nav.ts`), with the current page highlighted. See [[Frontend]].
+- **Yoruba-friendly touches (2026-11-08):** inline Yoruba phrases
+  (`lib/yoruba.ts`) on the otherwise English site; native-speaker review
+  pending ([[Tasks]]).
+- **Home shows admin-published content (2026-11-08):** posts and events
+  published in `/admin/blog` and `/admin/events` appear on the home page as
+  well as `/blog` and `/calendar`.
+- **Scheduled content refresh (2026-11-08):** a daily Vercel Cron job refreshes
+  the CAC World News feed and public pages; admin saves refresh immediately.
+  Needs `CRON_SECRET` set. See [[Backend]], [[Architecture]].
+- **Partial (off until configured):** admin social cross-post (`/admin/social`, PR #161): upload once, post to a Facebook Page, Instagram Reels and TikTok, with a per-platform log, Retry and Post now. Needs migrations 0027/0028, Meta and TikTok developer apps, `SOCIAL_TOKEN_ENCRYPTION_KEY` and `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`. Design: `docs/superpowers/specs/2026-11-08-social-crosspost-design.md`. See [[Database]], [[Security]]

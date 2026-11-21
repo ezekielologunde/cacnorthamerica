@@ -14,7 +14,10 @@ import { sendRegistrationConfirmationEmail } from "@/lib/registrationEmail";
 import { FORM_HEADER, HONEYPOT_FIELD, looksLikeSpam } from "@/lib/spam";
 import { TURNSTILE_ERROR, verifyTurnstile } from "@/lib/turnstile";
 import { processingFeeLineItem, processingFeeMetadata } from "@/lib/processingFee";
+import { giftLineItems, parseGiftCents } from "@/lib/registrationGift";
 import { adultSheetExtras, categoryForAge, EMAIL_RE, encodeMeals, parseMealsAndAllergies, parseYouthRegistration, youthSheetName, youthSheetRows } from "@/lib/youthRegistration";
+import { childCareRows, needsChildCare, parseRegistrationCare } from "@/lib/childCare";
+import { deleteChildCare, saveChildCare } from "@/lib/childCareStore";
 
 type RegisterRequestBody = {
   registrationType: "individual" | "group";
@@ -126,9 +129,13 @@ function validateRequestBody(body: unknown): string | null {
   if (b.contactPhone != null && typeof b.contactPhone !== "string") {
     return "contactPhone must be a string";
   }
-  // Same label and rule as the youth track's DCC / Zone.
+  // One "DCC / Zone / Church" field: people who do not know their DCC or zone
+  // enter their church name there.
   if (typeof b.dccZone !== "string" || b.dccZone.trim() === "") {
-    return "DCC / Zone is required";
+    return "DCC / Zone / Church is required";
+  }
+  if (typeof b.contactPhone !== "string" || (b.contactPhone.match(/\d/g) ?? []).length < 7) {
+    return "Please enter a phone number we can reach you on";
   }
   for (const value of [b.contactName, b.contactEmail, b.churchName ?? "", b.contactPhone ?? "", b.dccZone]) {
     if (value.length > MAX_FIELD_LENGTH) {
@@ -227,6 +234,9 @@ export async function POST(request: Request) {
     contactPhone: (raw.contactPhone ?? "").trim(),
   };
   const dccZone = body.dccZone.trim();
+  const giftParsed = parseGiftCents((rawBody as Record<string, unknown>).donationCents);
+  if (!giftParsed.ok) return NextResponse.json({ error: giftParsed.error }, { status: 400 });
+  const gift = giftParsed.cents;
 
   // Individual mode: each person's meals (an explicit choice) and allergy
   // notes, under the youth track's rule. Group mode is a names-only list, so
@@ -292,6 +302,11 @@ export async function POST(request: Request) {
   }
 
   const totalAmountCents = pricedRegistrants.reduce((sum, r) => sum + r.priceCents, 0);
+  // A gift rides on a card payment for a paid registration; Zelle and free
+  // registrations have no Stripe session to carry it.
+  if (gift > 0 && (totalAmountCents === 0 || parsePaymentMethod(body) !== "card")) {
+    return NextResponse.json({ error: "A gift can be added when paying by card" }, { status: 400 });
+  }
   const ref = crypto.randomUUID();
 
   const summary: RegistrationSummary = {
@@ -304,6 +319,7 @@ export async function POST(request: Request) {
     contactPhone: body.contactPhone || "",
     registrants: pricedRegistrants.map((r, i) => ({ n: r.fullName, c: r.category, ...extras[i] })),
     totalAmountCents,
+    ...(gift > 0 ? { gift } : {}),
     isComplimentary,
     dcc: dccZone,
   };
@@ -404,7 +420,7 @@ export async function POST(request: Request) {
           product_data: { name: `CACNA ${cy.year} Convention registration — ${r.fullName} (${r.category})` },
         },
         quantity: 1,
-      })), processingFeeLineItem(totalAmountCents)],
+      })), processingFeeLineItem(totalAmountCents), ...giftLineItems(gift)],
       customer_email: body.contactEmail,
       // Only the opaque session id travels in the URL; the confirmation page
       // reads the registration back from this session's own metadata.
@@ -442,6 +458,18 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
     return NextResponse.json({ error: "paymentMethod must be 'zelle' or 'card'" }, { status: 400 });
   }
   const input = parsed.value;
+  // Children's Ministry care details for everyone 12 and under
+  // (lib/childCare.ts). Saved below, before anything else is written, and
+  // kept out of the summary so they never reach the URL token, Stripe, the
+  // sheet or the email.
+  const careParsed = parseRegistrationCare(rawBody, input.registrants.map((r) => r.age));
+  if (!careParsed.ok) {
+    return NextResponse.json({ error: careParsed.error }, { status: 400 });
+  }
+  const care = careParsed.value;
+  const giftParsed = parseGiftCents((rawBody as Record<string, unknown>).donationCents);
+  if (!giftParsed.ok) return NextResponse.json({ error: giftParsed.error }, { status: 400 });
+  const gift = giftParsed.cents;
 
   if (
     looksLikeSpam([
@@ -481,13 +509,18 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
         c: category,
         a: r.age,
         m: encodeMeals(r.meals),
-        ...(r.allergies ? { l: r.allergies } : {}),
+        // A child's allergies live in the care details instead; a free-text
+        // note sent for them anyway is dropped, never forwarded.
+        ...(r.allergies && !needsChildCare(r.age) ? { l: r.allergies } : {}),
       },
       priceCents: price,
     });
   }
 
   const totalAmountCents = priced.reduce((sum, p) => sum + p.priceCents, 0);
+  if (gift > 0 && (totalAmountCents === 0 || paymentMethod !== "card")) {
+    return NextResponse.json({ error: "A gift can be added when paying by card" }, { status: 400 });
+  }
   const summary: RegistrationSummary = {
     ref: crypto.randomUUID(),
     year: cy.year,
@@ -498,8 +531,47 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
     contactPhone: input.contactPhone,
     registrants: priced.map((p) => p.registrant),
     totalAmountCents,
+    ...(gift > 0 ? { gift } : {}),
     isComplimentary: false,
     youth: { leader: input.youthLeaderName, dcc: input.dccZone, guardian: input.guardianConfirmed },
+  };
+
+  // The full summary (allergies included) rides in the card path's session
+  // metadata for the webhook's sheet rows and email. Refuse up front if it
+  // cannot fit rather than let Stripe reject the session (4 = kind,
+  // convention_year, subtotal_cents, processing_fee_cents). Checked before the
+  // care details are saved, so this refusal leaves no care rows behind.
+  const encoded = encodeSummary(summary);
+  if (totalAmountCents > 0 && paymentMethod !== "zelle" && !fitsStripeMetadata(encoded, 4)) {
+    return NextResponse.json(
+      { error: "This registration has too many details to process in one payment. Please split it into two smaller registrations." },
+      { status: 400 }
+    );
+  }
+
+  // Fail closed: a registration whose care details could not be stored is
+  // refused before any sheet row, check-in row, email or payment, so a parent
+  // never believes the ministry has their child's allergies when it does not.
+  // Every later failure below deletes the rows again (discardCare), so a retry
+  // leaves no orphans. A row left by a card checkout that is then abandoned
+  // has no check-in row: the admin pages only show care rows that do, and the
+  // purge query in migration 0026 removes them.
+  const careRows = childCareRows({
+    ref: summary.ref,
+    year: cy.year,
+    registrants: input.registrants.map((r) => ({ name: `${r.firstName} ${r.lastName}`, age: r.age })),
+    care,
+    guardian: { name: input.contactName, phone: input.contactPhone },
+    now: new Date(),
+  });
+  if (!(await saveChildCare(summary.ref, careRows))) {
+    return NextResponse.json(
+      { error: "We couldn't save your children's care details just now, so nothing was registered. Please try again in a minute." },
+      { status: 503 }
+    );
+  }
+  const discardCare = async () => {
+    if (careRows.length > 0) await deleteChildCare(summary.ref);
   };
 
   // Everyone 19 or under: free -- one sheet row per person, straight to the
@@ -527,6 +599,7 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
         ...(emailed ? { emailed: true } : {}),
       });
     } catch {
+      await discardCare();
       return NextResponse.json({ error: "Registration is temporarily unavailable" }, { status: 500 });
     }
     for (const row of youthSheetRows(summary, { stripeSession: "", status: "free (email unverified)", startIso: cy.startIso, checkinCodes: checkinCodesFor(summary) })) {
@@ -546,7 +619,7 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
   }
 
   if (paymentMethod === "zelle") {
-    return confirmByZelle(
+    const zelleResponse = await confirmByZelle(
       summary,
       summary.registrants.map((r) => ({ n: r.n, c: r.c, a: r.a, m: r.m })),
       (zelleRef) => {
@@ -562,20 +635,11 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
         }
       }
     );
+    if (!zelleResponse.ok) await discardCare();
+    return zelleResponse;
   }
 
-  // The full summary (allergies included) rides in the session metadata for
-  // the webhook's sheet rows and email. Refuse up front if it cannot fit
-  // rather than let Stripe reject the session (4 = kind, convention_year,
-  // subtotal_cents, processing_fee_cents).
-  const encoded = encodeSummary(summary);
-  if (!fitsStripeMetadata(encoded, 4)) {
-    return NextResponse.json(
-      { error: "This registration has too many details to process in one payment. Please split it into two smaller registrations." },
-      { status: 400 }
-    );
-  }
-
+  // Card: the metadata fit was checked above, before the care details were saved.
   const stripe = getStripeClient();
   try {
     const session = await stripe.checkout.sessions.create({
@@ -596,6 +660,7 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
             quantity: 1,
           })),
         processingFeeLineItem(totalAmountCents),
+        ...giftLineItems(gift),
       ],
       customer_email: input.contactEmail,
       ...checkoutModeParams(`${SITE_URL}/events/cacna-${cy.year}/register/confirmation?session_id={CHECKOUT_SESSION_ID}`, `${SITE_URL}/events/cacna-${cy.year}/register/youth`),
@@ -610,6 +675,7 @@ async function registerYouth(rawBody: unknown): Promise<Response> {
     });
     return NextResponse.json(checkoutResponseBody(session));
   } catch {
+    await discardCare();
     return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 });
   }
 }

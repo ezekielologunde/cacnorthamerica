@@ -13,12 +13,13 @@ import { Navigation } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
+import { YORUBA_PHRASES } from "@/lib/yoruba";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Plan Your Visit — Christ Apostolic Church North America (CACNA)",
     description:
-      "Everything you need to plan your trip to the CACNA Annual Convention at CAC Village — travel, hotels, weather, what to pack, nearby essentials, and convention etiquette.",
+      "Everything you need to plan your trip to the CACNA Annual Convention at CAC Village — travel, hotels, weather, what to pack, nearby essentials, convention etiquette, and common Yoruba greetings you will hear.",
     alternates: { canonical: `${SITE_URL}/plan-your-visit` },
   };
 }
@@ -76,6 +77,7 @@ export default async function PlanYourVisitPage({
             <a className="ap-chip" href="#packing">Packing</a>
             <a className="ap-chip" href="#grounds">On the grounds</a>
             <a className="ap-chip" href="#nearby">Nearby</a>
+            <a className="ap-chip" href="#words">Yoruba words</a>
           </nav>
         </div>
       </section>
@@ -254,6 +256,37 @@ export default async function PlanYourVisitPage({
               ))}
             </ol>
             <p style={{ fontSize: 13.5, color: "var(--ink-soft)", fontStyle: "italic", marginTop: 16 }}>— {rulesAttribution}</p>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Yoruba words a visitor will hear. Every Yoruba string carries
+          lang="yo" so screen readers switch voice. */}
+      <section id="words" style={{ background: "var(--cream-2)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <Reveal style={{ marginBottom: 28 }}>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.5vw,40px)", color: "var(--ink)", margin: "10px 0 8px" }}>Yoruba words you will hear</h2>
+            <p style={{ fontSize: 15, color: "var(--ink-soft)", lineHeight: 1.65, maxWidth: 640, margin: 0 }}>
+              Christ Apostolic Church began in Yorubaland, Nigeria, and many CAC gatherings mix English and Yoruba. A few words you will hear often:
+            </p>
+          </Reveal>
+          <Reveal>
+            <dl style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 10, margin: 0 }}>
+              {YORUBA_PHRASES.map((p) => (
+                <div key={p.yo} style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 12, padding: "12px 14px" }}>
+                  <dt lang="yo" style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 18, color: "var(--ink)" }}>{p.yo}</dt>
+                  <dd style={{ fontSize: 14, color: "var(--ink-soft)", margin: "4px 0 0" }}>{p.en}</dd>
+                </div>
+              ))}
+            </dl>
+          </Reveal>
+          <Reveal>
+            <p style={{ fontSize: 14, color: "var(--ink-soft)", lineHeight: 1.7, maxWidth: 680, margin: "20px 0 0" }}>
+              <strong style={{ color: "var(--ink)" }}>Reading the marks:</strong>{" "}
+              <span lang="yo">ẹ</span> sounds like the e in &ldquo;bet&rdquo;, <span lang="yo">ọ</span> like the o in &ldquo;or&rdquo;, and <span lang="yo">ṣ</span> like &ldquo;sh&rdquo;.
+              {" "}The accents mark tone: an acute (´) is high, a grave (`) is low, and no mark is mid.
+              {" "}The <span lang="yo">Ẹ</span> that opens a greeting is the respectful &ldquo;you&rdquo;, used for elders and for a group.
+            </p>
           </Reveal>
         </div>
       </section>

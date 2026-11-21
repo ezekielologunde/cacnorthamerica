@@ -2,6 +2,7 @@
 
 import { requireAdmin } from "@/lib/supabase/require-admin";
 import { revalidatePath } from "next/cache";
+import { revalidateAnnouncements } from "@/lib/contentRevalidation";
 import { redirect } from "next/navigation";
 
 export async function createAnnouncement(formData: FormData) {
@@ -31,7 +32,7 @@ export async function createAnnouncement(formData: FormData) {
   }
 
   revalidatePath("/admin/announcements");
-  revalidatePath("/");
+  revalidateAnnouncements();
   redirect(`/admin/announcements/${data.id}`);
 }
 
@@ -62,7 +63,7 @@ export async function updateAnnouncement(id: string, formData: FormData) {
 
   revalidatePath("/admin/announcements");
   revalidatePath(`/admin/announcements/${id}`);
-  revalidatePath("/");
+  revalidateAnnouncements();
 }
 
 export async function deleteAnnouncement(id: string) {
@@ -76,7 +77,7 @@ export async function deleteAnnouncement(id: string) {
   }
 
   revalidatePath("/admin/announcements");
-  revalidatePath("/");
+  revalidateAnnouncements();
   redirect("/admin/announcements");
 }
 
@@ -94,5 +95,5 @@ export async function toggleActive(id: string, active: boolean) {
   }
 
   revalidatePath("/admin/announcements");
-  revalidatePath("/");
+  revalidateAnnouncements();
 }
