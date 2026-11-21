@@ -51,11 +51,17 @@ export function Nav({ dark = false, heroDark = false }: NavProps) {
   const pathname = usePathname();
   const t = useTranslations('Nav');
   const conventionCtaLabel = t('conventionCta', { year: nextConvention.year });
+  const conventionInfoLabel = t('conventionInfo', { year: nextConvention.year });
   const navItems: NavItem[] = [
     {
       label: t('eventsConvention'),
       href: nextConvention.href,
       dropdown: [
+        {
+          href: nextConvention.href,
+          label: conventionInfoLabel,
+          desc: t('conventionInfoDesc'),
+        },
         {
           href: conventionCtaHref,
           label: conventionCtaLabel,
