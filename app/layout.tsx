@@ -45,13 +45,11 @@ export const metadata: Metadata = {
     description: SITE.description,
     url: SITE_URL,
     locale: "en_US",
-    images: [{ url: "/images/logo.png", width: 370, height: 318, alt: "CACNA logo" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Christ Apostolic Church North America — Welcome Home",
     description: SITE.description,
-    images: ["/images/logo.png"],
   },
   verification: {
     // Set NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION in Vercel to emit the Search

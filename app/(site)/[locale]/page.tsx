@@ -21,6 +21,7 @@ import { latestBlogPost } from "@/lib/blogMerge";
 import { CONVENTION_RECAP_SLUG } from "@/lib/blog";
 import { getPublishedDbEvents } from "@/lib/dbEvents";
 import { specialEvents } from "@/lib/events";
+import { currentOrNextConvention } from "@/lib/conventions";
 
 // Below-fold sections split into separate JS chunks — browser parses them
 // incrementally instead of one blocking task, cutting TBT significantly.
@@ -71,7 +72,7 @@ const faqJsonLd = {
 // to the root layout's generic site-wide defaults.
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "CACNA — Christ Apostolic Church North America | CAC Convention & Registration",
+    title: `CACNA — Christ Apostolic Church North America | Convention ${currentOrNextConvention().year}`,
     description:
       "Christ Apostolic Church North America (CACNA): find your zone, watch services online, and register for the CAC Annual Convention at CAC Village, Blue Ridge Summit, PA.",
     keywords: [
