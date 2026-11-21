@@ -106,6 +106,12 @@ export function navGroups(): NavGroup[] {
       match: isConventionPage,
       links: [
         {
+          href: nextConvention.href,
+          label: key("conventionInfo", { year: nextConvention.year }),
+          desc: key("conventionInfoDesc"),
+          only: "header",
+        },
+        {
           href: conventionCtaHref,
           label: key("conventionCta", { year: nextConvention.year }),
           desc: key(nextConvention.registrationUrl ? "conventionCtaDescOpen" : "conventionCtaDescComingSoon"),
