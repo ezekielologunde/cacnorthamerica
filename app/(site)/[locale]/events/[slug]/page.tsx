@@ -6,13 +6,15 @@ import { FooterExperience } from "@/components/sections/FooterExperience";
 import { Reveal } from "@/components/ui/Reveal";
 import { RevealText } from "@/components/ui/RevealText";
 import Link from "next/link";
-import { MapPin, CalendarDays, ArrowLeft, CalendarPlus, Download, Sparkles } from "lucide-react";
+import Image from "next/image";
+import { MapPin, CalendarDays, ArrowLeft, CalendarPlus, Download, Sparkles, Phone } from "lucide-react";
 import { googleCalUrl, icsDataUri, isEventPast } from "@/lib/events";
 import { SITE, SITE_URL, breadcrumbJsonLd } from "@/lib/site";
 import {
   conventionYears,
   conventionChurchEvent,
   sessionsFor,
+  activePricing,
   dateRangeLabel,
   CONVENTION_VENUE,
   hasExternalRegistrationUrl,
@@ -46,10 +48,15 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   if (!cy) return {};
   return {
     title: `CACNA ${cy.year} Annual Convention — Christ Apostolic Church North America`,
-    description: `Save the date: the CACNA ${cy.year} National Convention runs ${dateRangeLabel(cy)} at ${CONVENTION_VENUE}. ${cy.registrationUrl ? "Registration is open." : "Full schedule and registration details are announced closer to the date."}`,
+    description: `${cy.theme ? `Theme: “${cy.theme}.” ` : "Save the date: "}The CACNA ${cy.year} National Convention runs ${dateRangeLabel(cy)} at ${CONVENTION_VENUE}. ${cy.registrationUrl ? "Registration is open." : "Full schedule and registration details are announced closer to the date."}`,
     alternates: { canonical: `${SITE_URL}/events/cacna-${cy.year}` },
+    ...(cy.flyers ? { openGraph: { images: [{ url: cy.flyers.programme, width: 1122, height: 1402, alt: cy.flyers.alt.programme }] }, twitter: { card: "summary_large_image" as const, images: [cy.flyers.programme] } } : {}),
   };
 }
+
+const CATEGORY_LABEL: Record<string, string> = { adult: "Adults (30 and over)", young_adult: "Young adults (20–29)", child: "Children (ages 1–19)" };
+const money = (cents: number) => (cents === 0 ? "Free" : `$${(cents / 100).toFixed(2)}`);
+const shortDay = (iso: string) => new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", timeZone: "UTC" }).format(new Date(`${iso}T12:00:00Z`));
 
 export default async function CACNAFutureYearPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params;
@@ -61,6 +68,8 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
   const ev = conventionChurchEvent(cy);
   const isPast = isEventPast(ev);
   const sessions = sessionsFor(cy);
+  const nowTiers = activePricing(cy);
+  const tiersFor = (cat: string) => (cy.pricingTiers ?? []).filter((t) => t.category === cat);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -71,11 +80,16 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
     endDate: `${cy.endIso}T22:00:00-04:00`,
     eventStatus: "https://schema.org/EventScheduled",
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-    image: `${SITE_URL}/images/logo.png`,
+    image: `${SITE_URL}${cy.flyers?.programme ?? "/images/logo.png"}`,
     url: `${SITE_URL}${ev.href}`,
     location: { "@type": "Place", name: "CAC Village", address: { "@type": "PostalAddress", streetAddress: "14051 Stahley Rd", addressLocality: "Blue Ridge Summit", addressRegion: "PA", postalCode: "17214", addressCountry: "US" } },
     organizer: { "@type": "Church", name: SITE.name, url: SITE_URL },
-    performer: { "@type": "Church", name: SITE.name, url: SITE_URL },
+    performer: cy.guests?.length
+      ? cy.guests.map((g) => ({ "@type": "Person", name: g.name, jobTitle: g.title }))
+      : { "@type": "Church", name: SITE.name, url: SITE_URL },
+    ...(nowTiers.length
+      ? { offers: nowTiers.map((t) => ({ "@type": "Offer", name: CATEGORY_LABEL[t.category] ?? t.category, price: (t.priceCents / 100).toFixed(2), priceCurrency: "USD", availability: "https://schema.org/InStock", validThrough: t.endsOn, url: `${SITE_URL}${cy.registrationUrl ?? ev.href}` })) }
+      : {}),
   };
 
   return (
@@ -90,7 +104,9 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
         <div aria-hidden style={{ position: "absolute", top: -140, right: -120, width: 760, height: 600, background: "radial-gradient(circle,rgba(253,200,65,.25),transparent 65%)", pointerEvents: "none", animation: "gradient-drift 18s ease-in-out infinite" }} />
         <div aria-hidden style={{ position: "absolute", bottom: -80, left: -80, width: 500, height: 400, background: "radial-gradient(circle,rgba(200,30,58,.15),transparent 65%)", pointerEvents: "none" }} />
 
-        <div style={{ maxWidth: 960, margin: "0 auto", position: "relative", zIndex: 2 }}>
+        <style>{`.conv-hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(32px,5vw,60px);align-items:center}.conv-hero-grid.solo{grid-template-columns:1fr;max-width:960px!important}@media(max-width:900px){.conv-hero-grid{grid-template-columns:1fr}}`}</style>
+        <div className={`conv-hero-grid${cy.flyers ? "" : " solo"}`} style={{ maxWidth: 1140, margin: "0 auto", position: "relative", zIndex: 2 }}>
+         <div>
           <Reveal>
             <Link href="/calendar" style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 700, color: "rgba(245,246,250,.6)", textDecoration: "none", marginBottom: 32 }}>
               <ArrowLeft size={14} strokeWidth={2.5} aria-hidden /> All events
@@ -98,7 +114,7 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
           </Reveal>
 
           <Reveal>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>Save the date</span>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--gold)" }}>{cy.registrationUrl ? "Registration open" : "Save the date"}</span>
           </Reveal>
 
           <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(40px,6vw,80px)", letterSpacing: "-0.03em", color: "#fff", margin: "16px 0 22px", lineHeight: 0.98, textWrap: "balance" }}>
@@ -107,6 +123,18 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
             <RevealText immediate delay={0.15} style={{ color: "var(--gold)" }}>National Convention</RevealText>
           </h1>
 
+          {cy.theme && (
+            <Reveal delay={150}>
+              <p style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(22px,3vw,34px)", letterSpacing: "-.5px", lineHeight: 1.1, margin: "0 0 14px", background: "linear-gradient(95deg,#FFE08A,#FDC841 45%,#F28C38)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
+                Theme: “{cy.theme}”
+              </p>
+              {cy.scripture && (
+                <p style={{ fontSize: 14.5, color: "rgba(245,246,250,.62)", lineHeight: 1.6, maxWidth: 560, margin: "0 0 22px", fontStyle: "italic" }}>
+                  “{cy.scripture.text}” — {cy.scripture.reference}
+                </p>
+              )}
+            </Reveal>
+          )}
           <Reveal delay={200}>
             <p style={{ fontSize: "clamp(16px,2vw,20px)", color: "rgba(245,246,250,.72)", lineHeight: 1.7, maxWidth: 620, margin: "0 0 44px", textWrap: "pretty" }}>
               {dateRangeLabel(cy)} — {CONVENTION_VENUE}.
@@ -119,11 +147,11 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
                 {cy.registrationUrl ? (
                   hasExternalRegistrationUrl(cy) ? (
                     <a href={cy.registrationUrl} target="_blank" rel="noopener noreferrer" className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(253,200,65,.4)" }}>
-                      {`Convention ${cy.year}`} →
+                      {`Register for ${cy.year}`} →
                     </a>
                   ) : (
                     <Link href={cy.registrationUrl} className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--gold)", color: "var(--ink)", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none", boxShadow: "0 16px 40px rgba(253,200,65,.4)" }}>
-                      {`Convention ${cy.year}`} →
+                      {`Register for ${cy.year}`} →
                     </Link>
                   )
                 ) : (
@@ -140,17 +168,69 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
               </div>
             </Reveal>
           )}
+         </div>
+          {cy.flyers && (
+            <Reveal delay={160}>
+              <a href={cy.flyers.programme} target="_blank" rel="noopener noreferrer" aria-label="Open the full flyer in a new tab" style={{ display: "block", position: "relative", borderRadius: 24, overflow: "hidden", boxShadow: "0 30px 70px rgba(0,0,0,.45)", border: "1px solid rgba(245,246,250,.12)" }}>
+                <Image src={cy.flyers.programme} alt={cy.flyers.alt.programme} width={1122} height={1402} sizes="(max-width: 900px) 100vw, 520px" style={{ width: "100%", height: "auto", display: "block" }} preload />
+              </a>
+            </Reveal>
+          )}
         </div>
       </section>
+
+      {/* Registration fees */}
+      {nowTiers.length > 0 && (
+        <section className="mm-sec" style={{ background: "var(--paper)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+          <div style={{ maxWidth: 960, margin: "0 auto" }}>
+            <Reveal style={{ marginBottom: 32 }}>
+              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--flame)" }}>Registration fees</span>
+              <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.6vw,44px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 10px" }}>Register early, pay less</h2>
+              <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.7, maxWidth: 640, margin: 0 }}>
+                The price steps up on the dates below. The tier open today is highlighted. Children and teenagers (ages 1–19) always register free.
+              </p>
+            </Reveal>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: 16 }}>
+              {(["adult", "young_adult", "child"] as const).map((cat) => (
+                <Reveal key={cat}>
+                  <div style={{ background: "var(--cream)", border: "1px solid var(--line)", borderRadius: 20, padding: "22px 22px 18px", height: "100%" }}>
+                    <div style={{ fontWeight: 800, fontSize: 16, color: "var(--ink)", marginBottom: 14 }}>{CATEGORY_LABEL[cat]}</div>
+                    <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 8 }}>
+                      {tiersFor(cat).map((t, ti, all) => {
+                        const live = nowTiers.some((n) => n.category === t.category && n.startsOn === t.startsOn);
+                        return (
+                          <li key={t.startsOn} style={{ display: "flex", justifyContent: "space-between", gap: 12, fontSize: 14.5, padding: "8px 12px", borderRadius: 12, background: live ? "var(--ink)" : "transparent", color: live ? "#fff" : "var(--ink-soft)", fontWeight: live ? 800 : 500 }}>
+                            <span>{cat === "child" ? "All dates" : ti === 0 ? `Through ${shortDay(t.endsOn)}` : ti === all.length - 1 ? "At the convention ground" : `${shortDay(t.startsOn)} – ${shortDay(t.endsOn)}`}{live ? " · now" : ""}</span>
+                            <span style={{ color: live ? "var(--gold)" : "var(--ink)", fontWeight: 800 }}>{money(t.priceCents)}</span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+            {cy.registrationUrl && !isPast && (
+              <Reveal delay={120}>
+                <div style={{ marginTop: 28 }}>
+                  <Link href={cy.registrationUrl} className="btn-sheen press" style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "var(--ink)", color: "#fff", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, textDecoration: "none" }}>
+                    Register now →
+                  </Link>
+                </div>
+              </Reveal>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* Recurring day-by-day pattern */}
       <section className="mm-sec" style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <Reveal style={{ marginBottom: 40 }}>
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--flame)" }}>What to expect</span>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.6vw,44px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 14px" }}>The rhythm stays the same</h2>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.6vw,44px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 14px" }}>{cy.programme ? "The week at a glance" : "The rhythm stays the same"}</h2>
             <p style={{ fontSize: 16, color: "var(--ink-soft)", lineHeight: 1.7, maxWidth: 640 }}>
-              The convention follows the same six-day pattern every year. Here is what {cy.year} will look like.
+              {cy.programme ? `Six days, ${dateRangeLabel(cy)}. Every night is a combined revival for all.` : `The convention follows the same six-day pattern every year. Here is what ${cy.year} will look like.`}
             </p>
           </Reveal>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -173,7 +253,7 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
       <section className="mm-sec" style={{ background: "var(--ink)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <Reveal style={{ marginBottom: 32 }}>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3.4vw,40px)", letterSpacing: "-1px", color: "var(--cream)", margin: 0 }}>Confirmed so far</h2>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(24px,3.4vw,40px)", letterSpacing: "-1px", color: "var(--cream)", margin: 0 }}>{cy.theme ? "Venue & dates" : "Confirmed so far"}</h2>
           </Reveal>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 18 }}>
             {[
@@ -191,11 +271,70 @@ export default async function CACNAFutureYearPage({ params }: { params: Promise<
               </div>
             ))}
           </div>
-          <p style={{ fontSize: 14, color: "rgba(245,246,250,.5)", marginTop: 28, lineHeight: 1.7 }}>
-            Registration fees, the convention theme, and the ministers/speakers list will be announced closer to {dateRangeLabel(cy)} — check back on this page, or <Link href="/plan-your-visit" style={{ color: "inherit", textDecoration: "underline" }}>start planning your visit</Link> in the meantime.
-          </p>
+          {cy.highlights && (
+            <ul style={{ listStyle: "none", margin: "24px 0 0", padding: 0, display: "flex", flexWrap: "wrap", gap: 10 }}>
+              {cy.highlights.map((h) => (
+                <li key={h} style={{ background: "rgba(253,200,65,.14)", border: "1px solid rgba(253,200,65,.3)", color: "var(--gold)", fontWeight: 700, fontSize: 14, padding: "9px 16px", borderRadius: 999 }}>{h}</li>
+              ))}
+            </ul>
+          )}
+          {cy.officers && (
+            <div style={{ marginTop: 32 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", color: "var(--gold)", marginBottom: 12 }}>For further information, contact</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
+                {cy.officers.map((o) => (
+                  <a key={o.phone} href={`tel:${o.phone.replace(/\D/g, "")}`} style={{ display: "flex", alignItems: "center", gap: 14, background: "rgba(245,246,250,.07)", border: "1px solid rgba(245,246,250,.14)", borderRadius: 18, padding: "16px 20px", textDecoration: "none" }}>
+                    <span style={{ flexShrink: 0, display: "grid", placeItems: "center", width: 40, height: 40, borderRadius: 12, background: "linear-gradient(135deg,var(--gold),#B8860B)" }}>
+                      <Phone size={18} color="#fff" strokeWidth={2} aria-hidden />
+                    </span>
+                    <span>
+                      <span style={{ display: "block", fontWeight: 700, fontSize: 14, color: "var(--cream)" }}>{o.name} ({o.role})</span>
+                      <span style={{ display: "block", fontSize: 16, fontWeight: 800, color: "var(--gold)", fontFamily: "monospace" }}>{o.phone}</span>
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+          {!cy.theme && (
+            <p style={{ fontSize: 14, color: "rgba(245,246,250,.5)", marginTop: 28, lineHeight: 1.7 }}>
+              Registration fees, the convention theme, and the ministers/speakers list will be announced closer to {dateRangeLabel(cy)} — check back on this page, or <Link href="/plan-your-visit" style={{ color: "inherit", textDecoration: "underline" }}>start planning your visit</Link> in the meantime.
+            </p>
+          )}
         </div>
       </section>
+
+      {/* Guest ministers */}
+      {cy.guests && cy.flyers && (
+        <section className="mm-sec" style={{ background: "var(--cream)", padding: "clamp(56px,7vw,90px) clamp(20px,5vw,64px)" }}>
+          <div style={{ maxWidth: 1040, margin: "0 auto" }}>
+            <Reveal style={{ marginBottom: 32 }}>
+              <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--flame)" }}>Ministers</span>
+              <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(26px,3.6vw,44px)", letterSpacing: "-1px", color: "var(--ink)", margin: "12px 0 0" }}>Who will minister</h2>
+            </Reveal>
+            <Reveal>
+              <a href={cy.flyers.speakers} target="_blank" rel="noopener noreferrer" aria-label="Open the ministers flyer in a new tab" style={{ display: "block", maxWidth: 560, margin: "0 auto 36px", borderRadius: 24, overflow: "hidden", boxShadow: "0 24px 56px rgba(18,20,30,.22)" }}>
+                <Image src={cy.flyers.speakers} alt={cy.flyers.alt.speakers} width={1122} height={1402} sizes="(max-width: 600px) 100vw, 560px" style={{ width: "100%", height: "auto", display: "block" }} />
+              </a>
+            </Reveal>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 16 }}>
+              {cy.guests.map((g, i) => (
+                <Reveal key={g.name} delay={i * 60}>
+                  <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: 20, overflow: "hidden", height: "100%" }}>
+                    <div style={{ position: "relative", aspectRatio: "1 / 1", background: "var(--line)" }}>
+                      <Image src={g.photo} alt={g.name} fill sizes="200px" style={{ objectFit: "cover", objectPosition: "center 20%" }} />
+                    </div>
+                    <div style={{ padding: "14px 16px 18px" }}>
+                      <div style={{ fontWeight: 800, fontSize: 15, color: "var(--ink)", lineHeight: 1.25 }}>{g.name}</div>
+                      <div style={{ fontSize: 13, color: "var(--ink-soft)", lineHeight: 1.45, marginTop: 4 }}>{g.title}</div>
+                    </div>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <FooterExperience />
     </main>

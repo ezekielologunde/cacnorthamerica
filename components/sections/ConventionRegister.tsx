@@ -81,10 +81,10 @@ export function ConventionRegister() {
   return (
     <section aria-labelledby="convention-register-heading" className="hm-section" style={{ background: "var(--cream)", padding: "clamp(64px,8vw,110px) clamp(20px,5vw,64px)" }}>
       <div className="r2c hm-conv-grid" style={{ maxWidth: 1200, margin: "0 auto", gap: "clamp(32px,5vw,72px)" }}>
-        <figure className="hm-conv-photo" style={{ margin: 0, position: "relative", aspectRatio: "4 / 3", borderRadius: 28, overflow: "hidden", boxShadow: "0 28px 60px rgba(18,20,30,.22)", background: "var(--ink)" }}>
+        <figure className="hm-conv-photo" style={{ margin: 0, position: "relative", aspectRatio: cy.flyers ? "1122 / 1402" : "4 / 3", borderRadius: 28, overflow: "hidden", boxShadow: "0 28px 60px rgba(18,20,30,.22)", background: "var(--ink)" }}>
           <Image
-            src="/photos/gallery-archive/whatsapp-image-2018-07-23-at-10-11-01-pm-1524.jpg"
-            alt="Worshipers in matching light-blue shirts raising their hands in praise in a crowded hall, with a speaker at a clear pulpit in the foreground"
+            src={cy.flyers?.programme ?? "/photos/gallery-archive/whatsapp-image-2018-07-23-at-10-11-01-pm-1524.jpg"}
+            alt={cy.flyers?.alt.programme ?? "Worshipers in matching light-blue shirts raising their hands in praise in a crowded hall, with a speaker at a clear pulpit in the foreground"}
             fill
             sizes="(max-width: 860px) 100vw, 580px"
             style={{ objectFit: "cover", objectPosition: "center 55%" }}

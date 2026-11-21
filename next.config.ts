@@ -76,6 +76,10 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
+      // Printed on the 2027 convention flyers (www.cacna.org/convention). Kept
+      // temporary (307) so it can point at a new year's page later.
+      { source: "/convention", destination: "/events/cacna-2027", permanent: false },
+      { source: "/convention/register", destination: "/events/cacna-2027/register", permanent: false },
       // One canonical host: cacna.org. The *.vercel.app project
       // domain and the retired cacna.cacsalvationcenter.org subdomain are both
       // indexed by Google, so send every page to the canonical host. API routes
