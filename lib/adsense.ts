@@ -10,11 +10,17 @@ const GOOGLE_CERT_AUTHORITY_ID = "f08c47fec0942fa0";
 
 const CLIENT_ID = /^(?:ca-)?(pub-\d{16})$/;
 
+/** Canonical script client ID, shared with ads.txt; invalid values fail closed. */
+export function normalizeAdSenseClientId(clientId: string | undefined): string | null {
+  const match = CLIENT_ID.exec(clientId?.trim() ?? "");
+  return match ? `ca-${match[1]}` : null;
+}
+
 /** The ads.txt body for an AdSense client ID, or null when the ID is unset or malformed. */
 export function adsTxtBody(clientId: string | undefined): string | null {
-  const match = CLIENT_ID.exec(clientId?.trim() ?? "");
-  if (!match) return null;
-  return `google.com, ${match[1]}, DIRECT, ${GOOGLE_CERT_AUTHORITY_ID}\n`;
+  const normalized = normalizeAdSenseClientId(clientId);
+  if (!normalized) return null;
+  return `google.com, ${normalized.slice(3)}, DIRECT, ${GOOGLE_CERT_AUTHORITY_ID}\n`;
 }
 
 // Ads run on the blog only (owner decision, 2026-11-06): the index and the

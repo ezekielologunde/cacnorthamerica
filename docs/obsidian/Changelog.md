@@ -2,13 +2,25 @@
 project: cacnorthamerica
 type: changelog
 status: active
-last_updated: 2026-11-05
+last_updated: 2026-11-07
 tags: [project/cacnorthamerica]
 ---
 
 # Changelog
 
 Related: [[Project]] · [[Decisions]] · [[Features]] · [[Payments]] · [[Security]]
+
+## 2026-11-07 -- local analytics and AdSense regressions
+
+- Shared AdSense ID normalization between the loader and ads.txt; malformed
+  values no longer load the script. Blog-only placement is unchanged.
+- Added giving/store confirmation query and fragment redaction to initial
+  Google configs, plus receipt referrer redaction for all three receipt types.
+- Added offline tests of actual component output and executed initialization,
+  wired into `npm test` through `test:analytics`.
+- Local source only; no push, deployment, payment call or account/configuration
+  change. Later navigation and automatic analytics event coverage need a separate
+  review; see [[Security]].
 
 ## 2026-11-06 -- registration contact fields and Quick help
 

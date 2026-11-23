@@ -2,13 +2,27 @@
 project: cacnorthamerica
 type: security
 status: active
-last_updated: 2026-11-05
+last_updated: 2026-11-07
 tags: [project/cacnorthamerica]
 ---
 
 # Security
 
 Related: [[Database]] · [[Backend]] · [[Payments]] · [[Bugs]] · [[Decisions]]
+
+## Receipt URLs in Google tag initialization (2026-11-07, local source)
+
+The initial Google Analytics/Ads config removes query strings and fragments
+from registration, giving and store confirmation page URLs. It also sanitizes
+those URLs when supplied as `document.referrer`, including on the next page.
+The same config is supplied to both destinations; public marketing URLs keep
+the existing defaults. These links can expose receipt details, so no real
+session IDs or tokens are used in tests.
+
+This is an initialization fix, not proof that every analytics event is safe.
+Enhanced-measurement/history events, later client navigation, other token-bearing
+routes and other analytics providers still need a separate privacy review.
+No Google/Vercel account setting or live deployment was changed. See [[Decisions]].
 
 ## Auth and authorization
 

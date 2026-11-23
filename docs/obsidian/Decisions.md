@@ -2,13 +2,24 @@
 project: cacnorthamerica
 type: decisions
 status: active
-last_updated: 2026-11-06
+last_updated: 2026-11-07
 tags: [project/cacnorthamerica]
 ---
 
 # Decisions
 
 Related: [[Project]] · [[Architecture]] · [[Features]]
+
+## Share AdSense validation and extend receipt redaction (2026-11-07)
+
+The ad loader and ads.txt now share `normalizeAdSenseClientId`: trim whitespace,
+accept the existing bare publisher format, emit canonical `ca-pub-` script IDs,
+and reject malformed input in both places. Blog-only placement is unchanged.
+Google tag initialization applies its existing receipt URL protection to giving
+and store confirmations as well as registration, and strips receipt referrers.
+Offline tests execute the actual component bootstrap with synthetic URLs.
+These changes are local only; broader analytics event coverage remains
+unverified rather than claimed complete. See [[Security]] and [[Changelog]].
 
 ## Convention registration gift: its own line, fee not passed on (2026-11-06)
 

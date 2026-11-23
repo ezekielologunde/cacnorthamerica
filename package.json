@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test": "node --test lib/cacWorldNews.test.mjs lib/turnstile.test.mjs lib/registrationGift.test.mjs"
+    "test": "node --test lib/cacWorldNews.test.mjs lib/turnstile.test.mjs lib/registrationGift.test.mjs && npm run test:analytics",
+    "test:analytics": "node scripts/check-adsense.mjs && node scripts/check-google-tags.mjs"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^7.0.1",

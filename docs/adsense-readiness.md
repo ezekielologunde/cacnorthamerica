@@ -6,13 +6,16 @@ Google's decision; nothing here guarantees it.
 ## Already in the code
 
 - **Ad script.** `components/analytics/AdSenseScript.tsx` loads Google's
-  auto-ads script only when `NEXT_PUBLIC_ADSENSE_ID` is set, and **only on the
+  auto-ads script only when `NEXT_PUBLIC_ADSENSE_ID` is valid, and **only on the
   blog** (`/blog` and `/blog/*`, owner decision 2026-11-06). It never loads on
   any other page, including admin, giving, registration, the store, the
   payment confirmation pages and the legal pages. The rule is in `lib/adsense.ts`.
 - **ads.txt.** `/ads.txt` is built from `NEXT_PUBLIC_ADSENSE_ID` and returns
   `google.com, pub-…, DIRECT, f08c47fec0942fa0`. While the variable is unset it
-  returns 404.
+  returns 404. Both the loader and ads.txt use the same validation: surrounding
+  whitespace is trimmed, a bare `pub-` ID is normalized to `ca-pub-` for the
+  script, and IDs without exactly 16 digits are rejected. Malformed IDs return
+  404 here and load no ad script.
 - **Crawling.** `robots.txt` lets AdSense's crawler (Mediapartners-Google,
   covered by the `*` group) and AdsBot reach every public page.
 - **Policy pages.** Privacy, Terms and Refunds pages are live and linked in the

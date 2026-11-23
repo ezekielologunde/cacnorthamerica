@@ -10,9 +10,9 @@ const GA_ID      = process.env.NEXT_PUBLIC_GA_ID ?? "G-8M8BEVEEWM";
 const ADS_ID     = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
 const ADSENSE_ID = process.env.NEXT_PUBLIC_ADSENSE_ID;
 
-// Registration confirmation URLs carry a session id or sealed token that
-// opens the registrant's details, so on those pages the query string is
-// stripped from page_location before anything is sent to Google.
+// All payment confirmation URLs carry a session ID or sealed token. Strip
+// query strings and fragments from the initial page_location and from a
+// confirmation page's referrer before configuring either Google destination.
 export function GoogleTags() {
   const gtagIds = [GA_ID, ADS_ID].filter(Boolean) as string[];
 
@@ -26,15 +26,17 @@ export function GoogleTags() {
             strategy="lazyOnload"
           />
           <Script id="gtag-init" strategy="afterInteractive">
-            {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());var gc=/\\/register\\/confirmation\\/?$/.test(location.pathname)?{page_location:location.origin+location.pathname}:{};${gtagIds
-              .map((id) => `gtag('config','${id}',gc);`)
-              .join("")}`}
+            {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());
+var receiptPath=/\\/(?:register|giving|store)\\/confirmation\\/?$/;
+var gc=receiptPath.test(location.pathname)?{page_location:location.origin+location.pathname}:{};
+try{var gr=new URL(document.referrer);if(receiptPath.test(gr.pathname))gc.page_referrer=gr.origin+gr.pathname;}catch{}
+${gtagIds.map((id) => `gtag('config',${JSON.stringify(id)},gc);`).join("")}`}
           </Script>
         </>
       )}
 
-      {/* Google AdSense auto-ads — only loads when publisher ID is set, and
-          never on admin, receipt or legal pages (see lib/adsense.ts) */}
+      {/* Google AdSense auto-ads — valid publisher IDs only, on blog pages
+          (see lib/adsense.ts) */}
       {ADSENSE_ID && <AdSenseScript clientId={ADSENSE_ID} />}
     </>
   );
