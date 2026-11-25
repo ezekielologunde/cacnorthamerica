@@ -48,6 +48,24 @@ export interface BlogPost {
 // or via the admin console (/admin/blog) going forward.
 const RAW_POSTS: Omit<BlogPost, "categoryColor" | "accent">[] = [
   {
+    slug: "pastor-owoseni-sermons-on-spotify",
+    title: "Pastor Owoseni's Sermons Are on Spotify",
+    excerpt:
+      "Sermons and Bible Teaching, the podcast of Pastor R.T. Owoseni from CAC Salvation Centre, Ilorin, is free to stream on Spotify. Here is the latest message and where to begin.",
+    date: "November 25, 2026",
+    dateIso: "2026-11-25",
+    category: "Ministry Update",
+    readTime: "1 min read",
+    spotify: { episodeUrl: "https://open.spotify.com/episode/5pHIWs3vhZmJr7UGlJ7N2Z", title: "Why Did God Preserve Your Life Till Now? — Pastor R.T. Owoseni" },
+    body: [
+      "Christ Apostolic Church Salvation Centre in Ilorin, Nigeria, the District Headquarters, has a podcast. **Sermons and Bible Teaching** carries the messages of Pastor R.T. Owoseni, District Superintendent, and there are well over a hundred episodes to listen to, free.",
+      "The player above is the latest one, \"Why Did God Preserve Your Life Till Now?\" (Job 2:4–6 and Job 42:12), a Sunday message on why God keeps us, and why the best is yet to come.",
+      "**Subscribe on Spotify:** [Sermons and Bible Teaching, by Pastor R.T. Owoseni](https://open.spotify.com/show/2VBBGHUo6nMITGmGGrEUoM). New messages appear there as they are published.",
+      "**Not sure where to start?** The Ilorin site has a short list of series to begin with, on God's favour, on God as our Defender, and on His mercy, along with the written notes for the Sunday messages: [open the Ilorin page](https://www.cacsalvationcenter.org/ilorin#podcast).",
+      "We have also carried several of these messages on this blog, each with its own player. Keep listening, and keep the Word with you through the week.",
+    ],
+  },
+  {
     slug: "pastor-agbeja-ancient-alters-interview",
     title: "Faith Through Grief and Hard Lessons: Pastor Agbeja on Ancient Alters",
     excerpt:
